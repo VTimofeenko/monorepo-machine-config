@@ -142,8 +142,8 @@
         ./modules/development/virtualization.nix
 
         # Network
-        ./modules/network/common_lan.nix;
-        ./modules/network/lan-wifi.nix;
+        ./modules/network/common_lan.nix
+        ./modules/network/lan-wifi.nix
       ] ++ (with private-config.nixosModules; [
         sudo
         smartcard
