@@ -1,0 +1,891 @@
+#+TITLE: My machine configs
+#+AUTHOR: Vladimir Timofeenko
+#+EMAIL: id@vtimofeenko.com
+#+DATE: <2022-11-09 Wed>
+#+TAGS: fix(b) feat(f) doc(d) chore(c) to_think(t)
+#+HEADER-ARGS:nix: :padline no
+
+# TODO Not right now
+# #+HUGO_BASE_DIR: ~/Documents/vtimofeenko.com/
+# #+HUGO_SECTION: posts
+# #+HUGO_LEVEL_OFFSET: 0
+# #+HUGO_CODE_FENCE: nil
+# #+EXPORT_FILE_NAME: TODO:
+
+* Project structure
+
+- `project.org` :: file, from which everything gets tangled
+- `hosts/` :: directory where per-machine configs are stored
+- `modules/` :: top-level directory to contain all categories of modules
+
+* Intro :noexport:
+
+Boring technical stuff
+
+#+begin_src nix :tangle flake.nix
+{
+  description = "NixOS configuration by Vladimir Timofeenko";
+#+end_src
+
+* Inputs
+:PROPERTIES:
+:CATEGORY: INPUTS
+:END:
+
+#+begin_src nix :tangle flake.nix
+  inputs = {
+    nixpkgs.url = "nixpkgs/nixos-22.11";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    home-manager.url = "github:rycee/home-manager/release-22.11";
+    agenix.url = "github:ryantm/agenix";
+
+    # Theming and stuff
+    base16 = {
+      url = "github:SenchoPens/base16.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    color_scheme = {
+      url = "github:ajlende/base16-atlas-scheme";
+      flake = false;
+    };
+    private-config = {
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-flake.git";
+      inputs = {
+        agenix.follows = "agenix";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+    vt-zsh = {
+      url = "github:VTimofeenko/zsh-flake";
+      # One input only
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    my_tmux = {
+      url = "github:VTimofeenko/tmux-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        base16.follows = "base16";
+        color_scheme.follows = "color_scheme";
+      };
+    };
+
+    vt-colors.url = "path:/home/spacecadet/Documents/projects/vt-colors";
+    vt-nvim-flake.url = "path:/home/spacecadet/code/nvim-flake";
+
+    lynis-flake = {
+      url = "path:/home/spacecadet/Documents/projects/lynis-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    vt-sway = {
+      url = "git+file:///home/spacecadet/code/sway-flake?ref=master";
+      inputs = {
+        base16.follows = "base16";
+        color-scheme.follows = "color_scheme";
+      };
+    };
+    # nur.url = "github:nix-community/NUR";
+    my-doom-config = {
+      url = "path:/home/spacecadet/code/doom-config";
+    };
+    wg-namespace-flake = {
+      url = "path:///home/spacecadet/code/wg-namespace-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+#+end_src
+
+*** TODO Consider dropping nixos-hardware and merging everything here by hand :chore:
+
+*** TODO Make sure all inputs of base16 are tracking other inputs :chore:
+
+*** TODO Unify naming scheme (some inputs are called "my-", others - "vt-") :chore:
+
+*** TODO Evaluate vt-colors input :to_think:
+
+*** TODO Review lynis-flake :to_think:
+
+*** TODO Move all path:// inputs to at least git+file, ideally - git+ssh on gitea :chore:
+
+*** TODO Add infra and hosts outputs as inputs :feat:
+
+* Outputs
+:PROPERTIES:
+:header-args:nix: :tangle flake.nix
+:END:
+
+** Intro
+First, the plumbing:
+
+#+begin_src nix
+outputs = inputs@{ nixpkgs
+                 , nixos-hardware
+                 , home-manager
+                 , agenix
+                 , vt-colors
+                 , vt-zsh
+                 , vt-nvim-flake
+                 , lynis-flake
+                 , vt-sway
+                 , ...
+                 }:
+#+end_src
+
+I am planning to use the same set of overlays with all my machines:
+
+#+begin_src nix
+let
+  system = "x86_64-linux";
+  pkgs = import nixpkgs {
+    inherit system;
+    config = { allowUnfree = true; };
+    overlays = [
+      # nur.overlay
+      (final: prev: {
+        my_nvim = vt-nvim-flake.defaultPackage."${system}";
+      })
+      vt-sway.overlays.default
+    ];
+  };
+  commonModulesFromInputs = [
+    # Enable secrets management
+    agenix.nixosModule
+    home-manager.nixosModules.home-manager
+    # TODO: check if needed
+    vt-colors.nixosModule
+    {
+      my_colors.enable = true;
+    }
+    inputs.my_tmux.nixosModule
+    vt-zsh.nixosModule
+    {
+      my_zsh.starship_enable = true;
+      my_zsh.direnv_enable = true;
+      my_zsh.gpg_enable = true;
+    }
+    {
+      home-manager.users.spacecadet = vt-sway.nixosModules.default;
+    }
+    {
+      home-manager.users.spacecadet = { ... }: {
+        wayland.windowManager.sway.config = {
+          # Restore non-vm modifier
+          modifier = "Mod4";
+          # Output configuration
+          output = {
+            "eDP-1" = { "scale" = "1"; };
+          };
+        };
+        vt-sway.enableBrightness = true;
+      };
+    }
+    vt-sway.nixosModules.system
+    {
+      # Needed, otherwise error
+      # error: cannot look up '<nixpkgs>' in pure evaluation mode
+      home-manager.useGlobalPkgs = true;
+      home-manager.useUserPackages = true;
+    }
+    # My emacs module
+    {
+      home-manager.users.spacecadet = inputs.my-doom-config.nixosModules.default;
+    }
+    inputs.wg-namespace-flake.nixosModules.default
+  ];
+
+  commonCustomModules = [
+    ./modules/hardware/dygma.nix
+    ./modules/applications
+    ./modules/development
+    ./modules/development/cross-compile.nix
+    ./modules/development/virtualization.nix
+  ] ++ with private-config.nixosModules; [
+    sudo
+    smartcard
+    user-ssh-config
+    syncthing
+  ] ;
+  # Function to keep everything similar
+  mkMyModules = list: list ++ commonModulesFromInputs ++ commonCustomModules;
+in
+#+end_src
+
+Now for the outputs, which will (for now) only contain ~nixosConfigurations~:
+
+#+begin_src nix
+{
+  nixosConfigurations = {
+#+end_src
+
+** Modules
+
+Modules will be divided into categories represented as directories
+
+*** Common -- catch-all
+
+General module that includes all the things:
+
+#+begin_src nix :tangle modules/common/default.nix
+{ ... }:
+{
+  imports = [
+    ./flakes.nix
+    ./fonts.nix
+    ./user.nix
+    ./utils.nix
+    ./zsh.nix
+  ];
+  time.timeZone = "America/Los_Angeles";
+  # The global useDHCP flag is deprecated, therefore explicitly set to false here.
+  # Per-interface useDHCP will be mandatory in the future, so this generated config
+  # replicates the default behaviour.
+  networking.useDHCP = false;
+  # Allow unfree packages across the board
+  nixpkgs.config.allowUnfree = true;
+}
+#+end_src
+
+I am using z shell on all machines where I have some need for an interactive login. The z shell configuration is done in a separate flake (~vt-zsh~) which provides the zsh configuration encapsulated in a module.
+
+#+begin_src nix :tangle modules/common/zsh.nix
+{ pkgs, ... }:
+{
+    users.users.root.shell = pkgs.zsh;
+}
+
+#+end_src
+
+To enable Nix flakes:
+
+#+begin_src nix :tangle modules/common/flakes.nix
+# From https://nixos.wiki/wiki/Flakes
+{ pkgs, ... }: {
+  nix = {
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+  };
+}
+#+end_src
+
+Some common utilities I find myself using all the time as all users on the system:
+
+#+begin_src nix :tangle modules/common/utils.nix
+{ pkgs, ... }:
+{
+  environment.systemPackages = with pkgs; [
+    htop
+    curl
+    wget
+    fd
+    inetutils  # for telnet
+    lsof
+    dig
+    nftables
+    unzip
+    tcpdump
+    jq
+  ];
+}
+#+end_src
+
+**** TODO Check if flakes.nix is still necessary post 22.11 :chore:
+
+**** User configuration
+
+#+begin_src nix :tangle modules/common/user.nix
+{ pkgs, ... }:
+
+{
+  users.users.spacecadet = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "lp" ];
+    shell = pkgs.zsh;
+  };
+  home-manager.users.spacecadet = { pkgs, ... }: {
+    home.packages = with pkgs; [
+      ncspot
+      pavucontrol
+      blueman
+      zathura
+      libreoffice
+      firefox
+      brave
+      gthumb
+      nextcloud-client
+      pass
+      (pass.withExtensions (ext: [ ext.pass-otp ]))
+    ];
+    programs.browserpass.enable = true;
+    home.file.".icons/default".source = "${pkgs.vanilla-dmz}/share/icons/Vanilla-DMZ";
+  };
+}
+#+end_src
+
+**** Font configuration
+
+#+begin_src nix :tangle modules/common/fonts.nix
+{ pkgs, ... }:
+
+{
+  fonts = {
+    fonts = with pkgs; [
+      (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+      roboto
+      twitter-color-emoji
+      font-awesome
+    ];
+    fontconfig = {
+      defaultFonts = {
+        monospace = [ "JetBrainsMono Nerd Font" ];
+        sansSerif = [ "Roboto" ];
+        serif     = [ "Roboto" ];
+        emoji     = [ "Twitter Color Emoji" ];
+      };
+    };
+  };
+}
+#+end_src
+
+*** Applications
+**** Common
+
+#+begin_src nix :tangle modules/applications/default.nix
+{ ... }:
+
+{
+  imports = [
+    ./firejail.nix
+    ./flatpatk.nix
+    ./media.nix
+    ./zathura.nix
+  ];
+}
+
+#+end_src
+**** Firejail
+#+begin_src nix :tangle modules/applications/firejail.nix
+{ pkgs, lib, ... }:
+
+{
+  programs.firejail.enable = true;
+  programs.firejail.wrappedBinaries = {
+    thunderbird = {
+      executable = "${lib.getBin pkgs.thunderbird}/bin/thunderbird";
+      profile = "${pkgs.firejail}/etc/firejail/thunderbird.profile";
+    };
+    telegram-desktop = {
+      executable = "${lib.getBin pkgs.tdesktop}/bin/telegram-desktop";
+      profile = "${pkgs.firejail}/etc/firejail/telegram.profile";
+    };
+  };
+  # Firejail-specific desktop shortcuts
+  home-manager.users.spacecadet = { pkgs, ... }: {
+    xdg.desktopEntries = {
+      thunderbird = {
+        # Taken from Thunderbird v 91.5.0
+        name = "Thunderbird";
+        comment = "🦊Firejailed";
+        genericName = "Mail Client";
+        exec = "thunderbird %U";
+        icon = "thunderbird";
+        terminal = false;
+        mimeType = [ "text/html" "text/xml" "application/xhtml+xml" "application/vnd.mozilla.xul+xml" "x-scheme-handler/http" "x-scheme-handler/https" "x-scheme-handler/ftp" ];
+      };
+      telegram = {
+        # Taken from Telegram v 3.1.11
+        name = "Telegram";
+        comment = "🦊Firejailed";
+        exec = "telegram-desktop -- %u";
+        icon = "telegram";
+        terminal = false;
+        mimeType = [ "x-scheme-handler/tg" ];
+      };
+    };
+  };
+}
+#+end_src
+
+***** TODO Fix the icons :fix:
+**** Flatpak
+
+#+begin_src nix :tangle modules/applications/flatpak.nix
+{ ... }:
+
+{
+  services.flatpak.enable = true;
+  xdg.portal.enable = true;
+}
+
+#+end_src
+**** Media
+#+begin_src nix :tangle modules/applications/media.nix
+{ pkgs, ... }:
+
+{
+  environment.systemPackages = with pkgs; [
+    # Video
+    yt-dlp mpv
+  ];
+  # Configuration files
+  environment.etc = {
+    # judging by strace, mpv on NixOS expects it in etc.
+    "mpv/mpv.conf".text = ''
+      hwdec
+      save-position-on-quit
+    '';
+    "mpv/input.conf".text = ''
+      WHEEL_UP add volume 5
+      # mouse wheel for sound control
+      WHEEL_DOWN add volume -5
+    '';
+  };
+}
+#+end_src
+**** Zathura
+#+begin_src nix :tangle modules/applications/zathura.nix
+{ ... }:
+
+{
+  # Allows zathura to use system clipboard
+  environment.etc."zathurarc".text = ''
+    set selection-clipboard clipboard
+  '';
+}
+#+end_src
+***** TODO review if still needed this way or programs.zathura became available
+
+
+*** Development -- for development purposes
+
+**** Default
+
+By default, only editor and git should be imported. The rest of the configs are imported on per-host basis.
+
+#+begin_src nix :tangle modules/development/default.nix
+{ ... }:
+
+{
+  imports = [
+    ./editor.nix
+    ./git.nix
+  ];
+}
+#+end_src
+**** Git config
+First, the git config
+
+#+begin_src nix :tangle modules/development/git.nix
+{ pkgs, ... }:
+{
+  environment.systemPackages = with pkgs; [
+    git
+    lazygit
+    git-crypt
+  ];
+  programs.git = {
+    enable = true;
+    config = {
+      user = {
+        name = "Vladimir Timofeenko";
+        email = "id@vtimofeenko.com";
+      };
+      alias = {
+        ci = "commit";
+        st = "status";
+        co = "checkout";
+        rv = "remote --verbose"
+          unstage = "reset HEAD --";
+      };
+      url = {
+        "https://github.com/" = {
+          insteadOf = [
+            "gh:"
+            "github:"
+          ];
+        };
+      };
+    };
+  };
+}
+#+end_src
+
+***** TODO lazygit colors
+
+**** Console editor
+
+I generally use emacs, but when in console - I use a build of neovim that's provided as an input:
+
+#+begin_src nix :tangle modules/development/editor.nix
+{ pkgs, config, ... }:
+
+{
+  environment.systemPackages = [ pkgs.my_nvim ];
+  environment.variables.SUDO_EDITOR = "nvim";
+  environment.variables.EDITOR = "nvim";
+}
+#+end_src
+
+**** Virtualization
+I occasionally need full blown VMs to emulate stuff:
+
+#+begin_src nix :tangle modules/development/virtualization.nix
+{ pkgs, ... }:
+
+{
+  virtualisation.libvirtd.enable = true;
+  programs.dconf.enable = true;
+  environment.systemPackages = with pkgs; [ virt-manager ];
+  users.users.spacecadet.extraGroups = [ "libvirtd" ];
+}
+#+end_src
+
+**** Cross compilation
+
+#+begin_src nix :tangle modules/development/cross-compile.nix
+{ ... }:
+{
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+}
+#+end_src
+
+*** Hardware -- specific hardware modules support/config
+**** Scanner
+
+#+begin_src nix :tangle modules/hardware/scanner.nix
+{ pkgs, ... }:
+
+{
+  hardware.sane.enable = true;
+  hardware.sane.extraBackends = [ pkgs.hplipWithPlugin ];
+  users.users.spacecadet.extraGroups = [ "scanner" ];
+}
+#+end_src
+**** Printer
+
+#+begin_src nix :tangle modules/hardware/printer.nix
+{ pkgs, ... }:
+{
+  services.printing.enable = true;
+  services.printing.drivers = [ pkgs.hplipWithPlugin ];
+}
+#+end_src
+**** Dygma
+
+#+begin_src nix :tangle modules/hardware/dygma.nix
+{ lib, pkgs, ... }:
+
+{
+  # Taken from https://github.com/Dygmalab/Bazecor/blob/159eed1d37f3fd1fbf5c17023c12bb683b778281/src/main/index.js#L223
+  services.udev.extraRules = ''
+    SUBSYSTEMS=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="2201", GROUP="users", MODE="0666"
+    SUBSYSTEMS=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="2200", GROUP="users", MODE="0666"
+  '';
+}
+#+end_src
+***** TODO Add the configurator utility - either firejailed appimage or flatpak
+
+*** Security
+
+
+*** Network -- reusable network configurations
+
+Common network settings:
+
+#+begin_src nix :tangle modules/network/common_lan.nix
+{ hosts, ...  }:
+let
+  infra = lib.importTOML <hosts>/infra.toml;
+  inherit (infra.network) lan;
+in
+{
+  networking.enableIPv6 = false;
+  networking.nameservers = lan.dns_servers;
+}
+#+end_src
+
+#+begin_src nix :tangle modules/network/lan-wifi.nix
+{ config, lib, hosts, private-config, ... }:
+let
+  infra = lib.importTOML <hosts>/infra.toml;
+  inherit (infra.network) lan;
+  local_address = lan.first_octets + "." + lan."${config.networking.hostName}".ip;
+in
+{
+  imports = [
+    private-config.nixosModules.home-wireless-fast-client;
+    # NOTE: should be kept commented until I need it
+    # private-config.nixosModules.phone-shared-network
+  ];
+  networking.interfaces.wlp170s0 = {
+    useDHCP = false;
+    ipv4.addresses = [
+      {
+        address = local_address;
+        prefixLength = lan.prefix;
+      }
+    ];
+  };
+}
+#+end_src
+
+** Hosts
+
+*** Uranium
+
+This is an 11th gen Frame.work laptop.
+
+**** Modules
+
+***** Default
+#+begin_src nix :tangle hosts/uranium/default.nix
+{ config, pkgs, ... }:
+
+{
+  imports = [
+    ./frame.work.nix
+  ];
+  # Use the systemd-boot EFI boot loader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.tmpOnTmpfs = true;
+  boot.tmpOnTmpfsSize = "8G";
+  # Modules I want to ensure are there
+  boot.initrd.availableKernelModules = [ "thunderbolt" "nvme" "usb_storage" "uas" ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ "kvm-intel" "coretemp" ];
+  boot.extraModulePackages = [ ];
+  # Frame.work needs latest kernel for BT and Wi-Fi to work.
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  networking.hostName = "uranium";
+  networking.useDHCP = false;
+
+  fileSystems."/" =
+    {
+      device = "/dev/disk/by-uuid/cbaf293c-c8dc-4586-ba65-73cff3f24468";
+      fsType = "ext4";
+    };
+  boot.initrd.luks.gpgSupport = true;
+
+  boot.initrd.luks.devices."luks".device = "/dev/disk/by-uuid/c2e5cd09-b5d7-42cb-a78a-f549edfa0eb4";
+
+  fileSystems."/boot" =
+    {
+      device = "/dev/disk/by-uuid/028E-BC0A";
+      fsType = "vfat";
+    };
+
+  swapDevices = [ ];
+
+  # This node was created in 21.11 days
+  system.stateVersion = "21.11";
+
+  # For brightness control
+  users.users.spacecadet.extraGroups = [ "video" ];
+  # bluetooth
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
+  # pipewire config, from https://nixos.wiki/wiki/PipeWire
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+
+    # use the example session manager (no others are packaged yet so this is enabled by default,
+    # no need to redefine it in your config for now)
+    #media-session.enable = true;
+    media-session.config.bluez-monitor.rules = [
+      {
+        # Matches all cards
+        matches = [{ "device.name" = "~bluez_card.*"; }];
+        actions = {
+          "update-props" = {
+            "bluez5.reconnect-profiles" = [ "hfp_hf" "hsp_hs" "a2dp_sink" ];
+            # mSBC is not expected to work on all headset + adapter combinations.
+            "bluez5.msbc-support" = true;
+            # SBC-XQ is not expected to work on all headset + adapter combinations.
+            "bluez5.sbc-xq-support" = true;
+          };
+        };
+      }
+      {
+        matches = [
+          # Matches all sources
+          { "node.name" = "~bluez_input.*"; }
+          # Matches all outputs
+          { "node.name" = "~bluez_output.*"; }
+        ];
+        actions = {
+          "node.pause-on-idle" = false;
+        };
+      }
+    ];
+  };
+  # battery management
+  powerManagement = {
+    enable = true;
+    powertop.enable = true;
+    cpuFreqGovernor = lib.mkDefault "powersave";
+  };
+  services.tlp.enable = true;
+  # temperature management
+  services.thermald.enable = true;
+  environment.etc."sysconfig/lm_sensors".text = ''
+    # Generated by sensors-detect on Mon Jan  3 23:34:14 2022
+    # This file is sourced by /etc/init.d/lm_sensors and defines the modules to
+    # be loaded/unloaded.
+    #
+    # The format of this file is a shell script that simply defines variables:
+    # HWMON_MODULES for hardware monitoring driver modules, and optionally
+    # BUS_MODULES for any required bus driver module (for example for I2C or SPI).
+
+    HWMON_MODULES="coretemp"
+  '';
+  # Instead of archwiki, frame.work forums recommend this with s2idle
+
+  # Hardware acceleration
+  # Taken from https://nixos.wiki/wiki/Accelerated_Video_Playback
+  nixpkgs.config.packageOverrides = pkgs: {
+    vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+  };
+  hardware.opengl = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver # LIBVA_DRIVER_NAME=iHD
+      vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+      vaapiVdpau
+      libvdpau-va-gl
+    ];
+  };
+}
+#+end_src
+
+***** Frame.work
+
+The hardware configuration that was taken from nixos-hardware and slightly tweaked. I am not using deep sleep on this machine as it's very often plugged into the AC power.
+
+#+begin_src nix :tangle hosts/uranium/frame.work.nix
+{ lib, pkgs, nixos-hardware, ... }:
+
+{
+  imports = [
+    <nixos-hardware/common/cpu/intel>
+    <nixos-hardware/common/pc/laptop>
+    <nixos-hardware/common/pc/laptop/ssd>
+  ];
+  # high-resolution display
+  hardware.video.hidpi.enable = lib.mkDefault true;
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    boot.kernelParams = [
+    # For Power consumption
+    # https://kvark.github.io/linux/framework/2021/10/17/framework-nixos.html
+
+    # "mem_sleep_default=deep"
+    # For Power consumption
+    # https://community.frame.work/t/linux-battery-life-tuning/6665/156
+    "nvme.noacpi=1"
+  ];
+
+
+  # Fix TRRS headphones missing a mic
+  # https://community.frame.work/t/headset-microphone-on-linux/12387/3
+  boot.extraModprobeConfig = ''
+    options snd-hda-intel model=dell-headset-multi
+  '';
+
+  # For fingerprint support
+  /* services.fprintd.enable = lib.mkDefault true; */
+
+  # Custom udev rules
+  services.udev.extraRules = ''
+    # Fix headphone noise when on powersave
+    # https://community.frame.work/t/headphone-jack-intermittent-noise/5246/55
+    SUBSYSTEM=="pci", ATTR{vendor}=="0x8086", ATTR{device}=="0xa0e0", ATTR{power/control}="on"
+    # Ethernet expansion card support
+    ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0bda", ATTR{idProduct}=="8156", ATTR{power/autosuspend}="20"
+  '';
+
+  # Mis-detected by nixos-generate-config
+  # https://github.com/NixOS/nixpkgs/issues/171093
+  # https://wiki.archlinux.org/title/Framework_Laptop#Changing_the_brightness_of_the_monitor_does_not_work
+  hardware.acpilight.enable = lib.mkDefault true;
+
+  # Needed for desktop environments to detect/manage display brightness
+  hardware.sensor.iio.enable = lib.mkDefault true;
+
+  # HiDPI
+  # Leaving here for documentation
+  # hardware.video.hidpi.enable = lib.mkDefault true;
+
+  # Fix font sizes in X
+  # services.xserver.dpi = 200;
+
+}
+#+end_src
+
+***** TODO Break up the default.nix module into smaller pieces - it's too long :chore:
+
+**** Flake config
+
+#+begin_src nix :tangle flake.nix
+    uranium = nixpkgs.lib.nixosSystem {
+      inherit pkgs system;
+      modules = mkMyModules [
+        ./hosts/uranium
+        private-config.nixosModules.management-network-control-node
+        private-config.nixosModules.wg-namespace-config
+      ];
+    };
+  };
+#+end_src
+
+***** TODO [#A] Review the flake :chore:
+
+**** TODO fwupd enable :feat:
+
+See [[https://fwupd.org/lvfs/devices/work.frame.Laptop.TGL.BIOS.firmware][this link]]
+
+**** TODO [#A] wireless rename to generic so that the module can be reused
+
+#+begin_example
+  # Rename adapter to human-readable
+  services.udev.extraRules = ''
+    KERNEL=="wlan*", ATTR{address}=="00:00:00:00:00:00", NAME="wireless"
+  '';
+#+end_example
+
+** TODO Create check attribute to run checks before nixos-rebuild switches :feat:
+
+
+* Outro :noexport:
+
+Boring technical stuff
+
+#+begin_src nix :tangle flake.nix
+  };
+}
+#+end_src
+
+* Meta :noexport:
+** TODO Hugo publish :chore:
+
+;; eval: (add-hook 'after-save-hook 'org-hugo-export-to-md t t)
+** TODO Check all packages that are installed through system.environmentPackages - maybe move them to the user :chore:
+** TODO Move to nix flake format to save time on tangling :chore:
+** Literate setup
+
+A few scripts to be automatically run:
+
+- When the file is saved - tangle all code blocks
+- For all tangled .nix files - run ~nixpkgs-fmt~ on them to format the code
+
+;; Local Variables:
+;; eval: (add-hook 'after-save-hook (lambda ()(org-babel-tangle)) nil t)
+;; eval: (defun nixpkgs-fmt-on-tangle() (when (string-suffix-p ".nix" (buffer-file-name)) (shell-command (format "nixpkgs-fmt %s" (buffer-file-name)))))
+;; eval: (add-hook 'org-babel-post-tangle-hook 'nixpkgs-fmt-on-tangle)
+;; End:
