@@ -143,6 +143,10 @@
       ] ++ with private-config.nixosModules;
       [
       sudo
+
+        # Network
+        ./modules/network/common_lan.nix;
+        ./modules/network/lan-wifi.nix;
         smartcard
         user-ssh-config
         syncthing

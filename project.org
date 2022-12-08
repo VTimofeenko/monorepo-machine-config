@@ -200,6 +200,9 @@ let
     ./modules/development/cross-compile.nix
     ./modules/development/virtualization.nix
   ] ++ with private-config.nixosModules; [
+    # Network
+    ./modules/network/common_lan.nix;
+    ./modules/network/lan-wifi.nix;
     sudo
     smartcard
     user-ssh-config
