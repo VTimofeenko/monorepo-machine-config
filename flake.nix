@@ -70,6 +70,7 @@
     , vt-colors
     , vt-zsh
     , vt-nvim-flake
+    , private-config
     , lynis-flake
     , vt-sway
     , ...
