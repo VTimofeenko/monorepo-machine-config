@@ -2,9 +2,9 @@
 
 {
   imports = [
-    <nixos-hardware/common/cpu/intel>
-    <nixos-hardware/common/pc/laptop>
-    <nixos-hardware/common/pc/laptop/ssd>
+    nixos-hardware.nixosModules.common-cpu-intel
+    nixos-hardware.nixosModules.common-pc-laptop
+    nixos-hardware.nixosModules.common-pc-laptop-ssd
   ];
   # high-resolution display
   hardware.video.hidpi.enable = lib.mkDefault true;
