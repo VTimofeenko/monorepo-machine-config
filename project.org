@@ -361,7 +361,7 @@ Some common utilities I find myself using all the time as all users on the syste
 {
   imports = [
     ./firejail.nix
-    ./flatpatk.nix
+    ./flatpak.nix
     ./media.nix
     ./zathura.nix
   ];

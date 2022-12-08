@@ -3,7 +3,7 @@
 {
   imports = [
     ./firejail.nix
-    ./flatpatk.nix
+    ./flatpak.nix
     ./media.nix
     ./zathura.nix
   ];
