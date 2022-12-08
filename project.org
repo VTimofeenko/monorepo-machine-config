@@ -783,9 +783,9 @@ The hardware configuration that was taken from nixos-hardware and slightly tweak
 
 {
   imports = [
-    nixos-hardware.nixosModules.common-cpu-intel
-    nixos-hardware.nixosModules.common-pc-laptop
-    nixos-hardware.nixosModules.common-pc-laptop-ssd
+    # nixos-hardware.nixosModules.common-cpu-intel
+    # nixos-hardware.nixosModules.common-pc-laptop
+    # nixos-hardware.nixosModules.common-pc-laptop-ssd
   ];
   # high-resolution display
   hardware.video.hidpi.enable = lib.mkDefault true;
@@ -836,6 +836,8 @@ The hardware configuration that was taken from nixos-hardware and slightly tweak
 
 }
 #+end_src
+
+****** TODO Figure out why nixos-hardware imports trigger infinite recursion :fix:
 
 ***** TODO Break up the default.nix module into smaller pieces - it's too long :chore:
 
