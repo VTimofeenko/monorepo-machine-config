@@ -99,7 +99,7 @@
           my_colors.enable = true;
         }
         inputs.my_tmux.nixosModule
-        vt-zsh.nixosModule
+        vt-zsh.nixosModules.default
         {
           my_zsh.starship_enable = true;
           my_zsh.direnv_enable = true;
