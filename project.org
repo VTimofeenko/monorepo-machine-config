@@ -779,7 +779,7 @@ This is an 11th gen Frame.work laptop.
 The hardware configuration that was taken from nixos-hardware and slightly tweaked. I am not using deep sleep on this machine as it's very often plugged into the AC power.
 
 #+begin_src nix :tangle hosts/uranium/frame.work.nix
-{ lib, pkgs, nixos-hardware, ... }:
+{ config, lib, pkgs, nixos-hardware, ... }:
 
 {
   imports = [
