@@ -140,19 +140,18 @@
         ./modules/development
         ./modules/development/cross-compile.nix
         ./modules/development/virtualization.nix
-      ] ++ with private-config.nixosModules;
-      [
-      sudo
 
         # Network
         ./modules/network/common_lan.nix;
         ./modules/network/lan-wifi.nix;
+      ] ++ (with private-config.nixosModules; [
+        sudo
         smartcard
         user-ssh-config
         syncthing
-        ] ;
-        # Function to keep everything similar
-        mkMyModules = list: list ++ commonModulesFromInputs ++ commonCustomModules;
+      ]);
+      # Function to keep everything similar
+      mkMyModules = list: list ++ commonModulesFromInputs ++ commonCustomModules;
     in
 
     {
