@@ -644,7 +644,7 @@ This is an 11th gen Frame.work laptop.
 
 ***** Default
 #+begin_src nix :tangle hosts/uranium/default.nix
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [
