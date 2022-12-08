@@ -121,4 +121,8 @@
       libvdpau-va-gl
     ];
   };
+  # Rename adapter to human-readable
+  services.udev.extraRules = ''
+    KERNEL=="wlan*", ATTR{address}=="f7:b5:4d:d7:16:53", NAME="wireless"
+  '';
 }

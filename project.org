@@ -767,6 +767,10 @@ This is an 11th gen Frame.work laptop.
       libvdpau-va-gl
     ];
   };
+  # Rename adapter to human-readable
+  services.udev.extraRules = ''
+    KERNEL=="wlan*", ATTR{address}=="f7:b5:4d:d7:16:53", NAME="wireless"
+  '';
 }
 #+end_src
 
@@ -855,13 +859,8 @@ The hardware configuration that was taken from nixos-hardware and slightly tweak
 
 See [[https://fwupd.org/lvfs/devices/work.frame.Laptop.TGL.BIOS.firmware][this link]]
 
-**** TODO [#A] wireless rename to generic so that the module can be reused
 
 #+begin_example
-  # Rename adapter to human-readable
-  services.udev.extraRules = ''
-    KERNEL=="wlan*", ATTR{address}=="00:00:00:00:00:00", NAME="wireless"
-  '';
 #+end_example
 
 ** TODO Create check attribute to run checks before nixos-rebuild switches :feat:
@@ -882,6 +881,7 @@ Boring technical stuff
 ;; eval: (add-hook 'after-save-hook 'org-hugo-export-to-md t t)
 ** TODO Check all packages that are installed through system.environmentPackages - maybe move them to the user :chore:
 ** TODO Move to nix flake format to save time on tangling :chore:
+** TODO [#A] Make `nix flake check` pass :fix:
 ** Literate setup
 
 A few scripts to be automatically run:
