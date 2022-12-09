@@ -134,6 +134,7 @@
           home-manager.users.spacecadet = inputs.my-doom-config.nixosModules.default;
         }
         inputs.wg-namespace-flake.nixosModules.default
+        private-config.nixosModules.commonNodeModule
       ];
 
       commonCustomModules = [
@@ -146,12 +147,7 @@
         # Network
         ./modules/network/common_lan.nix
         ./modules/network/lan-wifi.nix
-      ] ++ (with private-config.nixosModules; [
-        sudo
-        smartcard
-        user-ssh-config
-        syncthing
-      ]);
+      ];
       # Function to keep everything similar
       mkMyModules = list: list ++ commonModulesFromInputs ++ commonCustomModules;
     in
