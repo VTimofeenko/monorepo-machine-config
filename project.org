@@ -287,6 +287,7 @@ Some common utilities I find myself using all the time as all users on the syste
     wget
     fd
     inetutils  # for telnet
+    ripgrep
     lsof
     dig
     nftables

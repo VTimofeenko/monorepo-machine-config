@@ -6,6 +6,7 @@
     wget
     fd
     inetutils # for telnet
+    ripgrep
     lsof
     dig
     nftables
