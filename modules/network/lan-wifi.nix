@@ -6,7 +6,7 @@ let
 in
 {
   imports = [
-    private-config.nixosModules.home-wireless-fast-client;
+    private-config.nixosModules.home-wireless-fast-client
     # NOTE: should be kept commented until I need it
     # private-config.nixosModules.phone-shared-network
   ];
