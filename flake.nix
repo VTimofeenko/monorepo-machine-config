@@ -138,12 +138,12 @@
       ];
 
       commonCustomModules = [
-        ./modules/common
-        ./modules/hardware/dygma.nix
         ./modules/applications
+        ./modules/common
         ./modules/development
         ./modules/development/cross-compile.nix
         ./modules/development/virtualization.nix
+        ./modules/hardware/dygma.nix
 
         # Network
         ./modules/network/common_lan.nix
