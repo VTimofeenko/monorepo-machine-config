@@ -60,6 +60,11 @@
       url = "path:///home/spacecadet/code/wg-namespace-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    infra = {
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git";
+      flake = false;
+    };
   };
 
   outputs =

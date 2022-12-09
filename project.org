@@ -92,6 +92,11 @@ Boring technical stuff
       url = "path:///home/spacecadet/code/wg-namespace-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    infra = {
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git";
+      flake = false;
+    };
   };
 #+end_src
 
@@ -596,10 +601,10 @@ I occasionally need full blown VMs to emulate stuff:
 Common network settings:
 
 #+begin_src nix :tangle modules/network/common_lan.nix
-{ lib, hosts, ...  }:
+{ lib, infra, ...  }:
 let
-  infra = lib.importTOML (hosts + "./infra.toml");
-  inherit (infra.network) lan;
+  infraMetadata = lib.importTOML (infra + "/infra.toml");
+  inherit (infraMetadata.network) lan;
 in
 {
   networking.enableIPv6 = false;
@@ -608,10 +613,10 @@ in
 #+end_src
 
 #+begin_src nix :tangle modules/network/lan-wifi.nix
-{ config, lib, hosts, private-config, ... }:
+{ config, lib, infra, private-config, ... }:
 let
-  infra = lib.importTOML (hosts + "./infra.toml");
-  inherit (infra.network) lan;
+  infraMetadata = lib.importTOML (infra + "/infra.toml");
+  inherit (infraMetadata.network) lan;
   local_address = lan.first_octets + "." + lan."${config.networking.hostName}".ip;
 in
 {

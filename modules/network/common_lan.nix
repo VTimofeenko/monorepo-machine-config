@@ -1,7 +1,7 @@
-{ lib, hosts, ... }:
+{ lib, infra, ... }:
 let
-  infra = lib.importTOML (hosts + "./infra.toml");
-  inherit (infra.network) lan;
+  infraMetadata = lib.importTOML (infra + "/infra.toml");
+  inherit (infraMetadata.network) lan;
 in
 {
   networking.enableIPv6 = false;
