@@ -165,6 +165,10 @@
             private-config.nixosModules.management-network-control-node
             private-config.nixosModules.wg-namespace-config
           ];
+          # NOTE:
+          # This makes the inputs propagate into the modules and allows modules to refer to the inputs
+          # See network configuration as an example
+          specialArgs = inputs;
         };
       };
 
