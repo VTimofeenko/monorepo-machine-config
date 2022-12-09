@@ -8,6 +8,8 @@
   ];
   # high-resolution display
   hardware.video.hidpi.enable = lib.mkDefault true;
+  # NOTE: required for wifi to work
+  hardware.enableRedistributableFirmware = true;
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   boot.kernelParams = [
     # For Power consumption
