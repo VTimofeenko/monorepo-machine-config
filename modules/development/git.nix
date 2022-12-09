@@ -16,8 +16,8 @@
         ci = "commit";
         st = "status";
         co = "checkout";
-        rv = "remote --verbose"
-          unstage = "reset HEAD --";
+        rv = "remote --verbose";
+        unstage = "reset HEAD --";
       };
       url = {
         "https://github.com/" = {
