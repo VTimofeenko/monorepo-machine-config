@@ -122,12 +122,11 @@
     ];
   };
   # Rename adapter to human-readable
-  services.udev.extraRules = ''
-    KERNEL=="wlan*", ATTR{address}=="f7:b5:4d:d7:16:53", NAME="wireless"
-  '';
-  boot.initrd.services.udev.rules = ''
-    SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", \
-    ATTR{address}=="f7:b5:4d:d7:16:53", KERNEL=="wlan*", NAME="wireless"
-  '';
-
+  # services.udev.extraRules = ''
+  #   KERNEL=="wlan*", ATTR{address}=="f7:b5:4d:d7:16:53", NAME="wireless"
+  # '';
+  # boot.initrd.services.udev.rules = ''
+  #   SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", \
+  #   ATTR{address}=="f7:b5:4d:d7:16:53", KERNEL=="wlan*", NAME="wireless"
+  # '';
 }
