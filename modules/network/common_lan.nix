@@ -1,4 +1,4 @@
-{ hosts, ... }:
+{ lib, hosts, ... }:
 let
   infra = lib.importTOML <hosts> /infra.toml;
   inherit (infra.network) lan;

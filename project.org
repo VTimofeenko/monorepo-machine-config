@@ -598,7 +598,7 @@ I occasionally need full blown VMs to emulate stuff:
 Common network settings:
 
 #+begin_src nix :tangle modules/network/common_lan.nix
-{ hosts, ...  }:
+{ lib, hosts, ...  }:
 let
   infra = lib.importTOML <hosts>/infra.toml;
   inherit (infra.network) lan;
