@@ -138,6 +138,7 @@
       ];
 
       commonCustomModules = [
+        ./modules/common
         ./modules/hardware/dygma.nix
         ./modules/applications
         ./modules/development
