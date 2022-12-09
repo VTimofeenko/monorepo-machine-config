@@ -127,6 +127,7 @@
           # error: cannot look up '<nixpkgs>' in pure evaluation mode
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
+          home-manager.users.spacecadet.home.stateVersion = "22.05";
         }
         # My emacs module
         {
