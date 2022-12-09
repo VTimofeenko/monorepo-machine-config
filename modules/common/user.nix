@@ -17,10 +17,12 @@
       brave
       gthumb
       nextcloud-client
-      pass
-      (pass.withExtensions (ext: [ ext.pass-otp ]))
     ];
     programs.browserpass.enable = true;
+    programs.password-store = {
+      enable = true;
+      package = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
+    };
     home.file.".icons/default".source = "${pkgs.vanilla-dmz}/share/icons/Vanilla-DMZ";
   };
 }
