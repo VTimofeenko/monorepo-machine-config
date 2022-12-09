@@ -1,6 +1,6 @@
 { config, lib, hosts, private-config, ... }:
 let
-  infra = lib.importTOML <hosts> /infra.toml;
+  infra = lib.importTOML (hosts + "./infra.toml");
   inherit (infra.network) lan;
   local_address = lan.first_octets + "." + lan."${config.networking.hostName}".ip;
 in
