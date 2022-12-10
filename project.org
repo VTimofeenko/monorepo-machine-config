@@ -100,7 +100,8 @@ Boring technical stuff
   };
 #+end_src
 
-*** TODO Consider dropping nixos-hardware and merging everything here by hand :chore:
+*** CNCL Consider dropping nixos-hardware and merging everything here by hand :chore:
+CLOSED: [2022-12-09 Fri 17:25]
 
 *** TODO Make sure all inputs of base16 are tracking other inputs :chore:
 
@@ -795,9 +796,9 @@ The hardware configuration that was taken from nixos-hardware and slightly tweak
 
 {
   imports = [
-    # nixos-hardware.nixosModules.common-cpu-intel
-    # nixos-hardware.nixosModules.common-pc-laptop
-    # nixos-hardware.nixosModules.common-pc-laptop-ssd
+    nixos-hardware.nixosModules.common-cpu-intel
+    nixos-hardware.nixosModules.common-pc-laptop
+    nixos-hardware.nixosModules.common-pc-laptop-ssd
   ];
   # high-resolution display
   hardware.video.hidpi.enable = lib.mkDefault true;
@@ -851,7 +852,8 @@ The hardware configuration that was taken from nixos-hardware and slightly tweak
 }
 #+end_src
 
-****** TODO Figure out why nixos-hardware imports trigger infinite recursion :fix:
+****** DONE Figure out why nixos-hardware imports trigger infinite recursion :fix:
+CLOSED: [2022-12-09 Fri 17:26]
 
 ***** TODO Break up the default.nix module into smaller pieces - it's too long :chore:
 
