@@ -903,7 +903,10 @@ Boring technical stuff
 ;; eval: (add-hook 'after-save-hook 'org-hugo-export-to-md t t)
 ** TODO Check all packages that are installed through system.environmentPackages - maybe move them to the user :chore:
 ** TODO Move to nix flake format to save time on tangling :chore:
-** TODO [#A] Make `nix flake check` pass :fix:
+** DONE [#A] Make `nix flake check` pass :fix:
+CLOSED: [2022-12-09 Fri 17:27]
+** TODO Consider merging zsh and tmux here :feat:
+That way I could reuse the configs on other machines
 ** Literate setup
 
 A few scripts to be automatically run:
