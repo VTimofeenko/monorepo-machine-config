@@ -523,7 +523,7 @@
       "locked": {
         "lastModified": 1670545367,
         "narHash": "sha256-X16muAC0I/pbTm6uSX3L2GLmZMUNFZNGFpntzCQozGo=",
-        "ref": "master",
+        "ref": "refs/heads/master",
         "rev": "1f14ad068155886a47ee6fc98b38b305cc5194ae",
         "revCount": 56,
         "type": "git",
@@ -573,7 +573,7 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1670367081,
+        "lastModified": 1670609756,
         "narHash": "sha256-ZIjvNYE5pvBMz048qNPd6pN8dI98N9z/gERgoXzNNmE=",
         "path": "/home/spacecadet/code/doom-config",
         "type": "path"
@@ -973,11 +973,11 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1670461440,
-        "narHash": "sha256-jy1LB8HOMKGJEGXgzFRLDU1CBGL0/LlkolgnqIsF0D8=",
+        "lastModified": 1670772952,
+        "narHash": "sha256-b7V3cGtMNcQ5c6hwRqqX+eIuNUj+O3orsb64BKPR9yc=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "04a75b2eecc0acf6239acf9dd04485ff8d14f425",
+        "rev": "dfef2e61107dc19c211ead99a5a61374ad8317f4",
         "type": "github"
       },
       "original": {
