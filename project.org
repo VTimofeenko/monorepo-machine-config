@@ -875,7 +875,7 @@ CLOSED: [2022-12-09 Fri 17:26]
   };
 #+end_src
 
-***** TODO [#A] Review the flake :chore:
+***** DONE [#A] Review the flake :chore:
 CLOSED: [2022-12-12 Mon 19:21]
 
 **** TODO fwupd enable :feat:
@@ -910,7 +910,8 @@ Boring technical stuff
 
 ;; eval: (add-hook 'after-save-hook 'org-hugo-export-to-md t t)
 ** TODO Check all packages that are installed through system.environmentPackages - maybe move them to the user :chore:
-** TODO Move to nix flake format to save time on tangling :chore:
+** DONE Move to nix flake format to save time on tangling :chore:
+CLOSED: [2022-12-12 Mon 19:37]
 ** DONE [#A] Make `nix flake check` pass :fix:
 CLOSED: [2022-12-09 Fri 17:27]
 ** TODO Consider merging zsh and tmux here :feat:
