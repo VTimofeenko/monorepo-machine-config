@@ -876,6 +876,7 @@ CLOSED: [2022-12-09 Fri 17:26]
 #+end_src
 
 ***** TODO [#A] Review the flake :chore:
+CLOSED: [2022-12-12 Mon 19:21]
 
 **** TODO fwupd enable :feat:
 
@@ -884,6 +885,13 @@ See [[https://fwupd.org/lvfs/devices/work.frame.Laptop.TGL.BIOS.firmware][this l
 
 #+begin_example
 #+end_example
+
+** Formatter
+I prefer nixpkgs-fmt formatter. Using ~formatter~ output, one can be specified in the flake itself:
+
+#+begin_src nix :tangle flake.nix
+    formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
+#+end_src
 
 ** TODO Create check attribute to run checks before nixos-rebuild switches :feat:
 
@@ -907,15 +915,15 @@ Boring technical stuff
 CLOSED: [2022-12-09 Fri 17:27]
 ** TODO Consider merging zsh and tmux here :feat:
 That way I could reuse the configs on other machines
+
 ** Literate setup
 
 A few scripts to be automatically run:
 
-- When the file is saved - tangle all code blocks
-- For all tangled .nix files - run ~nixpkgs-fmt~ on them to format the code
+- Before the file is saved - tangle all code blocks
+- After file is saved - run ~nix fmt~ once
 
 ;; Local Variables:
-;; eval: (add-hook 'after-save-hook (lambda ()(org-babel-tangle)) nil t)
-;; eval: (defun nixpkgs-fmt-on-tangle() (when (string-suffix-p ".nix" (buffer-file-name)) (shell-command (format "nixpkgs-fmt %s" (buffer-file-name)))))
-;; eval: (add-hook 'org-babel-post-tangle-hook 'nixpkgs-fmt-on-tangle)
+;; eval: (add-hook 'before-save-hook (lambda ()(org-babel-tangle)) nil t)
+;; eval: (add-hook 'after-save-hook (lambda ()(shell-command "nix fmt")) nil t)
 ;; End:
