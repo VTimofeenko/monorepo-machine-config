@@ -42,6 +42,7 @@ Boring technical stuff
     # Theming and stuff
     base16 = {
       url = "github:SenchoPens/base16.nix";
+      # One input only
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -103,7 +104,8 @@ Boring technical stuff
 *** CNCL Consider dropping nixos-hardware and merging everything here by hand :chore:
 CLOSED: [2022-12-09 Fri 17:25]
 
-*** TODO Make sure all inputs of base16 are tracking other inputs :chore:
+*** DONE Make sure all inputs of base16 are tracking other inputs :chore:
+CLOSED: [2022-12-12 Mon 19:39]
 
 *** TODO Unify naming scheme (some inputs are called "my-", others - "vt-") :chore:
 
