@@ -71,7 +71,6 @@ Boring technical stuff
       };
     };
 
-    vt-colors.url = "path:/home/spacecadet/Documents/projects/vt-colors";
     my-nvim-flake.url = "path:/home/spacecadet/code/nvim-flake";
 
     lynis-flake = {
@@ -110,7 +109,8 @@ CLOSED: [2022-12-12 Mon 19:39]
 *** DONE Unify naming scheme (some inputs are called "my-", others - "vt-") :chore:
 CLOSED: [2022-12-12 Mon 19:43]
 
-*** TODO Evaluate vt-colors input :to_think:
+*** DONE Evaluate vt-colors input :to_think:
+CLOSED: [2022-12-12 Mon 19:45]
 
 *** TODO Review lynis-flake :to_think:
 
@@ -131,7 +131,6 @@ outputs = inputs@{ nixpkgs
                  , nixos-hardware
                  , home-manager
                  , agenix
-                 , vt-colors
                  , my-zsh
                  , my-nvim-flake
                  , private-config
@@ -161,11 +160,6 @@ let
     # Enable secrets management
     agenix.nixosModule
     home-manager.nixosModules.home-manager
-    # TODO: check if needed
-    vt-colors.nixosModule
-    {
-      my_colors.enable = true;
-    }
     inputs.my-tmux.nixosModule
     my-zsh.nixosModules.default
     {

@@ -39,7 +39,6 @@
       };
     };
 
-    vt-colors.url = "path:/home/spacecadet/Documents/projects/vt-colors";
     my-nvim-flake.url = "path:/home/spacecadet/code/nvim-flake";
 
     lynis-flake = {
@@ -73,7 +72,6 @@
     , nixos-hardware
     , home-manager
     , agenix
-    , vt-colors
     , my-zsh
     , my-nvim-flake
     , private-config
@@ -99,11 +97,6 @@
         # Enable secrets management
         agenix.nixosModule
         home-manager.nixosModules.home-manager
-        # TODO: check if needed
-        vt-colors.nixosModule
-        {
-          my_colors.enable = true;
-        }
         inputs.my-tmux.nixosModule
         my-zsh.nixosModules.default
         {

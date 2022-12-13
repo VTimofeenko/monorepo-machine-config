@@ -1403,7 +1403,6 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_11",
         "private-config": "private-config",
-        "vt-colors": "vt-colors",
         "wg-namespace-flake": "wg-namespace-flake"
       }
     },
@@ -1547,18 +1546,6 @@
         "owner": "numtide",
         "repo": "flake-utils",
         "type": "github"
-      }
-    },
-    "vt-colors": {
-      "locked": {
-        "lastModified": 1649031819,
-        "narHash": "sha256-pDRx6NkD9qW8FY/AHzk3SaRktqre0rzCgqY603LtBhc=",
-        "path": "/home/spacecadet/Documents/projects/vt-colors",
-        "type": "path"
-      },
-      "original": {
-        "path": "/home/spacecadet/Documents/projects/vt-colors",
-        "type": "path"
       }
     },
     "wg-namespace-flake": {
