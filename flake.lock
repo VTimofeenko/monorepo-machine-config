@@ -7,7 +7,7 @@
         "neovim": "neovim",
         "nix-bundler": "nix-bundler",
         "nix-utils": "nix-utils",
-        "nixpkgs": "nixpkgs_6",
+        "nixpkgs": "nixpkgs_5",
         "nvim-cmp": "nvim-cmp",
         "nvim-cmp-lsp": "nvim-cmp-lsp",
         "rnix-lsp": "rnix-lsp",
@@ -484,7 +484,7 @@
     },
     "home-manager_2": {
       "inputs": {
-        "nixpkgs": "nixpkgs_7"
+        "nixpkgs": "nixpkgs_6"
       },
       "locked": {
         "lastModified": 1649642044,
@@ -501,7 +501,7 @@
     },
     "home-manager_3": {
       "inputs": {
-        "nixpkgs": "nixpkgs_9"
+        "nixpkgs": "nixpkgs_8"
       },
       "locked": {
         "lastModified": 1667907331,
@@ -583,7 +583,65 @@
         "type": "path"
       }
     },
-    "my_tmux": {
+    "my-nvim-flake": {
+      "inputs": {
+        "DSL": "DSL",
+        "bullets-vim": "bullets-vim",
+        "cmp-buffer": "cmp-buffer_2",
+        "cmp-nvim-lsp": "cmp-nvim-lsp",
+        "flake-utils": "flake-utils_4",
+        "home-manager": "home-manager_2",
+        "neovim": "neovim_2",
+        "night-owl-vim": "night-owl-vim",
+        "nix2vim": "nix2vim",
+        "nixpkgs": "nixpkgs_7",
+        "nvim-cmp": "nvim-cmp_2",
+        "nvim-orgmode-src": "nvim-orgmode-src",
+        "redact-pass-unwrapped": "redact-pass-unwrapped",
+        "rnix-lsp": "rnix-lsp_2",
+        "telescope-src": "telescope-src_2"
+      },
+      "locked": {
+        "lastModified": 1651038561,
+        "narHash": "sha256-aqN6T/daRByX7Cz8U20E001qOkb9MBUt3Mwl2ejVi2Y=",
+        "path": "/home/spacecadet/code/nvim-flake",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/spacecadet/code/nvim-flake",
+        "type": "path"
+      }
+    },
+    "my-sway-config": {
+      "inputs": {
+        "base16": [
+          "base16"
+        ],
+        "base16-mako": "base16-mako",
+        "base16-waybar": "base16-waybar",
+        "color-scheme": [
+          "color_scheme"
+        ],
+        "home-manager": "home-manager_3",
+        "nixpkgs": "nixpkgs_9",
+        "xremap-flake": "xremap-flake"
+      },
+      "locked": {
+        "lastModified": 1670618048,
+        "narHash": "sha256-c5sh1f6avARPnrFnfedXwyiFAaOYMIi07bY1z3eX18U=",
+        "ref": "master",
+        "rev": "edcdbca369f7beed14324cd5b106d32549faef67",
+        "revCount": 108,
+        "type": "git",
+        "url": "file:///home/spacecadet/code/sway-flake"
+      },
+      "original": {
+        "ref": "master",
+        "type": "git",
+        "url": "file:///home/spacecadet/code/sway-flake"
+      }
+    },
+    "my-tmux": {
       "inputs": {
         "base16": [
           "base16"
@@ -609,10 +667,30 @@
         "type": "github"
       }
     },
+    "my-zsh": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1670367154,
+        "narHash": "sha256-8T5rXD9c1be9g4Z4fvkniXhwuBgeUrFD8LBfDQ0BzlU=",
+        "owner": "VTimofeenko",
+        "repo": "zsh-flake",
+        "rev": "494b3d476927b62f47d9d51cebc92463a38dbed3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "VTimofeenko",
+        "repo": "zsh-flake",
+        "type": "github"
+      }
+    },
     "naersk": {
       "inputs": {
         "nixpkgs": [
-          "vt-nvim-flake",
+          "my-nvim-flake",
           "DSL",
           "rnix-lsp",
           "nixpkgs"
@@ -635,7 +713,7 @@
     "naersk_2": {
       "inputs": {
         "nixpkgs": [
-          "vt-nvim-flake",
+          "my-nvim-flake",
           "rnix-lsp",
           "nixpkgs"
         ]
@@ -656,7 +734,7 @@
     },
     "naersk_3": {
       "inputs": {
-        "nixpkgs": "nixpkgs_11"
+        "nixpkgs": "nixpkgs_10"
       },
       "locked": {
         "lastModified": 1662220400,
@@ -677,7 +755,7 @@
       "inputs": {
         "flake-utils": "flake-utils_2",
         "nixpkgs": [
-          "vt-nvim-flake",
+          "my-nvim-flake",
           "DSL",
           "nixpkgs"
         ]
@@ -703,7 +781,7 @@
       "inputs": {
         "flake-utils": "flake-utils_5",
         "nixpkgs": [
-          "vt-nvim-flake",
+          "my-nvim-flake",
           "nixpkgs"
         ]
       },
@@ -742,7 +820,7 @@
     "nix-bundler": {
       "inputs": {
         "nixpkgs": [
-          "vt-nvim-flake",
+          "my-nvim-flake",
           "DSL",
           "nixpkgs"
         ]
@@ -823,7 +901,7 @@
       "inputs": {
         "flake-utils": "flake-utils_3",
         "nixpkgs": [
-          "vt-nvim-flake",
+          "my-nvim-flake",
           "DSL",
           "nixpkgs"
         ]
@@ -846,7 +924,7 @@
       "inputs": {
         "flake-utils": "flake-utils_6",
         "nixpkgs": [
-          "vt-nvim-flake",
+          "my-nvim-flake",
           "nixpkgs"
         ]
       },
@@ -898,21 +976,6 @@
     },
     "nixpkgs_10": {
       "locked": {
-        "lastModified": 1670538458,
-        "narHash": "sha256-mvKmBkdlhzsMBtnzYXjYn08EGw9rFBEE9hp4Uqgol1Q=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "99ec06122f481588abafd91f2710d80a5320efe6",
-        "type": "github"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "ref": "nixos-22.05",
-        "type": "indirect"
-      }
-    },
-    "nixpkgs_11": {
-      "locked": {
         "lastModified": 1670267727,
         "narHash": "sha256-hUFAn5gjNHIBpLQT0CmqpuQjQwgWUm+D6aziGAYsDmw=",
         "owner": "NixOS",
@@ -922,6 +985,21 @@
       },
       "original": {
         "id": "nixpkgs",
+        "type": "indirect"
+      }
+    },
+    "nixpkgs_11": {
+      "locked": {
+        "lastModified": 1670772952,
+        "narHash": "sha256-b7V3cGtMNcQ5c6hwRqqX+eIuNUj+O3orsb64BKPR9yc=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "dfef2e61107dc19c211ead99a5a61374ad8317f4",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "nixos-22.11",
         "type": "indirect"
       }
     },
@@ -973,21 +1051,6 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1670772952,
-        "narHash": "sha256-b7V3cGtMNcQ5c6hwRqqX+eIuNUj+O3orsb64BKPR9yc=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "dfef2e61107dc19c211ead99a5a61374ad8317f4",
-        "type": "github"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "ref": "nixos-22.11",
-        "type": "indirect"
-      }
-    },
-    "nixpkgs_6": {
-      "locked": {
         "lastModified": 1649829297,
         "narHash": "sha256-DKf3cqORPPiiHCkPmGQgE1CEWaTtDPB1xI7eR5hCUnE=",
         "owner": "NixOS",
@@ -1002,7 +1065,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_7": {
+    "nixpkgs_6": {
       "locked": {
         "lastModified": 1648219316,
         "narHash": "sha256-Ctij+dOi0ZZIfX5eMhgwugfvB+WZSrvVNAyAuANOsnQ=",
@@ -1016,7 +1079,7 @@
         "type": "indirect"
       }
     },
-    "nixpkgs_8": {
+    "nixpkgs_7": {
       "locked": {
         "lastModified": 1648743963,
         "narHash": "sha256-iVp3hQUqhu/KxTNZzv9jQO+USz1o6pg4EjNdnY7Zdm4=",
@@ -1032,7 +1095,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_9": {
+    "nixpkgs_8": {
       "locked": {
         "lastModified": 1670559856,
         "narHash": "sha256-xUkgQRFqE6HIFQXs9SIXMZiXcLaH2415UR6w/FnsgcY=",
@@ -1043,6 +1106,21 @@
       },
       "original": {
         "id": "nixpkgs",
+        "type": "indirect"
+      }
+    },
+    "nixpkgs_9": {
+      "locked": {
+        "lastModified": 1670538458,
+        "narHash": "sha256-mvKmBkdlhzsMBtnzYXjYn08EGw9rFBEE9hp4Uqgol1Q=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "99ec06122f481588abafd91f2710d80a5320efe6",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "nixos-22.05",
         "type": "indirect"
       }
     },
@@ -1266,7 +1344,7 @@
       "inputs": {
         "naersk": "naersk",
         "nixpkgs": [
-          "vt-nvim-flake",
+          "my-nvim-flake",
           "DSL",
           "nixpkgs"
         ],
@@ -1290,7 +1368,7 @@
       "inputs": {
         "naersk": "naersk_2",
         "nixpkgs": [
-          "vt-nvim-flake",
+          "my-nvim-flake",
           "nixpkgs"
         ],
         "utils": "utils_3"
@@ -1318,14 +1396,14 @@
         "infra": "infra",
         "lynis-flake": "lynis-flake",
         "my-doom-config": "my-doom-config",
-        "my_tmux": "my_tmux",
+        "my-nvim-flake": "my-nvim-flake",
+        "my-sway-config": "my-sway-config",
+        "my-tmux": "my-tmux",
+        "my-zsh": "my-zsh",
         "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs_5",
+        "nixpkgs": "nixpkgs_11",
         "private-config": "private-config",
         "vt-colors": "vt-colors",
-        "vt-nvim-flake": "vt-nvim-flake",
-        "vt-sway": "vt-sway",
-        "vt-zsh": "vt-zsh",
         "wg-namespace-flake": "wg-namespace-flake"
       }
     },
@@ -1483,84 +1561,6 @@
         "type": "path"
       }
     },
-    "vt-nvim-flake": {
-      "inputs": {
-        "DSL": "DSL",
-        "bullets-vim": "bullets-vim",
-        "cmp-buffer": "cmp-buffer_2",
-        "cmp-nvim-lsp": "cmp-nvim-lsp",
-        "flake-utils": "flake-utils_4",
-        "home-manager": "home-manager_2",
-        "neovim": "neovim_2",
-        "night-owl-vim": "night-owl-vim",
-        "nix2vim": "nix2vim",
-        "nixpkgs": "nixpkgs_8",
-        "nvim-cmp": "nvim-cmp_2",
-        "nvim-orgmode-src": "nvim-orgmode-src",
-        "redact-pass-unwrapped": "redact-pass-unwrapped",
-        "rnix-lsp": "rnix-lsp_2",
-        "telescope-src": "telescope-src_2"
-      },
-      "locked": {
-        "lastModified": 1651038561,
-        "narHash": "sha256-aqN6T/daRByX7Cz8U20E001qOkb9MBUt3Mwl2ejVi2Y=",
-        "path": "/home/spacecadet/code/nvim-flake",
-        "type": "path"
-      },
-      "original": {
-        "path": "/home/spacecadet/code/nvim-flake",
-        "type": "path"
-      }
-    },
-    "vt-sway": {
-      "inputs": {
-        "base16": [
-          "base16"
-        ],
-        "base16-mako": "base16-mako",
-        "base16-waybar": "base16-waybar",
-        "color-scheme": [
-          "color_scheme"
-        ],
-        "home-manager": "home-manager_3",
-        "nixpkgs": "nixpkgs_10",
-        "xremap-flake": "xremap-flake"
-      },
-      "locked": {
-        "lastModified": 1670618048,
-        "narHash": "sha256-c5sh1f6avARPnrFnfedXwyiFAaOYMIi07bY1z3eX18U=",
-        "ref": "master",
-        "rev": "edcdbca369f7beed14324cd5b106d32549faef67",
-        "revCount": 108,
-        "type": "git",
-        "url": "file:///home/spacecadet/code/sway-flake"
-      },
-      "original": {
-        "ref": "master",
-        "type": "git",
-        "url": "file:///home/spacecadet/code/sway-flake"
-      }
-    },
-    "vt-zsh": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1670367154,
-        "narHash": "sha256-8T5rXD9c1be9g4Z4fvkniXhwuBgeUrFD8LBfDQ0BzlU=",
-        "owner": "VTimofeenko",
-        "repo": "zsh-flake",
-        "rev": "494b3d476927b62f47d9d51cebc92463a38dbed3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "VTimofeenko",
-        "repo": "zsh-flake",
-        "type": "github"
-      }
-    },
     "wg-namespace-flake": {
       "inputs": {
         "nixpkgs": [
@@ -1615,7 +1615,7 @@
       "inputs": {
         "naersk": "naersk_3",
         "nixpkgs": [
-          "vt-sway",
+          "my-sway-config",
           "nixpkgs"
         ],
         "xremap": "xremap"

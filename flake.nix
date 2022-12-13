@@ -25,12 +25,12 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    vt-zsh = {
+    my-zsh = {
       url = "github:VTimofeenko/zsh-flake";
       # One input only
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    my_tmux = {
+    my-tmux = {
       url = "github:VTimofeenko/tmux-flake";
       inputs = {
         nixpkgs.follows = "nixpkgs";
@@ -40,13 +40,13 @@
     };
 
     vt-colors.url = "path:/home/spacecadet/Documents/projects/vt-colors";
-    vt-nvim-flake.url = "path:/home/spacecadet/code/nvim-flake";
+    my-nvim-flake.url = "path:/home/spacecadet/code/nvim-flake";
 
     lynis-flake = {
       url = "path:/home/spacecadet/Documents/projects/lynis-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    vt-sway = {
+    my-sway-config = {
       url = "git+file:///home/spacecadet/code/sway-flake?ref=master";
       inputs = {
         base16.follows = "base16";
@@ -74,11 +74,11 @@
     , home-manager
     , agenix
     , vt-colors
-    , vt-zsh
-    , vt-nvim-flake
+    , my-zsh
+    , my-nvim-flake
     , private-config
     , lynis-flake
-    , vt-sway
+    , my-sway-config
     , ...
     }:
 
@@ -90,9 +90,9 @@
         overlays = [
           # nur.overlay
           (final: prev: {
-            my_nvim = vt-nvim-flake.defaultPackage."${system}";
+            my_nvim = my-nvim-flake.defaultPackage."${system}";
           })
-          vt-sway.overlays.default
+          my-sway-config.overlays.default
         ];
       };
       commonModulesFromInputs = [
@@ -104,15 +104,15 @@
         {
           my_colors.enable = true;
         }
-        inputs.my_tmux.nixosModule
-        vt-zsh.nixosModules.default
+        inputs.my-tmux.nixosModule
+        my-zsh.nixosModules.default
         {
           my_zsh.starship_enable = true;
           my_zsh.direnv_enable = true;
           my_zsh.gpg_enable = true;
         }
         {
-          home-manager.users.spacecadet = vt-sway.nixosModules.default;
+          home-manager.users.spacecadet = my-sway-config.nixosModules.default;
         }
         {
           home-manager.users.spacecadet = { ... }: {
@@ -127,7 +127,7 @@
             vt-sway.enableBrightness = true;
           };
         }
-        vt-sway.nixosModules.system
+        my-sway-config.nixosModules.system
         {
           # Needed, otherwise error
           # error: cannot look up '<nixpkgs>' in pure evaluation mode

@@ -57,12 +57,12 @@ Boring technical stuff
         nixpkgs.follows = "nixpkgs";
       };
     };
-    vt-zsh = {
+    my-zsh = {
       url = "github:VTimofeenko/zsh-flake";
       # One input only
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    my_tmux = {
+    my-tmux = {
       url = "github:VTimofeenko/tmux-flake";
       inputs = {
         nixpkgs.follows = "nixpkgs";
@@ -72,13 +72,13 @@ Boring technical stuff
     };
 
     vt-colors.url = "path:/home/spacecadet/Documents/projects/vt-colors";
-    vt-nvim-flake.url = "path:/home/spacecadet/code/nvim-flake";
+    my-nvim-flake.url = "path:/home/spacecadet/code/nvim-flake";
 
     lynis-flake = {
       url = "path:/home/spacecadet/Documents/projects/lynis-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    vt-sway = {
+    my-sway-config = {
       url = "git+file:///home/spacecadet/code/sway-flake?ref=master";
       inputs = {
         base16.follows = "base16";
@@ -107,7 +107,8 @@ CLOSED: [2022-12-09 Fri 17:25]
 *** DONE Make sure all inputs of base16 are tracking other inputs :chore:
 CLOSED: [2022-12-12 Mon 19:39]
 
-*** TODO Unify naming scheme (some inputs are called "my-", others - "vt-") :chore:
+*** DONE Unify naming scheme (some inputs are called "my-", others - "vt-") :chore:
+CLOSED: [2022-12-12 Mon 19:43]
 
 *** TODO Evaluate vt-colors input :to_think:
 
@@ -131,11 +132,11 @@ outputs = inputs@{ nixpkgs
                  , home-manager
                  , agenix
                  , vt-colors
-                 , vt-zsh
-                 , vt-nvim-flake
+                 , my-zsh
+                 , my-nvim-flake
                  , private-config
                  , lynis-flake
-                 , vt-sway
+                 , my-sway-config
                  , ...
                  }:
 #+end_src
@@ -151,9 +152,9 @@ let
     overlays = [
       # nur.overlay
       (final: prev: {
-        my_nvim = vt-nvim-flake.defaultPackage."${system}";
+        my_nvim = my-nvim-flake.defaultPackage."${system}";
       })
-      vt-sway.overlays.default
+      my-sway-config.overlays.default
     ];
   };
   commonModulesFromInputs = [
@@ -165,15 +166,15 @@ let
     {
       my_colors.enable = true;
     }
-    inputs.my_tmux.nixosModule
-    vt-zsh.nixosModules.default
+    inputs.my-tmux.nixosModule
+    my-zsh.nixosModules.default
     {
       my_zsh.starship_enable = true;
       my_zsh.direnv_enable = true;
       my_zsh.gpg_enable = true;
     }
     {
-      home-manager.users.spacecadet = vt-sway.nixosModules.default;
+      home-manager.users.spacecadet = my-sway-config.nixosModules.default;
     }
     {
       home-manager.users.spacecadet = { ... }: {
@@ -188,7 +189,7 @@ let
         vt-sway.enableBrightness = true;
       };
     }
-    vt-sway.nixosModules.system
+    my-sway-config.nixosModules.system
     {
       # Needed, otherwise error
       # error: cannot look up '<nixpkgs>' in pure evaluation mode
@@ -256,7 +257,7 @@ General module that includes all the things:
 }
 #+end_src
 
-I am using z shell on all machines where I have some need for an interactive login. The z shell configuration is done in a separate flake (~vt-zsh~) which provides the zsh configuration encapsulated in a module.
+I am using z shell on all machines where I have some need for an interactive login. The z shell configuration is done in a separate flake (~my-zsh~) which provides the zsh configuration encapsulated in a module.
 
 #+begin_src nix :tangle modules/common/zsh.nix
 { pkgs, ... }:
