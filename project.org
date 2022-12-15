@@ -71,7 +71,7 @@ Boring technical stuff
       };
     };
 
-    my-nvim-flake.url = "path:/home/spacecadet/code/nvim-flake";
+    my-nvim-flake.url = "github:VTimofeenko/nvim-flake";
 
     my-sway-config = {
       url = "git+file:///home/spacecadet/code/sway-flake?ref=master";
@@ -82,10 +82,10 @@ Boring technical stuff
     };
     # nur.url = "github:nix-community/NUR";
     my-doom-config = {
-      url = "path:/home/spacecadet/code/doom-config";
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/doom-config.git";
     };
     wg-namespace-flake = {
-      url = "path:///home/spacecadet/code/wg-namespace-flake";
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/wireguard-namespace-flake.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -108,7 +108,8 @@ CLOSED: [2022-12-12 Mon 19:43]
 *** DONE Evaluate vt-colors input :to_think:
 CLOSED: [2022-12-12 Mon 19:45]
 
-*** TODO Move all path:// inputs to at least git+file, ideally - git+ssh on gitea :chore:
+*** DONE Move all path:// inputs to at least git+file, ideally - git+ssh on gitea :chore:
+CLOSED: [2022-12-14 Wed 21:54]
 
 *** TODO Add infra and hosts outputs as inputs :feat:
 

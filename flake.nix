@@ -39,7 +39,7 @@
       };
     };
 
-    my-nvim-flake.url = "path:/home/spacecadet/code/nvim-flake";
+    my-nvim-flake.url = "github:VTimofeenko/nvim-flake";
 
     my-sway-config = {
       url = "git+file:///home/spacecadet/code/sway-flake?ref=master";
@@ -50,10 +50,10 @@
     };
     # nur.url = "github:nix-community/NUR";
     my-doom-config = {
-      url = "path:/home/spacecadet/code/doom-config";
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/doom-config.git";
     };
     wg-namespace-flake = {
-      url = "path:///home/spacecadet/code/wg-namespace-flake";
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/wireguard-namespace-flake.git";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

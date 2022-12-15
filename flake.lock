@@ -556,14 +556,17 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1670609756,
-        "narHash": "sha256-ZIjvNYE5pvBMz048qNPd6pN8dI98N9z/gERgoXzNNmE=",
-        "path": "/home/spacecadet/code/doom-config",
-        "type": "path"
+        "lastModified": 1669916392,
+        "narHash": "sha256-sA9s39cuwFfggmMftj5AZoiFlW8SESz9AsLWVdyGgfQ=",
+        "ref": "refs/heads/master",
+        "rev": "96a53d9a8c1b0a83c2c5c3eb51afc96146c9d185",
+        "revCount": 84,
+        "type": "git",
+        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/doom-config.git"
       },
       "original": {
-        "path": "/home/spacecadet/code/doom-config",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/doom-config.git"
       }
     },
     "my-nvim-flake": {
@@ -585,14 +588,17 @@
         "telescope-src": "telescope-src_2"
       },
       "locked": {
-        "lastModified": 1651038561,
-        "narHash": "sha256-aqN6T/daRByX7Cz8U20E001qOkb9MBUt3Mwl2ejVi2Y=",
-        "path": "/home/spacecadet/code/nvim-flake",
-        "type": "path"
+        "lastModified": 1650644300,
+        "narHash": "sha256-Fc6CYFFZaK5bqGk0lBMEZkhEplZutcL5Q6xAkqVU8yw=",
+        "owner": "VTimofeenko",
+        "repo": "nvim-flake",
+        "rev": "2f806f2f8c2e03a35c0c1a0993d6e7991fc62012",
+        "type": "github"
       },
       "original": {
-        "path": "/home/spacecadet/code/nvim-flake",
-        "type": "path"
+        "owner": "VTimofeenko",
+        "repo": "nvim-flake",
+        "type": "github"
       }
     },
     "my-sway-config": {
@@ -1537,14 +1543,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1669918177,
-        "narHash": "sha256-LwCybv+C3BM7w6ULonB3shbbVWl+RUOx0zjA6C6t4Cs=",
-        "path": "/home/spacecadet/code/wg-namespace-flake",
-        "type": "path"
+        "lastModified": 1668060489,
+        "narHash": "sha256-8GLPHJV0iMS8d4lEUP+v4p2IqRKGWDJwsP96+mm0fHw=",
+        "ref": "refs/heads/master",
+        "rev": "956d80aae5f7871bdcfa3946c175985c211d8498",
+        "revCount": 12,
+        "type": "git",
+        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/wireguard-namespace-flake.git"
       },
       "original": {
-        "path": "/home/spacecadet/code/wg-namespace-flake",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/wireguard-namespace-flake.git"
       }
     },
     "ws-butler": {
