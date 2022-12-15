@@ -111,8 +111,6 @@ CLOSED: [2022-12-12 Mon 19:45]
 *** DONE Move all path:// inputs to at least git+file, ideally - git+ssh on gitea :chore:
 CLOSED: [2022-12-14 Wed 21:54]
 
-*** TODO Add infra and hosts outputs as inputs :feat:
-
 * Outputs
 :PROPERTIES:
 :header-args:nix: :tangle flake.nix
@@ -290,7 +288,8 @@ Some common utilities I find myself using all the time as all users on the syste
 }
 #+end_src
 
-**** TODO Check if flakes.nix is still necessary post 22.11 :chore:
+**** CNCL Check if flakes.nix is still necessary post 22.11 :chore:
+CLOSED: [2022-12-14 Wed 21:56]
 
 **** User configuration
 
