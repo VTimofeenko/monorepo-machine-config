@@ -73,10 +73,6 @@ Boring technical stuff
 
     my-nvim-flake.url = "path:/home/spacecadet/code/nvim-flake";
 
-    lynis-flake = {
-      url = "path:/home/spacecadet/Documents/projects/lynis-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     my-sway-config = {
       url = "git+file:///home/spacecadet/code/sway-flake?ref=master";
       inputs = {
@@ -112,8 +108,6 @@ CLOSED: [2022-12-12 Mon 19:43]
 *** DONE Evaluate vt-colors input :to_think:
 CLOSED: [2022-12-12 Mon 19:45]
 
-*** TODO Review lynis-flake :to_think:
-
 *** TODO Move all path:// inputs to at least git+file, ideally - git+ssh on gitea :chore:
 
 *** TODO Add infra and hosts outputs as inputs :feat:
@@ -134,7 +128,6 @@ outputs = inputs@{ nixpkgs
                  , my-zsh
                  , my-nvim-flake
                  , private-config
-                 , lynis-flake
                  , my-sway-config
                  , ...
                  }:

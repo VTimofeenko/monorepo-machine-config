@@ -550,23 +550,6 @@
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git"
       }
     },
-    "lynis-flake": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1648534322,
-        "narHash": "sha256-wu9VAFE8cLtliuQdB2jyRmAfAH5mj/Y39jV0UvcqnmE=",
-        "path": "/home/spacecadet/Documents/projects/lynis-flake",
-        "type": "path"
-      },
-      "original": {
-        "path": "/home/spacecadet/Documents/projects/lynis-flake",
-        "type": "path"
-      }
-    },
     "my-doom-config": {
       "inputs": {
         "nix-doom-emacs": "nix-doom-emacs",
@@ -1394,7 +1377,6 @@
         "color_scheme": "color_scheme",
         "home-manager": "home-manager",
         "infra": "infra",
-        "lynis-flake": "lynis-flake",
         "my-doom-config": "my-doom-config",
         "my-nvim-flake": "my-nvim-flake",
         "my-sway-config": "my-sway-config",

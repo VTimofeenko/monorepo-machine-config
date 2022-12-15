@@ -41,10 +41,6 @@
 
     my-nvim-flake.url = "path:/home/spacecadet/code/nvim-flake";
 
-    lynis-flake = {
-      url = "path:/home/spacecadet/Documents/projects/lynis-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     my-sway-config = {
       url = "git+file:///home/spacecadet/code/sway-flake?ref=master";
       inputs = {
@@ -75,7 +71,6 @@
     , my-zsh
     , my-nvim-flake
     , private-config
-    , lynis-flake
     , my-sway-config
     , ...
     }:
