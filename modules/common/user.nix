@@ -11,7 +11,6 @@
       ncspot
       pavucontrol
       blueman
-      zathura
       libreoffice
       firefox
       brave

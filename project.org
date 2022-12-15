@@ -307,7 +307,6 @@ CLOSED: [2022-12-14 Wed 21:56]
       ncspot
       pavucontrol
       blueman
-      zathura
       libreoffice
       firefox
       brave
@@ -449,13 +448,17 @@ CLOSED: [2022-12-14 Wed 21:56]
 { ... }:
 
 {
-  # Allows zathura to use system clipboard
-  environment.etc."zathurarc".text = ''
-    set selection-clipboard clipboard
-  '';
+  home-manager.users.spacecadet = { ... }: {
+    programs.zathura = {
+    enable = true;
+    options = {
+      # Allows zathura to use system clipboard
+      selection-clipboard = "clipboard";
+    };
+    };
+  };
 }
 #+end_src
-***** TODO review if still needed this way or programs.zathura became available
 
 
 *** Development -- for development purposes
