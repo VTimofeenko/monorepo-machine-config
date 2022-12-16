@@ -515,7 +515,7 @@ First, the git config
 }
 #+end_src
 
-***** TODO lazygit colors
+***** TODO lazygit colors :feat:
 
 **** Console editor
 
@@ -588,9 +588,7 @@ I occasionally need full blown VMs to emulate stuff:
   '';
 }
 #+end_src
-***** TODO Add the configurator utility - either firejailed appimage or flatpak
-
-*** Security
+***** TODO Add the configurator utility - either firejailed appimage or flatpak :feat:
 
 
 *** Network -- reusable network configurations
@@ -929,6 +927,7 @@ CLOSED: [2022-12-12 Mon 19:37]
 CLOSED: [2022-12-09 Fri 17:27]
 ** TODO Consider merging zsh and tmux here :feat:
 That way I could reuse the configs on other machines
+** TODO Consider merging sway here :feat:
 
 ** Literate setup
 
