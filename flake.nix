@@ -25,11 +25,6 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    my-zsh = {
-      url = "github:VTimofeenko/zsh-flake";
-      # One input only
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     my-tmux = {
       url = "github:VTimofeenko/tmux-flake";
       inputs = {
@@ -68,7 +63,6 @@
     , nixos-hardware
     , home-manager
     , agenix
-    , my-zsh
     , my-nvim-flake
     , private-config
     , my-sway-config
@@ -93,7 +87,6 @@
         agenix.nixosModule
         home-manager.nixosModules.home-manager
         inputs.my-tmux.nixosModule
-        my-zsh.nixosModules.default
         {
           my_zsh.starship_enable = true;
           my_zsh.direnv_enable = true;
@@ -138,6 +131,7 @@
         ./modules/development/cross-compile.nix
         ./modules/development/virtualization.nix
         ./modules/hardware/dygma.nix
+        ./modules/zsh
 
         # Network
         ./modules/network/common_lan.nix
@@ -165,6 +159,15 @@
       };
 
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
+
+      nixosModules = rec {
+        default = { ... }: {
+          imports = [
+            zsh
+          ];
+        };
+        zsh = import ./modules/zsh;
+      };
 
     };
 }

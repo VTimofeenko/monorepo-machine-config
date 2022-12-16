@@ -57,11 +57,6 @@ Boring technical stuff
         nixpkgs.follows = "nixpkgs";
       };
     };
-    my-zsh = {
-      url = "github:VTimofeenko/zsh-flake";
-      # One input only
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     my-tmux = {
       url = "github:VTimofeenko/tmux-flake";
       inputs = {
@@ -124,7 +119,6 @@ outputs = inputs@{ nixpkgs
                  , nixos-hardware
                  , home-manager
                  , agenix
-                 , my-zsh
                  , my-nvim-flake
                  , private-config
                  , my-sway-config
@@ -153,7 +147,6 @@ let
     agenix.nixosModule
     home-manager.nixosModules.home-manager
     inputs.my-tmux.nixosModule
-    my-zsh.nixosModules.default
     {
       my_zsh.starship_enable = true;
       my_zsh.direnv_enable = true;
@@ -198,6 +191,7 @@ let
     ./modules/development/cross-compile.nix
     ./modules/development/virtualization.nix
     ./modules/hardware/dygma.nix
+    ./modules/zsh
 
     # Network
     ./modules/network/common_lan.nix
@@ -657,6 +651,311 @@ in
 
 **** TODO generate routing table here :feat:
 
+*** Zsh
+
+#+begin_src nix :tangle modules/zsh/default.nix
+{ lib, pkgs, config, ... }:
+
+with lib;
+let
+  cfg = config.my_zsh;
+in
+{
+  options.my_zsh = {
+    starship_enable = mkOption {
+      default = true;
+      description = "Whether to enable starship.";
+      type = lib.types.bool;
+    };
+    direnv_enable = mkEnableOption "enable direnv";
+    gpg_enable = mkEnableOption "enable gpg-agent";
+  };
+  config = {
+    environment.systemPackages = with pkgs; [
+      fzf
+      # bookmark plugin
+      (writeTextFile {
+        name = "bookmarks.zsh";
+        text = ''${builtins.readFile ./plugins/bookmarks.zsh}'';
+        destination = "/share/zsh/site-functions/bookmarks.zsh";
+      })
+      # My cursor plugin
+      (writeTextFile {
+        name = "cursor_mode.zsh";
+        text = ''${builtins.readFile ./plugins/cursor_mode.zsh}'';
+        destination = "/share/zsh/site-functions/cursor_mode.zsh";
+      })
+      # the next line conditionally installs direnv if it is enabled
+      # just having pkgs.direnv is not enough, it does not get added to the path
+    ] ++ (if config ? my_zsh && cfg.direnv_enable then [ pkgs.direnv ] else [ ]);
+    programs.zsh = {
+      enable = true;
+      enableCompletion = true;
+      autosuggestions.enable = true;
+      syntaxHighlighting = {
+        enable = true;
+      };
+      shellAliases = {
+        e = "$EDITOR"; # looks like 'vim' is needed here so that proper vimrc is being picked up
+        nvim = "$EDITOR";
+        vim = "$EDITOR";
+        ls = "${pkgs.exa}/bin/exa -h --group-directories-first --icons";
+        l = "ls";
+        ll = "ls -l";
+        la = "ls -al";
+        ka = "killall";
+        mkd = "mkdir -pv";
+        ga = "${pkgs.git}/bin/git add";
+        gau = "ga -u";
+        grep = "grep --color=auto";
+        mv = "mv -v";
+        rm = "rm -id";
+        vidir = "${pkgs.moreutils}/bin/vidir --verbose";
+        ccopy = "${pkgs.wl-clipboard}/bin/wl-copy";
+        syu = "systemctl --user";
+        cde = "cd /etc/nixos";
+        lg = "lazygit";
+      };
+      setOptions = [
+        "INTERACTIVE_COMMENTS" # allow bash-style comments
+        # history
+        "BANG_HIST" # enable logging !!-like commands
+        "EXTENDED_HISTORY" # Write the history file in the ":start:elapsed;command" format.
+        "INC_APPEND_HISTORY" # Write to the history file immediately, not when the shell exits.
+        "SHARE_HISTORY" # Share history between all sessions.
+        "HIST_EXPIRE_DUPS_FIRST" # Expire duplicate entries first when trimming history.
+        "HIST_IGNORE_DUPS" # Don't record an entry that was just recorded again.
+        "HIST_IGNORE_ALL_DUPS" # Delete old recorded entry if new entry is a duplicate.
+        "HIST_FIND_NO_DUPS" # Do not display a line previously found.
+        "HIST_IGNORE_SPACE" # Don't record an entry starting with a space.
+        "HIST_SAVE_NO_DUPS" # Don't write duplicate entries in the history file.
+        "HIST_REDUCE_BLANKS" # Remove superfluous blanks before recording entry.
+        "HIST_VERIFY" # Don't execute immediately upon history expansion.
+        "HIST_FCNTL_LOCK" # enable fcntl syscall for saving history
+        # cd management
+        "AUTO_CD" # automatically cd into directory
+      ];
+      interactiveShellInit = ''
+        # Enable vim editing of command line
+        ${builtins.readFile ./plugins/01-vim-edit.zsh}
+        # Enable cd +1..9 to go back in dir stack
+        ${builtins.readFile ./plugins/02-cd.zsh}
+        # fzf bindings
+        source ${pkgs.fzf}/share/fzf/key-bindings.zsh
+
+        # Word Navigation shortcuts
+        bindkey "^A" vi-beginning-of-line
+        bindkey "^E" vi-end-of-line
+        bindkey "^F" end-of-line
+
+        # ctrl+arrow for word jupming
+        bindkey "^[[1;5C" forward-word
+        bindkey "^[[1;5D" backward-word
+
+        # alt+f forward a word
+        bindkey "^[f" forward-word
+
+        # alt+b back a word
+        bindkey "^[b" backward-word
+        # working backspace
+        bindkey -v '^?' backward-delete-char
+
+        # Use vim keys in tab complete menu
+        zmodload zsh/complist
+        bindkey -M menuselect 'h' vi-backward-char
+        bindkey -M menuselect 'k' vi-up-line-or-history
+        bindkey -M menuselect 'l' vi-forward-char
+        bindkey -M menuselect 'j' vi-down-line-or-history
+        bindkey -M menuselect '^ ' accept-line
+
+        # Add entry by "+" but do not exit menuselect
+        bindkey -M menuselect "+" accept-and-menu-complete
+        # Color the completions
+        autoload -Uz compinit
+        zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
+        zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
+        zstyle ':completion:*' menu select
+
+        # Automatically escape urls when pasting
+        autoload -Uz url-quote-magic
+        zle -N self-insert url-quote-magic
+        autoload -Uz bracketed-paste-magic
+        zle -N bracketed-paste bracketed-paste-magic
+
+        # Custom plugins (see call to pkgs.writeTextFile in the zsh.nix)
+        # Bookmarks by "@@"
+        autoload -Uz bookmarks.zsh && bookmarks.zsh
+        # Cursor mode block <> beam
+        autoload -Uz cursor_mode.zsh && cursor_mode.zsh
+
+        # To use openpgp cards
+        ${if config ? my_zsh && cfg.gpg_enable
+        then
+          ''export GPG_TTY="$(tty)"
+          ${pkgs.gnupg}/bin/gpg-connect-agent /bye
+          export SSH_AUTH_SOCK="/run/user/$UID/gnupg/S.gpg-agent.ssh"''
+        else
+          toString null
+        }
+        # alias that creates the directory and changes into it
+        mkcd(){ mkdir -p "$@" && cd "$@"; }
+      '';
+      promptInit = ''
+        ${if config ? my_zsh && cfg.starship_enable
+        then
+          "eval \"$(${pkgs.starship}/bin/starship init zsh)\""
+        else
+          # reasonable default prompt
+          "PROMPT=\"%F{white}%~ %(!.%B%F{red}#.%B%F{blue}>)%f%b\u00A0\""
+        }
+        ${if config ? my_zsh && cfg.direnv_enable
+        then
+          "eval \"$(${pkgs.direnv}/bin/direnv hook zsh)\""
+        else
+          toString null
+        }
+      '';
+    };
+  };
+}
+#+end_src
+
+**** ZSH modules
+
+***** 01-vim-edit
+
+#+begin_src sh :tangle modules/zsh/plugins/01-vim-edit.zsh
+# vim style editing
+bindkey -v
+
+autoload edit-command-line; zle -N edit-command-line
+bindkey -M vicmd E edit-command-line  # uppercase E to edit the current line
+#+end_src
+
+***** 02-cd
+
+#+begin_src sh :tangle modules/zsh/plugins/02-cd.zsh
+# File that sets the behavior of cd command
+setopt autocd
+
+# dirs stack manipulation
+setopt AUTO_PUSHD           # Push the current directory visited on the stack.
+setopt PUSHD_IGNORE_DUPS    # Do not store duplicates in the stack.
+setopt PUSHD_SILENT         # Do not print the directory stack after
+
+# Enabled cd +X to change directory to somewhere in stack
+alias d='dirs -v' # prints stack of directories
+for index ({1..9}) alias "$index"="cd +${index}"; unset index
+#+end_src
+
+***** bookmarks
+
+#+begin_src sh :tangle modules/zsh/plugins/bookmarks.zsh
+# -*- sh -*-
+autoload is-at-least
+# Source: https://github.com/vincentbernat/zshrc/blob/master/rc/bookmarks.zsh
+# Changed by Vladimir Timofeenko, changed MARKPATH to local share for persistence
+
+# Handle bookmarks. This uses the static named directories feature of
+# zsh. Such directories are declared with `hash -d
+# name=directory`. Both prompt expansion and completion know how to
+# handle them. We populate the hash with directories.
+#
+# With autocd, you can just type `~-bookmark`. Since this can be
+# cumbersome to type, you can also type `@@` and this will be turned
+# into `~-` by ZLE.
+
+is-at-least 4.3.12 && () {
+    MARKPATH="${HOME}/.local/share/zsh/bookmarks"
+
+    # Add some static entries
+    hash -d log=/var/log
+    hash -d doc=/usr/share/doc
+
+    # Populate the hash
+    for link ($MARKPATH/*(N@)) {
+        hash -d -- -${link:t}=${link:A}
+    }
+
+    vbe-insert-bookmark() {
+        emulate -L zsh
+        LBUFFER=${LBUFFER}"~-"
+    }
+    zle -N vbe-insert-bookmark
+    bindkey '@@' vbe-insert-bookmark
+
+    # Manage bookmarks
+    bookmark() {
+        [[ -d $MARKPATH ]] || mkdir -p $MARKPATH
+        if (( $# == 0 )); then
+            # When no arguments are provided, just display existing
+            # bookmarks
+            for link in $MARKPATH/*(N@); do
+                local markname=${(%):-%F{green}${link:t}%f}
+                local markpath=${(%):-%F{blue}${link:A}%f}
+                printf "%-30s → %s\n" $markname $markpath
+            done
+        else
+            # Otherwise, we may want to add a bookmark or delete an
+            # existing one.
+            local -a delete
+            zparseopts -D d=delete
+            if (( $+delete[1] )); then
+                # With `-d`, we delete an existing bookmark
+                command rm $MARKPATH/$1
+            else
+                # Otherwise, add a bookmark to the current
+                # directory. The first argument is the bookmark
+                # name. `.` is special and means the bookmark should
+                # be named after the current directory.
+                local name=$1
+                [[ $name == "." ]] && name=${PWD:t}
+                ln -s $PWD $MARKPATH/$name
+                hash -d -- -${name}=${PWD}
+            fi
+        fi
+    }
+}
+#+end_src
+
+***** cursor_mode
+
+#+begin_src sh :tangle modules/zsh/plugins/cursor_mode.zsh
+cursor_mode() {
+    # See https://ttssh2.osdn.jp/manual/4/en/usage/tips/vim.html for cursor shapes
+    cursor_block='\e[2 q'
+
+    cursor_beam='\e[6 q'
+
+    function zle-keymap-select {
+        if [[ ${KEYMAP} == vicmd ]] ||
+            [[ $1 = 'block' ]]; then
+            echo -ne $cursor_block
+        elif [[ ${KEYMAP} == main ]] ||
+            [[ ${KEYMAP} == viins ]] ||
+            [[ ${KEYMAP} = '' ]] ||
+            [[ $1 = 'beam' ]]; then
+            echo -ne $cursor_beam
+        fi
+    }
+
+    zle-line-init() {
+        echo -ne $cursor_beam
+    }
+
+    zle -N zle-keymap-select
+    zle -N zle-line-init
+}
+
+cursor_mode
+#+end_src
+
+***** TODO make a minimalistic vim config to edit the shell inline :feat:
+- vim-surround
+- shell syntax highlighting
+
+**** TODO Rewrite in literal style :doc:
+
 ** Hosts
 
 *** Uranium
@@ -904,6 +1203,25 @@ I prefer nixpkgs-fmt formatter. Using ~formatter~ output, one can be specified i
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
 #+end_src
 
+** nixosModules
+
+this section contains the modules that can be reused without using the rest of the configuration. Modules can be imported en massed by importing ~nixosModules.default~ from this flake. Alternatively individual modules can be imported on their own.
+
+~nixosModules~ is a recursive attrset which allows me to refer to other attributes when constructing default module's imports:
+
+#+begin_src nix :tangle flake.nix
+    nixosModules = rec {
+      default = { ... }: {
+        imports = [
+          zsh
+        ];
+      };
+      zsh = import ./modules/zsh;
+    };
+#+end_src
+
+*** TODO Add sample config with mocked out inputs :doc:
+
 ** TODO Create check attribute to run checks before nixos-rebuild switches :feat:
 
 
@@ -925,9 +1243,10 @@ Boring technical stuff
 CLOSED: [2022-12-12 Mon 19:37]
 ** DONE [#A] Make `nix flake check` pass :fix:
 CLOSED: [2022-12-09 Fri 17:27]
-** TODO Consider merging zsh and tmux here :feat:
+** TODO Consider merging tmux here :feat:
 That way I could reuse the configs on other machines
 ** TODO Consider merging sway here :feat:
+** TODO add a description of exposed modules :doc:
 
 ** Literate setup
 

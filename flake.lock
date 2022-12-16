@@ -656,26 +656,6 @@
         "type": "github"
       }
     },
-    "my-zsh": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1670367154,
-        "narHash": "sha256-8T5rXD9c1be9g4Z4fvkniXhwuBgeUrFD8LBfDQ0BzlU=",
-        "owner": "VTimofeenko",
-        "repo": "zsh-flake",
-        "rev": "494b3d476927b62f47d9d51cebc92463a38dbed3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "VTimofeenko",
-        "repo": "zsh-flake",
-        "type": "github"
-      }
-    },
     "naersk": {
       "inputs": {
         "nixpkgs": [
@@ -1387,7 +1367,6 @@
         "my-nvim-flake": "my-nvim-flake",
         "my-sway-config": "my-sway-config",
         "my-tmux": "my-tmux",
-        "my-zsh": "my-zsh",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_11",
         "private-config": "private-config",
