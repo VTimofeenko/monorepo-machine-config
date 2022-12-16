@@ -121,12 +121,9 @@
       libvdpau-va-gl
     ];
   };
-  # Rename adapter to human-readable
-  # services.udev.extraRules = ''
-  #   KERNEL=="wlan*", ATTR{address}=="f7:b5:4d:d7:16:53", NAME="wireless"
-  # '';
-  # boot.initrd.services.udev.rules = ''
-  #   SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", \
-  #   ATTR{address}=="f7:b5:4d:d7:16:53", KERNEL=="wlan*", NAME="wireless"
-  # '';
+  # NOTE: Wireless config is here for now, until refactoring of default.nix is done
+  systemd.network.links."10-wifi-lan" = {
+    matchConfig.PermanentMACAddress = "f8:b5:4d:d7:16:53";
+    linkConfig.Name = "wifi-lan";
+  };
 }

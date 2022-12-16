@@ -5,5 +5,4 @@ let
 in
 {
   networking.enableIPv6 = false;
-  networking.nameservers = lan.dns_servers;
 }
