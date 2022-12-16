@@ -816,7 +816,7 @@ The hardware configuration that was taken from nixos-hardware and slightly tweak
   # NOTE: required for wifi to work
   hardware.enableRedistributableFirmware = true;
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-    boot.kernelParams = [
+  boot.kernelParams = [
     # For Power consumption
     # https://kvark.github.io/linux/framework/2021/10/17/framework-nixos.html
 
