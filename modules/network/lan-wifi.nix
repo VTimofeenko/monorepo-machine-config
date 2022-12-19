@@ -43,4 +43,6 @@ in
       };
     };
   };
+  # I am not using llmnr in my LAN
+  services.resolved.llmnr = "false";
 }
