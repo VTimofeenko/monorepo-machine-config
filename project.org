@@ -1091,6 +1091,17 @@ This is an 11th gen Frame.work laptop.
       libvdpau-va-gl
     ];
   };
+  services.fwupd = {
+    enable = true;
+    extraRemotes = [ "lvfs-testing" ];
+  };
+  environment.etc."fwupd/uefi_capsule.conf".text = lib.mkForce ''
+    [uefi_capsule]
+    OverrideESPMountPoint=/boot
+    DisableCapsuleUpdateOnDisk=true
+  '';
+  # NOTE: fwupdmgr uses this to check the boot
+  services.udisks2.enable = true;
   # NOTE: Wireless config is here for now, until refactoring of default.nix is done
   systemd.network.links."10-wifi-lan" = {
     matchConfig.PermanentMACAddress = "f8:b5:4d:d7:16:53";
@@ -1190,13 +1201,10 @@ CLOSED: [2022-12-09 Fri 17:26]
 ***** DONE [#A] Review the flake :chore:
 CLOSED: [2022-12-12 Mon 19:21]
 
-**** TODO fwupd enable :feat:
+**** DONE fwupd enable :feat:
+CLOSED: [2022-12-23 Fri 14:53]
 
 See [[https://fwupd.org/lvfs/devices/work.frame.Laptop.TGL.BIOS.firmware][this link]]
-
-
-#+begin_example
-#+end_example
 
 ** Formatter
 I prefer nixpkgs-fmt formatter. Using ~formatter~ output, one can be specified in the flake itself:

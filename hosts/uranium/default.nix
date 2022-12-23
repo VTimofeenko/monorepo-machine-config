@@ -121,6 +121,17 @@
       libvdpau-va-gl
     ];
   };
+  services.fwupd = {
+    enable = true;
+    extraRemotes = [ "lvfs-testing" ];
+  };
+  environment.etc."fwupd/uefi_capsule.conf".text = lib.mkForce ''
+    [uefi_capsule]
+    OverrideESPMountPoint=/boot
+    DisableCapsuleUpdateOnDisk=true
+  '';
+  # NOTE: fwupdmgr uses this to check the boot
+  services.udisks2.enable = true;
   # NOTE: Wireless config is here for now, until refactoring of default.nix is done
   systemd.network.links."10-wifi-lan" = {
     matchConfig.PermanentMACAddress = "f8:b5:4d:d7:16:53";
