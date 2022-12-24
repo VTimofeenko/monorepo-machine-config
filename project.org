@@ -717,6 +717,8 @@ in
         syu = "systemctl --user";
         cde = "cd /etc/nixos";
         lg = "lazygit";
+        # Colorize IP output
+        ip = "ip -c";
       };
       setOptions = [
         "INTERACTIVE_COMMENTS" # allow bash-style comments
@@ -957,6 +959,8 @@ cursor_mode
 - shell syntax highlighting
 
 **** TODO Rewrite in literal style :doc:
+
+**** TODO Correct the options to use something like ~programs.vt-zsh~ :chore:
 
 ** Hosts
 

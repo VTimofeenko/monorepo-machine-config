@@ -59,6 +59,8 @@ in
         syu = "systemctl --user";
         cde = "cd /etc/nixos";
         lg = "lazygit";
+        # Colorize IP output
+        ip = "ip -c";
       };
       setOptions = [
         "INTERACTIVE_COMMENTS" # allow bash-style comments
