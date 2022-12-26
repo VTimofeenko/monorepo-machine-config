@@ -2,10 +2,10 @@
 
 with lib;
 let
-  cfg = config.my_zsh;
+  cfg = config.programs.vt-zsh;
 in
 {
-  options.my_zsh = {
+  options.programs.vt-zsh = {
     starship_enable = mkOption {
       default = true;
       description = "Whether to enable starship.";
@@ -31,7 +31,7 @@ in
       })
       # the next line conditionally installs direnv if it is enabled
       # just having pkgs.direnv is not enough, it does not get added to the path
-    ] ++ (if config ? my_zsh && cfg.direnv_enable then [ pkgs.direnv ] else [ ]);
+    ] ++ (if cfg.direnv_enable then [ pkgs.direnv ] else [ ]);
     programs.zsh = {
       enable = true;
       enableCompletion = true;
@@ -135,7 +135,7 @@ in
         autoload -Uz cursor_mode.zsh && cursor_mode.zsh
 
         # To use openpgp cards
-        ${if config ? my_zsh && cfg.gpg_enable
+        ${if cfg.gpg_enable
         then
           ''export GPG_TTY="$(tty)"
           ${pkgs.gnupg}/bin/gpg-connect-agent /bye
@@ -147,14 +147,14 @@ in
         mkcd(){ mkdir -p "$@" && cd "$@"; }
       '';
       promptInit = ''
-        ${if config ? my_zsh && cfg.starship_enable
+        ${if cfg.starship_enable
         then
           "eval \"$(${pkgs.starship}/bin/starship init zsh)\""
         else
           # reasonable default prompt
           "PROMPT=\"%F{white}%~ %(!.%B%F{red}#.%B%F{blue}>)%f%b\u00A0\""
         }
-        ${if config ? my_zsh && cfg.direnv_enable
+        ${if cfg.direnv_enable
         then
           "eval \"$(${pkgs.direnv}/bin/direnv hook zsh)\""
         else

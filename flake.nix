@@ -88,9 +88,11 @@
         home-manager.nixosModules.home-manager
         inputs.my-tmux.nixosModule
         {
-          my_zsh.starship_enable = true;
-          my_zsh.direnv_enable = true;
-          my_zsh.gpg_enable = true;
+          programs.vt-zsh = {
+            starship_enable = true;
+            direnv_enable = true;
+            gpg_enable = true;
+          };
         }
         {
           home-manager.users.spacecadet = my-sway-config.nixosModules.default;
