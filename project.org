@@ -356,6 +356,7 @@ CLOSED: [2022-12-14 Wed 21:56]
     ./flatpak.nix
     ./media.nix
     ./zathura.nix
+    ./calibre.nix
   ];
 }
 
@@ -455,7 +456,18 @@ CLOSED: [2022-12-14 Wed 21:56]
   };
 }
 #+end_src
+**** Calibre
 
+#+begin_src nix :tangle modules/applications/calibre.nix
+{ pkgs, ... }:
+{
+  home-manager.users.spacecadet = { ... }: {
+      home.packages = [ pkgs.calibre ];
+    };
+}
+#+end_src
+
+***** TODO Add mountpoint for the device :feat:
 
 *** Development -- for development purposes
 
