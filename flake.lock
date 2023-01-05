@@ -556,11 +556,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1672687285,
-        "narHash": "sha256-SxNZOfnLEf3hQ67ohaWwCzOh4fXLJC5d1YkHdOFQeoA=",
+        "lastModified": 1672937505,
+        "narHash": "sha256-3gB5bhjA2UBoFQbLRfRs6gpXTRkcHcD74in/MwMlIFE=",
         "ref": "refs/heads/master",
-        "rev": "56a35105537a757d08898e207ef4110e3ca1b506",
-        "revCount": 89,
+        "rev": "185357937f5a9dc1b9c0c36b9881f6869bf304a3",
+        "revCount": 90,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/doom-config.git"
       },
