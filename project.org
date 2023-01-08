@@ -249,14 +249,21 @@ I am using z shell on all machines where I have some need for an interactive log
 
 #+end_src
 
-To enable Nix flakes:
+To configure Nix-the-package-manager:
 
 #+begin_src nix :tangle modules/common/flakes.nix
 # From https://nixos.wiki/wiki/Flakes
 { pkgs, ... }: {
   nix = {
     extraOptions = ''
+      # Quicker timeout for inaccessible binary caches
+      connect-timeout = 5
+      # Enable flakes
       experimental-features = nix-command flakes
+      # Do not warn on dirty git repo
+      warn-dirty = false
+      # Automatically optimize store
+      auto-optimise-store = true
     '';
   };
 }
