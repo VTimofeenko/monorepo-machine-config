@@ -53,7 +53,7 @@ in
         gau = "ga -u";
         grep = "grep --color=auto";
         mv = "mv -v";
-        rm = "rm -id";
+        rm = "${pkgs.coreutils}/bin/rm -id";
         vidir = "${pkgs.moreutils}/bin/vidir --verbose";
         ccopy = "${pkgs.wl-clipboard}/bin/wl-copy";
         syu = "systemctl --user";
