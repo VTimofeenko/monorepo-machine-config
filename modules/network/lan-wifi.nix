@@ -45,4 +45,7 @@ in
   };
   # I am not using llmnr in my LAN
   services.resolved.llmnr = "false";
+
+  # Any interface being up should be OK
+  systemd.network.wait-online.anyInterface = true;
 }
