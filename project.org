@@ -1273,6 +1273,8 @@ this section contains the modules that can be reused without using the rest of t
 
 *** TODO Add sample config with mocked out inputs :doc:
 
+*** TODO Add nixpkgs config as an output :feat:
+
 ** TODO Create check attribute to run checks before nixos-rebuild switches :feat:
 
 
