@@ -580,6 +580,8 @@ I occasionally need full blown VMs to emulate stuff:
 {
   hardware.sane.enable = true;
   hardware.sane.extraBackends = [ pkgs.hplipWithPlugin ];
+  services.avahi.enable = true;
+  services.avahi.nssmdns = true;
   users.users.spacecadet.extraGroups = [ "scanner" ];
 }
 #+end_src
