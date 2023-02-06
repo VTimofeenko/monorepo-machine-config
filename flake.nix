@@ -84,7 +84,7 @@
       };
       commonModulesFromInputs = [
         # Enable secrets management
-        agenix.nixosModule
+        agenix.nixosModules.default
         home-manager.nixosModules.home-manager
         inputs.my-tmux.nixosModule
         {
