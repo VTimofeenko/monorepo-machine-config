@@ -993,6 +993,8 @@ CLOSED: [2022-12-25 Sun 19:25]
 
 **** TODO disable gpg if root? :chore:
 
+**** TODO Add any-nix-shell :feat:
+**** TODO Add bat :feat:
 ** Hosts
 
 *** Uranium
@@ -1279,6 +1281,7 @@ this section contains the modules that can be reused without using the rest of t
 
 ** TODO Create check attribute to run checks before nixos-rebuild switches :feat:
 
+** TODO Add ~/scratch~ as tmpfs to keep ~/tmp~ for, well, ~/tmp~ things :feat:
 
 * Outro :noexport:
 
