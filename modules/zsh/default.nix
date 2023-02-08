@@ -115,6 +115,8 @@ in
           zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
           zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
           zstyle ':completion:*' menu select
+          # Make comments visible on default background
+          ZSH_HIGHLIGHT_STYLES[comment]='none'
 
           # Automatically escape urls when pasting
           autoload -Uz url-quote-magic
