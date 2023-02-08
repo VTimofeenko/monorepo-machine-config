@@ -92,6 +92,7 @@
             starship_enable = true;
             direnv_enable = true;
             gpg_enable = true;
+            enableAnyNixShell = true;
           };
         }
         {

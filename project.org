@@ -152,6 +152,7 @@ let
         starship_enable = true;
         direnv_enable = true;
         gpg_enable = true;
+        enableAnyNixShell = true;
       };
     }
     {
@@ -699,6 +700,7 @@ in
     };
     direnv_enable = mkEnableOption "enable direnv";
     gpg_enable = mkEnableOption "enable gpg-agent";
+    enableAnyNixShell = mkEnableOption "enable any-nix-shell";
   };
   config = {
     environment.systemPackages = with pkgs; [
@@ -852,6 +854,12 @@ in
         else
           toString null
         }
+        ${if cfg.enableAnyNixShell
+          then
+            "${pkgs.any-nix-shell}/bin/any-nix-shell zsh --info-right | source /dev/stdin"
+          else
+            toString null
+         }
       '';
     };
   };
@@ -1000,7 +1008,8 @@ CLOSED: [2022-12-25 Sun 19:25]
 **** DONE disable gpg if root? :chore:
 CLOSED: [2023-02-08 Wed 08:20]
 
-**** TODO Add any-nix-shell :feat:
+**** DONE Add any-nix-shell :feat:
+CLOSED: [2023-02-08 Wed 08:25]
 **** DONE Add bat :feat:
 CLOSED: [2023-02-08 Wed 08:16]
 **** DONE Add killall with an alias :feat:

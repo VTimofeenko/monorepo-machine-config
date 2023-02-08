@@ -13,6 +13,7 @@ in
     };
     direnv_enable = mkEnableOption "enable direnv";
     gpg_enable = mkEnableOption "enable gpg-agent";
+    enableAnyNixShell = mkEnableOption "enable any-nix-shell";
   };
   config = {
     environment.systemPackages = with pkgs; [
@@ -166,6 +167,12 @@ in
         else
           toString null
         }
+        ${if cfg.enableAnyNixShell
+          then
+            "${pkgs.any-nix-shell}/bin/any-nix-shell zsh --info-right | source /dev/stdin"
+          else
+            toString null
+         }
       '';
     };
   };
