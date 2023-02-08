@@ -17,6 +17,7 @@ in
   config = {
     environment.systemPackages = with pkgs; [
       fzf
+      killall
       # bookmark plugin
       (writeTextFile {
         name = "bookmarks.zsh";
@@ -47,7 +48,7 @@ in
         l = "ls";
         ll = "ls -l";
         la = "ls -al";
-        ka = "killall";
+        ka = "${pkgs.killall}/bin/killall";
         mkd = "mkdir -pv";
         ga = "${pkgs.git}/bin/git add";
         gau = "ga -u";

@@ -703,6 +703,7 @@ in
   config = {
     environment.systemPackages = with pkgs; [
       fzf
+      killall
       # bookmark plugin
       (writeTextFile {
         name = "bookmarks.zsh";
@@ -733,7 +734,7 @@ in
         l = "ls";
         ll = "ls -l";
         la = "ls -al";
-        ka = "killall";
+        ka = "${pkgs.killall}/bin/killall";
         mkd = "mkdir -pv";
         ga = "${pkgs.git}/bin/git add";
         gau = "ga -u";
@@ -995,6 +996,9 @@ CLOSED: [2022-12-25 Sun 19:25]
 
 **** TODO Add any-nix-shell :feat:
 **** TODO Add bat :feat:
+**** DONE Add killall with an alias :feat:
+CLOSED: [2023-02-08 Wed 08:12]
+
 ** Hosts
 
 *** Uranium
