@@ -684,6 +684,23 @@ in
 
 *** Zsh
 
+I use Z shell as my interactive shell of choice. The config described here:
+
+1. (optionally) uses [[https://starship.rs/][starship]] to set up the prompt
+2. Highlights syntax in command line
+3. Automatically suggests command from history
+4. Shares history between currently running sessions
+5. (optionally) uses gpg-agent for ssh authentication
+6. (optionally) sets up [[https://direnv.net/][direnv]]. ~.direnv~ can immediately create a Nix developemnt shell from a local flake.nix if it contains ~use flake~.
+7. Allows editing the current command in $EDITOR by hitting ESC and E: [[01-vim-edit][01-vim-edit]]
+8. Sets up simple way to change directory through stack of last visited dirs (~cd +1~, ~+2~, ~+3~, ...): [[*02-cd][02-cd]]
+9. Creates a mechanism to use bookmarks by using double @ symbol: bookmarks: [[bookmarks][bookmarks]]
+10. Depending on the mode (typing vs editing in vim), shape of the cursor changes: [[*cursor_mode][cursor_mode]]
+
+**** Main configuration
+
+I am sharing my zsh config with several machines and users. Certain settings of my zsh config can be turned on and off in the importing config:
+
 #+begin_src nix :tangle modules/zsh/default.nix
 { lib, pkgs, config, ... }:
 
@@ -702,26 +719,24 @@ in
     gpg_enable = mkEnableOption "enable gpg-agent";
     enableAnyNixShell = mkEnableOption "enable any-nix-shell";
   };
+#+end_src
+
+First, some packages that I am using on all machines. Direnv is included conditionally since I need to run it interactively (~direnv allow .~).
+
+#+begin_src nix :tangle modules/zsh/default.nix
   config = {
     environment.systemPackages = with pkgs; [
       fzf
       killall
       bat
-      # bookmark plugin
-      (writeTextFile {
-        name = "bookmarks.zsh";
-        text = ''${builtins.readFile ./plugins/bookmarks.zsh}'';
-        destination = "/share/zsh/site-functions/bookmarks.zsh";
-      })
-      # My cursor plugin
-      (writeTextFile {
-        name = "cursor_mode.zsh";
-        text = ''${builtins.readFile ./plugins/cursor_mode.zsh}'';
-        destination = "/share/zsh/site-functions/cursor_mode.zsh";
-      })
       # the next line conditionally installs direnv if it is enabled
       # just having pkgs.direnv is not enough, it does not get added to the path
     ] ++ (if cfg.direnv_enable then [ pkgs.direnv ] else [ ]);
+#+end_src
+
+The actual zsh configuration happens in ~programs.zsh~ attrset.
+
+#+begin_src nix :tangle modules/zsh/default.nix
     programs.zsh = {
       enable = true;
       enableCompletion = true;
@@ -771,7 +786,8 @@ in
         # cd management
         "AUTO_CD" # automatically cd into directory
       ];
-      interactiveShellInit = ''
+      interactiveShellInit =
+        ''
         # Enable vim editing of command line
         ${builtins.readFile ./plugins/01-vim-edit.zsh}
         # Enable cd +1..9 to go back in dir stack
@@ -818,7 +834,8 @@ in
         autoload -Uz bracketed-paste-magic
         zle -N bracketed-paste bracketed-paste-magic
 
-        # Custom plugins (see call to pkgs.writeTextFile in the zsh.nix)
+        # Custom plugins can be quickly loaded if fpath is extended:
+        fpath=(${./plugins} $fpath)
         # Bookmarks by "@@"
         autoload -Uz bookmarks.zsh && bookmarks.zsh
         # Cursor mode block <> beam
@@ -1000,7 +1017,7 @@ cursor_mode
 - vim-surround
 - shell syntax highlighting
 
-**** TODO Rewrite in literal style :doc:
+**** STRT Rewrite in literal style :doc:
 
 **** DONE Correct the options to use something like ~programs.vt-zsh~ :chore:
 CLOSED: [2022-12-25 Sun 19:25]
