@@ -18,6 +18,7 @@ in
     environment.systemPackages = with pkgs; [
       fzf
       killall
+      bat
       # bookmark plugin
       (writeTextFile {
         name = "bookmarks.zsh";
