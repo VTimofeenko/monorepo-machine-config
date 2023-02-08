@@ -825,9 +825,13 @@ in
         # To use openpgp cards
         ${if cfg.gpg_enable
         then
-          ''export GPG_TTY="$(tty)"
-          ${pkgs.gnupg}/bin/gpg-connect-agent /bye
-          export SSH_AUTH_SOCK="/run/user/$UID/gnupg/S.gpg-agent.ssh"''
+          ''
+          if (( $EUID != 0 )); then
+            export GPG_TTY="$(tty)"
+            ${pkgs.gnupg}/bin/gpg-connect-agent /bye
+            export SSH_AUTH_SOCK="/run/user/$UID/gnupg/S.gpg-agent.ssh"
+          fi
+          ''
         else
           toString null
         }
@@ -993,7 +997,8 @@ cursor_mode
 **** DONE Correct the options to use something like ~programs.vt-zsh~ :chore:
 CLOSED: [2022-12-25 Sun 19:25]
 
-**** TODO disable gpg if root? :chore:
+**** DONE disable gpg if root? :chore:
+CLOSED: [2023-02-08 Wed 08:20]
 
 **** TODO Add any-nix-shell :feat:
 **** DONE Add bat :feat:

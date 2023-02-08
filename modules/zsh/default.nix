@@ -139,9 +139,13 @@ in
         # To use openpgp cards
         ${if cfg.gpg_enable
         then
-          ''export GPG_TTY="$(tty)"
-          ${pkgs.gnupg}/bin/gpg-connect-agent /bye
-          export SSH_AUTH_SOCK="/run/user/$UID/gnupg/S.gpg-agent.ssh"''
+          ''
+          if (( $EUID != 0 )); then
+            export GPG_TTY="$(tty)"
+            ${pkgs.gnupg}/bin/gpg-connect-agent /bye
+            export SSH_AUTH_SOCK="/run/user/$UID/gnupg/S.gpg-agent.ssh"
+          fi
+          ''
         else
           toString null
         }
