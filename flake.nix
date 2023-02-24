@@ -134,6 +134,7 @@
         ./modules/development/cross-compile.nix
         ./modules/development/virtualization.nix
         ./modules/hardware/dygma.nix
+        ./modules/hardware/disks.nix
         ./modules/hardware/printer.nix
         ./modules/hardware/scanner.nix
         ./modules/zsh

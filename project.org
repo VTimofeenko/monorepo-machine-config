@@ -194,6 +194,7 @@ let
     ./modules/development/cross-compile.nix
     ./modules/development/virtualization.nix
     ./modules/hardware/dygma.nix
+    ./modules/hardware/disks.nix
     ./modules/hardware/printer.nix
     ./modules/hardware/scanner.nix
     ./modules/zsh
@@ -573,6 +574,36 @@ I occasionally need full blown VMs to emulate stuff:
 #+end_src
 
 *** Hardware -- specific hardware modules support/config
+**** Disks
+:PROPERTIES:
+:header-args:nix: :tangle modules/hardware/disks.nix
+:END:
+
+#+begin_src nix
+{ pkgs, ... }:
+
+{
+#+end_src
+
+Since I am running on SSDs, worth enabling timed fstrim:
+
+#+begin_src nix
+  services.fstrim.enable = true;
+#+end_src
+
+I like having a temporary directory  that is separate from ~/tmp~ for random things I don't need to keep around. It can live in ~/scratch~:
+
+#+begin_src nix
+  systemd.tmpfiles.rules =
+    [
+      "d /scratch 1777 spacecadet users 10d"
+    ];
+#+end_src
+
+
+#+begin_src nix
+}
+#+end_src
 **** Scanner
 
 #+begin_src nix :tangle modules/hardware/scanner.nix
@@ -1320,7 +1351,8 @@ this section contains the modules that can be reused without using the rest of t
 
 ** TODO Create check attribute to run checks before nixos-rebuild switches :feat:
 
-** TODO Add ~/scratch~ as tmpfs to keep ~/tmp~ for, well, ~/tmp~ things :feat:
+** DONE Add ~/scratch~ as tmpfs to keep ~/tmp~ for, well, ~/tmp~ things :feat:
+CLOSED: [2023-02-23 Thu 16:10]
 
 * Outro :noexport:
 
