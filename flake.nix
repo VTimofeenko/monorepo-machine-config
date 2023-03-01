@@ -170,9 +170,11 @@
         default = { ... }: {
           imports = [
             zsh
+            nix-config
           ];
         };
         zsh = import ./modules/zsh;
+        nix-config = import ./modules/common/nix-config.nix;
       };
 
     };

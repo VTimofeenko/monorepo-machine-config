@@ -1,7 +1,7 @@
 { ... }:
 {
   imports = [
-    ./flakes.nix
+    ./nix-config.nix
     ./fonts.nix
     ./user.nix
     ./utils.nix
@@ -12,6 +12,4 @@
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
   networking.useDHCP = false;
-  # Allow unfree packages across the board
-  nixpkgs.config.allowUnfree = true;
 }

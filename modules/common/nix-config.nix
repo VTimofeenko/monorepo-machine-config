@@ -1,5 +1,7 @@
 # From https://nixos.wiki/wiki/Flakes
 { pkgs, ... }: {
+  # Allow unfree packages across the board
+  nixpkgs.config.allowUnfree = true;
   nix = {
     extraOptions = ''
       # Quicker timeout for inaccessible binary caches

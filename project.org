@@ -227,7 +227,7 @@ General module that includes all the things:
 { ... }:
 {
   imports = [
-    ./flakes.nix
+    ./nix-config.nix
     ./fonts.nix
     ./user.nix
     ./utils.nix
@@ -238,8 +238,6 @@ General module that includes all the things:
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
   networking.useDHCP = false;
-  # Allow unfree packages across the board
-  nixpkgs.config.allowUnfree = true;
 }
 #+end_src
 
@@ -255,9 +253,11 @@ I am using z shell on all machines where I have some need for an interactive log
 
 To configure Nix-the-package-manager:
 
-#+begin_src nix :tangle modules/common/flakes.nix
+#+begin_src nix :tangle modules/common/nix-config.nix
 # From https://nixos.wiki/wiki/Flakes
 { pkgs, ... }: {
+  # Allow unfree packages across the board
+  nixpkgs.config.allowUnfree = true;
   nix = {
     extraOptions = ''
       # Quicker timeout for inaccessible binary caches
@@ -478,7 +478,8 @@ CLOSED: [2022-12-14 Wed 21:56]
 }
 #+end_src
 
-***** TODO Add mountpoint for the device :feat:
+***** CNCL Add mountpoint for the device :feat:
+CLOSED: [2023-03-01 Wed 08:22]
 
 *** Development -- for development purposes
 
@@ -534,7 +535,6 @@ First, the git config
 }
 #+end_src
 
-***** TODO lazygit colors :feat:
 
 **** Console editor
 
@@ -639,6 +639,7 @@ I like having a temporary directory  that is separate from ~/tmp~ for random thi
   '';
 }
 #+end_src
+
 ***** TODO Add the configurator utility - either firejailed appimage or flatpak :feat:
 
 
@@ -1339,15 +1340,18 @@ this section contains the modules that can be reused without using the rest of t
       default = { ... }: {
         imports = [
           zsh
+          nix-config
         ];
       };
       zsh = import ./modules/zsh;
+      nix-config = import ./modules/common/nix-config.nix;
     };
 #+end_src
 
 *** TODO Add sample config with mocked out inputs :doc:
 
-*** TODO Add nixpkgs config as an output :feat:
+*** DONE Add nixpkgs config as an output :feat:
+CLOSED: [2023-03-01 Wed 08:27]
 
 ** TODO Create check attribute to run checks before nixos-rebuild switches :feat:
 
