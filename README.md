@@ -126,7 +126,7 @@ A screenshot showing open shell in the root of this project:
 5. (optionally) uses gpg-agent for ssh authentication
 6. (optionally) sets up [direnv](https://direnv.net/). ~.direnv~ can immediately create a Nix developemnt shell from a local flake.nix if it contains ~use flake~.
 7. Allows editing the current command in $EDITOR by hitting ESC and E: [01-vim-edit](./modules/zsh/plugins/01-vim-edit.zsh)
-8. Sets up simple way to change directory through stack of last visited dirs (~cd +1~, ~+2~, ~+3~, ...): [02-cd](./modules/zsh/plugins/02-cd.zsh)
+8. Sets up simple way to change directory through stack of last visited dirs (`cd +1`, `+2`, `+3`, ...): [02-cd](./modules/zsh/plugins/02-cd.zsh)
 9. Creates a mechanism to use bookmarks by using double @ symbol: bookmarks: [bookmarks](./modules/zsh/plugins/bookmarks.zsh)
 10. Depending on the mode (typing vs editing in vim), shape of the cursor changes: [cursor_mode](./modules/zsh/plugins/cursor_mode.zsh)
 
