@@ -62,6 +62,25 @@ The tweaks I use for nix the package manager:
 - Do not nag me if a flake git repo is dirty (has some uncommitted stuff)
 - Automatically optimizes `/nix/store` to save a bit of space using hardlinking
 
+#### Installation
+
+To use this module separately from `default` one:
+
+```nix
+{
+    outputs = inputs@{ ... }:
+    {
+        nixosConfigurations.machine-name = nixpkgs.lib.nixosSystem {
+            # ...
+            modules =
+            [
+                inputs.monorepo.nixosModules.nix-config
+            ];
+        };
+    };
+}
+```
+
 ### ZSH module
 
 #### Usage
