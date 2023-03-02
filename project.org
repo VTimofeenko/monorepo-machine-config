@@ -334,8 +334,6 @@ Some common utilities I find myself using all the time as all users on the syste
 }
 #+end_src
 
-**** CNCL Check if flakes.nix is still necessary post 22.11 :chore:
-CLOSED: [2022-12-14 Wed 21:56]
 
 ***** Nix-the-package-manager config
 
@@ -1500,6 +1498,8 @@ That way I could reuse the configs on other machines
 ** TODO Consider merging sway here :feat:
 ** DONE add a description of exposed modules :doc:
 CLOSED: [2023-03-02 Thu 11:19]
+** TODO Move to flake-parts :chore:
+** TODO Add the project counters :chore:
 
 ** Literate setup
 
