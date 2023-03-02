@@ -2,7 +2,7 @@
 #+AUTHOR: Vladimir Timofeenko
 #+EMAIL: id@vtimofeenko.com
 #+DATE: <2022-11-09 Wed>
-#+TAGS: fix(b) feat(f) doc(d) chore(c) to_think(t)
+#+TAGS: { fix(b) feat(f) doc(d) chore(c) to_think(t) }
 #+HEADER-ARGS:nix: :padline no
 
 # TODO Not right now
@@ -72,6 +72,24 @@ It can be imported as
 ```
 
 #+end_src
+
+* Project TOOD stats :noexport:
+
+#+BEGIN: tagblock :todo ("DONE" "CNCL") :caption done :tags ("fix" "feat" "doc" "chore")
+#+caption: done
+| fix   | 2 |
+| feat  | 7 |
+| doc   | 1 |
+| chore | 9 |
+#+END
+
+#+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
+#+caption: todo
+| fix   | 1 |
+| feat  | 6 |
+| doc   | 2 |
+| chore | 5 |
+#+END
 
 * Project structure
 
@@ -1499,9 +1517,80 @@ That way I could reuse the configs on other machines
 ** DONE add a description of exposed modules :doc:
 CLOSED: [2023-03-02 Thu 11:19]
 ** TODO Move to flake-parts :chore:
-** TODO Add the project counters :chore:
+** DONE Add the project counters :chore:
+CLOSED: [2023-03-02 Thu 11:25]
+** TODO Figure out TODO export :chore:
+
+Looks like ~tasks~ setting may do the trick:
+
+https://orgmode.org/manual/Export-Settings.html
 
 ** Literate setup
+
+*** Tag stats calculator
+
+#+name: mktagblock
+#+begin_src elisp
+(require 'dash)
+(require 's)
+
+(defun org-freq-count (search targets &optional cmp)
+  (let ((cmp (if (functionp cmp)
+                 cmp
+               (lambda (a b) nil))))
+
+    (mapcar (lambda (x)
+              (list x (length (org-map-entries t (format search x) nil))))
+            (sort
+             (delete-dups
+              (-filter #'stringp targets))
+             cmp)
+            )))
+
+(defun org--tagblock-all-tags ()
+  (-filter #'stringp (-map #'car (append
+                                  (org-get-buffer-tags)
+                                  org-tag-alist
+                                  org-tag-persistent-alist))))
+
+(defun org-write-freq-count (search targets name)
+  (insert (s-concat
+           (if name (insert (format "#+name: %s\n" name)))
+           (mapconcat
+            (lambda (x) (format "| %s | %s |" (nth 0 x) (nth 1 x)))
+            (org-freq-count search targets)
+            "\n")))
+  (org-table-align))
+
+(defun org-dblock-write:tagblock (params)
+  (let ((todo (plist-get params :todo))
+        (tags (or (plist-get params :tags) (org--tagblock-all-tags)))
+        (label (plist-get params :label))
+        (caption (plist-get params :caption)))
+    (when caption (insert (format "#+caption: %s\n" caption)))
+    (org-write-freq-count (cond ((equal todo t)
+                                 (format "%%s/%s" (mapconcat 'identity
+                                                             org-not-done-keywords
+                                                             "|"
+                                                             )))
+                                ((listp todo)
+                                 (format "%%s/%s" (mapconcat 'identity
+                                                             todo
+                                                             "|"
+                                                             )))
+                                (t "%s"))
+                          tags
+                          label)))
+
+;;; tagblock definition ends here
+#+end_src
+
+#+RESULTS: mktagblock
+: org-dblock-write:tagblock
+
+
+
+*** Local variables
 
 A few scripts to be automatically run:
 
@@ -1509,6 +1598,8 @@ A few scripts to be automatically run:
 - After file is saved - run ~nix fmt~ once
 
 ;; Local Variables:
+;; eval: (progn (org-babel-goto-named-src-block "mkTagblock") (org-babel-execute-src-block) (outline-hide-sublevels 1))
+;; eval: (add-hook 'before-save-hook (lambda ()(org-update-all-dblocks)) nil t)
 ;; eval: (add-hook 'before-save-hook (lambda ()(org-babel-tangle)) nil t)
 ;; eval: (add-hook 'after-save-hook (lambda ()(shell-command "nix fmt")) nil t)
 ;; End:
