@@ -12,6 +12,67 @@
 # #+HUGO_CODE_FENCE: nil
 # #+EXPORT_FILE_NAME: TODO:
 
+* README
+
+#+begin_src md :tangle README.md
+
+This is my set of dotfiles in a single flake. The README contains a high-level description of the outputs and the `project.org` file contains the details and rationalization of implementation.
+
+# Background
+
+I have migrated to using Nix(ideally, NixOS) on all machines that I get my hands on. This repo contains the configurations for the common tools I use across the machines.
+
+Certain components of my config (mostly dealing with passwords and such) are not included in this flake but rather managed through a separate flake called ~private-config~
+
+# Usage
+
+```nix
+{
+    inputs= {
+        monorepo = {
+            url = "github:VTimofeenko/monorepo-machine-config";
+            inputs = {
+                infra.follows = "stub-flake";
+                private-config.follows = "stub-flake";
+            };
+        };
+        stub-flake.url = "github:VTimofeenko/stub-flake"; # A completely empty flake
+    };
+    outputs = inputs@{ ... }:
+    {
+        # Import modules/overlays from inputs.monorepo. See the rest of README for more details
+    }
+}
+```
+
+# Specific outputs description
+
+## Modules
+
+The flake comes with a `default` module that currently includes:
+
+- [zsh config](#ZSH-module)
+- nix-the-package-manager config
+
+It can be imported as
+
+```nix
+{
+    outputs = inputs@{ ... }:
+    {
+        nixosConfigurations.machine-name = nixpkgs.lib.nixosSystem {
+            # ...
+            modules =
+            [
+                inputs.monorepo.nixosModules.default
+            ];
+        }
+    }
+}
+```
+
+#+end_src
+
 * Project structure
 
 - `project.org` :: file, from which everything gets tangled
@@ -251,28 +312,6 @@ I am using z shell on all machines where I have some need for an interactive log
 
 #+end_src
 
-To configure Nix-the-package-manager:
-
-#+begin_src nix :tangle modules/common/nix-config.nix
-# From https://nixos.wiki/wiki/Flakes
-{ pkgs, ... }: {
-  # Allow unfree packages across the board
-  nixpkgs.config.allowUnfree = true;
-  nix = {
-    extraOptions = ''
-      # Quicker timeout for inaccessible binary caches
-      connect-timeout = 5
-      # Enable flakes
-      experimental-features = nix-command flakes
-      # Do not warn on dirty git repo
-      warn-dirty = false
-      # Automatically optimize store
-      auto-optimise-store = true
-    '';
-  };
-}
-#+end_src
-
 Some common utilities I find myself using all the time as all users on the system:
 
 #+begin_src nix :tangle modules/common/utils.nix
@@ -297,6 +336,43 @@ Some common utilities I find myself using all the time as all users on the syste
 
 **** CNCL Check if flakes.nix is still necessary post 22.11 :chore:
 CLOSED: [2022-12-14 Wed 21:56]
+
+***** Nix-the-package-manager config
+
+****** README
+#+begin_src md :tangle README.md
+### Nix module
+
+The tweaks I use for nix the package manager:
+
+- Enable flakes (mandatory)
+- Quickly fail if the network is inaccessible
+- Do not nag me if a flake git repo is dirty (has some uncommitted stuff)
+- Automatically optimizes `/nix/store` to save a bit of space using hardlinking
+
+#+end_src
+
+****** Implementation
+
+#+begin_src nix :tangle modules/common/nix-config.nix
+# From https://nixos.wiki/wiki/Flakes
+{ pkgs, ... }: {
+  # Allow unfree packages across the board
+  nixpkgs.config.allowUnfree = true;
+  nix = {
+    extraOptions = ''
+      # Quicker timeout for inaccessible binary caches
+      connect-timeout = 5
+      # Enable flakes
+      experimental-features = nix-command flakes
+      # Do not warn on dirty git repo
+      warn-dirty = false
+      # Automatically optimize store
+      auto-optimise-store = true
+    '';
+  };
+}
+#+end_src
 
 **** User configuration
 
@@ -716,18 +792,61 @@ in
 
 *** Zsh
 
-I use Z shell as my interactive shell of choice. The config described here:
+**** README
 
-1. (optionally) uses [[https://starship.rs/][starship]] to set up the prompt
+#+begin_src md :tangle README.md
+### ZSH module
+
+#### Usage
+
+To use this module separately from `default one`:
+
+```nix
+{
+    outputs = inputs@{ ... }:
+    {
+        nixosConfigurations.machine-name = nixpkgs.lib.nixosSystem {
+            # ...
+            modules =
+            [
+                inputs.monorepo.nixosModules.zsh
+                {
+                    programs.vt-zsh =
+                        {
+                            starship_enable = true;
+                            direnv_enable = true;
+                        }
+                }
+            ];
+        }
+    }
+}
+```
+
+and set the users' shells to zsh.
+
+#### Screenshot
+
+A screenshot showing open shell in the root of this project:
+
+![](.assets/zsh-screenshot.png)
+
+#### High-level features description
+
+1. (optionally) uses [starship](https://starship.rs/) to set up the prompt
 2. Highlights syntax in command line
 3. Automatically suggests command from history
 4. Shares history between currently running sessions
 5. (optionally) uses gpg-agent for ssh authentication
-6. (optionally) sets up [[https://direnv.net/][direnv]]. ~.direnv~ can immediately create a Nix developemnt shell from a local flake.nix if it contains ~use flake~.
-7. Allows editing the current command in $EDITOR by hitting ESC and E: [[01-vim-edit][01-vim-edit]]
-8. Sets up simple way to change directory through stack of last visited dirs (~cd +1~, ~+2~, ~+3~, ...): [[*02-cd][02-cd]]
-9. Creates a mechanism to use bookmarks by using double @ symbol: bookmarks: [[bookmarks][bookmarks]]
-10. Depending on the mode (typing vs editing in vim), shape of the cursor changes: [[*cursor_mode][cursor_mode]]
+6. (optionally) sets up [direnv](https://direnv.net/). ~.direnv~ can immediately create a Nix developemnt shell from a local flake.nix if it contains ~use flake~.
+7. Allows editing the current command in $EDITOR by hitting ESC and E: [01-vim-edit](./modules/zsh/plugins/01-vim-edit.zsh)
+8. Sets up simple way to change directory through stack of last visited dirs (~cd +1~, ~+2~, ~+3~, ...): [02-cd](./modules/zsh/plugins/02-cd.zsh)
+9. Creates a mechanism to use bookmarks by using double @ symbol: bookmarks: [bookmarks](./modules/zsh/plugins/bookmarks.zsh)
+10. Depending on the mode (typing vs editing in vim), shape of the cursor changes: [cursor_mode](./modules/zsh/plugins/cursor_mode.zsh)
+
+For more details, see "*ZSH*" heading in `project.org`.
+
+#+end_src
 
 **** Main configuration
 
@@ -1379,7 +1498,8 @@ CLOSED: [2022-12-09 Fri 17:27]
 ** TODO Consider merging tmux here :feat:
 That way I could reuse the configs on other machines
 ** TODO Consider merging sway here :feat:
-** TODO add a description of exposed modules :doc:
+** DONE add a description of exposed modules :doc:
+CLOSED: [2023-03-02 Thu 11:19]
 
 ** Literate setup
 
