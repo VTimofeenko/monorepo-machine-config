@@ -23,7 +23,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
     outputs = inputs@{ ... }:
     {
         # Import modules/overlays from inputs.monorepo. See the rest of README for more details
-    }
+    };
 }
 ```
 
@@ -48,8 +48,8 @@ It can be imported as
             [
                 inputs.monorepo.nixosModules.default
             ];
-        }
-    }
+        };
+    };
 }
 ```
 
@@ -66,7 +66,7 @@ The tweaks I use for nix the package manager:
 
 #### Usage
 
-To use this module separately from `default one`:
+To use this module separately from `default` one:
 
 ```nix
 {
@@ -82,11 +82,11 @@ To use this module separately from `default one`:
                         {
                             starship_enable = true;
                             direnv_enable = true;
-                        }
+                        };
                 }
             ];
-        }
-    }
+        };
+    };
 }
 ```
 
