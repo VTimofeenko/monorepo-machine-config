@@ -86,7 +86,7 @@ It can be imported as
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   | 1 |
-| feat  | 8 |
+| feat  | 9 |
 | doc   | 2 |
 | chore | 5 |
 #+END
@@ -1070,6 +1070,8 @@ The actual zsh configuration happens in ~programs.zsh~ attrset.
   };
 }
 #+end_src
+
+***** TODO See if rm -i alias can be adjusted not to display the full rm path :feat:
 
 **** ZSH modules
 
