@@ -147,7 +147,7 @@
       mkMyModules = list: list ++ commonModulesFromInputs ++ commonCustomModules;
     in
 
-    {
+    rec {
       nixosConfigurations = {
 
         uranium = nixpkgs.lib.nixosSystem {
@@ -192,6 +192,7 @@
               home-manager.useUserPackages = true;
               home-manager.users.spacecadet.home.stateVersion = "22.05";
             }
+            nixosModules.swaySystemModule
           ];
           specialArgs = inputs;
         };
@@ -208,6 +209,7 @@
         };
         zsh = import ./modules/zsh;
         nix-config = import ./modules/common/nix-config.nix;
+        swaySystemModule = import ./modules/sway/system;
       };
 
     };

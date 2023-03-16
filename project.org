@@ -86,7 +86,7 @@ It can be imported as
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   | 1 |
-| feat  | 6 |
+| feat  | 8 |
 | doc   | 2 |
 | chore | 5 |
 #+END
@@ -287,10 +287,10 @@ let
 in
 #+end_src
 
-Now for the outputs, which will (for now) only contain ~nixosConfigurations~:
+The outputs are contained in a self-referencing attrset so that I can easily reference objects within the flake (e.g. a host uses a module from flake's nixosModules)
 
 #+begin_src nix
-{
+rec {
   nixosConfigurations = {
 #+end_src
 
@@ -1220,6 +1220,118 @@ CLOSED: [2023-02-08 Wed 08:16]
 **** DONE Add killall with an alias :feat:
 CLOSED: [2023-02-08 Wed 08:12]
 
+*** Sway
+
+[[https://github.com/VTimofeenko/sway-flake][Original source]]
+
+The sway config has two parts -- the system-wide (greeter and global configuration, implemented using standard nixpkgs settings) and the user-specific (window manager itself, implemented through home-manager)
+
+**** Plan [3/8]
+- [X] System-wide settings
+- [X] Base settings
+- [X] Greeter
+  - [X] Write
+  - [X] Deploy with zsh
+  - [X] Evaluate
+- [ ] Home-specific settings
+- [ ] Replace greeter zsh with sway
+- [ ] Xremap base config
+- [ ] Revisit packages installed through [home|environment]Packages and see if they can be configured through flake
+- [ ] Reusable and centralized keyboard shortcuts
+
+**** System-wide configuration
+
+#+begin_src nix :tangle modules/sway/system/default.nix
+{ pkgs, ... }:
+{
+  imports =
+    [
+      ./base-settings.nix
+      ./greeter.nix
+      # ./additional-packages.nix
+      # TODO: xremap also goes here
+    ];
+}
+#+end_src
+
+***** Base settings
+
+#+begin_src nix :tangle modules/sway/system/base-settings.nix
+{ pkgs, ... }:
+{
+#+end_src
+
+Despite the fact that sway will be configured through home-manager's options, the [[https://github.com/NixOS/nixpkgs/blob/nixos-22.11/nixos/modules/programs/sway.nix][sway module]] enabled by ~programs.sway.enable~ enables some default configurations.
+
+#+begin_src nix :tangle modules/sway/system/base-settings.nix
+  programs.sway.enable = true;
+#+end_src
+
+Certain programs (flameshot) also require specific configurations of ~xdg.portal~:
+
+#+begin_src nix :tangle modules/sway/system/base-settings.nix
+  xdg.portal =
+        {
+          enable = true;
+          wlr.enable = true;
+          extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+        };
+
+#+end_src
+
+#+begin_src nix :tangle modules/sway/system/base-settings.nix
+}
+#+end_src
+
+***** Greeter
+
+#+begin_src nix :tangle modules/sway/system/greeter.nix
+{ pkgs, lib, ... }:
+{
+#+end_src
+
+I am using [[https://sr.ht/~kennylevinsen/greetd/][greetd]] as the login manager with [[https://github.com/apognu/tuigreet][tuigreet]] for the login screen.
+
+To not break the tuigreet by kernel's logging, [[https://github.com/apognu/tuigreet/issues/17][two settings need to be set]]:
+
+#+begin_src nix :tangle modules/sway/system/greeter.nix
+  boot.kernelParams = [ "console=tty1" ];
+  services.greetd = {
+    enable = true;
+    vt = 2;
+#+end_src
+
+Now to start the session itself:
+
+#+begin_src nix :tangle modules/sway/system/greeter.nix
+    settings = {
+      default_session = {
+        # taken from https://github.com/apognu/tuigreet
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd ${pkgs.zsh}/bin/zsh";
+        user = "greeter";
+      };
+    };
+  };
+}
+
+#+end_src
+
+****** TODO theme tuigreet :to_think:
+
+****** TODO Add zsh as an alternative session :feat:
+
+According to ~tuigreet~ [[https://github.com/apognu/tuigreet][doc]]:
+
+#+begin_quote
+The available sessions are fetched from desktop files in /usr/share/xsessions and /usr/share/wayland-sessions. If you want to provide custom directories, you can set the --sessions arguments with a colon-separated list of directories for tuigreet to fetch session definitions some other place.
+#+end_quote
+
+Since I am not using the sessions directly, it may be worth declaring sessions for zsh and sway and manually creating two desktop files.
+
+****** TODO Make CMD human-readable :feat:
+
+See "zsh as an alternative session", the name of the session in the list may be taken from the file
+
 ** Hosts
 
 *** Uranium
@@ -1479,6 +1591,10 @@ See [[https://fwupd.org/lvfs/devices/work.frame.Laptop.TGL.BIOS.firmware][this l
 
 A desktop with AMD and Nvidia 2070 card
 
+**** Plan [/]
+- [ ] Merge sway flake here
+- [ ] Rework modules list to be similar to uranium and reuse as much as possible
+
 **** Modules
 ***** Default
 
@@ -1574,6 +1690,7 @@ A desktop with AMD and Nvidia 2070 card
           home-manager.useUserPackages = true;
           home-manager.users.spacecadet.home.stateVersion = "22.05";
         }
+        nixosModules.swaySystemModule
       ];
       specialArgs = inputs;
     };
@@ -1603,6 +1720,7 @@ this section contains the modules that can be reused without using the rest of t
       };
       zsh = import ./modules/zsh;
       nix-config = import ./modules/common/nix-config.nix;
+      swaySystemModule = import ./modules/sway/system;
     };
 #+end_src
 
