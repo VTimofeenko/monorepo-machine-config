@@ -1465,7 +1465,6 @@ CLOSED: [2022-12-09 Fri 17:26]
       # See network configuration as an example
       specialArgs = inputs;
     };
-  };
 #+end_src
 
 ***** DONE [#A] Review the flake :chore:
@@ -1475,6 +1474,111 @@ CLOSED: [2022-12-12 Mon 19:21]
 CLOSED: [2022-12-23 Fri 14:53]
 
 See [[https://fwupd.org/lvfs/devices/work.frame.Laptop.TGL.BIOS.firmware][this link]]
+
+*** Neptunium
+
+A desktop with AMD and Nvidia 2070 card
+
+**** Modules
+***** Default
+
+#+begin_src nix :tangle hosts/neptunium/default.nix
+{ config, pkgs, lib, ... }:
+
+{
+  imports =
+    [
+    ];
+  # Use the systemd-boot EFI boot loader.
+  boot =
+    {
+      loader =
+        {
+        systemd-boot.enable = true;
+        efi.canTouchEfiVariables = true;
+        };
+      initrd =
+        {
+          availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "sd_mod" ];
+          kernelModules = [ ];
+          luks.devices."crypt-root".device = "/dev/disk/by-uuid/687e04e3-c128-4736-8199-2a7a563b4a97";
+        };
+      kernelModules = [ "kvm-amd" ];
+      tmpOnTmpfs = true;
+      tmpOnTmpfsSize = "8G";
+    };
+
+  networking.hostName = "neptunium";
+  networking.wireless.enable = lib.mkForce false;
+  networking.useDHCP = lib.mkForce true;
+
+  services.openssh=
+    {
+      enable = true;
+      permitRootLogin = "yes";
+    };
+
+  networking.firewall.enable = false;
+
+  system.stateVersion = "22.11";
+  fileSystems."/" =
+    {
+      device = "/dev/mapper/crypt-root";
+      fsType = "ext4";
+    };
+
+  fileSystems."/boot" =
+    {
+      device = "/dev/disk/by-label/boot";
+      fsType = "vfat";
+    };
+
+  swapDevices =
+    [
+      { device = "/dev/disk/by-label/swap"; }
+    ];
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.video.hidpi.enable = lib.mkDefault true;
+}
+#+end_src
+
+**** Flake config
+
+#+begin_src nix :tangle flake.nix
+    neptunium = nixpkgs.lib.nixosSystem {
+      inherit pkgs system;
+      modules = [
+        ./hosts/neptunium
+        # private-config.nixosModules.management-network-control-node
+        # private-config.nixosModules.wg-namespace-config
+        # NOTE: not reuisng certain modules during sway setup
+        ./modules/zsh
+        ./modules/common
+        ./modules/hardware/dygma.nix
+        ./modules/network/common_lan.nix
+        agenix.nixosModules.default
+        home-manager.nixosModules.home-manager
+        inputs.my-tmux.nixosModule
+        {
+          programs.vt-zsh = {
+            starship_enable = true;
+            direnv_enable = true;
+            gpg_enable = true;
+            enableAnyNixShell = true;
+          };
+        }
+        {
+          # Needed, otherwise error
+          # error: cannot look up '<nixpkgs>' in pure evaluation mode
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.spacecadet.home.stateVersion = "22.05";
+        }
+      ];
+      specialArgs = inputs;
+    };
+  };
+#+end_src
 
 ** Formatter
 I prefer nixpkgs-fmt formatter. Using ~formatter~ output, one can be specified in the flake itself:

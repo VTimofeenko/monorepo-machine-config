@@ -162,6 +162,39 @@
           # See network configuration as an example
           specialArgs = inputs;
         };
+
+        neptunium = nixpkgs.lib.nixosSystem {
+          inherit pkgs system;
+          modules = [
+            ./hosts/neptunium
+            # private-config.nixosModules.management-network-control-node
+            # private-config.nixosModules.wg-namespace-config
+            # NOTE: not reuisng certain modules during sway setup
+            ./modules/zsh
+            ./modules/common
+            ./modules/hardware/dygma.nix
+            ./modules/network/common_lan.nix
+            agenix.nixosModules.default
+            home-manager.nixosModules.home-manager
+            inputs.my-tmux.nixosModule
+            {
+              programs.vt-zsh = {
+                starship_enable = true;
+                direnv_enable = true;
+                gpg_enable = true;
+                enableAnyNixShell = true;
+              };
+            }
+            {
+              # Needed, otherwise error
+              # error: cannot look up '<nixpkgs>' in pure evaluation mode
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.spacecadet.home.stateVersion = "22.05";
+            }
+          ];
+          specialArgs = inputs;
+        };
       };
 
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
