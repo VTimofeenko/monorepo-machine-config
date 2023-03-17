@@ -3,6 +3,7 @@
 {
   imports =
     [
+      ./nvidia2070.nix
     ];
   # Use the systemd-boot EFI boot loader.
   boot =
@@ -34,6 +35,7 @@
     };
 
   networking.firewall.enable = false;
+  environment.systemPackages = [ pkgs.git ];
 
   system.stateVersion = "22.11";
   fileSystems."/" =
