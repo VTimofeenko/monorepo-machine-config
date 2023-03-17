@@ -54,4 +54,5 @@
     ];
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   hardware.video.hidpi.enable = lib.mkDefault true;
+  time.hardwareClockInLocalTime = true; # otherwise dual-booted Windows has wrong time
 }
