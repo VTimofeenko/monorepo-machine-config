@@ -1647,8 +1647,8 @@ A desktop with AMD and Nvidia 2070 card
     {
       loader =
         {
-        systemd-boot.enable = true;
-        efi.canTouchEfiVariables = true;
+          systemd-boot.enable = true;
+          efi.canTouchEfiVariables = true;
         };
       initrd =
         {
