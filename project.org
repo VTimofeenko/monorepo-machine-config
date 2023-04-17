@@ -85,7 +85,7 @@ It can be imported as
 
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
-| fix   | 1 |
+| fix   | 2 |
 | feat  | 9 |
 | doc   | 2 |
 | chore | 6 |
@@ -1228,14 +1228,14 @@ CLOSED: [2023-02-08 Wed 08:12]
 
 The sway config has two parts -- the system-wide (greeter and global configuration, implemented using standard nixpkgs settings) and the user-specific (window manager itself, implemented through home-manager)
 
-**** Plan [3/8]
+**** STRT Plan [4/8]
 - [X] System-wide settings
 - [X] Base settings
 - [X] Greeter
   - [X] Write
   - [X] Deploy with zsh
   - [X] Evaluate
-- [ ] Home-specific settings
+- [X] Home-specific settings
 - [ ] Replace greeter zsh with sway
 - [ ] Xremap base config
 - [ ] Revisit packages installed through [home|environment]Packages and see if they can be configured through flake
@@ -1288,7 +1288,7 @@ Certain programs (flameshot) also require specific configurations of ~xdg.portal
 ***** Greeter
 
 #+begin_src nix :tangle modules/sway/system/greeter.nix
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 {
 #+end_src
 
@@ -1303,15 +1303,22 @@ To not break the tuigreet by kernel's logging, [[https://github.com/apognu/tuigr
     vt = 2;
 #+end_src
 
-Now to start the session itself:
+Now to start the session itself. I prefer to have all logs managed by systemd, thus sway will be started in a ~systemd-cat~ wrapper.
 
 #+begin_src nix :tangle modules/sway/system/greeter.nix
     settings = {
-      default_session = {
-        # taken from https://github.com/apognu/tuigreet
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd ${pkgs.zsh}/bin/zsh";
-        user = "greeter";
-      };
+      default_session =
+        let
+          sway-launcher = pkgs.writeShellScript "sway-launcher" ''
+            exec systemd-cat --identifier=sway ${pkgs.sway}/bin/sway ${if (config.networking.hostName == "neptunium") then "--unsupported-gpu" else ""}
+          '';
+        in
+        {
+          # taken from https://github.com/apognu/tuigreet
+          # command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd ${sway-launcher}";
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd ${pkgs.zsh}/bin/zsh";
+          user = "greeter";
+        };
     };
   };
 }
@@ -1716,11 +1723,26 @@ The services config is described below:
   services.xserver.videoDrivers = [ "nvidia" ];
 
   # nvidia-drm.modeset=1 is required for some wayland compositors, e.g. sway
-  hardware.nvidia.modesetting.enable = true;
+  hardware.nvidia = {
+    modesetting.enable = true;
+    open = true;
+  };
+
+  environment.variables = {
+    # NOTE: needed for mouse cursor to be visible
+    WLR_NO_HARDWARE_CURSORS = "1";
+    WLR_RENDERER = "vulkan";
+  };
+  # Apps on sway seem to be unusable without this:
+  hardware.nvidia.forceFullCompositionPipeline = true;
 }
 #+end_src
 
 ****** TODO rewrite to literal style :chore:
+
+****** TODO Fix the console resolution :fix:
+
+Upon boot the terminal resolution gets borked around stage 1
 
 **** Flake config
 
@@ -1818,7 +1840,7 @@ CLOSED: [2022-12-12 Mon 19:37]
 CLOSED: [2022-12-09 Fri 17:27]
 ** TODO Consider merging tmux here :feat:
 That way I could reuse the configs on other machines
-** TODO Consider merging sway here :feat:
+** TODO Merge sway here [0/0] :feat:
 ** DONE add a description of exposed modules :doc:
 CLOSED: [2023-03-02 Thu 11:19]
 ** TODO Move to flake-parts :chore:
