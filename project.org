@@ -1334,6 +1334,37 @@ Since I am not using the sessions directly, it may be worth declaring sessions f
 
 See "zsh as an alternative session", the name of the session in the list may be taken from the file
 
+*** Steam
+
+#+begin_src nix :tangle modules/steam/default.nix
+{ pkgs, ... }:
+{
+  # From gamescope PR
+  nixpkgs.config.packageOverrides = pkgs: {
+    steam = pkgs.steam.override {
+      extraPkgs = pkgs: with pkgs; [
+        xorg.libXcursor
+        xorg.libXi
+        xorg.libXinerama
+        xorg.libXScrnSaver
+        libpng
+        libpulseaudio
+        libvorbis
+        stdenv.cc.cc.lib
+        libkrb5
+        keyutils
+      ];
+    };
+  };
+  environment.systemPackages = with pkgs; [ steam gamescope ];
+  # Steam needs this, otherwise there's an error Assertion Failed: Error: glXChooseVisual failed
+  hardware.opengl.driSupport32Bit = true;
+  environment.variables = {
+    WLR_NO_HARDWARE_CURSORS = "1";
+  };
+}
+#+end_src
+
 ** Hosts
 
 *** Uranium
@@ -1573,12 +1604,14 @@ CLOSED: [2022-12-09 Fri 17:26]
         ./hosts/uranium
         private-config.nixosModules.management-network-control-node
         private-config.nixosModules.wg-namespace-config
+        ./modules/steam
       ];
       # NOTE:
       # This makes the inputs propagate into the modules and allows modules to refer to the inputs
       # See network configuration as an example
       specialArgs = inputs;
     };
+
 #+end_src
 
 ***** DONE [#A] Review the flake :chore:
