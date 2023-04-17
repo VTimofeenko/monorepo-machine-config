@@ -56,6 +56,9 @@
       url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git";
       flake = false;
     };
+
+    hyprland.url = "github:hyprwm/Hyprland";
+
   };
 
   outputs =
@@ -178,6 +181,7 @@
             agenix.nixosModules.default
             home-manager.nixosModules.home-manager
             inputs.my-tmux.nixosModule
+            inputs.hyprland.nixosModules.default
             {
               programs.vt-zsh = {
                 starship_enable = true;

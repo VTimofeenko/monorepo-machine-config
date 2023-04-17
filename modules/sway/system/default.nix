@@ -2,8 +2,9 @@
 {
   imports =
     [
-      ./base-settings.nix
+      # ./base-settings.nix
       ./greeter.nix
+      ./hyprland.nix
       # ./additional-packages.nix
       # TODO: xremap also goes here
     ];

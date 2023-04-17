@@ -167,6 +167,9 @@ Boring technical stuff
       url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git";
       flake = false;
     };
+
+    hyprland.url = "github:hyprwm/Hyprland";
+
   };
 #+end_src
 
@@ -1248,8 +1251,9 @@ The sway config has two parts -- the system-wide (greeter and global configurati
 {
   imports =
     [
-      ./base-settings.nix
+      # ./base-settings.nix
       ./greeter.nix
+      ./hyprland.nix
       # ./additional-packages.nix
       # TODO: xremap also goes here
     ];
@@ -1282,6 +1286,16 @@ Certain programs (flameshot) also require specific configurations of ~xdg.portal
 #+end_src
 
 #+begin_src nix :tangle modules/sway/system/base-settings.nix
+}
+#+end_src
+
+***** Hyprland settings
+
+#+begin_src nix :tangle modules/sway/system/hyprland.nix
+{ config, pkgs, lib, ...}:
+{
+  programs.hyprland.enable = true;
+  environment.systemPackages = [ pkgs.kitty ]; # BUG: remove later
 }
 #+end_src
 
@@ -1761,6 +1775,7 @@ Upon boot the terminal resolution gets borked around stage 1
         agenix.nixosModules.default
         home-manager.nixosModules.home-manager
         inputs.my-tmux.nixosModule
+        inputs.hyprland.nixosModules.default
         {
           programs.vt-zsh = {
             starship_enable = true;
