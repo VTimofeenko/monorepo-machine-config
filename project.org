@@ -1207,7 +1207,7 @@ cursor_mode
 - vim-surround
 - shell syntax highlighting
 
-**** STRT Rewrite in literal style :doc:
+**** TODO Rewrite in literal style :doc:
 
 **** DONE Correct the options to use something like ~programs.vt-zsh~ :chore:
 CLOSED: [2022-12-25 Sun 19:25]
