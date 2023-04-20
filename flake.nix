@@ -85,6 +85,17 @@
           my-sway-config.overlays.default
         ];
       };
+
+      # A set of modules to be imported for the user-specific configuration
+      _homeModules =
+        [
+          inputs.my-doom-config.nixosModules.default
+          inputs.hyprland.homeManagerModules.default
+
+          # my hyprland config
+          ./modules/hyprland
+        ];
+
       commonModulesFromInputs = [
         # Enable secrets management
         agenix.nixosModules.default
@@ -182,6 +193,8 @@
             home-manager.nixosModules.home-manager
             inputs.my-tmux.nixosModule
             inputs.hyprland.nixosModules.default
+            ./modules/sway/system/greeter.nix
+            ./modules/sway/system/hyprland.nix
             {
               programs.vt-zsh = {
                 starship_enable = true;
@@ -197,7 +210,9 @@
               home-manager.useUserPackages = true;
               home-manager.users.spacecadet.home.stateVersion = "22.05";
             }
-            nixosModules.swaySystemModule
+            {
+              home-manager.users.spacecadet = pkgs.lib.mkMerge _homeModules;
+            }
           ];
           specialArgs = inputs;
         };
