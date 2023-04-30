@@ -94,6 +94,8 @@
 
           # my hyprland config
           ./modules/hyprland
+          # kitty config
+          ./modules/applications/kitty.nix
         ];
 
       commonModulesFromInputs = [

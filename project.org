@@ -233,6 +233,8 @@ let
 
       # my hyprland config
       ./modules/hyprland
+      # kitty config
+      ./modules/applications/kitty.nix
     ];
 
   commonModulesFromInputs = [
@@ -573,6 +575,37 @@ To use this module separately from `default` one:
       # mouse wheel for sound control
       WHEEL_DOWN add volume -5
     '';
+  };
+}
+#+end_src
+**** Kitty
+#+begin_src nix :tangle modules/applications/kitty.nix
+# Home manager module to configure Kitty
+{ pkgs, ... }:
+
+{
+  programs.kitty = {
+    enable = true;
+    # theme = "Neopolitan";
+    theme = "Doom Vibrant";
+    settings = {
+      cursor_blink_interval = 0;
+      background_opacity = "0.95";
+      inactive_text_alpha = "0.85";
+      cursor = "none";
+      enable_audio_bell = false;
+      tab_bar_margin_width = 9;
+      tab_bar_margin_height = "2 2";
+      tab_bar_style = "separator";
+      tab_bar_min_tabs = 2;
+      tab_bar_edge = "bottom";
+      tab_title_template = "{fmt.fg.white} {title.split()[0]} ";
+      active_tab_title_template = "{fmt.noitalic}{fmt.bg.black}{fmt.fg.white} {title.split()[0]} ";
+    };
+    keybindings = {
+      # Opens a new Kitty window in the current working directory
+      "kitty_mod+enter" = "launch --cwd=current";
+    };
   };
 }
 #+end_src
@@ -1425,6 +1458,8 @@ in
               shadow_render_power = 3
               col.shadow = rgba(1a1a1aee)
           }
+
+          windowrulev2 = opacity 0.94 0.94,class:^(kitty)$
 
           animations {
               enabled = true

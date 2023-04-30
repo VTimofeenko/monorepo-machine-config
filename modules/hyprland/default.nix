@@ -90,6 +90,8 @@ in
               col.shadow = rgba(1a1a1aee)
           }
 
+          windowrulev2 = opacity 0.94 0.94,class:^(kitty)$
+
           animations {
               enabled = true
 
