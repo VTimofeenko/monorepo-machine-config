@@ -1375,6 +1375,12 @@ in
       nvidiaPatches = true;
       extraConfig =
         ''
+          env = LIBVA_DRIVER_NAME,nvidia
+          env = XDG_SESSION_TYPE,wayland
+          env = GBM_BACKEND,nvidia-drm
+          env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+          env = WLR_NO_HARDWARE_CURSORS,1
+
           # Some default env vars.
           env = XCURSOR_SIZE,24
 
@@ -1539,6 +1545,7 @@ rec {
 ****** STRT Hyprland Plan
 - [X] Variables setup
 - [X] Base hotkeys setup
+- [X] Fix suspend
 - [ ] Port custom tools, save them in overlay
 - [ ] Colorscheme setup
 - [ ] Pick out new notification/clipboard/whatever tools
@@ -2029,8 +2036,14 @@ The services config is described below:
   # nvidia-drm.modeset=1 is required for some wayland compositors, e.g. sway
   hardware.nvidia = {
     modesetting.enable = true;
-    open = true;
+    package = pkgs.linuxKernel.packages.linux_6_1.nvidia_x11_beta;
+    # Suspend does not work :(
+    # open = true;
+    # Needed for suspend
+    powerManagement.enable = true;
   };
+
+  boot.kernelPackages = pkgs.linuxPackages_6_1;
 
   environment.variables = {
     # NOTE: needed for mouse cursor to be visible

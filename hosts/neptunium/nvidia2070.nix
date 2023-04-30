@@ -6,8 +6,14 @@
   # nvidia-drm.modeset=1 is required for some wayland compositors, e.g. sway
   hardware.nvidia = {
     modesetting.enable = true;
-    open = true;
+    package = pkgs.linuxKernel.packages.linux_6_1.nvidia_x11_beta;
+    # Suspend does not work :(
+    # open = true;
+    # Needed for suspend
+    powerManagement.enable = true;
   };
+
+  boot.kernelPackages = pkgs.linuxPackages_6_1;
 
   environment.variables = {
     # NOTE: needed for mouse cursor to be visible
