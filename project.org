@@ -1581,7 +1581,6 @@ rec {
 - [X] Variables setup
 - [X] Base hotkeys setup
 - [X] Fix suspend
-- [ ] Colorscheme setup
 - [ ] Pick out new notification/clipboard/whatever tools
 - [ ] Check out [[https://wiki.hyprland.org/Configuring/Example-configurations/][examples]]
 - [ ] Move to different section in literate config
@@ -1609,6 +1608,7 @@ for_window [title="scratchpad_term"] floating enable, move scratchpad
 
 Needs special workspace tho
 
+
 ****** TODO Port over F-and-XF86-whatever bindings
 
 - [ ] Sound control
@@ -1633,6 +1633,8 @@ Needs special workspace tho
 ******* TODO Workspace renamer
 
 ******* TODO Workspace renumber
+
+****** TODO Colorscheme
 
 ***** Greeter
 
