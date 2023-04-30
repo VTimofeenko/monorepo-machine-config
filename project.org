@@ -1546,10 +1546,10 @@ rec {
 - [X] Variables setup
 - [X] Base hotkeys setup
 - [X] Fix suspend
-- [ ] Port custom tools, save them in overlay
 - [ ] Colorscheme setup
 - [ ] Pick out new notification/clipboard/whatever tools
 - [ ] Check out [[https://wiki.hyprland.org/Configuring/Example-configurations/][examples]]
+- [ ] Move to different section in literate config
 
 ****** TODO Restore swaylock pam.d config need
 
@@ -1590,6 +1590,14 @@ Needs special workspace tho
 ****** TODO Consider a new launcher
 
 ****** TODO Fix the xremap ordering for hyprland
+
+****** TODO Custom tools [0/3]
+
+******* TODO Scratchpad terminal
+
+******* TODO Workspace renamer
+
+******* TODO Workspace renumber
 
 ***** Greeter
 
