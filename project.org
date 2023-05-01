@@ -204,6 +204,7 @@ outputs = inputs@{ nixpkgs
                  , my-nvim-flake
                  , private-config
                  , my-sway-config
+                 , self
                  , ...
                  }:
 #+end_src
@@ -225,17 +226,6 @@ let
     ];
   };
 
-  # A set of modules to be imported for the user-specific configuration
-  _homeModules =
-    [
-      inputs.my-doom-config.nixosModules.default
-      inputs.hyprland.homeManagerModules.default
-
-      # my hyprland config
-      ./modules/hyprland
-      # kitty config
-      ./modules/applications/kitty.nix
-    ];
 
   commonModulesFromInputs = [
     # Enable secrets management
@@ -307,7 +297,25 @@ The outputs are contained in a self-referencing attrset so that I can easily ref
 
 #+begin_src nix
 rec {
-  nixosConfigurations = {
+  nixosConfigurations =
+    let
+      _allUserModules =
+        [
+          self.nixosModules.homeVimConfig
+        ];
+      # A set of modules to be imported for the user-specific configuration
+      _homeModules =
+        [
+          inputs.my-doom-config.nixosModules.default
+          inputs.hyprland.homeManagerModules.default
+
+          # my hyprland config
+          ./modules/hyprland
+          # kitty config
+          ./modules/applications/kitty.nix
+        ] ++ _allUserModules;
+    in
+    {
 #+end_src
 
 ** Modules
@@ -702,7 +710,7 @@ I generally use emacs, but when in console - I use a build of neovim that's prov
 { pkgs, config, ... }:
 
 {
-  environment.systemPackages = [ pkgs.my_nvim ];
+  # environment.systemPackages = [ pkgs.my_nvim ];
   environment.variables.SUDO_EDITOR = "nvim";
   environment.variables.EDITOR = "nvim";
 }
@@ -1723,6 +1731,57 @@ See "zsh as an alternative session", the name of the session in the list may be 
 }
 #+end_src
 
+*** (neo)vim
+
+Having switched to emacs for most of text-based work, I still use neovim for one-off editing stuff in terminal.
+
+The module described in this section should be used by root and human users on my machines as well as on MacOS, thus I am using home manager module as the platform-agnostic way.
+
+#+begin_src nix :tangle modules/vim/default.nix
+# Home manager module that configures neovim with some plugins
+{ pkgs, config, lib, ... }:
+{
+  programs.neovim =
+    {
+      enable = true;
+      viAlias = true;
+      vimAlias = true;
+      vimdiffAlias = true;
+      plugins =
+        with pkgs.vimPlugins; [
+          vim-surround
+        ];
+      extraConfig =
+        ''
+          syntax on
+
+          let mapleader="\<Space>"
+
+          nnoremap <leader>wl <C-w>l
+          nnoremap <leader>wk <C-w>k
+          nnoremap <leader>wj <C-w>j
+          nnoremap <leader>wh <C-w>h
+
+          nnoremap <silent> <leader>ws :split<CR>
+          nnoremap <silent> <leader>wv :vsplit<CR>
+          " close the _window_, not the buffer
+          nnoremap <silent> <leader>wd <C-w>c
+
+          set number relativenumber
+          set modelines=1
+          set autoindent
+          set ignorecase
+          set smartcase incsearch
+          filetype plugin on
+
+          " cursor shapes in insert/normal modes
+          let &t_SI = "\e[6 q"
+          let &t_EI = "\e[2 q"
+        '';
+    };
+}
+#+end_src
+
 ** Hosts
 
 *** Uranium
@@ -2126,6 +2185,7 @@ Upon boot the terminal resolution gets borked around stage 1
         inputs.hyprland.nixosModules.default
         ./modules/sway/system/greeter.nix
         ./modules/sway/system/hyprland.nix
+        ./modules/development/editor.nix
         {
           programs.vt-zsh = {
             starship_enable = true;
@@ -2174,6 +2234,7 @@ this section contains the modules that can be reused without using the rest of t
       zsh = import ./modules/zsh;
       nix-config = import ./modules/common/nix-config.nix;
       swaySystemModule = import ./modules/sway/system;
+      homeVimConfig = import ./modules/vim;
     };
 #+end_src
 
