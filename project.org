@@ -1385,6 +1385,8 @@ let
   # Custom lib.nix for module-specific logic
   modLib = import ./lib.nix;
 
+  cliphist = "${pkgs.cliphist}/bin/cliphist";
+
   launchShortcuts =
     {
        "Return" = "exec, ${pkgs.kitty}/bin/kitty";
@@ -1435,6 +1437,8 @@ in
           env = XCURSOR_SIZE,24
 
           exec-once = systemd-cat --identifier=swaync ${pkgs.swaynotificationcenter}/bin/swaync
+          # Clipboard manager
+          exec-once = ${pkgs.wl-clipboard}/bin/wl-paste --watch ${cliphist} store
 
           # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
           input {
@@ -1579,6 +1583,8 @@ in
           bind = $mainMod CTRL, M, exit,
           # Toggle notification pane
           bind = $mainMod CTRL, N, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw
+          # Clipboard history toggle
+          bind = $mainMod CTRL, C, exec, ${cliphist} list | ${pkgs.wofi}/bin/wofi --show dmenu | ${cliphist} decode | ${pkgs.wl-clipboard}/bin/wl-copy
         '' + mergedConfig;
     };
 }
@@ -1605,7 +1611,7 @@ rec {
 - [X] Fix suspend
 - [-] Pick out new notification/clipboard/whatever tools
   - [X] notification
-  - [ ] Clipboard
+  - [X] Clipboard
   - [ ] EWW
 - [ ] Check out [[https://wiki.hyprland.org/Configuring/Example-configurations/][examples]]
 - [ ] Move to different section in literate config
@@ -1697,11 +1703,26 @@ rec {
 }
 #+end_src
 
-****** Clipboard daemon
 
 ****** Widgets
 
+****** Wofi
+
+#+begin_src nix :tangle modules/hyprland/wofi/default.nix
+{ pkgs, config, lib, ... }:
+{
+  programs.wofi =
+    {
+      enable = true;
+    };
+}
+
+#+end_src
+
+******* TODO Style wofi :feat:
+
 ****** TODO Restore swaylock pam.d config need
+
 
 ****** TODO Global "hyper+e" = emacs
 
