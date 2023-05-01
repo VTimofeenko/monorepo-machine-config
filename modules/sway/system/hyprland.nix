@@ -25,4 +25,9 @@
       session required pam_env.so conffile=/etc/pam/environment readenv=0
       session required pam_unix.so
     '';
+  environment.systemPackages =
+    with pkgs; [
+      # needed because the user config references /etc stuff
+      swaynotificationcenter
+    ];
 }

@@ -28,6 +28,10 @@ let
 
 in
 {
+  imports =
+    [
+      ./notifications
+    ];
   wayland.windowManager.hyprland =
     {
       enable = true;
@@ -47,6 +51,8 @@ in
 
           # Some default env vars.
           env = XCURSOR_SIZE,24
+
+          exec-once = systemd-cat --identifier=swaync ${pkgs.swaynotificationcenter}/bin/swaync
 
           # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
           input {
@@ -188,6 +194,8 @@ in
           bind = $mainMod, O, fullscreen, 1  # fOcus
 
           bind = $mainMod CTRL, Q, exec, ${pkgs.swaylock}/bin/swaylock -fF -k -c 000000
+          # Toggle notification pane
+          bind = $mainMod CTRL, N, exec ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw
         '' + mergedConfig;
     };
 }

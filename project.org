@@ -1371,6 +1371,11 @@ Certain programs (flameshot) also require specific configurations of ~xdg.portal
       session required pam_env.so conffile=/etc/pam/environment readenv=0
       session required pam_unix.so
     '';
+  environment.systemPackages =
+    with pkgs; [
+      # needed because the user config references /etc stuff
+      swaynotificationcenter
+    ];
 }
 #+end_src
 
@@ -1405,6 +1410,10 @@ let
 
 in
 {
+  imports =
+    [
+      ./notifications
+    ];
   wayland.windowManager.hyprland =
     {
       enable = true;
@@ -1424,6 +1433,8 @@ in
 
           # Some default env vars.
           env = XCURSOR_SIZE,24
+
+          exec-once = systemd-cat --identifier=swaync ${pkgs.swaynotificationcenter}/bin/swaync
 
           # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
           input {
@@ -1565,6 +1576,8 @@ in
           bind = $mainMod, O, fullscreen, 1  # fOcus
 
           bind = $mainMod CTRL, Q, exec, ${pkgs.swaylock}/bin/swaylock -fF -k -c 000000
+          # Toggle notification pane
+          bind = $mainMod CTRL, N, exec ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw
     '' + mergedConfig;
     };
 }
@@ -1589,9 +1602,103 @@ rec {
 - [X] Variables setup
 - [X] Base hotkeys setup
 - [X] Fix suspend
-- [ ] Pick out new notification/clipboard/whatever tools
+- [-] Pick out new notification/clipboard/whatever tools
+  - [X] notification
+  - [ ] Clipboard
+  - [ ] EWW
 - [ ] Check out [[https://wiki.hyprland.org/Configuring/Example-configurations/][examples]]
 - [ ] Move to different section in literate config
+
+****** Notification daemon
+
+#+begin_src nix :tangle modules/hyprland/notifications/default.nix
+{ pkgs, ... }:
+{
+  xdg.configFile."/swaync/config.json".text =
+    # Taken from swaync 0.8.0
+    ''
+      {
+        "$schema": "/etc/xdg/swaync/configSchema.json",
+        "positionX": "right",
+        "positionY": "top",
+        "layer": "top",
+        "cssPriority": "application",
+        "control-center-margin-top": 0,
+        "control-center-margin-bottom": 0,
+        "control-center-margin-right": 0,
+        "control-center-margin-left": 0,
+        "notification-icon-size": 64,
+        "notification-body-image-height": 100,
+        "notification-body-image-width": 200,
+        "timeout": 10,
+        "timeout-low": 5,
+        "timeout-critical": 0,
+        "fit-to-screen": true,
+        "control-center-width": 500,
+        "control-center-height": 600,
+        "notification-window-width": 500,
+        "keyboard-shortcuts": true,
+        "image-visibility": "when-available",
+        "transition-time": 200,
+        "hide-on-clear": false,
+        "hide-on-action": true,
+        "script-fail-notify": true,
+        "scripts": {
+          "example-script": {
+            "exec": "echo 'Do something...'",
+            "urgency": "Normal"
+          },
+          "example-action-script": {
+            "exec": "echo 'Do something actionable!'",
+            "urgency": "Normal",
+            "run-on": "action"
+          }
+        },
+        "notification-visibility": {
+          "example-name": {
+            "state": "muted",
+            "urgency": "Low",
+            "app-name": "Spotify"
+          }
+        },
+        "widgets": [
+          "inhibitors",
+          "title",
+          "dnd",
+          "notifications"
+        ],
+        "widget-config": {
+          "inhibitors": {
+            "text": "Inhibitors",
+            "button-text": "Clear All",
+            "clear-all-button": true
+          },
+          "title": {
+            "text": "Notifications",
+            "clear-all-button": true,
+            "button-text": "Clear All"
+          },
+          "dnd": {
+            "text": "Do Not Disturb"
+          },
+          "label": {
+            "max-lines": 5,
+            "text": "Label Text"
+          },
+          "mpris": {
+            "image-size": 96,
+            "image-radius": 12
+          }
+        }
+      }
+    ''
+  ;
+}
+#+end_src
+
+****** Clipboard daemon
+
+****** Widgets
 
 ****** TODO Restore swaylock pam.d config need
 
