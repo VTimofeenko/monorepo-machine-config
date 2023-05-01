@@ -194,8 +194,9 @@ in
           bind = $mainMod, O, fullscreen, 1  # fOcus
 
           bind = $mainMod CTRL, Q, exec, ${pkgs.swaylock}/bin/swaylock -fF -k -c 000000
+          bind = $mainMod CTRL, M, exit,
           # Toggle notification pane
-          bind = $mainMod CTRL, N, exec ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw
+          bind = $mainMod CTRL, N, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw
         '' + mergedConfig;
     };
 }
