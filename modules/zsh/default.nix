@@ -51,7 +51,7 @@ in
         ccopy = "${pkgs.wl-clipboard}/bin/wl-copy";
         syu = "systemctl --user";
         cde = "cd /etc/nixos";
-        lg = "lazygit";
+        lg = "${pkgs.lazygit}/bin/lazygit";
         # Colorize IP output
         ip = "ip -c";
       };
