@@ -3,10 +3,14 @@ let
   # Custom lib.nix for module-specific logic
   modLib = import ./lib.nix;
 
+  cliphist = "${pkgs.cliphist}/bin/cliphist";
+
   launchShortcuts =
     {
       "Return" = "exec, ${pkgs.kitty}/bin/kitty";
       "E" = "exec, ${pkgs.libsForQt5.dolphin}/bin/dolphin";
+      # Launches wofi with icons
+      "R" = "exec, ${pkgs.wofi}/bin/wofi --show drun -I";
     };
   focusShortcuts =
     {
@@ -53,6 +57,8 @@ in
           env = XCURSOR_SIZE,24
 
           exec-once = systemd-cat --identifier=swaync ${pkgs.swaynotificationcenter}/bin/swaync
+          # Clipboard manager
+          exec-once = ${pkgs.wl-clipboard}/bin/wl-paste --watch ${cliphist} store
 
           # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
           input {
@@ -197,6 +203,8 @@ in
           bind = $mainMod CTRL, M, exit,
           # Toggle notification pane
           bind = $mainMod CTRL, N, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw
+          # Clipboard history toggle
+          bind = $mainMod CTRL, C, exec, ${cliphist} list | ${pkgs.wofi}/bin/wofi --show dmenu | ${cliphist} decode | ${pkgs.wl-clipboard}/bin/wl-copy
         '' + mergedConfig;
     };
 }

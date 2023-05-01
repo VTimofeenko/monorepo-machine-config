@@ -1391,6 +1391,8 @@ let
     {
        "Return" = "exec, ${pkgs.kitty}/bin/kitty";
        "E" = "exec, ${pkgs.libsForQt5.dolphin}/bin/dolphin";
+       # Launches wofi with icons
+       "R" = "exec, ${pkgs.wofi}/bin/wofi --show drun -I";
     };
   focusShortcuts =
     {
