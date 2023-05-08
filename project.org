@@ -646,7 +646,7 @@ To use this module separately from `default` one:
 
 ***** CNCL Add mountpoint for the device :feat:
 CLOSED: [2023-03-01 Wed 08:22]
-
+**** TODO Firefox
 *** Development -- for development purposes
 
 **** Default
@@ -1264,6 +1264,8 @@ cursor_mode
 
 **** TODO Rewrite in literal style :doc:
 
+**** TODO alias where to "wh" to fzf find a binary :feat:
+
 **** DONE Correct the options to use something like ~programs.vt-zsh~ :chore:
 CLOSED: [2022-12-25 Sun 19:25]
 
@@ -1417,6 +1419,7 @@ in
   imports =
     [
       ./notifications
+      ./eww
     ];
   wayland.windowManager.hyprland =
     {
@@ -1706,7 +1709,44 @@ rec {
 #+end_src
 
 
-****** Widgets
+****** EWW -- Widgets
+
+#+begin_src nix :tangle modules/hyprland/eww/default.nix
+{ pkgs, config, lib, ... }:
+let
+  eww-yuck =
+      ''
+  (defwindow example
+           :monitor 0
+           :geometry (geometry
+                               :width "100%"
+                               :height "1%"
+                               :anchor "top center"
+                     )
+           :exclusive true	
+           :stacking "fg"
+           (button :class "tray" :halign "end" "''${time}")
+  )
+
+  (defpoll time :interval "20s"
+	`date +" %b %d %R"`)
+      '';
+  
+  
+  eww-scss =
+    ''
+    '';
+in
+{
+  # Generating the module dynamically => not using home manager module
+  home.packages = [ pkgs.eww-wayland ];
+  xdg.configFile =
+    {
+      "eww/eww.yuck".text = eww-yuck;
+      "eww/eww.scss".text = eww-scss;
+    };
+}
+#+end_src
 
 ****** Wofi
 
@@ -1774,6 +1814,8 @@ Needs special workspace tho
 ******* TODO Workspace renumber
 
 ****** TODO Colorscheme
+
+****** TODO Check out [[https://github.com/Slackadays/Clipboard][Clipboard]] :to_think:
 
 ***** Greeter
 
