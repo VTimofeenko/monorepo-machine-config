@@ -35,6 +35,7 @@ in
   imports =
     [
       ./notifications
+      ./eww
     ];
   wayland.windowManager.hyprland =
     {
