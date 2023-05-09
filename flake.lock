@@ -1571,7 +1571,7 @@
     "dsc": {
       "inputs": {
         "docspell-flake": "docspell-flake_3",
-        "flake-parts": "flake-parts",
+        "flake-parts": "flake-parts_2",
         "naersk": "naersk_13",
         "nixpkgs": [
           "private-config",
@@ -1599,7 +1599,7 @@
     "dsc_2": {
       "inputs": {
         "docspell-flake": "docspell-flake_5",
-        "flake-parts": "flake-parts_2",
+        "flake-parts": "flake-parts_3",
         "naersk": "naersk_14",
         "nixpkgs": [
           "private-config",
@@ -2188,6 +2188,23 @@
         "nixpkgs-lib": "nixpkgs-lib"
       },
       "locked": {
+        "lastModified": 1683560683,
+        "narHash": "sha256-XAygPMN5Xnk/W2c1aW0jyEa6lfMDZWlQgiNtmHXytPc=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "006c75898cf814ef9497252b022e91c946ba8e17",
+        "type": "github"
+      },
+      "original": {
+        "id": "flake-parts",
+        "type": "indirect"
+      }
+    },
+    "flake-parts_2": {
+      "inputs": {
+        "nixpkgs-lib": "nixpkgs-lib_2"
+      },
+      "locked": {
         "lastModified": 1675933616,
         "narHash": "sha256-/rczJkJHtx16IFxMmAWu5nNYcSXNg1YYXTHoGjLrLUA=",
         "owner": "hercules-ci",
@@ -2200,9 +2217,9 @@
         "type": "indirect"
       }
     },
-    "flake-parts_2": {
+    "flake-parts_3": {
       "inputs": {
-        "nixpkgs-lib": "nixpkgs-lib_2"
+        "nixpkgs-lib": "nixpkgs-lib_3"
       },
       "locked": {
         "lastModified": 1675933616,
@@ -3527,11 +3544,11 @@
         "xremap-flake": "xremap-flake"
       },
       "locked": {
-        "lastModified": 1682042783,
-        "narHash": "sha256-y4tKC52BZdcjdbrCOrEZbS0YtdWZQpZIDM2uiV7HDa8=",
+        "lastModified": 1683643424,
+        "narHash": "sha256-wn0PNoWuysnItKi1dtICW2FAXf1fRfG9DueWcXFLtmM=",
         "ref": "master",
-        "rev": "b6c54ae3eb9e0f686c90e0bcd36d9d734a3c23c1",
-        "revCount": 121,
+        "rev": "a71de09f76d3429cf345ac4f3ee659016392f762",
+        "revCount": 127,
         "type": "git",
         "url": "file:///home/spacecadet/code/sway-flake"
       },
@@ -5137,6 +5154,24 @@
     "nixpkgs-lib": {
       "locked": {
         "dir": "lib",
+        "lastModified": 1682879489,
+        "narHash": "sha256-sASwo8gBt7JDnOOstnps90K1wxmVfyhsTPPNTGBPjjg=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "da45bf6ec7bbcc5d1e14d3795c025199f28e0de0",
+        "type": "github"
+      },
+      "original": {
+        "dir": "lib",
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-lib_2": {
+      "locked": {
+        "dir": "lib",
         "lastModified": 1675183161,
         "narHash": "sha256-Zq8sNgAxDckpn7tJo7V1afRSk2eoVbu3OjI1QklGLNg=",
         "owner": "NixOS",
@@ -5152,7 +5187,7 @@
         "type": "github"
       }
     },
-    "nixpkgs-lib_2": {
+    "nixpkgs-lib_3": {
       "locked": {
         "dir": "lib",
         "lastModified": 1675183161,
@@ -7228,6 +7263,7 @@
         "agenix": "agenix",
         "base16": "base16",
         "color_scheme": "color_scheme",
+        "flake-parts": "flake-parts",
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "infra": "infra",

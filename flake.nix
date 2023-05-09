@@ -62,7 +62,7 @@
   };
 
   outputs =
-    inputs@{ nixpkgs
+    inputs@{ flake-parts
     , nixos-hardware
     , home-manager
     , agenix
@@ -72,177 +72,181 @@
     , self
     , ...
     }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [ ];
+      systems = [ "x86_64-linux" "aarch64-darwin" ];
 
-    let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs {
-        inherit system;
-        config = { allowUnfree = true; };
-        overlays = [
-          # nur.overlay
-          (final: prev: {
-            my_nvim = my-nvim-flake.defaultPackage."${system}";
-          })
-          my-sway-config.overlays.default
-        ];
-      };
-
-
-      commonModulesFromInputs = [
-        # Enable secrets management
-        agenix.nixosModules.default
-        home-manager.nixosModules.home-manager
-        inputs.my-tmux.nixosModule
+      perSystem = { config, self', inputs', pkgs, system, ... }:
         {
-          programs.vt-zsh = {
-            starship_enable = true;
-            direnv_enable = true;
-            gpg_enable = true;
-            enableAnyNixShell = true;
+          formatter = pkgs.nixpkgs-fmt;
+        };
+
+      flake = {
+
+        nixosModules = rec {
+          default = { ... }: {
+            imports = [
+              zsh
+              nix-config
+            ];
           };
-        }
-        {
-          home-manager.users.spacecadet = my-sway-config.nixosModules.default;
-        }
-        {
-          home-manager.users.spacecadet = { ... }: {
-            wayland.windowManager.sway.config = {
-              # Restore non-vm modifier
-              modifier = "Mod4";
-              # Output configuration
-              output = {
-                "eDP-1" = { "scale" = "1"; };
-              };
+          zsh = import ./modules/zsh;
+          nix-config = import ./modules/common/nix-config.nix;
+          swaySystemModule = import ./modules/sway/system;
+          homeVimConfig = import ./modules/vim;
+        };
+
+        nixosConfigurations =
+          let
+            _commonModulesFromInput =
+              [
+                agenix.nixosModules.default
+                home-manager.nixosModules.home-manager
+                inputs.my-tmux.nixosModule
+                {
+                  programs.vt-zsh =
+                    {
+                      starship_enable = true;
+                      direnv_enable = true;
+                      gpg_enable = true;
+                      enableAnyNixShell = true;
+                    };
+                }
+                { home-manager.users.spacecadet = my-sway-config.nixosModules.default; }
+                my-sway-config.nixosModules.system
+                {
+                  home-manager.users.spacecadet = { ... }: {
+                    wayland.windowManager.sway.config = {
+                      # Restore non-vm modifier
+                      modifier = "Mod4";
+                      # Output configuration
+                      output = {
+                        "eDP-1" = { "scale" = "1"; };
+                      };
+                    };
+                    vt-sway.enableBrightness = true;
+                  };
+                }
+                {
+                  # Needed, otherwise error
+                  # error: cannot look up '<nixpkgs>' in pure evaluation mode
+                  home-manager.useGlobalPkgs = true;
+                  home-manager.useUserPackages = true;
+                  home-manager.users.spacecadet.home.stateVersion = "22.05";
+                }
+                # My emacs module
+                {
+                  home-manager.users.spacecadet = inputs.my-doom-config.nixosModules.default;
+                }
+                inputs.wg-namespace-flake.nixosModules.default
+                private-config.nixosModules.commonNodeModule
+              ];
+            _commonLocalModules =
+              [
+                ./modules/applications
+                ./modules/common
+                ./modules/development
+                ./modules/development/cross-compile.nix
+                ./modules/development/virtualization.nix
+                ./modules/hardware/dygma.nix
+                ./modules/hardware/disks.nix
+                ./modules/hardware/printer.nix
+                ./modules/hardware/scanner.nix
+                ./modules/zsh
+
+                # Network
+                ./modules/network/common_lan.nix
+                ./modules/network/lan-wifi.nix
+              ];
+            mkMyModules = list: list ++ _commonLocalModules ++ _commonModulesFromInput;
+            _allUserModules =
+              [
+                self.nixosModules.homeVimConfig
+              ];
+            # A set of modules to be imported for the user-specific configuration
+            # TODO: move to homeConfigurations
+            _homeModules =
+              [
+                inputs.my-doom-config.nixosModules.default
+                inputs.hyprland.homeManagerModules.default
+
+                # my hyprland config
+                ./modules/hyprland
+                # kitty config
+                ./modules/applications/kitty.nix
+              ] ++ _allUserModules;
+
+            # pkgs = import nixpkgs {
+            #   inherit system;
+            #   config = { allowUnfree = true; };
+            #   overlays = [
+            #     # nur.overlay
+            #     (final: prev: {
+            #       my_nvim = my-nvim-flake.defaultPackage."${system}";
+            #     })
+            #     my-sway-config.overlays.default
+            #   ];
+            # };
+          in
+          {
+
+            uranium = inputs.nixpkgs.lib.nixosSystem {
+              system = "x86_64-linux";
+              modules = mkMyModules [
+                ./hosts/uranium
+                private-config.nixosModules.management-network-control-node
+                private-config.nixosModules.wg-namespace-config
+                ./modules/steam
+              ];
+              # NOTE:
+              # This makes the inputs propagate into the modules and allows modules to refer to the inputs
+              # See network configuration as an example
+              specialArgs = inputs;
             };
-            vt-sway.enableBrightness = true;
-          };
-        }
-        my-sway-config.nixosModules.system
-        {
-          # Needed, otherwise error
-          # error: cannot look up '<nixpkgs>' in pure evaluation mode
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.spacecadet.home.stateVersion = "22.05";
-        }
-        # My emacs module
-        {
-          home-manager.users.spacecadet = inputs.my-doom-config.nixosModules.default;
-        }
-        inputs.wg-namespace-flake.nixosModules.default
-        private-config.nixosModules.commonNodeModule
-      ];
 
-      commonCustomModules = [
-        ./modules/applications
-        ./modules/common
-        ./modules/development
-        ./modules/development/cross-compile.nix
-        ./modules/development/virtualization.nix
-        ./modules/hardware/dygma.nix
-        ./modules/hardware/disks.nix
-        ./modules/hardware/printer.nix
-        ./modules/hardware/scanner.nix
-        ./modules/zsh
+            neptunium = inputs.nixpkgs.lib.nixosSystem {
+              system = "x86_64-linux";
+              modules = [
+                ./hosts/neptunium
+                # private-config.nixosModules.management-network-control-node
+                # private-config.nixosModules.wg-namespace-config
+                # NOTE: not reuisng certain modules during sway setup
+                ./modules/zsh
+                ./modules/common
+                ./modules/hardware/dygma.nix
+                ./modules/network/common_lan.nix
+                agenix.nixosModules.default
+                home-manager.nixosModules.home-manager
+                inputs.my-tmux.nixosModule
+                inputs.hyprland.nixosModules.default
+                ./modules/sway/system/greeter.nix
+                ./modules/sway/system/hyprland.nix
+                ./modules/development/editor.nix
+                {
+                  programs.vt-zsh = {
+                    starship_enable = true;
+                    direnv_enable = true;
+                    gpg_enable = true;
+                    enableAnyNixShell = true;
+                  };
+                }
+                {
+                  # Needed, otherwise error
+                  # error: cannot look up '<nixpkgs>' in pure evaluation mode
+                  home-manager.useGlobalPkgs = true;
+                  home-manager.useUserPackages = true;
+                  home-manager.users.spacecadet.home.stateVersion = "22.05";
+                }
+                {
+                  home-manager.users.spacecadet = inputs.nixpkgs.lib.mkMerge _homeModules;
+                }
+              ];
+              specialArgs = inputs;
+            };
 
-        # Network
-        ./modules/network/common_lan.nix
-        ./modules/network/lan-wifi.nix
-      ];
-      # Function to keep everything similar
-      mkMyModules = list: list ++ commonModulesFromInputs ++ commonCustomModules;
-    in
-
-    rec {
-      nixosConfigurations =
-        let
-          _allUserModules =
-            [
-              self.nixosModules.homeVimConfig
-            ];
-          # A set of modules to be imported for the user-specific configuration
-          _homeModules =
-            [
-              inputs.my-doom-config.nixosModules.default
-              inputs.hyprland.homeManagerModules.default
-
-              # my hyprland config
-              ./modules/hyprland
-              # kitty config
-              ./modules/applications/kitty.nix
-            ] ++ _allUserModules;
-        in
-        {
-
-          uranium = nixpkgs.lib.nixosSystem {
-            inherit pkgs system;
-            modules = mkMyModules [
-              ./hosts/uranium
-              private-config.nixosModules.management-network-control-node
-              private-config.nixosModules.wg-namespace-config
-              ./modules/steam
-            ];
-            # NOTE:
-            # This makes the inputs propagate into the modules and allows modules to refer to the inputs
-            # See network configuration as an example
-            specialArgs = inputs;
+            # Closing bracket for nixosConfigurations
           };
 
-          neptunium = nixpkgs.lib.nixosSystem {
-            inherit pkgs system;
-            modules = [
-              ./hosts/neptunium
-              # private-config.nixosModules.management-network-control-node
-              # private-config.nixosModules.wg-namespace-config
-              # NOTE: not reuisng certain modules during sway setup
-              ./modules/zsh
-              ./modules/common
-              ./modules/hardware/dygma.nix
-              ./modules/network/common_lan.nix
-              agenix.nixosModules.default
-              home-manager.nixosModules.home-manager
-              inputs.my-tmux.nixosModule
-              inputs.hyprland.nixosModules.default
-              ./modules/sway/system/greeter.nix
-              ./modules/sway/system/hyprland.nix
-              ./modules/development/editor.nix
-              {
-                programs.vt-zsh = {
-                  starship_enable = true;
-                  direnv_enable = true;
-                  gpg_enable = true;
-                  enableAnyNixShell = true;
-                };
-              }
-              {
-                # Needed, otherwise error
-                # error: cannot look up '<nixpkgs>' in pure evaluation mode
-                home-manager.useGlobalPkgs = true;
-                home-manager.useUserPackages = true;
-                home-manager.users.spacecadet.home.stateVersion = "22.05";
-              }
-              {
-                home-manager.users.spacecadet = pkgs.lib.mkMerge _homeModules;
-              }
-            ];
-            specialArgs = inputs;
-          };
-        };
-
-      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
-
-      nixosModules = rec {
-        default = { ... }: {
-          imports = [
-            zsh
-            nix-config
-          ];
-        };
-        zsh = import ./modules/zsh;
-        nix-config = import ./modules/common/nix-config.nix;
-        swaySystemModule = import ./modules/sway/system;
-        homeVimConfig = import ./modules/vim;
       };
-
     };
 }
