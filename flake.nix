@@ -104,7 +104,7 @@
                   modules =
                     [
                       ./homeConfigurations/home.nix
-                      ./homeConifugrations/vim
+                      ./homeConfigurations/vim
                       ./homeConfigurations/_perUser/vtimofeenko.nix
                     ];
                 };
