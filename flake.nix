@@ -87,7 +87,6 @@
             rec {
               default = hmc
                 {
-                  stateVersion = "22.11";
                   modules =
                     [
                       ./homeConfigurations/home.nix
@@ -98,10 +97,9 @@
                 };
               deck = hmc
                 {
-                  stateVersion = "22.11";
-                  homeDirectory = "/hhome/deck";
                   modules =
                     [
+                      ./homeConfigurations/home.nix
                       ./homeConfigurations/vim
                       ./homeConfigurations/kitty
                       ./homeConfigurations/zsh
