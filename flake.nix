@@ -83,30 +83,31 @@
           legacyPackages.homeConfigurations =
             let
               hmc = attrset: home-manager.lib.homeManagerConfiguration ({ inherit pkgs; } // attrset); # shortcut
+              _defaultModules =
+                [
+                  ./homeConfigurations/home.nix
+                  ./homeConfigurations/vim
+                  ./homeConfigurations/kitty
+                  ./homeConfigurations/zsh
+                ];
             in
             rec {
-              default = hmc
-                {
-                  modules =
-                    [
-                      ./homeConfigurations/home.nix
-                      ./homeConfigurations/vim
-                      ./homeConfigurations/kitty
-                      ./homeConfigurations/zsh
-                    ];
-                };
               deck = hmc
                 {
                   modules =
+                    _defaultModules
+                    ++
+                    [ ./homeConfigurations/_perUser/deck.nix ];
+                };
+              vtimofeenko = hmc
+                {
+                  modules =
                     [
                       ./homeConfigurations/home.nix
-                      ./homeConfigurations/vim
-                      ./homeConfigurations/kitty
-                      ./homeConfigurations/zsh
-                      ./homeConfigurations/_perUser/deck.nix
+                      ./homeConifugrations/vim
+                      ./homeConfigurations/_perUser/vtimofeenko.nix
                     ];
                 };
-              vtimofeenko = default;
               spacecadet = hmc
                 {
                   modules =
