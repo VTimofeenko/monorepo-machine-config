@@ -216,11 +216,445 @@ outputs = inputs@{ flake-parts
 I prefer nixpkgs-fmt formatter. Using ~formatter~ output, one can be specified in the flake itself:
 
 #+begin_src nix :tangle flake.nix
-    perSystem = { config, self', inputs', pkgs, system, ... }:
+  perSystem = { config, self', inputs', pkgs, system, ... }:
+    {
+      formatter = pkgs.nixpkgs-fmt;
+#+end_src
+
+*** homeConfigurations
+
+This section contains modules that can be imported into home manager.
+
+#+begin_src nix :tangle flake.nix
+
+legacyPackages.homeConfigurations =
+  let
+    hmc = attrset: home-manager.lib.homeManagerConfiguration { inherit pkgs; } // attrset;  # shortcut
+  in
+  rec {
+    default = hmc
       {
-        formatter = pkgs.nixpkgs-fmt;
+        modules =
+          [
+            ./homeConfigurations/home.nix
+            ./homeConfigurations/vim
+            ./homeConfigurations/kitty
+            ./homeConfigurations/zsh
+          ];
+      };
+    deck = default // hmc
+      {
+        modules =
+          [
+            ./homeConfigurations/_perUser/deck.nix
+          ];
+      };
+    vtimofeenko = default;
+    spacecadet = hmc
+      {
+        modules =
+          [
+            ./homeConfigurations/home.nix
+            ./homeConfigurations/vim
+          ];
       };
 #+end_src
+
+***** TODO Add kitty and zsh to spacecadet config once system zsh is gone
+**** Modules
+
+***** Base home.nix
+
+#+begin_src nix :tangle homeConfigurations/base.nix
+{ config, pkgs, ... }:
+{
+  home.stateVersion = "22.11";
+  programs.home-manager.enable = true;
+}
+#+end_src
+
+****** Reference
+
+- Add a per-user package through ~home.packages = [ ... ]~
+- Add per-user file:
+
+  #+begin_src nix :tangle no
+home.file =
+  {
+    ".screenrc".text = "foo";
+  };
+
+  #+end_src
+
+***** Vim
+
+Having switched to emacs for most of text-based work, I still use neovim for one-off editing stuff in terminal.
+
+The module described in this section should be used by root and human users on my machines as well as on MacOS, thus I am using home manager module as the platform-agnostic way.
+
+#+begin_src nix :tangle homeConfigurations/vim/default.nix
+# Home manager module that configures neovim with some plugins
+{ pkgs, config, lib, ... }:
+{
+  programs.neovim =
+    {
+      enable = true;
+      viAlias = true;
+      vimAlias = true;
+      vimdiffAlias = true;
+      plugins =
+        with pkgs.vimPlugins; [
+          vim-surround
+          vim-nix
+          delimitMate
+        ];
+      extraConfig =
+        ''
+          syntax on
+
+          let mapleader="\<Space>"
+
+          nnoremap <leader>wl <C-w>l
+          nnoremap <leader>wk <C-w>k
+          nnoremap <leader>wj <C-w>j
+          nnoremap <leader>wh <C-w>h
+
+          nnoremap <silent> <leader>ws :split<CR>
+          nnoremap <silent> <leader>wv :vsplit<CR>
+          " close the _window_, not the buffer
+          nnoremap <silent> <leader>wd <C-w>c
+
+          set number relativenumber
+          set modelines=1
+          set autoindent
+          set ignorecase
+          set smartcase incsearch
+          filetype plugin on
+
+          " cursor shapes in insert/normal modes
+          let &t_SI = "\e[6 q"
+          let &t_EI = "\e[2 q"
+          hi Visual term=bold,reverse cterm=bold,reverse
+          set expandtab
+          set tabstop=4
+          set shiftwidth=4
+          set autoread
+          autocmd FileType nix setlocal tabstop=2 shiftwidth=2
+          autocmd BufWritePost,FileWritePost *.nix silent !nix fmt >/dev/null 2>&1
+ 
+          set clipboard=unnamed${if system != "aarch64-darwin" then "plus" else ""}
+          set mouse=
+        '';
+    };
+}
+#+end_src
+
+****** TODO Make nix fmt async :feat:
+
+***** Zsh
+
+****** Base module
+
+#+begin_src nix :tangle homeConfigurations/zsh/default.nix
+# home-manager clone of the OG zsh
+{ pkgs, config, lib, ... }:
+{
+  home.packages = [
+    pkgs.fzf
+  ];
+  programs.zsh =
+    {
+      enable = true;
+      enableAutosuggestions = true;
+      enableCompletion = true;
+      enableSyntaxHighlighting = true;
+      autocd = true;
+      defaultKeymap = "vicmd";
+      dotDir = ".config/zsh";
+      history =
+        {
+          extended = true;
+          ignoreDups = true;
+          ignorePatterns = [ "rm *" "pkill *" ];
+          ignoreSpace = false;
+        };
+      initExtra =
+        ''
+          setopt BANG_HIST
+          setopt INTERACTIVE_COMMENTS
+          setopt HIST_VERIFY
+          setopt HIST_FCNTL_LOCK
+          # Enable vim editing of command line
+          ${builtins.readFile ./plugins/01-vim-edit.zsh}
+          # Enable cd +1..9 to go back in dir stack
+          ${builtins.readFile ./plugins/02-cd.zsh}
+          # fzf bindings
+          source ${pkgs.fzf}/share/fzf/key-bindings.zsh
+          # Word Navigation shortcuts
+          bindkey "^A" vi-beginning-of-line
+          bindkey "^E" vi-end-of-line
+          bindkey "^F" end-of-line
+          # ctrl+arrow for word jupming
+          bindkey "^[[1;5C" forward-word
+          bindkey "^[[1;5D" backward-word
+          # alt+f forward a word
+          bindkey "^[f" forward-word
+          # alt+b back a word
+          bindkey "^[b" backward-word
+          # working backspace
+          bindkey -v '^?' backward-delete-char
+          # Use vim keys in tab complete menu
+          zmodload zsh/complist
+          bindkey -M menuselect 'h' vi-backward-char
+          bindkey -M menuselect 'k' vi-up-line-or-history
+          bindkey -M menuselect 'l' vi-forward-char
+          bindkey -M menuselect 'j' vi-down-line-or-history
+          bindkey -M menuselect '^ ' accept-line
+          # Add entry by "+" but do not exit menuselect
+          bindkey -M menuselect "+" accept-and-menu-complete
+          # Color the completions
+          autoload -Uz compinit
+          zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:l
+ower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
+          zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
+          zstyle ':completion:*' menu select
+          # Automatically escape urls when pasting
+          autoload -Uz url-quote-magic
+          zle -N self-insert url-quote-magic
+          autoload -Uz bracketed-paste-magic
+          zle -N bracketed-paste bracketed-paste-magic
+          # Custom plugins can be quickly loaded if fpath is extended:
+          fpath=(${./plugins} $fpath)
+          # Bookmarks by "@@"
+          autoload -Uz bookmarks.zsh && bookmarks.zsh
+          # Cursor mode block <> beam
+          autoload -Uz cursor_mode.zsh && cursor_mode.zsh
+          # alias that creates the directory and changes into it
+          mkcd(){ mkdir -p "$@" && cd "$@"; }
+        '';
+      shellAliases = {
+        e = "$EDITOR";
+        nvim = "$EDITOR";
+        vim = "$EDITOR";
+        ls = "${pkgs.exa}/bin/exa -h --group-directories-first --icons";
+        l = "ls";
+        ll = "ls -l";
+        la = "ls -al";
+        ka = "${pkgs.killall}/bin/killall";
+        mkd = "mkdir -pv";
+        ga = "${pkgs.git}/bin/git add";
+        gau = "ga -u";
+        grep = "grep --color=auto";
+        mv = "mv -v";
+        rm = "${pkgs.coreutils}/bin/rm -id";
+        vidir = "${pkgs.moreutils}/bin/vidir --verbose";
+        ccopy = "${pkgs.wl-clipboard}/bin/wl-copy";
+        syu = "systemctl --user";
+        cde = "cd /etc/nixos";
+        lg = "${pkgs.lazygit}/bin/lazygit";
+        # Colorize IP output
+        ip = "ip -c";
+      };
+    };
+  programs.starship =
+    {
+      enable = true;
+      enableBashIntegration = false;
+      enableFishIntegration = false;
+      enableIonIntegration = false;
+      enableNushellIntegration = false;
+    };
+}
+#+end_src
+
+****** ZSH modules
+
+******* 01-vim-edit
+
+#+begin_src sh :tangle homeConfigurations/zsh/plugins/01-vim-edit.zsh
+# vim style editing
+bindkey -v
+
+autoload edit-command-line; zle -N edit-command-line
+bindkey -M vicmd jk edit-command-line  # jk chord to edit the current line
+#+end_src
+
+******* 02-cd
+
+#+begin_src sh :tangle homeConfigurations/zsh/plugins/02-cd.zsh
+# File that sets the behavior of cd command
+setopt autocd
+
+# dirs stack manipulation
+setopt AUTO_PUSHD           # Push the current directory visited on the stack.
+setopt PUSHD_IGNORE_DUPS    # Do not store duplicates in the stack.
+setopt PUSHD_SILENT         # Do not print the directory stack after
+
+# Enabled cd +X to change directory to somewhere in stack
+alias d='dirs -v' # prints stack of directories
+for index ({1..9}) alias "$index"="cd +${index}"; unset index
+#+end_src
+
+******* bookmarks
+
+#+begin_src sh :tangle homeConfigurations/zsh/plugins/bookmarks.zsh
+# -*- sh -*-
+autoload is-at-least
+# Source: https://github.com/vincentbernat/zshrc/blob/master/rc/bookmarks.zsh
+# Changed by Vladimir Timofeenko, changed MARKPATH to local share for persistence
+
+# Handle bookmarks. This uses the static named directories feature of
+# zsh. Such directories are declared with `hash -d
+# name=directory`. Both prompt expansion and completion know how to
+# handle them. We populate the hash with directories.
+#
+# With autocd, you can just type `~-bookmark`. Since this can be
+# cumbersome to type, you can also type `@@` and this will be turned
+# into `~-` by ZLE.
+
+is-at-least 4.3.12 && () {
+    MARKPATH="${HOME}/.local/share/zsh/bookmarks"
+
+    # Add some static entries
+    hash -d log=/var/log
+    hash -d doc=/usr/share/doc
+
+    # Populate the hash
+    for link ($MARKPATH/*(N@)) {
+        hash -d -- -${link:t}=${link:A}
+    }
+
+    vbe-insert-bookmark() {
+        emulate -L zsh
+        LBUFFER=${LBUFFER}"~-"
+    }
+    zle -N vbe-insert-bookmark
+    bindkey '@@' vbe-insert-bookmark
+
+    # Manage bookmarks
+    bookmark() {
+        [[ -d $MARKPATH ]] || mkdir -p $MARKPATH
+        if (( $# == 0 )); then
+            # When no arguments are provided, just display existing
+            # bookmarks
+            for link in $MARKPATH/*(N@); do
+                local markname=${(%):-%F{green}${link:t}%f}
+                local markpath=${(%):-%F{blue}${link:A}%f}
+                printf "%-30s → %s\n" $markname $markpath
+            done
+        else
+            # Otherwise, we may want to add a bookmark or delete an
+            # existing one.
+            local -a delete
+            zparseopts -D d=delete
+            if (( $+delete[1] )); then
+                # With `-d`, we delete an existing bookmark
+                command rm $MARKPATH/$1
+            else
+                # Otherwise, add a bookmark to the current
+                # directory. The first argument is the bookmark
+                # name. `.` is special and means the bookmark should
+                # be named after the current directory.
+                local name=$1
+                [[ $name == "." ]] && name=${PWD:t}
+                ln -s $PWD $MARKPATH/$name
+                hash -d -- -${name}=${PWD}
+            fi
+        fi
+    }
+}
+#+end_src
+
+******* cursor_mode
+
+#+begin_src sh :tangle homeConfigurations/zsh/plugins/cursor_mode.zsh
+cursor_mode() {
+    # See https://ttssh2.osdn.jp/manual/4/en/usage/tips/vim.html for cursor shapes
+    cursor_block='\e[2 q'
+
+    cursor_beam='\e[6 q'
+
+    function zle-keymap-select {
+        if [[ ${KEYMAP} == vicmd ]] ||
+            [[ $1 = 'block' ]]; then
+            echo -ne $cursor_block
+        elif [[ ${KEYMAP} == main ]] ||
+            [[ ${KEYMAP} == viins ]] ||
+            [[ ${KEYMAP} = '' ]] ||
+            [[ $1 = 'beam' ]]; then
+            echo -ne $cursor_beam
+        fi
+    }
+
+    zle-line-init() {
+        echo -ne $cursor_beam
+    }
+
+    zle -N zle-keymap-select
+    zle -N zle-line-init
+}
+
+cursor_mode
+#+end_src
+
+
+***** Kitty
+
+#+begin_src nix :tangle homeConfigurations/kitty/default.nix
+{ pkgs, ... }:
+
+{
+  programs.kitty = {
+    enable = true;
+    # theme = "Neopolitan";
+    theme = "Doom Vibrant";
+    settings = {
+      cursor_blink_interval = 0;
+      background_opacity = "0.95";
+      inactive_text_alpha = "0.85";
+      cursor = "none";
+      enable_audio_bell = false;
+      tab_bar_margin_width = 9;
+      tab_bar_margin_height = "2 2";
+      tab_bar_style = "separator";
+      tab_bar_min_tabs = 2;
+      tab_bar_edge = "bottom";
+      tab_title_template = "{fmt.fg.white} {title.split()[0]} ";
+      active_tab_title_template = "{fmt.noitalic}{fmt.bg.black}{fmt.fg.white} {title.split()[0]} ";
+    };
+    keybindings = {
+      # Opens a new Kitty window in the current working directory
+      "kitty_mod+enter" = "launch --cwd=current";
+    };
+  };
+}
+#+end_src
+
+***** TODO Re-export doom emacs :feat:
+
+**** Specific user customizations
+
+***** Deck
+
+#+begin_src nix :tangle homeConfigurations/_perUser/deck.nix
+{ lib, ... }:
+{
+  programs.kitty.package = lib.mkForce pkgs.hello; # Workaround for kitty not getting needed opengl on arch
+}
+#+end_src
+
+**** Outro :noexport:
+#+begin_src nix :tangle flake.nix
+# homeConfigurations closing bracket
+};
+#+end_src
+
+*** Outro :noexport:
+#+begin_src nix :tangle flake.nix
+# perSystem closing bracket
+};
+#+end_src
+
 
 ** flake output (modules, nixosConfigurations)
 
@@ -245,7 +679,6 @@ this section contains the modules that can be reused without using the rest of t
       zsh = import ./modules/zsh;
       nix-config = import ./modules/common/nix-config.nix;
       swaySystemModule = import ./modules/sway/system;
-      homeVimConfig = import ./modules/vim;
     };
 #+end_src
 
@@ -319,7 +752,7 @@ this section contains the modules that can be reused without using the rest of t
       mkMyModules = list: list ++ _commonLocalModules ++ _commonModulesFromInput;
       _allUserModules =
         [
-          self.nixosModules.homeVimConfig
+          ./homeConfigurations/vim
         ];
       # A set of modules to be imported for the user-specific configuration
       # TODO: move to homeConfigurations
@@ -2352,56 +2785,6 @@ See "zsh as an alternative session", the name of the session in the list may be 
 }
 #+end_src
 
-**** (neo)vim
-
-Having switched to emacs for most of text-based work, I still use neovim for one-off editing stuff in terminal.
-
-The module described in this section should be used by root and human users on my machines as well as on MacOS, thus I am using home manager module as the platform-agnostic way.
-
-#+begin_src nix :tangle modules/vim/default.nix
-# Home manager module that configures neovim with some plugins
-{ pkgs, config, lib, ... }:
-{
-  programs.neovim =
-    {
-      enable = true;
-      viAlias = true;
-      vimAlias = true;
-      vimdiffAlias = true;
-      plugins =
-        with pkgs.vimPlugins; [
-          vim-surround
-        ];
-      extraConfig =
-        ''
-          syntax on
-
-          let mapleader="\<Space>"
-
-          nnoremap <leader>wl <C-w>l
-          nnoremap <leader>wk <C-w>k
-          nnoremap <leader>wj <C-w>j
-          nnoremap <leader>wh <C-w>h
-
-          nnoremap <silent> <leader>ws :split<CR>
-          nnoremap <silent> <leader>wv :vsplit<CR>
-          " close the _window_, not the buffer
-          nnoremap <silent> <leader>wd <C-w>c
-
-          set number relativenumber
-          set modelines=1
-          set autoindent
-          set ignorecase
-          set smartcase incsearch
-          filetype plugin on
-
-          " cursor shapes in insert/normal modes
-          let &t_SI = "\e[6 q"
-          let &t_EI = "\e[2 q"
-        '';
-    };
-}
-#+end_src
 
 *** Hosts
 

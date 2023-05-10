@@ -79,6 +79,43 @@
       perSystem = { config, self', inputs', pkgs, system, ... }:
         {
           formatter = pkgs.nixpkgs-fmt;
+
+          legacyPackages.homeConfigurations =
+            let
+              hmc = attrset: home-manager.lib.homeManagerConfiguration { inherit pkgs; } // attrset; # shortcut
+            in
+            rec {
+              default = hmc
+                {
+                  modules =
+                    [
+                      ./homeConfigurations/home.nix
+                      ./homeConfigurations/vim
+                      ./homeConfigurations/kitty
+                      ./homeConfigurations/zsh
+                    ];
+                };
+              deck = default // hmc
+                {
+                  modules =
+                    [
+                      ./homeConfigurations/_perUser/deck.nix
+                    ];
+                };
+              vtimofeenko = default;
+              spacecadet = hmc
+                {
+                  modules =
+                    [
+                      ./homeConfigurations/home.nix
+                      ./homeConfigurations/vim
+                    ];
+                };
+
+              # homeConfigurations closing bracket
+            };
+
+          # perSystem closing bracket
         };
 
       flake = {
@@ -93,7 +130,6 @@
           zsh = import ./modules/zsh;
           nix-config = import ./modules/common/nix-config.nix;
           swaySystemModule = import ./modules/sway/system;
-          homeVimConfig = import ./modules/vim;
         };
 
         nixosConfigurations =
@@ -161,7 +197,7 @@
             mkMyModules = list: list ++ _commonLocalModules ++ _commonModulesFromInput;
             _allUserModules =
               [
-                self.nixosModules.homeVimConfig
+                ./homeConfigurations/vim
               ];
             # A set of modules to be imported for the user-specific configuration
             # TODO: move to homeConfigurations
