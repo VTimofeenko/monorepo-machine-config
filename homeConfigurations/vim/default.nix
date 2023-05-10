@@ -10,6 +10,7 @@
       plugins =
         with pkgs.vimPlugins; [
           vim-surround
+          vim-commentary
           vim-nix
           delimitMate
         ];
