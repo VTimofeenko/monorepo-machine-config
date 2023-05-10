@@ -222,6 +222,7 @@ I prefer nixpkgs-fmt formatter. Using ~formatter~ output, one can be specified i
 #+end_src
 
 *** homeConfigurations
+**** Flake.nix
 
 This section contains modules that can be imported into home manager.
 
@@ -265,7 +266,7 @@ legacyPackages.homeConfigurations =
 
 ***** Base home.nix
 
-#+begin_src nix :tangle homeConfigurations/base.nix
+#+begin_src nix :tangle homeConfigurations/home.nix
 { config, pkgs, ... }:
 {
   home.stateVersion = "22.11";
@@ -305,6 +306,7 @@ The module described in this section should be used by root and human users on m
       plugins =
         with pkgs.vimPlugins; [
           vim-surround
+          vim-commentary
           vim-nix
           delimitMate
         ];
