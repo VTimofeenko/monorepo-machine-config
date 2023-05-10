@@ -87,6 +87,7 @@
             rec {
               default = hmc
                 {
+                  stateVersion = "22.11";
                   modules =
                     [
                       ./homeConfigurations/home.nix
