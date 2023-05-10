@@ -96,10 +96,15 @@
                       ./homeConfigurations/zsh
                     ];
                 };
-              deck = default // hmc
+              deck = hmc
                 {
+                  stateVersion = "22.11";
+                  homeDirectory = "/hhome/deck";
                   modules =
                     [
+                      ./homeConfigurations/vim
+                      ./homeConfigurations/kitty
+                      ./homeConfigurations/zsh
                       ./homeConfigurations/_perUser/deck.nix
                     ];
                 };
