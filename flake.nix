@@ -82,7 +82,7 @@
 
           legacyPackages.homeConfigurations =
             let
-              hmc = attrset: home-manager.lib.homeManagerConfiguration { inherit pkgs; } // attrset; # shortcut
+              hmc = attrset: home-manager.lib.homeManagerConfiguration ({ inherit pkgs; } // attrset); # shortcut
             in
             rec {
               default = hmc
