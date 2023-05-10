@@ -231,30 +231,31 @@ This section contains modules that can be imported into home manager.
 legacyPackages.homeConfigurations =
   let
     hmc = attrset: home-manager.lib.homeManagerConfiguration ({ inherit pkgs; } // attrset);  # shortcut
-  in
-  rec {
-    default = hmc
-      {
-        modules =
+    _defaultModules =
           [
             ./homeConfigurations/home.nix
             ./homeConfigurations/vim
             ./homeConfigurations/kitty
             ./homeConfigurations/zsh
           ];
-      };
+  in
+  rec {
     deck = hmc
       {
         modules =
+          _defaultModules
+          ++
+          [ ./homeConfigurations/_perUser/deck.nix ];
+      };
+    vtimofeenko = hmc
+      {
+        modules =
           [
             ./homeConfigurations/home.nix
-            ./homeConfigurations/vim
-            ./homeConfigurations/kitty
-            ./homeConfigurations/zsh
-            ./homeConfigurations/_perUser/deck.nix
+            ./homeConifugrations/vim
+            ./homeConfigurations/_perUser/vtimofeenko.nix
           ];
       };
-    vtimofeenko = default;
     spacecadet = hmc
       {
         modules =
@@ -648,6 +649,17 @@ cursor_mode
   programs.kitty.package = lib.mkForce pkgs.hello; # Workaround for kitty not getting needed opengl on arch
   home.username = "deck";
   home.homeDirectory = "/home/deck";
+}
+#+end_src
+
+***** Vtimofeenko
+
+#+begin_src nix :tangle homeConfigurations/_perUser/vtimofeenko.nix
+{ pkgs, lib, config, ... }:
+{
+  programs.kitty.package = lib.mkForce pkgs.hello; # Workaround for kitty not getting needed opengl on arch
+  home.username = "vtimofeenko";
+  home.homeDirectory = "/Users/vtimofeenko";
 }
 #+end_src
 
