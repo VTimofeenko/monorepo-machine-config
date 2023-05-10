@@ -643,9 +643,11 @@ cursor_mode
 ***** Deck
 
 #+begin_src nix :tangle homeConfigurations/_perUser/deck.nix
-{ lib, ... }:
+{ pkgs, lib, config, ... }:
 {
   programs.kitty.package = lib.mkForce pkgs.hello; # Workaround for kitty not getting needed opengl on arch
+  home.username = "deck";
+  home.homeDirectory = "/home/deck";
 }
 #+end_src
 
