@@ -238,6 +238,7 @@
                 private-config.nixosModules.management-network-control-node
                 private-config.nixosModules.wg-namespace-config
                 ./modules/steam
+                { nixpkgs.overlays = [ my-sway-config.overlays.default ]; }
               ];
               # NOTE:
               # This makes the inputs propagate into the modules and allows modules to refer to the inputs
