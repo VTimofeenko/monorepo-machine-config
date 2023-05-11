@@ -3544,11 +3544,11 @@
         "xremap-flake": "xremap-flake"
       },
       "locked": {
-        "lastModified": 1683643424,
-        "narHash": "sha256-wn0PNoWuysnItKi1dtICW2FAXf1fRfG9DueWcXFLtmM=",
+        "lastModified": 1683813904,
+        "narHash": "sha256-BMOITo1smPYBQP37tMmj0Qoun+0RCCbm22ltSjJkN30=",
         "ref": "master",
-        "rev": "a71de09f76d3429cf345ac4f3ee659016392f762",
-        "revCount": 127,
+        "rev": "6e9b9c2519f281813e894b46db5e4ac36f7b4c3f",
+        "revCount": 128,
         "type": "git",
         "url": "file:///home/spacecadet/code/sway-flake"
       },
