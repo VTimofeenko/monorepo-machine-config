@@ -179,6 +179,7 @@
                 {
                   home-manager.users.spacecadet = inputs.my-doom-config.nixosModules.default;
                 }
+                { home-manager.users.spacecadet = import ./homeConfigurations/vim; }
                 inputs.wg-namespace-flake.nixosModules.default
                 private-config.nixosModules.commonNodeModule
               ];
