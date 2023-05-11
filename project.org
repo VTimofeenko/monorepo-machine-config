@@ -256,14 +256,6 @@ legacyPackages.homeConfigurations =
             ./homeConfigurations/_perUser/vtimofeenko.nix
           ];
       };
-    spacecadet = hmc
-      {
-        modules =
-          [
-            ./homeConfigurations/home.nix
-            ./homeConfigurations/vim
-          ];
-      };
 #+end_src
 
 ***** TODO Add kitty and zsh to spacecadet config once system zsh is gone

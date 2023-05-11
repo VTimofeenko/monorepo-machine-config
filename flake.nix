@@ -108,14 +108,6 @@
                       ./homeConfigurations/_perUser/vtimofeenko.nix
                     ];
                 };
-              spacecadet = hmc
-                {
-                  modules =
-                    [
-                      ./homeConfigurations/home.nix
-                      ./homeConfigurations/vim
-                    ];
-                };
 
               # homeConfigurations closing bracket
             };
