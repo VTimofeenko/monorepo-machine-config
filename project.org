@@ -2658,8 +2658,6 @@ in
 
 ******** TODO Style wofi :feat:
 
-******* TODO Restore swaylock pam.d config need
-
 
 ******* TODO Global "hyper+e" = emacs
 
