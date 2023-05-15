@@ -353,6 +353,8 @@ The module described in this section should be used by root and human users on m
 
 ***** Zsh
 
+Useable as ~./homeConfigurations/zsh~.
+
 ****** Base module
 
 #+begin_src nix :tangle homeConfigurations/zsh/default.nix
@@ -466,6 +468,10 @@ ower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
     };
 }
 #+end_src
+
+****** TODO Add noti for async notifications :feat:
+
+https://github.com/variadico/noti/releases/tag/3.7.0
 
 ****** ZSH modules
 
@@ -597,6 +603,9 @@ cursor_mode() {
 cursor_mode
 #+end_src
 
+****** TODO Add system-wide completions :feat:
+
+****** TODO Fix the charmap being displayed on shell start :fix:
 
 ***** Kitty
 
