@@ -6788,17 +6788,18 @@
         ]
       },
       "locked": {
-        "lastModified": 1679932382,
-        "narHash": "sha256-XLxalV2Ir+5vnjmZdPYgHQhq2BXv9NTEVOVBNbuzRF4=",
-        "ref": "refs/heads/master",
-        "rev": "abfeb39efeb5fe8d0714490d13afd3025aa7ad02",
-        "revCount": 46,
+        "lastModified": 1684024395,
+        "narHash": "sha256-pNi2sfhd/dsAh+f3spCxu+M6ui5f77Ijt5r27s53V+M=",
+        "ref": "master",
+        "rev": "50670b7cf27a12249f5025068c30e39aa075539f",
+        "revCount": 54,
         "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-flake.git"
+        "url": "file:///home/spacecadet/code/private-flake"
       },
       "original": {
+        "ref": "master",
         "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-flake.git"
+        "url": "file:///home/spacecadet/code/private-flake"
       }
     },
     "private-config_2": {
