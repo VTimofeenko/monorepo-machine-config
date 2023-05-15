@@ -197,6 +197,7 @@
             _allUserModules =
               [
                 ./homeConfigurations/vim
+                ./homeConfigurations/zsh
               ];
             # A set of modules to be imported for the user-specific configuration
             # TODO: move to homeConfigurations
@@ -247,7 +248,7 @@
                 # private-config.nixosModules.management-network-control-node
                 # private-config.nixosModules.wg-namespace-config
                 # NOTE: not reuisng certain modules during sway setup
-                ./modules/zsh
+                # ./modules/zsh
                 ./modules/common
                 ./modules/hardware/dygma.nix
                 ./modules/network/common_lan.nix
@@ -258,14 +259,14 @@
                 ./modules/sway/system/greeter.nix
                 ./modules/sway/system/hyprland.nix
                 ./modules/development/editor.nix
-                {
-                  programs.vt-zsh = {
-                    starship_enable = true;
-                    direnv_enable = true;
-                    gpg_enable = true;
-                    enableAnyNixShell = true;
-                  };
-                }
+                # {
+                #   programs.vt-zsh = {
+                #     starship_enable = true;
+                #     direnv_enable = true;
+                #     gpg_enable = false;
+                #     enableAnyNixShell = true;
+                #   };
+                # }
                 {
                   # Needed, otherwise error
                   # error: cannot look up '<nixpkgs>' in pure evaluation mode
@@ -276,6 +277,7 @@
                 {
                   home-manager.users.spacecadet = inputs.nixpkgs.lib.mkMerge _homeModules;
                 }
+                private-config.nixosModules.commonNodeModule
               ];
               specialArgs = inputs;
             };
