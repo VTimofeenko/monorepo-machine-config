@@ -19,7 +19,8 @@
       flake = false;
     };
     private-config = {
-      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-flake.git";
+      url = "git+file:///home/spacecadet/code/private-flake?ref=master";
+      # url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-flake.git";
       inputs = {
         agenix.follows = "agenix";
         nixpkgs.follows = "nixpkgs";
