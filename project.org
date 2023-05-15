@@ -223,6 +223,8 @@ I prefer nixpkgs-fmt formatter. Using ~formatter~ output, one can be specified i
       formatter = pkgs.nixpkgs-fmt;
 #+end_src
 
+Emacs run ~nix fmt~ on save and tangle, so however the code is formatted in the ~project.org~ file -- it comes out linted.
+
 *** homeConfigurations
 **** Flake.nix
 
