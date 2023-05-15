@@ -3016,8 +3016,6 @@ CLOSED: [2023-03-01 Wed 08:27]
 
 ** TODO Create check attribute to run checks before nixos-rebuild switches :feat:
 
-** DONE Add ~/scratch~ as tmpfs to keep ~/tmp~ for, well, ~/tmp~ things :feat:
-CLOSED: [2023-02-23 Thu 16:10]
 
 * Outro :noexport:
 
