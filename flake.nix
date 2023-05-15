@@ -211,6 +211,34 @@
                 # kitty config
                 ./modules/applications/kitty.nix
               ] ++ _allUserModules;
+            _newCommonModules =
+              [
+                ./modules/common
+                ./modules/hardware/dygma.nix
+                ./modules/network/common_lan.nix
+                agenix.nixosModules.default
+                home-manager.nixosModules.home-manager
+                inputs.my-tmux.nixosModule
+                inputs.hyprland.nixosModules.default
+                ./modules/sway/system/greeter.nix
+                ./modules/sway/system/hyprland.nix
+                ./modules/development/editor.nix
+                # To restore system-wide completion
+                {
+                  environment.pathsToLink = [ "/share/zsh" ];
+                }
+                {
+                  # Needed, otherwise error
+                  # error: cannot look up '<nixpkgs>' in pure evaluation mode
+                  home-manager.useGlobalPkgs = true;
+                  home-manager.useUserPackages = true;
+                  home-manager.users.spacecadet.home.stateVersion = "22.05";
+                }
+                {
+                  home-manager.users.spacecadet = inputs.nixpkgs.lib.mkMerge _homeModules;
+                }
+                private-config.nixosModules.commonNodeModule
+              ];
 
             # pkgs = import nixpkgs {
             #   inherit system;
@@ -245,40 +273,7 @@
               system = "x86_64-linux";
               modules = [
                 ./hosts/neptunium
-                # private-config.nixosModules.management-network-control-node
-                # private-config.nixosModules.wg-namespace-config
-                # NOTE: not reuisng certain modules during sway setup
-                # ./modules/zsh
-                ./modules/common
-                ./modules/hardware/dygma.nix
-                ./modules/network/common_lan.nix
-                agenix.nixosModules.default
-                home-manager.nixosModules.home-manager
-                inputs.my-tmux.nixosModule
-                inputs.hyprland.nixosModules.default
-                ./modules/sway/system/greeter.nix
-                ./modules/sway/system/hyprland.nix
-                ./modules/development/editor.nix
-                # {
-                #   programs.vt-zsh = {
-                #     starship_enable = true;
-                #     direnv_enable = true;
-                #     gpg_enable = false;
-                #     enableAnyNixShell = true;
-                #   };
-                # }
-                {
-                  # Needed, otherwise error
-                  # error: cannot look up '<nixpkgs>' in pure evaluation mode
-                  home-manager.useGlobalPkgs = true;
-                  home-manager.useUserPackages = true;
-                  home-manager.users.spacecadet.home.stateVersion = "22.05";
-                }
-                {
-                  home-manager.users.spacecadet = inputs.nixpkgs.lib.mkMerge _homeModules;
-                }
-                private-config.nixosModules.commonNodeModule
-              ];
+              ] ++ _newCommonModules;
               specialArgs = inputs;
             };
 
