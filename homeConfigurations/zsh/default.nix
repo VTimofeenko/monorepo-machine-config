@@ -11,7 +11,7 @@
       enableCompletion = true;
       enableSyntaxHighlighting = true;
       autocd = true;
-      defaultKeymap = "vicmd";
+      defaultKeymap = "viins";
       dotDir = ".config/zsh";
       history =
         {

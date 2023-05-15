@@ -371,7 +371,7 @@ Useable as ~./homeConfigurations/zsh~.
       enableCompletion = true;
       enableSyntaxHighlighting = true;
       autocd = true;
-      defaultKeymap = "vicmd";
+      defaultKeymap = "viins";
       dotDir = ".config/zsh";
       history =
         {
@@ -604,8 +604,6 @@ cursor_mode
 #+end_src
 
 ****** TODO Add system-wide completions :feat:
-
-****** TODO Fix the charmap being displayed on shell start :fix:
 
 ***** Kitty
 
