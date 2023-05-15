@@ -3110,3 +3110,8 @@ A few scripts to be automatically run:
 ;; eval: (add-hook 'before-save-hook (lambda ()(org-babel-tangle)) nil t)
 ;; eval: (add-hook 'after-save-hook (lambda ()(shell-command "nix fmt")) nil t)
 ;; End:
+
+** References
+
+- Flake-parts + overlays consumption: https://codeberg.org/adamcstephens/dotfiles/src/commit/310d1f2bcc4518439502310ad927cbf33f8c38ea/flake.nix#L42
+- Flake parts config: https://git.sr.ht/~misterio/nix-config/tree/main/item/flake.nix
