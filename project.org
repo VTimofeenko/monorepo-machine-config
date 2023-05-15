@@ -78,17 +78,17 @@ It can be imported as
 #+BEGIN: tagblock :todo ("DONE" "CNCL") :caption done :tags ("fix" "feat" "doc" "chore")
 #+caption: done
 | fix   | 2 |
-| feat  | 7 |
+| feat  | 6 |
 | doc   | 1 |
-| chore | 9 |
+| chore | 8 |
 #+END
 
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
-| fix   | 2 |
-| feat  | 9 |
-| doc   | 2 |
-| chore | 7 |
+| fix   |  2 |
+| feat  | 38 |
+| doc   |  2 |
+| chore |  8 |
 #+END
 
 * Project structure
@@ -262,7 +262,6 @@ legacyPackages.homeConfigurations =
       };
 #+end_src
 
-***** TODO Add kitty and zsh to spacecadet config once system zsh is gone
 **** Modules
 
 ***** Base home.nix
@@ -1604,7 +1603,7 @@ To use this module separately from `default` one:
 
 ****** CNCL Add mountpoint for the device :feat:
 CLOSED: [2023-03-01 Wed 08:22]
-***** TODO Firefox
+***** TODO Add firefox to home-manager managed apps :feat:
 **** Development -- for development purposes
 
 ***** Default
@@ -1696,6 +1695,7 @@ I occasionally need full blown VMs to emulate stuff:
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 }
 #+end_src
+***** TODO Add gh to homeManager :feat:
 
 **** Hardware -- specific hardware modules support/config
 ***** Disks
@@ -2868,15 +2868,15 @@ in
 ******** TODO Style wofi :feat:
 
 
-******* TODO Global "hyper+e" = emacs
+******* TODO Global "hyper+e" = emacs :feat:
 
-******* TODO Add notification to language switch setup
+******* TODO Add notification to language switch setup :feat:
 
-******* TODO Global "hyper-b" = browser
+******* TODO Global "hyper-b" = browser :feat:
 
-******* TODO focus mode_toggle to switch focus between floating windows and tiled ones
+******* TODO focus mode_toggle to switch focus between floating windows and tiled ones :feat:
 
-******* TODO consider super+ctrl+grave for terminal
+******* TODO consider super+ctrl+grave for terminal :feat:
 
 #+begin_src
 bind = $mainMod, grave , exec , [ float  ; size 60% 50% ] ${pkgs.kitty}/bin/kitty
@@ -2890,24 +2890,24 @@ for_window [title="scratchpad_term"] floating enable, move scratchpad
 Needs special workspace tho
 
 
-******* TODO Port over F-and-XF86-whatever bindings
+******* TODO Port over F-and-XF86-whatever bindings :feat:
 
 - [ ] Sound control
 - [ ] Brightnessctl
 
-******* TODO port over sound control mode
+******* TODO port over sound control mode :feat:
 
-******* TODO port over workspace edit/renumber/rename mode
+******* TODO port over workspace edit/renumber/rename mode :feat:
 
-******* TODO Port over the resize mode
+******* TODO Port over the resize mode :feat:
 
-******* TODO Port the shutdown mode
+******* TODO Port the shutdown mode :feat:
 
-******* TODO Consider a new launcher
+******* TODO Consider a new launcher :feat:
 
-******* TODO Fix the xremap ordering for hyprland
+******* TODO Fix the xremap ordering for hyprland :feat:
 
-******* TODO Custom tools [0/3]
+******* TODO Custom tools [0/3] :feat:
 
 ******** TODO Scratchpad terminal
 
@@ -2915,7 +2915,7 @@ Needs special workspace tho
 
 ******** TODO Workspace renumber
 
-******* TODO Colorscheme
+******* TODO Colorscheme :feat:
 
 ******* TODO Check out [[https://github.com/Slackadays/Clipboard][Clipboard]] :to_think:
 
@@ -3052,6 +3052,12 @@ Looks like ~tasks~ setting may do the trick:
 
 https://orgmode.org/manual/Export-Settings.html
 
+
+** References
+
+- Flake-parts + overlays consumption: https://codeberg.org/adamcstephens/dotfiles/src/commit/310d1f2bcc4518439502310ad927cbf33f8c38ea/flake.nix#L42
+- Flake parts config: https://git.sr.ht/~misterio/nix-config/tree/main/item/flake.nix
+  
 ** Literate setup
 
 *** Tag stats calculator
@@ -3130,8 +3136,3 @@ A few scripts to be automatically run:
 ;; eval: (add-hook 'before-save-hook (lambda ()(org-babel-tangle)) nil t)
 ;; eval: (add-hook 'after-save-hook (lambda ()(shell-command "nix fmt")) nil t)
 ;; End:
-
-** References
-
-- Flake-parts + overlays consumption: https://codeberg.org/adamcstephens/dotfiles/src/commit/310d1f2bcc4518439502310ad927cbf33f8c38ea/flake.nix#L42
-- Flake parts config: https://git.sr.ht/~misterio/nix-config/tree/main/item/flake.nix
