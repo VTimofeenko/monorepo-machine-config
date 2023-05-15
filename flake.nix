@@ -60,6 +60,8 @@
 
     hyprland.url = "github:hyprwm/Hyprland";
 
+    # Service that remaps arbitrary keyboard combinations
+    xremap-flake.url = "github:xremap/nix-flake";
   };
 
   outputs =
@@ -220,6 +222,8 @@
                 home-manager.nixosModules.home-manager
                 inputs.my-tmux.nixosModule
                 inputs.hyprland.nixosModules.default
+                inputs.xremap-flake.nixosModules.default
+                ./modules/xremap
                 ./modules/sway/system/greeter.nix
                 ./modules/sway/system/hyprland.nix
                 ./modules/development/editor.nix

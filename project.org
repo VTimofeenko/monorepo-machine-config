@@ -171,6 +171,8 @@ Boring technical stuff
 
     hyprland.url = "github:hyprwm/Hyprland";
 
+    # Service that remaps arbitrary keyboard combinations
+    xremap-flake.url = "github:xremap/nix-flake";
   };
 #+end_src
 
@@ -859,6 +861,8 @@ this section contains the modules that can be reused without using the rest of t
           home-manager.nixosModules.home-manager
           inputs.my-tmux.nixosModule
           inputs.hyprland.nixosModules.default
+          inputs.xremap-flake.nixosModules.default
+          ./modules/xremap
           ./modules/sway/system/greeter.nix
           ./modules/sway/system/hyprland.nix
           ./modules/development/editor.nix
@@ -2251,7 +2255,6 @@ The sway config has two parts -- the system-wide (greeter and global configurati
   - [X] Deploy with zsh
   - [X] Evaluate
 - [X] Home-specific settings
-- [ ] Replace greeter zsh with sway
 - [ ] Xremap base config
 - [ ] Revisit packages installed through [home|environment]Packages and see if they can be configured through flake
 - [ ] Reusable and centralized keyboard shortcuts
@@ -2867,6 +2870,101 @@ in
 
 ******** TODO Style wofi :feat:
 
+******* Xremap
+
+Module that configures system-wide key remapping. Some of the maps are application-specific
+
+#+begin_src nix :tangle modules/xremap/default.nix
+{ pkgs, config, lib, ... }:
+{
+  services.xremap =
+    {
+      withHypr = true;
+      userName = "spacecadet";
+      serviceMode = "user";
+      config =
+        {
+          modmap =
+            [
+              {
+                # Global remap CapsLock to Esc
+                name = "Global";
+                remap = { "CapsLock" = "Esc"; };
+              }
+            ];
+          keymap =
+            [
+              {
+                name = "Bypass remaps";
+                remap = { "CTRL_L-SHIFT-ESC" = { escape_next_key = true; }; };
+              }
+              {
+                name = "Emacs-like shortcuts";
+                application =
+                  {
+                    "not" =
+                      [
+                        "kitty"
+                        "Emacs"
+                      ];
+                  };
+                remap =
+                  {
+                    "CTRL_L-a" = "home";
+                    "CTRL_L-e" = "end";
+                    # Same, but select
+                    "CTRL_L-Shift-a" = "Shift-home";
+                    "CTRL_L-Shift-e" = "Shift-end";
+                    "CTRL_L-W" = "C-Backspace";
+                  };
+              }
+              {
+                name = "Global shortcuts";
+                remap =
+                  {
+                    # Select all
+                    "SUPER-a" = "C-a";
+                    # Copy
+                    "SUPER-c" = "C-c";
+                    # Cut
+                    "SUPER-x" = "C-x";
+                    # Undo
+                    "SUPER-z" = "C-z";
+                    # Paste
+                    "SUPER-v" = "Shift-insert";
+                  };
+              }
+              {
+                name = "Close stuff by super-w";
+                application =
+                  {
+                    "only" =
+                      [
+                        "firefox"
+                        "brave-browser"
+                      ];
+                  };
+                remap =
+                  {
+                    "SUPER-w" = "C-w";
+                    "SUPER-SHIFT-w" = "C-Shift-w";
+                    "SUPER-t" = "C-t";
+                    "SUPER-SHIFT-t" = "C-Shift-t";
+                  };
+              }
+              {
+                name = "Brave set incognito to a sane shortcut";
+                application = { "only" = "brave-browser"; };
+                remap =
+                  {
+                    "C-Shift-p" = "C-Shift-n";
+                  };
+              }
+            ];
+        };
+    };
+}
+#+end_src
 
 ******* TODO Global "hyper+e" = emacs :feat:
 
