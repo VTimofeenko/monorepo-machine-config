@@ -6896,11 +6896,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1684024395,
-        "narHash": "sha256-pNi2sfhd/dsAh+f3spCxu+M6ui5f77Ijt5r27s53V+M=",
+        "lastModified": 1684250828,
+        "narHash": "sha256-FjpLFuE0qTZgZw3pK3LKe4I+2+bAT/m3elZlVMva05c=",
         "ref": "master",
-        "rev": "50670b7cf27a12249f5025068c30e39aa075539f",
-        "revCount": 54,
+        "rev": "71177a2048cac8a3e4399cdbffe24a3c02f966dc",
+        "revCount": 57,
         "type": "git",
         "url": "file:///home/spacecadet/code/private-flake"
       },
