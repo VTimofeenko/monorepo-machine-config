@@ -1,3 +1,4 @@
+# Module for system-level hyprland configuration
 { config, pkgs, lib, ... }:
 {
   programs.hyprland = {

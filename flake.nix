@@ -226,7 +226,7 @@
                 inputs.xremap-flake.nixosModules.default
                 ./modules/xremap
                 ./modules/sway/system/greeter.nix
-                ./modules/sway/system/hyprland.nix
+                ./modules/hyprland/system.nix
                 ./modules/development/editor.nix
                 # To restore system-wide completion
                 {

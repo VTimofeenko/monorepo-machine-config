@@ -878,7 +878,7 @@ this section contains the modules that can be reused without using the rest of t
           inputs.xremap-flake.nixosModules.default
           ./modules/xremap
           ./modules/sway/system/greeter.nix
-          ./modules/sway/system/hyprland.nix
+          ./modules/hyprland/system.nix
           ./modules/development/editor.nix
           # To restore system-wide completion
           {
@@ -2262,17 +2262,6 @@ CLOSED: [2023-02-08 Wed 08:12]
 
 The sway config has two parts -- the system-wide (greeter and global configuration, implemented using standard nixpkgs settings) and the user-specific (window manager itself, implemented through home-manager)
 
-***** STRT Plan [5/7]
-- [X] System-wide settings
-- [X] Base settings
-- [X] Greeter
-  - [X] Write
-  - [X] Deploy with zsh
-  - [X] Evaluate
-- [X] Home-specific settings
-- [X] Xremap base config
-- [ ] Revisit packages installed through [home|environment]Packages and see if they can be configured through flake
-- [ ] Cleanup the hyprland module structure -- right now it sits under ~sway/~ which is confusing
 
 ***** System-wide configuration
 
@@ -2320,42 +2309,6 @@ Certain programs (flameshot) also require specific configurations of ~xdg.portal
 #+end_src
 
 ****** Hyprland settings
-
-#+begin_src nix :tangle modules/sway/system/hyprland.nix
-{ config, pkgs, lib, ...}:
-{
-  programs.hyprland = {
-    enable = true;
-    xwayland = {
-      enable = true;
-      hidpi = true;
-    };
-    nvidiaPatches = false;
-  };
-  # NOTE: needed for swaylock
-  security.pam.services.swaylock.text =
-    ''
-      # Account management.
-      account required pam_unix.so
-
-      # Authentication management.
-      auth sufficient pam_unix.so   likeauth try_first_pass
-      auth required pam_deny.so
-
-      # Password management.
-      password sufficient pam_unix.so nullok sha512
-
-      # Session management.
-      session required pam_env.so conffile=/etc/pam/environment readenv=0
-      session required pam_unix.so
-    '';
-  environment.systemPackages =
-    with pkgs; [
-      # needed because the user config references /etc stuff
-      swaynotificationcenter
-    ];
-}
-#+end_src
 
 #+begin_src nix :tangle modules/hyprland/default.nix
 # Home manaager module to configure hyprland
@@ -2588,15 +2541,6 @@ rec {
 }
 #+end_src
 
-******* STRT Hyprland Plan
-- [X] Variables setup
-- [X] Base hotkeys setup
-- [X] Fix suspend
-- [X] Pick out new notification/clipboard/whatever tools
-  - [X] notification
-  - [X] Clipboard
-- [ ] Check out [[https://wiki.hyprland.org/Configuring/Example-configurations/][examples]]
-- [ ] Move to different section in literate config
 
 ******* Notification daemon
 
@@ -3124,6 +3068,49 @@ See "zsh as an alternative session", the name of the session in the list may be 
 }
 #+end_src
 
+**** Hyprland
+
+***** System config
+
+#+begin_src nix :tangle modules/hyprland/system.nix
+# Module for system-level hyprland configuration
+{ config, pkgs, lib, ...}:
+{
+  programs.hyprland = {
+    enable = true;
+    xwayland = {
+      enable = true;
+      hidpi = true;
+    };
+    nvidiaPatches = false;
+  };
+  # NOTE: needed for swaylock
+  security.pam.services.swaylock.text =
+    ''
+      # Account management.
+      account required pam_unix.so
+
+      # Authentication management.
+      auth sufficient pam_unix.so   likeauth try_first_pass
+      auth required pam_deny.so
+
+      # Password management.
+      password sufficient pam_unix.so nullok sha512
+
+      # Session management.
+      session required pam_env.so conffile=/etc/pam/environment readenv=0
+      session required pam_unix.so
+    '';
+  environment.systemPackages =
+    with pkgs; [
+      # needed because the user config references /etc stuff
+      swaynotificationcenter
+    ];
+}
+
+#+end_src
+
+***** Home config
 
 *** Hosts
 
@@ -3169,7 +3156,31 @@ CLOSED: [2023-03-02 Thu 11:25]
 Looks like ~tasks~ setting may do the trick:
 
 https://orgmode.org/manual/Export-Settings.html
+** Projects
 
+This is a holding headline for various projects to change big parts of the config
+
+*** STRT Hyprland migration plan [5/8]
+At the end of this project I want to have a fully working Hyprland config on neptunium.
+
+**** DONE System-wide settings
+**** DONE Base settings
+**** DONE Greeter
+***** DONE Write
+***** DONE Deploy with zsh
+***** DONE Evaluate
+**** DONE Home-specific settings
+**** DONE Xremap base config
+**** STRT Cleanup the hyprland module structure -- right now it sits under ~sway/~ which is confusing
+**** TODO Revisit packages installed through [home|environment]Packages and see if they can be configured through flake
+**** TODO Migrate uranium to hyprland
+*** TODO Hyprland improvements [0/2]
+
+**** TODO Check out [[https://wiki.hyprland.org/Configuring/Example-configurations/][examples]]
+
+**** TODO [[*EWW -- Widgets][EWW -- Widgets]]
+
+*** TODO Declarative e-mail management
 
 ** References
 
