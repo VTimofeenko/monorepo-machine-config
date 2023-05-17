@@ -88,7 +88,7 @@ It can be imported as
 | fix   |  2 |
 | feat  | 38 |
 | doc   |  2 |
-| chore |  8 |
+| chore |  9 |
 #+END
 
 * Project structure
@@ -1238,6 +1238,7 @@ neptunium = inputs.nixpkgs.lib.nixosSystem {
 }
 #+end_src
 ******* TODO add the authorized keys to the base config :chore:
+******* TODO Restore firewall :chore:
 
 ****** Nvidia 2070 with sway
 
@@ -2261,7 +2262,7 @@ CLOSED: [2023-02-08 Wed 08:12]
 
 The sway config has two parts -- the system-wide (greeter and global configuration, implemented using standard nixpkgs settings) and the user-specific (window manager itself, implemented through home-manager)
 
-***** STRT Plan [4/8]
+***** STRT Plan [5/7]
 - [X] System-wide settings
 - [X] Base settings
 - [X] Greeter
@@ -2269,9 +2270,9 @@ The sway config has two parts -- the system-wide (greeter and global configurati
   - [X] Deploy with zsh
   - [X] Evaluate
 - [X] Home-specific settings
-- [ ] Xremap base config
+- [X] Xremap base config
 - [ ] Revisit packages installed through [home|environment]Packages and see if they can be configured through flake
-- [ ] Reusable and centralized keyboard shortcuts
+- [ ] Cleanup the hyprland module structure -- right now it sits under ~sway/~ which is confusing
 
 ***** System-wide configuration
 
