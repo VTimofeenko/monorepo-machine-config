@@ -1,4 +1,4 @@
-# home-manager clone of the OG zsh
+# home-manager clone of the original zsh module
 { pkgs, config, lib, ... }:
 {
   home.packages = [
@@ -73,7 +73,16 @@
                     autoload -Uz cursor_mode.zsh && cursor_mode.zsh
                     # alias that creates the directory and changes into it
                     mkcd(){ mkdir -p "$@" && cd "$@"; }
-        '';
+        ''
+        ++ # set SSH_AUTH_SOCK <=> gpg-agent is enabled in home-manager
+        (if config.services.gpg-agent.enable
+        then
+          ''
+            if [[ -z "$SSH_AUTH_SOCK" ]]; then
+              export SSH_AUTH_SOCK="$(${config.programs.gpg.package}/bin/gpgconf --list-dirs agent-ssh-socket)"
+            fi
+          ''
+        else "");
       shellAliases = {
         e = "$EDITOR";
         nvim = "$EDITOR";
