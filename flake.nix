@@ -46,7 +46,8 @@
     };
     # nur.url = "github:nix-community/NUR";
     my-doom-config = {
-      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/doom-config.git";
+      url = "git+file:///home/spacecadet/code/doom-config";
+      # url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/doom-config.git";
     };
     wg-namespace-flake = {
       url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/wireguard-namespace-flake.git";

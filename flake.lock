@@ -3377,17 +3377,14 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1683817577,
-        "narHash": "sha256-D2iqcEywY956b4eE4IWjTwyVB0C57KgRkRJb1z44P+w=",
-        "ref": "refs/heads/master",
-        "rev": "08a4a4ad646fd7943fc20407f74998b9269dc187",
-        "revCount": 116,
+        "lastModified": 1684284914,
+        "narHash": "sha256-Xltn0QJ6YIhv9w82HCp2E4S04UuJa7AGCSI9mplonRs=",
         "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/doom-config.git"
+        "url": "file:///home/spacecadet/code/doom-config"
       },
       "original": {
         "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/doom-config.git"
+        "url": "file:///home/spacecadet/code/doom-config"
       }
     },
     "my-doom-config_2": {
