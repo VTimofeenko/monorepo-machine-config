@@ -472,6 +472,10 @@ ower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
         ip = "ip -c";
       };
     };
+  programs.direnv =
+    {
+      enable = true;
+    };
   programs.starship =
     {
       enable = true;

@@ -107,6 +107,10 @@
         ip = "ip -c";
       };
     };
+  programs.direnv =
+    {
+      enable = true;
+    };
   programs.starship =
     {
       enable = true;
