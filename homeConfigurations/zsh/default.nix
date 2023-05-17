@@ -74,7 +74,7 @@
                     # alias that creates the directory and changes into it
                     mkcd(){ mkdir -p "$@" && cd "$@"; }
         ''
-        ++ # set SSH_AUTH_SOCK <=> gpg-agent is enabled in home-manager
+        + # set SSH_AUTH_SOCK <=> gpg-agent is enabled in home-manager
         (if config.services.gpg-agent.enable
         then
           ''
