@@ -38,7 +38,7 @@
   ];
 
 
-  networking.firewall.enable = false;
+  networking.firewall.enable = lib.mkForce false;
   environment.systemPackages = [ pkgs.git ];
 
   system.stateVersion = "22.11";
