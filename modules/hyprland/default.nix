@@ -1,3 +1,4 @@
+# Home manaager module to configure hyprland
 { config, pkgs, lib, ... }:
 let
   # Custom lib.nix for module-specific logic
@@ -36,6 +37,7 @@ in
     [
       ./notifications
       ./eww
+      # ./wofi  # TODO: 23.05
     ];
   wayland.windowManager.hyprland =
     {

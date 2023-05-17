@@ -2,7 +2,7 @@
 #+AUTHOR: Vladimir Timofeenko
 #+EMAIL: id@vtimofeenko.com
 #+DATE: <2022-11-09 Wed>
-#+TAGS: { fix(b) feat(f) doc(d) chore(c) to_think(t) }
+#+TAGS: { fix(b) feat(f) doc(d) chore(c) to_think(t) } 2305
 #+HEADER-ARGS:nix: :padline no
 
 # TODO Not right now
@@ -88,7 +88,7 @@ It can be imported as
 | fix   |  2 |
 | feat  | 38 |
 | doc   |  2 |
-| chore |  9 |
+| chore | 10 |
 #+END
 
 * Project structure
@@ -2358,6 +2358,7 @@ Certain programs (flameshot) also require specific configurations of ~xdg.portal
 #+end_src
 
 #+begin_src nix :tangle modules/hyprland/default.nix
+# Home manaager module to configure hyprland
 { config, pkgs, lib, ...  }:
 let
   # Custom lib.nix for module-specific logic
@@ -2396,6 +2397,7 @@ in
     [
       ./notifications
       ./eww
+      # ./wofi  # TODO: 23.05
     ];
   wayland.windowManager.hyprland =
     {
@@ -2873,6 +2875,7 @@ in
 ******* Wofi
 
 #+begin_src nix :tangle modules/hyprland/wofi/default.nix
+# Home manager module to configure wofi
 { pkgs, config, lib, ... }:
 {
   programs.wofi =
@@ -2883,7 +2886,9 @@ in
 
 #+end_src
 
-******** TODO Style wofi :feat:
+******** TODO Style wofi :feat:2305:
+
+******** TODO Import wofi in hyprland module :2305:chore:
 
 ******* Xremap
 
