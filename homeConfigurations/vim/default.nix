@@ -50,6 +50,9 @@
  
           set clipboard=unnamed${if pkgs.stdenv.system != "aarch64-darwin" then "plus" else ""}
           set mouse=
+
+          " clear search highlights by hitting ESC
+          nnoremap <ESC> :noh<CR>
         '';
     };
 }
