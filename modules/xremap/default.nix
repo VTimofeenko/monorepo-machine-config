@@ -43,6 +43,14 @@
               }
               {
                 name = "Global shortcuts";
+                application =
+                  {
+                    "not" =
+                      [
+                        "kitty"
+                        "Emacs"
+                      ];
+                  };
                 remap =
                   {
                     # Select all
@@ -53,6 +61,24 @@
                     "SUPER-x" = "C-x";
                     # Undo
                     "SUPER-z" = "C-z";
+                    # Paste
+                    "SUPER-v" = "Shift-insert";
+                  };
+              }
+              {
+                name = "Global-like shortcuts for terminal and emacs";
+                application =
+                  {
+                    "only" =
+                      [
+                        "kitty"
+                        "Emacs"
+                      ];
+                  };
+                remap =
+                  {
+                    # Copy
+                    "SUPER-c" = "C-Shift-c";
                     # Paste
                     "SUPER-v" = "Shift-insert";
                   };

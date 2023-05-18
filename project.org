@@ -2880,6 +2880,14 @@ Module that configures system-wide key remapping. Some of the maps are applicati
               }
               {
                 name = "Global shortcuts";
+                application =
+                  {
+                    "not" =
+                      [
+                        "kitty"
+                        "Emacs"
+                      ];
+                  };
                 remap =
                   {
                     # Select all
@@ -2890,6 +2898,24 @@ Module that configures system-wide key remapping. Some of the maps are applicati
                     "SUPER-x" = "C-x";
                     # Undo
                     "SUPER-z" = "C-z";
+                    # Paste
+                    "SUPER-v" = "Shift-insert";
+                  };
+              }
+              {
+                name = "Global-like shortcuts for terminal and emacs";
+                application =
+                  {
+                    "only" =
+                      [
+                        "kitty"
+                        "Emacs"
+                      ];
+                  };
+                remap =
+                  {
+                    # Copy
+                    "SUPER-c" = "C-Shift-c";
                     # Paste
                     "SUPER-v" = "Shift-insert";
                   };
