@@ -177,7 +177,6 @@
                 }
                 { home-manager.users.spacecadet = import ./homeConfigurations/vim; }
                 inputs.wg-namespace-flake.nixosModules.default
-                private-config.nixosModules.commonNodeModule
               ];
             _commonLocalModules =
               [
@@ -242,7 +241,6 @@
                 {
                   home-manager.users.spacecadet = inputs.nixpkgs.lib.mkMerge _homeModules;
                 }
-                private-config.nixosModules.commonNodeModule
               ];
 
             # pkgs = import nixpkgs {
@@ -263,8 +261,7 @@
               system = "x86_64-linux";
               modules = mkMyModules [
                 ./hosts/uranium
-                private-config.nixosModules.management-network-control-node
-                private-config.nixosModules.wg-namespace-config
+                private-config.nixosModules.machines.uranium
                 ./modules/steam
                 { nixpkgs.overlays = [ my-sway-config.overlays.default ]; }
               ];
@@ -278,6 +275,7 @@
               system = "x86_64-linux";
               modules = [
                 ./hosts/neptunium
+                private-config.nixosModules.machines.neptunium
               ] ++ _newCommonModules;
               specialArgs = inputs;
             };
