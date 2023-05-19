@@ -2914,6 +2914,8 @@ Module that configures system-wide key remapping. Some of the maps are applicati
                     "SUPER-z" = "C-z";
                     # Paste
                     "SUPER-v" = "Shift-insert";
+                    # Generic "close thing"
+                    "SUPER-w" = "C-w";
                   };
               }
               {

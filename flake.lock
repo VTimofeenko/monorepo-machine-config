@@ -3587,11 +3587,11 @@
         "xremap-flake": "xremap-flake"
       },
       "locked": {
-        "lastModified": 1684449825,
-        "narHash": "sha256-evGMzg6DY+5pqzIDJkW7vwE/IIMUFyEoi0/zNuhZAb8=",
+        "lastModified": 1684512060,
+        "narHash": "sha256-5m0dReB81G6cdeH6qAK7OySfBAvzOJEgEuetXNhZwko=",
         "ref": "master",
-        "rev": "5ba6a28757ee296215ccc084b88da8356dedfdf3",
-        "revCount": 130,
+        "rev": "b2dafb8d53b4fb93d5358d7335ac6805306eee5a",
+        "revCount": 131,
         "type": "git",
         "url": "file:///home/spacecadet/code/sway-flake"
       },
@@ -6893,11 +6893,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1684447524,
-        "narHash": "sha256-tBnR+CIB7itqYhpeyi0fnEtqKuND0CgKeB7vAVgtgjs=",
+        "lastModified": 1684509064,
+        "narHash": "sha256-Dcf13NV52+7NuCYHcu7xpllDoh3amgId4t8Hr08+faE=",
         "ref": "master",
-        "rev": "8a8208272121b5c6233e5bae370d5641ee6d19aa",
-        "revCount": 80,
+        "rev": "87f639504db79173fdb18a48c09408e2d37039bc",
+        "revCount": 81,
         "type": "git",
         "url": "file:///home/spacecadet/code/private-flake"
       },
