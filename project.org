@@ -90,7 +90,7 @@ It can be imported as
 | fix   |  3 |
 | feat  | 39 |
 | doc   |  2 |
-| chore | 10 |
+| chore | 11 |
 #+END
 
 * Project structure
@@ -99,7 +99,7 @@ It can be imported as
 - `hosts/` :: directory where per-machine configs are stored
 - `modules/` :: top-level directory to contain all categories of modules
 
-* Intro :noexport:
+* Project intro :noexport:
 
 Boring technical stuff
 
@@ -179,19 +179,19 @@ Boring technical stuff
   };
 #+end_src
 
-*** CNCL Consider dropping nixos-hardware and merging everything here by hand :chore:
-CLOSED: [2022-12-09 Fri 17:25]
+** CNCL Consider dropping nixos-hardware and merging everything here by hand :chore:
+COSED: [2022-12-09 Fri 17:25]
 
-*** DONE Make sure all inputs of base16 are tracking other inputs :chore:
-CLOSED: [2022-12-12 Mon 19:39]
+** DONE Make sure all inputs of base16 are tracking other inputs :chore:
+COSED: [2022-12-12 Mon 19:39]
 
-*** DONE Unify naming scheme (some inputs are called "my-", others - "vt-") :chore:
-CLOSED: [2022-12-12 Mon 19:43]
+** DONE Unify naming scheme (some inputs are called "my-", others - "vt-") :chore:
+COSED: [2022-12-12 Mon 19:43]
 
-*** DONE Evaluate vt-colors input :to_think:
-CLOSED: [2022-12-12 Mon 19:45]
+** DONE Evaluate vt-colors input :to_think:
+COSED: [2022-12-12 Mon 19:45]
 
-*** DONE Move all path:// inputs to at least git+file, ideally - git+ssh on gitea :chore:
+** DONE Move all path:// inputs to at least git+file, ideally - git+ssh on gitea :chore:
 CLOSED: [2022-12-14 Wed 21:54]
 
 * Outputs
@@ -199,7 +199,7 @@ CLOSED: [2022-12-14 Wed 21:54]
 :header-args:nix: :tangle flake.nix
 :END:
 
-** Intro
+** Outputs intro
 First, the plumbing:
 
 #+begin_src nix
@@ -361,7 +361,7 @@ The module described in this section should be used by root and human users on m
 
 ****** TODO Make nix fmt async :feat:
 
-***** Zsh
+***** Zsh (home-manager)
 
 Useable as ~./homeConfigurations/zsh~.
 
@@ -510,9 +510,9 @@ ower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
 
 https://github.com/variadico/noti/releases/tag/3.7.0
 
-****** ZSH modules
+****** ZSH modules (home-manager)
 
-******* 01-vim-edit
+******* 01-vim-edit (home-manager)
 
 #+begin_src sh :tangle homeConfigurations/zsh/plugins/01-vim-edit.zsh
 # vim style editing
@@ -522,7 +522,7 @@ autoload edit-command-line; zle -N edit-command-line
 bindkey -M vicmd jk edit-command-line  # jk chord to edit the current line
 #+end_src
 
-******* 02-cd
+******* 02-cd (home-manager)
 
 #+begin_src sh :tangle homeConfigurations/zsh/plugins/02-cd.zsh
 # File that sets the behavior of cd command
@@ -538,7 +538,7 @@ alias d='dirs -v' # prints stack of directories
 for index ({1..9}) alias "$index"="cd +${index}"; unset index
 #+end_src
 
-******* bookmarks
+******* bookmarks (home-manager)
 
 #+begin_src sh :tangle homeConfigurations/zsh/plugins/bookmarks.zsh
 # -*- sh -*-
@@ -608,7 +608,7 @@ is-at-least 4.3.12 && () {
 }
 #+end_src
 
-******* cursor_mode
+******* cursor_mode (home-manager)
 
 #+begin_src sh :tangle homeConfigurations/zsh/plugins/cursor_mode.zsh
 cursor_mode() {
@@ -643,7 +643,7 @@ cursor_mode
 ****** DONE Add system-wide completions :feat:
 CLOSED: [2023-05-15 Mon 07:44]
 
-***** Kitty
+***** Kitty (home-manager)
 
 #+begin_src nix :tangle homeConfigurations/kitty/default.nix
 { pkgs, ... }:
@@ -952,9 +952,9 @@ uranium = inputs.nixpkgs.lib.nixosSystem {
 };
 
 #+end_src
-***** Modules
+***** Uranium modules
 
-****** Default
+****** Uranium base module
 #+begin_src nix :tangle hosts/uranium/default.nix
 { config, pkgs, lib, ... }:
 
@@ -1192,7 +1192,7 @@ neptunium = inputs.nixpkgs.lib.nixosSystem {
 #+end_src
 
 ***** Modules
-****** Default
+****** Neptunium default.nix
 
 #+begin_src nix :tangle hosts/neptunium/default.nix
 { config, pkgs, lib, ... }:
@@ -1490,7 +1490,7 @@ To use this module separately from `default` one:
 #+end_src
 
 **** Applications
-***** Common
+***** Applications default.nix
 
 #+begin_src nix :tangle modules/applications/default.nix
 { ... }:
@@ -1585,7 +1585,7 @@ To use this module separately from `default` one:
   };
 }
 #+end_src
-***** Kitty
+***** Kitty (system)
 #+begin_src nix :tangle modules/applications/kitty.nix
 # Home manager module to configure Kitty
 { pkgs, ... }:
@@ -1616,6 +1616,7 @@ To use this module separately from `default` one:
   };
 }
 #+end_src
+****** TODO check if this module is needed or it can be removed in favor of home manager module :chore:
 ***** Zathura
 #+begin_src nix :tangle modules/applications/zathura.nix
 { ... }:
@@ -1648,7 +1649,7 @@ CLOSED: [2023-03-01 Wed 08:22]
 ***** TODO Add firefox to home-manager managed apps :feat:
 **** Development -- for development purposes
 
-***** Default
+***** Development default.nix
 
 By default, only editor and git should be imported. The rest of the configs are imported on per-host basis.
 
@@ -1875,7 +1876,7 @@ in
 
 ***** TODO generate routing table here :feat:
 
-**** Zsh
+**** Zsh (system)
 
 ***** README
 
@@ -2123,9 +2124,9 @@ The actual zsh configuration happens in ~programs.zsh~ attrset.
 
 ****** TODO See if rm -i alias can be adjusted not to display the full rm path :feat:
 
-***** ZSH modules
+***** ZSH modules (system)
 
-****** 01-vim-edit
+****** 01-vim-edit (system)
 
 #+begin_src sh :tangle modules/zsh/plugins/01-vim-edit.zsh
 # vim style editing
@@ -2135,7 +2136,7 @@ autoload edit-command-line; zle -N edit-command-line
 bindkey -M vicmd jk edit-command-line  # jk chord to edit the current line
 #+end_src
 
-****** 02-cd
+****** 02-cd (system)
 
 #+begin_src sh :tangle modules/zsh/plugins/02-cd.zsh
 # File that sets the behavior of cd command
@@ -2151,7 +2152,7 @@ alias d='dirs -v' # prints stack of directories
 for index ({1..9}) alias "$index"="cd +${index}"; unset index
 #+end_src
 
-****** bookmarks
+****** bookmarks (system)
 
 #+begin_src sh :tangle modules/zsh/plugins/bookmarks.zsh
 # -*- sh -*-
@@ -2221,7 +2222,7 @@ is-at-least 4.3.12 && () {
 }
 #+end_src
 
-****** cursor_mode
+****** cursor_mode (system)
 
 #+begin_src sh :tangle modules/zsh/plugins/cursor_mode.zsh
 cursor_mode() {
@@ -3170,7 +3171,7 @@ CLOSED: [2023-03-01 Wed 08:27]
 ** TODO Create check attribute to run checks before nixos-rebuild switches :feat:
 
 
-* Outro :noexport:
+* Project outro :noexport:
 
 Boring technical stuff
 
