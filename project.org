@@ -85,7 +85,7 @@ It can be imported as
 
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
-| fix   |  2 |
+| fix   |  3 |
 | feat  | 38 |
 | doc   |  2 |
 | chore | 10 |
@@ -689,6 +689,10 @@ The deck profile is imported into flake [[(deck-hm-import)][here]].
   home.homeDirectory = "/home/deck";
 }
 #+end_src
+
+****** TODO Add nixGL to fix kitty :fix:
+
+https://github.com/guibou/nixGL
 
 ***** Vtimofeenko
 
