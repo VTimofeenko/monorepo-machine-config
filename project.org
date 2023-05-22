@@ -86,7 +86,7 @@ It can be imported as
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  3 |
-| feat  | 38 |
+| feat  | 39 |
 | doc   |  2 |
 | chore | 10 |
 #+END
@@ -3231,6 +3231,18 @@ At the end of this project I want to have a fully working Hyprland config on nep
 This headline serves as a stream of (maybe) cool software that I want to try out, but not right now.
 
 **** https://github.com/GyulyVGC/sniffnet
+
+*** TODO Merge doom config here
+
+Doom files could be tangled from a subdirectory.
+
+**** TODO Re-evaluate current flake approach :to_think:
+
+Currently the whole flake needs to rebuild if a single file changes. This slows down development, so I will need to rethink this approach. IIRC the author of doom-emacs had a flake.
+
+**** TODO Set up emacs to leave machine-local files (custom.el) outside Nix store :feat:
+
+Stuff like trusted ~.dir-locals.el~ cannot be recorded in the store.
 
 ** References
 
