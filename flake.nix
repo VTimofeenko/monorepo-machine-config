@@ -96,7 +96,7 @@
                 ];
             in
             rec {
-              deck = hmc
+              deck = hmc  # (ref:deck-hm-import)
                 {
                   modules =
                     _defaultModules
