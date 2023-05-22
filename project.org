@@ -3324,6 +3324,4 @@ A few scripts to be automatically run:
 ;; Local Variables:
 ;; eval: (progn (org-babel-goto-named-src-block "mkTagblock") (org-babel-execute-src-block) (outline-hide-sublevels 1))
 ;; eval: (add-hook 'before-save-hook (lambda ()(org-update-all-dblocks)) nil t)
-;; eval: (add-hook 'before-save-hook (lambda ()(org-babel-tangle)) nil t)
-;; eval: (add-hook 'after-save-hook (lambda ()(shell-command "nix fmt")) nil t)
 ;; End:
