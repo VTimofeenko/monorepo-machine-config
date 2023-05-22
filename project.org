@@ -247,7 +247,7 @@ legacyPackages.homeConfigurations =
           ];
   in
   rec {
-    deck = hmc
+    deck = hmc  # (ref:deck-hm-import)
       {
         modules =
           _defaultModules
@@ -678,6 +678,8 @@ CLOSED: [2023-05-15 Mon 07:44]
 **** Specific user customizations
 
 ***** Deck
+
+The deck profile is imported into flake [[(deck-hm-import)][here]].
 
 #+begin_src nix :tangle homeConfigurations/_perUser/deck.nix
 { pkgs, lib, config, ... }:
