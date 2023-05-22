@@ -3226,6 +3226,12 @@ At the end of this project I want to have a fully working Hyprland config on nep
 
 *** TODO Declarative e-mail management
 
+*** "Try out this software" stream
+
+This headline serves as a stream of (maybe) cool software that I want to try out, but not right now.
+
+**** https://github.com/GyulyVGC/sniffnet
+
 ** References
 
 - Flake-parts + overlays consumption: https://codeberg.org/adamcstephens/dotfiles/src/commit/310d1f2bcc4518439502310ad927cbf33f8c38ea/flake.nix#L42
