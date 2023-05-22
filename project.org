@@ -4,6 +4,8 @@
 #+DATE: <2022-11-09 Wed>
 #+TAGS: { fix(b) feat(f) doc(d) chore(c) to_think(t) } 2305
 #+HEADER-ARGS:nix: :padline no
+#+PROPERTY: header-args:nix+ :comments link
+#+PROPERTY: header-args:nix+ :mkdirp t
 
 # TODO Not right now
 # #+HUGO_BASE_DIR: ~/Documents/vtimofeenko.com/
