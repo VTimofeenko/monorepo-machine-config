@@ -1,0 +1,1828 @@
+#+TITLE: My machine configs
+#+TAGS: { fix(b) feat(f) doc(d) chore(c) } to_think(t) 2305 migration(m)
+#+PROPERTY: header-args:nix :padline no
+#+PROPERTY: header-args:nix+ :comments link
+#+PROPERTY: header-args:nix+ :mkdirp t
+
+* Meta -- README
+
+#+begin_src markdown :tangle README.md
+This is my set of dotfiles in a single flake. The README contains a high-level description of the outputs and the `project.org` file contains the details and rationalization of implementation.
+
+# Background
+
+I have migrated to using Nix(ideally, NixOS) on all machines that I get my hands on. This repo contains the configurations for the common tools I use across the machines.
+
+Certain components of my config (mostly dealing with passwords and such) are not included in this flake but rather managed through a separate flake called ~private-config~
+
+# Usage
+
+```nix
+{
+    inputs= {
+        monorepo = {
+            url = "github:VTimofeenko/monorepo-machine-config";
+            inputs = {
+                infra.follows = "stub-flake";
+                private-config.follows = "stub-flake";
+            };
+        };
+        stub-flake.url = "github:VTimofeenko/stub-flake"; # A completely empty flake
+    };
+    outputs = inputs@{ ... }:
+    {
+        # Import modules/overlays from inputs.monorepo. See the rest of README for more details
+    };
+}
+```
+#+end_src
+
+* Project TOOD stats :noexport:
+
+#+BEGIN: tagblock :todo ("DONE" "CNCL") :caption done :tags ("fix" "feat" "doc" "chore")
+#+caption: done
+| fix   | 0 |
+| feat  | 0 |
+| doc   | 0 |
+| chore | 0 |
+#+END
+
+#+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
+#+caption: todo
+| fix   |  2 |
+| feat  | 10 |
+| doc   |  0 |
+| chore |  9 |
+#+END
+* Flake
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+I tend to use ~flake-parts~ as the basis for my flakes with once specific [[(formatter)][formatter]], nixpkgs-fmt.
+
+Flake-parts:
+- Makes exposing an overlay really easy ([[https://flake.parts/overlays.html][doc]])
+- has an interface to produce multi-system outputs that (IMO) is more clean than flake-utils ([[https://flake.parts/options/flake-parts.html#opt-perSystem][doc]])
+- Has a great collection of add-ons ([[https://flake.parts/options/flake-parts.html][doc]])
+
+** Flake intro :noexport:
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+{
+  description = "NixOS configuration by Vladimir Timofeenko";
+#+end_src
+
+** Inputs
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+  inputs = {
+    nixpkgs.url = "nixpkgs/nixos-22.11";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    home-manager.url = "github:rycee/home-manager/release-22.11";
+    agenix.url = "github:ryantm/agenix";
+
+    # Theming and stuff
+    base16 = {
+      url = "github:SenchoPens/base16.nix";
+      # One input only
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    color_scheme = {
+      url = "github:ajlende/base16-atlas-scheme";
+      flake = false;
+    };
+    private-config = {
+      url = "git+file:///home/spacecadet/code/private-flake?ref=master";
+      # url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-flake.git";
+      inputs = {
+        agenix.follows = "agenix";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+    my-tmux = {
+      url = "github:VTimofeenko/tmux-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        base16.follows = "base16";
+        color_scheme.follows = "color_scheme";
+      };
+    };
+
+    my-nvim-flake.url = "github:VTimofeenko/nvim-flake";
+
+    my-sway-config = {
+      url = "git+file:///home/spacecadet/code/sway-flake?ref=master";
+      inputs = {
+        base16.follows = "base16";
+        color-scheme.follows = "color_scheme";
+      };
+    };
+    # nur.url = "github:nix-community/NUR";
+    my-doom-config = {
+      url = "git+file:///home/spacecadet/code/doom-config";
+      # url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/doom-config.git";
+    };
+    wg-namespace-flake = {
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/wireguard-namespace-flake.git";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    infra = {
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git";
+      flake = false;
+    };
+
+    hyprland.url = "github:hyprwm/Hyprland";
+
+    # Service that remaps arbitrary keyboard combinations
+    xremap-flake.url = "github:xremap/nix-flake";
+
+    devshell.url = "github:numtide/devshell";
+
+  };
+#+end_src
+
+*** TODO pin as many inputs to nixpkgs as possible? :chore:to_think:
+
+** Outputs
+
+*** Outputs intro :noexport:
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+  outputs =
+    inputs@{ flake-parts
+    , nixos-hardware
+    , private-config
+    , self
+    , ...
+    }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+#+end_src
+
+*** Imports
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+      imports = [
+        inputs.devshell.flakeModule
+      ];
+#+end_src
+
+*** Systems setting
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+      systems = [ "x86_64-linux" "aarch64-darwin" ];
+#+end_src
+
+*** "perSystem" output
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+perSystem contains the default formatter and a sample of homeManagerConfiguration. The formatter is also used in [[file:.dir-locals.el][.dirs-local.el]] in the process of "compiling" this project.
+
+#+begin_src nix
+      perSystem = { config, self', inputs', pkgs, system, ... }: {
+        # Per-system attributes can be defined here. The self' and inputs'
+        # module parameters provide easy access to attributes of the same
+        # system.
+#+end_src
+
+**** Formatter
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+        formatter = pkgs.nixpkgs-fmt; # (ref:formatter)
+#+end_src
+
+**** homeConfigurations
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+This section contains modules that can be imported into home manager.
+
+#+begin_src nix
+        legacyPackages.homeConfigurations =
+          let
+            /* Create the default homeManagerConfiguration with inherited pkgs.
+
+                  The provided attrset will be merged into the homeManagerConfiguration.
+
+                   Type: mkHmc :: attrset -> home-manger.lib.homeManagerConfiguration
+
+                */
+            mkHmc = attrset: inputs.home-manager.lib.homeManagerConfiguration ({ inherit pkgs; } // attrset);
+          in
+          {
+#+end_src
+
+***** Special users
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+****** Deck
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+            deck = mkHmc {
+              modules = [
+                ./modules/home-manager
+                ./modules/home-manager/_perUser/deck.nix
+              ];
+            };
+#+end_src
+
+******* Deck customization
+:PROPERTIES:
+:header-args:nix+: :tangle modules/home-manager/_perUser/deck.nix
+:END:
+
+#+begin_src nix
+{ pkgs, lib, config, ... }:
+{
+  programs.kitty.package = lib.mkForce pkgs.hello; # Workaround for kitty not getting needed opengl on arch
+  home.username = "deck";
+  home.homeDirectory = "/home/deck";
+}
+#+end_src
+
+******** TODO [#C] Add nixGL to fix kitty :fix:
+
+https://github.com/guibou/nixGL
+
+****** Vtimofeenko
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+            vtimofeenko = mkHmc {
+              modules = [
+                ./modules/home-manager/home.nix
+                ./modules/home-manager/vim
+                ./modules/home-manager/_perUser/vtimofeenko.nix
+              ];
+            };
+#+end_src
+
+******* Vtimofeenko customization
+:PROPERTIES:
+:header-args:nix+: :tangle modules/home-manager/_perUser/vtimofeenko.nix
+:END:
+
+#+begin_src nix
+{ pkgs, lib, config, ... }:
+{
+  programs.kitty.package = lib.mkForce pkgs.hello; # Not using nix-darwin, no need to manage the app.
+  home.username = "vtimofeenko";
+  home.homeDirectory = "/Users/vtimofeenko";
+  programs.kitty.settings = {
+    extraConfig = ''
+      font_family      JetBrainsMono Nerd Font Mono
+      cursor_blink_interval 0
+      inactive_text_alpha 0.85
+      tab_bar_margin_width      9
+      tab_bar_margin_height     2 2
+      tab_bar_style             separator
+      tab_bar_min_tabs          0
+      tab_separator             ""
+      tab_title_template        "{fmt.fg._5c6370}{fmt.bg.default}{fmt.fg._abb2bf}{fmt.bg._5c6370} {title.split()[0]} {fmt.fg._5c6370}{fmt.bg.default} "
+      active_tab_title_template "{fmt.fg._29b5e8}{fmt.bg.default}{fmt.fg._ffffff}{fmt.bg._29b5e8} {title.split()[0]} {fmt.fg._29b5e8}{fmt.bg.default} "
+      tab_bar_edge bottom
+      background_opacity 0.95
+      dynamic_background_opacity yes
+      macos_option_as_alt yes
+      macos_thicken_font 0.75
+      map kitty_mod+enter launch --cwd=current
+      background #FFFFFF
+      foreground #565656
+      selection_background none
+      selection_foreground none
+      url_color #B8B8B8
+      cursor none
+      cursor_text_color background
+      active_border_color #29B5E8
+      inactive_border_color #FFFFFF
+      active_tab_background #FFFFFF
+      active_tab_foreground #565656
+      inactive_tab_background #F2F2F2
+      inactive_tab_foreground #B8B8B8
+      tab_bar_background #F2F2F2
+      color0 #FFFFFF
+      color1 #D7585D
+      color2 #2BA46F
+      color3 #FDBE02
+      color4 #11567F
+      color5 #7D44CF
+      color6 #72D3DD
+      color7 #565656
+      color8 #7F7F7F
+      color9 #D7585D
+      color10 #2BA46F
+      color11 #FDBE02
+      color12 #11567F
+      color13 #7D44CF
+      color14 #72D3DD
+      color15 #FFFFFF
+      color16 #FF9F36
+      color17 #ff00ff
+      color18 #F2F2F2
+      color19 #29B5E8
+      color20 #B8B8B8
+      color21 #F2A44E
+    '';
+  };
+}
+#+end_src
+
+***** home-manager modules
+
+****** homeConfigurations default.nix
+:PROPERTIES:
+:header-args:nix+: :tangle modules/home-manager/default.nix
+:END:
+
+#+begin_src nix
+{ ... }:
+{
+  imports = [
+    ./home.nix
+    ./vim # (ref:vim-hm-import)
+    ./kitty # (ref:kitty-hm-import)
+    ./zsh # (ref:zsh-hm-import)
+    ./zathura # (ref:zathura-hm-import)
+    ./git.nix # (ref:git-hm-import)
+    ./packages.nix # (ref:packages-hm-import)
+  ];
+}
+#+end_src
+
+****** home.nix
+:PROPERTIES:
+:header-args:nix+: :tangle modules/home-manager/home.nix
+:END:
+
+This file contains some basic settings that are used across all homeManagerConfigurations.
+
+#+begin_src nix
+{ config, pkgs, ... }:
+{
+  home.stateVersion = "22.11";
+  programs.home-manager.enable = true;
+}
+#+end_src
+
+******* Reference
+
+- Add a per-user package through ~home.packages = [ ... ]~
+- Add per-user file:
+
+#+begin_src nix :tangle no
+home.file = {
+    ".screenrc".text = "foo";
+  };
+#+end_src
+
+****** Vim
+:PROPERTIES:
+:header-args:nix+: :tangle modules/home-manager/vim/default.nix
+:END:
+
+Having switched to emacs for most of text-based work, I still use neovim for one-off editing stuff in terminal.
+
+The module described in this section should be used by root and human users on my machines as well as on MacOS, thus I am using home manager module as the platform-agnostic way.
+
+Imported [[(vim-hm-import)][here]].
+
+#+begin_src nix
+# Home manager module that configures neovim with some plugins
+{ pkgs, config, lib, ... }:
+{
+  programs.neovim = {
+    enable = true;
+    viAlias = true;
+    vimAlias = true;
+    vimdiffAlias = true;
+    plugins =
+      with pkgs.vimPlugins; [
+        vim-surround
+        vim-commentary
+        vim-nix
+        delimitMate
+      ];
+    extraConfig =
+      ''
+        syntax on
+
+        let mapleader="\<Space>"
+
+        nnoremap <leader>wl <C-w>l
+        nnoremap <leader>wk <C-w>k
+        nnoremap <leader>wj <C-w>j
+        nnoremap <leader>wh <C-w>h
+
+        nnoremap <silent> <leader>ws :split<CR>
+        nnoremap <silent> <leader>wv :vsplit<CR>
+        " close the _window_, not the buffer
+        nnoremap <silent> <leader>wd <C-w>c
+
+        set number relativenumber
+        set modelines=1
+        set autoindent
+        set ignorecase
+        set smartcase incsearch
+        filetype plugin on
+
+        " cursor shapes in insert/normal modes
+        let &t_SI = "\e[6 q"
+        let &t_EI = "\e[2 q"
+        hi Visual term=bold,reverse cterm=bold,reverse
+        set expandtab
+        set tabstop=4
+        set shiftwidth=4
+        set autoread
+        autocmd FileType nix setlocal tabstop=2 shiftwidth=2
+        autocmd BufWritePost,FileWritePost *.nix silent !nix fmt >/dev/null 2>&1
+
+        set clipboard=unnamed${if pkgs.stdenv.system != "aarch64-darwin" then "plus" else ""}
+        set mouse=
+
+        " clear search highlights by hitting ESC
+        nnoremap <ESC> :noh<CR>
+      '';
+  };
+}
+#+end_src
+
+****** zsh (home-manager)
+:PROPERTIES:
+:header-args:nix+: :tangle modules/home-manager/zsh/default.nix
+:END:
+
+Imported [[(vim-hm-import)][here]].
+
+*NOTE*: for system-level completions to function correctly, zsh needs:
+
+#+begin_src nix :tangle no
+{
+  environment.pathsToLink = [ "/share/zsh" ];
+}
+#+end_src
+
+in system-level config.
+
+#+begin_src nix
+# home-manager clone of the original zsh module
+{ pkgs, config, lib, ... }:
+let
+  zshOptionsToSet = [
+    "INTERACTIVE_COMMENTS" # allow bash-style comments
+    # history
+    "BANG_HIST" # enable logging !!-like commands
+    "EXTENDED_HISTORY" # Write the history file in the ":start:elapsed;command" format.
+    "INC_APPEND_HISTORY" # Write to the history file immediately, not when the shell exits.
+    "SHARE_HISTORY" # Share history between all sessions.
+    "HIST_EXPIRE_DUPS_FIRST" # Expire duplicate entries first when trimming history.
+    "HIST_IGNORE_DUPS" # Don't record an entry that was just recorded again.
+    "HIST_IGNORE_ALL_DUPS" # Delete old recorded entry if new entry is a duplicate.
+    "HIST_FIND_NO_DUPS" # Do not display a line previously found.
+    "HIST_IGNORE_SPACE" # Don't record an entry starting with a space.
+    "HIST_SAVE_NO_DUPS" # Don't write duplicate entries in the history file.
+    "HIST_REDUCE_BLANKS" # Remove superfluous blanks before recording entry.
+    "HIST_VERIFY" # Don't execute immediately upon history expansion.
+    "HIST_FCNTL_LOCK" # enable fcntl syscall for saving history
+    # cd management
+    "AUTO_CD" # automatically cd into directory
+  ];
+in
+{
+  home.packages = builtins.attrValues {
+    inherit (pkgs) fzf killall bat jq direnv curl wget fd inetutils ripgrep lsof dig unzip htop;
+  };
+  programs.zsh = {
+    enable = true;
+    enableAutosuggestions = true;
+    enableCompletion = true;
+    enableSyntaxHighlighting = true;
+    autocd = true;
+    defaultKeymap = "viins";
+    dotDir = ".config/zsh";
+    history = {
+      extended = true;
+      ignoreDups = true;
+      ignorePatterns = [ "rm *" "pkill *" ];
+      ignoreSpace = false;
+    };
+    initExtra =
+      /* Turns a list into a single string. */
+      builtins.concatStringsSep "\n" (map (x: "setopt ${x}") zshOptionsToSet)
+      +
+      ''
+                  # Enable vim editing of command line
+                  ${builtins.readFile ./plugins/01-vim-edit.zsh}
+                  # Enable cd +1..9 to go back in dir stack
+                  ${builtins.readFile ./plugins/02-cd.zsh}
+                  # fzf bindings
+                  source ${pkgs.fzf}/share/fzf/key-bindings.zsh
+
+                  # Word Navigation shortcuts
+                  bindkey "^A" vi-beginning-of-line
+                  bindkey "^E" vi-end-of-line
+                  bindkey "^F" end-of-line
+
+                  # ctrl+arrow for word jupming
+                  bindkey "^[[1;5C" forward-word
+                  bindkey "^[[1;5D" backward-word
+
+                  # alt+f forward a word
+                  bindkey "^[f" forward-word
+                  # alt+b back a word
+                  bindkey "^[b" backward-word
+                  # working backspace
+                  bindkey -v '^?' backward-delete-char
+
+                  # Use vim keys in tab complete menu
+                  zmodload zsh/complist
+                  bindkey -M menuselect 'h' vi-backward-char
+                  bindkey -M menuselect 'k' vi-up-line-or-history
+                  bindkey -M menuselect 'l' vi-forward-char
+                  bindkey -M menuselect 'j' vi-down-line-or-history
+                  bindkey -M menuselect '^ ' accept-line
+
+                  # Add entry by "+" but do not exit menuselect
+                  bindkey -M menuselect "+" accept-and-menu-complete
+
+                  # Color the completions
+                  autoload -Uz compinit
+                  zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:l
+        ower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
+                  zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
+                  zstyle ':completion:*' menu select
+
+                  # Automatically escape urls when pasting
+                  autoload -Uz url-quote-magic
+                  zle -N self-insert url-quote-magic
+                  autoload -Uz bracketed-paste-magic
+                  zle -N bracketed-paste bracketed-paste-magic
+
+                  # Custom plugins can be quickly loaded if fpath is extended:
+                  fpath=(${./plugins} $fpath)
+                  # Bookmarks by "@@"
+                  autoload -Uz bookmarks.zsh && bookmarks.zsh
+                  # Cursor mode block <> beam
+                  autoload -Uz cursor_mode.zsh && cursor_mode.zsh
+
+                  # alias that creates the directory and changes into it
+                  mkcd(){ mkdir -p "$@" && cd "$@"; }
+
+                  # Using zsh highlighting with long paths (like nix store) can be slow. This fixes it.
+                  # found https://gist.github.com/magicdude4eva/2d4748f8ef3e6bf7b1591964c201c1ab
+                  pasteinit() {
+                    OLD_SELF_INSERT=''${''${(s.:.)widgets[self-insert]}[2,3]}
+                    zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+                  }
+
+                  pastefinish() {
+                    zle -N self-insert $OLD_SELF_INSERT
+                  }
+                  zstyle :bracketed-paste-magic paste-init pasteinit
+                  zstyle :bracketed-paste-magic paste-finish pastefinish
+
+                  # Make comments visible on default background
+                  ZSH_HIGHLIGHT_STYLES[comment]='none'
+
+                  # Alternative display for when I am in nix shell
+                  # Also preserves zsh when entering nix shelll
+                  ${pkgs.any-nix-shell}/bin/any-nix-shell zsh --info-right | source /dev/stdin
+      ''
+      + # set SSH_AUTH_SOCK <=> gpg-agent is enabled in home-manager
+      (if config.services ? gpg-agent.enable  # "?" is used so that lack of gpg-agent option does not cause an error
+      then
+        ''
+          if [[ -z "$SSH_AUTH_SOCK" ]]; then
+            export SSH_AUTH_SOCK="$(${config.programs.gpg.package}/bin/gpgconf --list-dirs agent-ssh-socket)"
+          fi
+        ''
+      else "");
+
+    shellAliases = {
+      e = "$EDITOR";
+      nvim = "$EDITOR";
+      vim = "$EDITOR";
+      ls = "${pkgs.exa}/bin/exa -h --group-directories-first --icons";
+      l = "ls";
+      ll = "ls -l";
+      la = "ls -al";
+      ka = "${pkgs.killall}/bin/killall";
+      mkd = "mkdir -pv";
+      ga = "${pkgs.git}/bin/git add";
+      gau = "ga -u";
+      grep = "grep --color=auto";
+      mv = "mv -v";
+      rm = "${pkgs.coreutils}/bin/rm -id";
+      vidir = "${pkgs.moreutils}/bin/vidir --verbose";
+      ccopy = "${pkgs.wl-clipboard}/bin/wl-copy";
+      syu = "systemctl --user";
+      cde = "cd /etc/nixos";
+      lg = "${pkgs.lazygit}/bin/lazygit";
+      # Colorize IP output
+      ip = "ip -c";
+    };
+  };
+  programs.direnv = {
+    enable = true;
+  };
+  programs.starship = {
+    enable = true;
+    enableBashIntegration = false;
+    enableFishIntegration = false;
+    enableIonIntegration = false;
+    enableNushellIntegration = false;
+  };
+}
+#+end_src
+
+******* zsh modules (home-manager)
+
+******** 01-vim-edit (home-manager)
+
+#+begin_src sh :tangle modules/home-manager/zsh/plugins/01-vim-edit.zsh
+# vim style editing
+bindkey -v
+
+autoload edit-command-line; zle -N edit-command-line
+bindkey -M vicmd jk edit-command-line  # jk chord to edit the current line
+#+end_src
+
+******** 02-cd (home-manager)
+
+#+begin_src sh :tangle modules/home-manager/zsh/plugins/02-cd.zsh
+# File that sets the behavior of cd command
+setopt autocd
+
+# dirs stack manipulation
+setopt AUTO_PUSHD           # Push the current directory visited on the stack.
+setopt PUSHD_IGNORE_DUPS    # Do not store duplicates in the stack.
+setopt PUSHD_SILENT         # Do not print the directory stack after
+
+# Enabled cd +X to change directory to somewhere in stack
+alias d='dirs -v' # prints stack of directories
+for index ({1..9}) alias "$index"="cd +${index}"; unset index
+#+end_src
+
+******** bookmarks (home-manager)
+
+#+begin_src sh :tangle modules/home-manager/zsh/plugins/bookmarks.zsh
+# -*- sh -*-
+autoload is-at-least
+# Source: https://github.com/vincentbernat/zshrc/blob/master/rc/bookmarks.zsh
+# Changed by Vladimir Timofeenko, changed MARKPATH to local share for persistence
+
+# Handle bookmarks. This uses the static named directories feature of
+# zsh. Such directories are declared with `hash -d
+# name=directory`. Both prompt expansion and completion know how to
+# handle them. We populate the hash with directories.
+#
+# With autocd, you can just type `~-bookmark`. Since this can be
+# cumbersome to type, you can also type `@@` and this will be turned
+# into `~-` by ZLE.
+
+is-at-least 4.3.12 && () {
+    MARKPATH="${HOME}/.local/share/zsh/bookmarks"
+
+    # Add some static entries
+    hash -d log=/var/log
+    hash -d doc=/usr/share/doc
+
+    # Populate the hash
+    for link ($MARKPATH/*(N@)) {
+        hash -d -- -${link:t}=${link:A}
+    }
+
+    vbe-insert-bookmark() {
+        emulate -L zsh
+        LBUFFER=${LBUFFER}"~-"
+    }
+    zle -N vbe-insert-bookmark
+    bindkey '@@' vbe-insert-bookmark
+
+    # Manage bookmarks
+    bookmark() {
+        [[ -d $MARKPATH ]] || mkdir -p $MARKPATH
+        if (( $# == 0 )); then
+            # When no arguments are provided, just display existing
+            # bookmarks
+            for link in $MARKPATH/*(N@); do
+                local markname=${(%):-%F{green}${link:t}%f}
+                local markpath=${(%):-%F{blue}${link:A}%f}
+                printf "%-30s → %s\n" $markname $markpath
+            done
+        else
+            # Otherwise, we may want to add a bookmark or delete an
+            # existing one.
+            local -a delete
+            zparseopts -D d=delete
+            if (( $+delete[1] )); then
+                # With `-d`, we delete an existing bookmark
+                command rm $MARKPATH/$1
+            else
+                # Otherwise, add a bookmark to the current
+                # directory. The first argument is the bookmark
+                # name. `.` is special and means the bookmark should
+                # be named after the current directory.
+                local name=$1
+                [[ $name == "." ]] && name=${PWD:t}
+                ln -s $PWD $MARKPATH/$name
+                hash -d -- -${name}=${PWD}
+            fi
+        fi
+    }
+}
+#+end_src
+
+******** cursor_mode (home-manager)
+
+#+begin_src sh :tangle modules/home-manager/zsh/plugins/cursor_mode.zsh
+cursor_mode() {
+    # See https://ttssh2.osdn.jp/manual/4/en/usage/tips/vim.html for cursor shapes
+    cursor_block='\e[2 q'
+
+    cursor_beam='\e[6 q'
+
+    function zle-keymap-select {
+        if [[ ${KEYMAP} == vicmd ]] ||
+            [[ $1 = 'block' ]]; then
+            echo -ne $cursor_block
+        elif [[ ${KEYMAP} == main ]] ||
+            [[ ${KEYMAP} == viins ]] ||
+            [[ ${KEYMAP} = '' ]] ||
+            [[ $1 = 'beam' ]]; then
+            echo -ne $cursor_beam
+        fi
+    }
+
+    zle-line-init() {
+        echo -ne $cursor_beam
+    }
+
+    zle -N zle-keymap-select
+    zle -N zle-line-init
+}
+
+cursor_mode
+#+end_src
+
+******* TODO alias where to "wh" to fzf find a binary :feat:
+******* TODO Rewrite in literal style :chore:
+******* TODO [#C] See if rm -i alias can be adjusted not to display the full rm path :feat:
+******* TODO [#C] Add noti for async notifications :feat:
+
+****** Kitty
+:PROPERTIES:
+:header-args:nix+: :tangle modules/home-manager/kitty/default.nix
+:END:
+
+Imported [[(kitty-hm-import)][here]].
+
+#+begin_src nix
+{ pkgs, ... }:
+
+{
+  programs.kitty = {
+    enable = true;
+    # theme = "Neopolitan";
+    theme = "Doom Vibrant";
+    settings = {
+      cursor_blink_interval = 0;
+      background_opacity = "0.95";
+      inactive_text_alpha = "0.85";
+      cursor = "none";
+      enable_audio_bell = false;
+      tab_bar_margin_width = 9;
+      tab_bar_margin_height = "2 2";
+      tab_bar_style = "separator";
+      tab_bar_min_tabs = 2;
+      tab_bar_edge = "bottom";
+      tab_title_template = "{fmt.fg.white} {title.split()[0]} ";
+      active_tab_title_template = "{fmt.noitalic}{fmt.bg.black}{fmt.fg.white} {title.split()[0]} ";
+    };
+    keybindings = {
+      # Opens a new Kitty window in the current working directory
+      "kitty_mod+enter" = "launch --cwd=current";
+    };
+  };
+}
+#+end_src
+
+******* TODO [#C] Use custom color scheme :feat:
+UI only, low prio
+
+****** Zathura
+:PROPERTIES:
+:header-args:nix+: :tangle modules/home-manager/zathura/default.nix
+:END:
+
+Imported [[(zathura-hm-import)][here]].
+
+#+begin_src nix
+# Home-manager module for Zathura
+{ ... }: {
+  programs.zathura = {
+    enable = true;
+    options = {
+      # Allows zathura to use system clipboard
+      selection-clipboard = "clipboard";
+    };
+  };
+}
+#+end_src
+
+****** Git
+:PROPERTIES:
+:header-args:nix+: :tangle modules/home-manager/git.nix
+:END:
+
+Home-manager module that configures git for the user.
+
+Imported [[(git-hm-import)][here]].
+
+#+begin_src nix
+{ pkgs, ... }: {
+  home.packages = builtins.attrValues {
+    inherit (pkgs) git lazygit git-crypt;
+  };
+  programs.git = {
+    enable = true;
+    aliases = {
+      ci = "commit";
+      st = "status";
+      co = "checkout";
+      rv = "remote --verbose";
+      unstage = "reset HEAD --";
+    };
+    userEmail = "id@vtimofeenko.com";
+    userName = "Vladimir Timofeenko";
+  ignores = [
+    # Vim swap files
+    "*.swp"
+  ];
+  extraConfig = {
+    url = {
+      "https://github.com/" = {
+        insteadOf = [
+          "gh:"
+          "github:"
+        ];
+      };
+    };
+  };
+  };
+}
+#+end_src
+
+****** Home-packages
+:PROPERTIES:
+:header-args:nix+: :tangle modules/home-manager/packages.nix
+:END:
+
+A mixed bag of packages that should be installed for home-manager managed users.
+
+Imported [[(packages-hm-import)][here]].
+
+#+begin_src nix
+{ pkgs, ... }: {
+  home.packages = builtins.attrValues {
+    inherit (pkgs) calibre;
+  };
+}
+#+end_src
+
+****** TODO doom module :feat:
+****** TODO ideavimrc :feat:
+***** homeConfigurations outro :noexport:
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+          };
+#+end_src
+
+**** devShells
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+        devshells.default = {
+          env = [ ];
+          commands = [
+            {
+              help = "preview README.md";
+              name = "preview";
+              command = "${pkgs.python310Packages.grip}/bin/grip .";
+            }
+            {
+              help = "deploy neptunium";
+              name = "deploy-neptunium";
+              command = "nix flake check && nixos-rebuild --flake .#neptunium --target-host root@neptunium.home.arpa switch";
+            }
+            {
+              help = "deploy neptunium";
+              name = "deploy-neptunium";
+              command = "nix flake check && nixos-rebuild --flake .#neptunium --target-host root@neptunium.home.arpa switch";
+            }
+          ];
+        };
+#+end_src
+
+***** TODO move to deploy-rs :chore:
+
+**** perSystem outro
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+      };
+#+end_src
+
+*** "Flake" section
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+      flake = {
+        # The usual flake attributes can be defined here, including system-
+        # agnostic ones like nixosModule and system-enumerating ones, although
+        # those are more easily expressed in perSystem.
+#+end_src
+
+**** "nixosModules" output
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+        nixosModules = rec {
+          default = { ... }: {
+            imports = [
+              zsh
+              nix-config
+            ];
+          };
+          zsh = import ./nixosModules/zsh; # (ref:zsh-module-import)
+          # asddas
+          nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
+        };
+#+end_src
+
+***** zsh (system)
+:PROPERTIES:
+:header-args:nix+: :tangle nixosModules/zsh/default.nix
+:END:
+
+A copy of the [[*zsh (home-manager)][zsh home module]] is included in the outputs of the flake. It can be used for system-wide configuration of zsh, e.g. for users and systems without home-manager.
+
+Imported [[(zsh-module-import)][here]].
+
+#+begin_src md :tangle README.md
+### ZSH module
+
+#### Usage
+
+To use this module separately from `default` one:
+
+```nix
+{
+    outputs = inputs@{ ... }:
+    {
+        nixosConfigurations.machine-name = nixpkgs.lib.nixosSystem {
+            # ...
+            modules =
+            [
+                inputs.monorepo.nixosModules.zsh
+            ];
+        };
+    };
+}
+```
+
+and set the users' shells to zsh.
+
+#### Screenshot
+
+A screenshot showing open shell in the root of this project:
+
+![](.assets/zsh-screenshot.png)
+
+#### High-level features description
+
+1. Uses [starship](https://starship.rs/) to set up the prompt
+2. Highlights syntax in command line
+3. Automatically suggests command from history
+4. Shares history between currently running sessions
+5. (optionally) uses gpg-agent for ssh authentication
+6. Sets up [direnv](https://direnv.net/). ~.direnv~ can immediately create a Nix developemnt shell from a local flake.nix if it contains ~use flake~.
+7. Allows editing the current command in $EDITOR by hitting ESC and E: [01-vim-edit](./modules/zsh/plugins/01-vim-edit.zsh)
+8. Sets up simple way to change directory through stack of last visited dirs (`cd +1`, `+2`, `+3`, ...): [02-cd](./modules/zsh/plugins/02-cd.zsh)
+9. Creates a mechanism to use bookmarks by using double @ symbol: bookmarks: [bookmarks](./modules/zsh/plugins/bookmarks.zsh)
+10. Depending on the mode (typing vs editing in vim), shape of the cursor changes: [cursor_mode](./modules/zsh/plugins/cursor_mode.zsh)
+11. When entering `nix shell` -- zsh is preserved as the shell
+
+#+end_src
+
+#+begin_src nix
+{ pkgs, config, lib, ... }:
+let
+  # This kinda imports the user module and exposes the parameters through userConfig attrset
+  userConfig = import ../../modules/home-manager/zsh { inherit pkgs config lib; };
+in
+{
+  environment.systemPackages = userConfig.home.packages;
+  programs.zsh = {
+    enable = true;
+    autosuggestions.enable = true;
+    syntaxHighlighting.enable = true;
+    inherit (userConfig.programs.zsh) shellAliases;
+    interactiveShellInit = userConfig.programs.zsh.initExtra;
+    promptInit =
+      builtins.concatStringsSep
+        "\n"
+        (
+          map
+            (x:
+              ''
+                if [[ $TERM != "dumb" && (-z $INSIDE_EMACS || $INSIDE_EMACS == "vterm") ]]; then
+                  ${x}
+                fi
+              ''
+            )
+            [
+              # Enable starship prompt
+              ''eval "$(${pkgs.starship}/bin/starship init zsh)"''
+              # Direnv setup
+              ''eval "$(${pkgs.direnv}/bin/direnv hook zsh)''
+              # Any nix shell setup
+              ''${pkgs.any-nix-shell}/bin/any-nix-shell zsh --info-right | source /dev/stdin''
+            ]
+        );
+  };
+  # System-level completions need this
+  environment.pathsToLink = [ "/share/zsh" ];
+}
+#+end_src
+
+***** Nix-the-package-manager config
+:PROPERTIES:
+:header-args:nix+: :tangle nixosModules/nix/default.nix
+:END:
+
+Imported [[(nix-module-import)][here]].
+
+#+begin_src md :tangle README.md
+### Nix module
+
+The tweaks I use for nix the package manager:
+
+- Enable flakes (mandatory)
+- Quickly fail if the network is inaccessible
+- Do not nag me if a flake git repo is dirty (has some uncommitted stuff)
+- Automatically optimizes `/nix/store` to save a bit of space using hardlinking
+
+#### Installation
+
+To use this module separately from `default` one:
+
+```nix
+{
+    outputs = inputs@{ ... }:
+    {
+        nixosConfigurations.machine-name = nixpkgs.lib.nixosSystem {
+            # ...
+            modules =
+            [
+                inputs.monorepo.nixosModules.nix-config
+            ];
+        };
+    };
+}
+```
+
+#+end_src
+
+#+begin_src nix
+{ pkgs, ... }:
+{
+  # Allow unfree packages across the board
+  nixpkgs.config.allowUnfree = true;
+  nix = {
+    extraOptions = ''
+      # Quicker timeout for inaccessible binary caches
+      connect-timeout = 5
+      # Enable flakes
+      experimental-features = nix-command flakes
+      # Do not warn on dirty git repo
+      warn-dirty = false
+      # Automatically optimize store
+      auto-optimise-store = true
+    '';
+  };
+}
+#+end_src
+
+Garbage collection through ~nix.gc.automatic = true~ is not on since I tend to manually clean it up from time to time.
+
+***** TODO vim (system) :feat:
+
+**** "nixosConfigurations" output
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+        nixosConfigurations = {
+#+end_src
+
+***** Common system configuration modules
+:PROPERTIES:
+:header-args:nix+: :tangle modules/default.nix
+:END:
+
+#+begin_src nix
+# These arguments are passed through specialArgs
+{ pkgs
+, config
+, lib
+, agenix
+, home-manager
+, my-tmux
+, wg-namespace-flake
+, ...
+}:
+{
+  imports = [
+    # Modules from imports
+    agenix.nixosModules.default
+    home-manager.nixosModules.home-manager
+    my-tmux.nixosModule
+    wg-namespace-flake.nixosModules.default
+
+    # this flake's nixosModules
+    ../nixosModules/zsh # TODO: consider reusing from self ?
+    ../nixosModules/nix # TODO: consider reusing from self ?
+
+    # local modules
+    ./fonts.nix
+    ./applications # (ref:applications-system-import)
+    ./virtualization # (ref:virtualization-import)
+    ./hardware # (ref:hardware-import)
+    ./network # (ref:network-import)
+    ./user # (ref:user-import)
+
+
+  ];
+  time.timeZone = "America/Los_Angeles";
+
+  networking.useDHCP = false;
+
+  users.users.root.shell = pkgs.zsh;
+
+  # Set editors on the system level
+  environment.variables.SUDO_EDITOR = "nvim";
+  environment.variables.EDITOR = "nvim";
+
+  # Cross-compilation setup
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+}
+#+end_src
+
+****** Fonts.nix
+:PROPERTIES:
+:header-args:nix+: :tangle modules/fonts.nix
+:END:
+
+#+begin_src nix
+{ pkgs, ... }: {
+  fonts = {
+    fonts = with pkgs; [
+      (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+      roboto
+      twitter-color-emoji
+      font-awesome
+    ];
+    fontconfig = {
+      defaultFonts = {
+        monospace = [ "JetBrainsMono Nerd Font" ];
+        sansSerif = [ "Roboto" ];
+        serif = [ "Roboto" ];
+        emoji = [ "Twitter Color Emoji" ];
+      };
+    };
+  };
+}
+#+end_src
+
+****** Application-specific configs
+:PROPERTIES:
+:header-args:nix+: :tangle modules/applications/default.nix
+:END:
+
+Imported [[(applications-system-import)][here]]
+
+#+begin_src nix
+{ ... }: {
+  imports = [
+    ./firejail.nix
+    ./flatpak.nix
+    ./media.nix
+  ];
+}
+#+end_src
+
+******* Firejail
+:PROPERTIES:
+:header-args:nix+: :tangle modules/applications/firejail.nix
+:END:
+
+#+begin_src nix
+{ pkgs, lib, ... }: {
+  programs.firejail.enable = true;
+  programs.firejail.wrappedBinaries = {
+    thunderbird = {
+      executable = "${lib.getBin pkgs.thunderbird}/bin/thunderbird";
+      profile = "${pkgs.firejail}/etc/firejail/thunderbird.profile";
+    };
+    telegram-desktop = {
+      executable = "${lib.getBin pkgs.tdesktop}/bin/telegram-desktop";
+      profile = "${pkgs.firejail}/etc/firejail/telegram.profile";
+    };
+  };
+  # Firejail-specific desktop shortcuts
+  home-manager.users.spacecadet = { pkgs, ... }: {
+    xdg.desktopEntries = {
+      thunderbird = {
+        # Taken from Thunderbird v 91.5.0
+        name = "Thunderbird";
+        comment = "🦊Firejailed";
+        genericName = "Mail Client";
+        exec = "thunderbird %U";
+        icon = "thunderbird";
+        terminal = false;
+        mimeType = [ "text/html" "text/xml" "application/xhtml+xml" "application/vnd.mozilla.xul+xml" "x-scheme-handler/http" "x-scheme-handler/https" "x-scheme-handler/ftp" ];
+      };
+      telegram = {
+        # Taken from Telegram v 3.1.11
+        name = "Telegram";
+        comment = "🦊Firejailed";
+        exec = "telegram-desktop -- %u";
+        icon = "telegram";
+        terminal = false;
+        mimeType = [ "x-scheme-handler/tg" ];
+      };
+    };
+  };
+}
+#+end_src
+
+******** TODO [#C] Fix the icons :fix:
+******* Flatpak
+:PROPERTIES:
+:header-args:nix+: :tangle modules/applications/flatpak.nix
+:END:
+
+#+begin_src nix
+{ ... }: {
+  services.flatpak.enable = true;
+  xdg.portal.enable = true;
+}
+#+end_src
+
+******* Media
+:PROPERTIES:
+:header-args:nix+: :tangle modules/applications/media.nix
+:END:
+
+#+begin_src nix
+{ pkgs, ... }: {
+  environment.systemPackages = builtins.attrValues {
+    inherit (pkgs) yt-dlp mpv;
+  };
+  # Configuration files
+  environment. etc = {
+    # judging by strace, mpv on NixOS expects it in etc.
+    "mpv/mpv.conf". text = ''
+      hwdec
+      save-position-on-quit
+    '';
+    "mpv/input.conf". text = ''
+      WHEEL_UP add volume 5
+      # mouse wheel for sound control
+      WHEEL_DOWN add volume -5
+    '';
+  };
+}
+#+end_src
+
+******** TODO Move to home manager programs :chore:
+
+****** Virtualization
+:PROPERTIES:
+:header-args:nix+: :tangle modules/virtualization/default.nix
+:END:
+
+I occasionally need full blown VMs to emulate stuff.
+
+Imported [[(virtualization-import)][here]]
+
+#+begin_src nix
+{ pkgs, ... }: {
+  virtualisation.libvirtd.enable = true;
+  environment.systemPackages = with pkgs; [ virt-manager ];
+  users.users.spacecadet.extraGroups = [ "libvirtd" ];
+  programs.dconf.enable = true;
+}
+#+end_src
+
+****** Hardware
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hardware/default.nix
+:END:
+
+Imported [[(hardware-import)][here]]
+
+#+begin_src nix
+{ ... }: {
+  imports = [
+    ./disks.nix # (ref:disks-import)
+    ./scanner.nix # (ref:scanner-import)
+    ./printer.nix # (ref:printer-import)
+    ./keyboard.nix # (ref:keyboard-import)
+  ];
+}
+#+end_src
+
+******* Disks
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hardware/disks.nix
+:END:
+
+Imported [[(disks-import)][here]]
+
+#+begin_src nix
+{ pkgs, ... }: {
+#+end_src
+
+Since I am running on SSDs, worth enabling timed fstrim:
+
+#+begin_src nix
+  services.fstrim.enable = true;
+#+end_src
+
+I like having a temporary directory  that is separate from ~/tmp~ for random things I don't need to keep around. It can live in ~/scratch~:
+
+#+begin_src nix
+  systemd.tmpfiles.rules =
+    [
+      "d /scratch 1777 spacecadet users 10d"
+    ];
+#+end_src
+
+Final bracket;
+
+#+begin_src nix
+}
+#+end_src
+
+******* Scanner
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hardware/scanner.nix
+:END:
+
+Imported [[(scanner-import)][here]]
+
+#+begin_src nix
+{ pkgs, ... }: {
+  hardware.sane = {
+    enable = true;
+    extraBackends = [ pkgs.hplipWithPlugin ];
+  };
+  services.avahi = {
+    enable = true;
+    nssmdns = true;
+  };
+  users.users.spacecadet.extraGroups = [ "scanner" ];
+}
+#+end_src
+
+******* Printer
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hardware/printer.nix
+:END:
+
+Imported [[(printer-import)][here]]
+
+#+begin_src nix
+{ pkgs, ... }: {
+  services.printing = {
+    enable = true;
+    drivers = [ pkgs.hplipWithPlugin ];
+  };
+}
+#+end_src
+
+******* Keyboard
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hardware/keyboard.nix
+:END:
+
+Imported [[(keyboard-import)][here]]
+
+#+begin_src nix
+{ lib, pkgs, ... }: {
+  # taken from https://github.com/dygmalab/bazecor/blob/159eed1d37f3fd1fbf5c17023c12bb683b778281/src/main/index.js#l223
+  services.udev.extraRules = ''
+    subsystems=="usb", attrs{idvendor}=="1209", attrs{idproduct}=="2201", group="users", mode="0666"
+    subsystems=="usb", attrs{idvendor}=="1209", attrs{idproduct}=="2200", group="users", mode="0666"
+  '';
+}
+#+end_src
+
+******** TODO [#C] Add the configurator utility - either firejailed appimage or flatpak :feat:
+
+****** Network
+:PROPERTIES:
+:header-args:nix+: :tangle modules/network/default.nix
+:END:
+
+Common network configuration. Imported [[(network-import)][here]].
+
+#+begin_src nix
+{ ... }: {
+  networking.enableIPv6 = false;
+}
+#+end_src
+
+******* LAN WiFi
+:PROPERTIES:
+:header-args:nix+: :tangle modules/network/lan-wifi.nix
+:END:
+
+Optionally importable module that configures LAN WiFi.
+
+#+begin_src nix
+{ config, lib, infra, ... }:
+let
+  infraMetadata = lib.importTOML (infra + "/infra.toml");
+  inherit (infraMetadata.network) lan;
+  local_address = lan.first_octets + "." + lan."${config.networking.hostName}".ip;
+in
+{
+  # Disable autogenerated names
+  networking.usePredictableInterfaceNames = false;
+  # Systemd-networkd enabled
+  networking.useNetworkd = true;
+
+  systemd.network.networks = {
+    "10-wifi-lan" = {
+      enable = true;
+      name = "wifi-lan";
+      dns = lan.dns_servers;
+      address = [ local_address ];
+      gateway = [ lan.defaultGateway ];
+      # Search domain goes here
+      domains = [ lan.domain ];
+      networkConfig = {
+        DHCP = "no";
+        DNSSEC = "yes";
+        DNSOverTLS = "no";
+        # Disable ipv6 explicitly
+        LinkLocalAddressing = "ipv4";
+      };
+    };
+  };
+  # I am not using llmnr in my LAN
+  services.resolved.llmnr = "false";
+
+  # Any interface being up should be OK
+  systemd.network.wait-online.anyInterface = true;
+}
+#+end_src
+
+******** TODO [#C] Migrate to new infra network config :chore:
+
+****** NixOS user configs
+:PROPERTIES:
+:header-args:nix+: :tangle modules/user/default.nix
+:END:
+
+This file configures my user on the system level and does the basic home-manager configuration.
+
+Imported [[(user-import][here]].
+
+#+begin_src nix
+{ pkgs
+, config
+, lib
+, my-doom-config
+, ...
+}:
+{
+  users.users.spacecadet = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "lp" ];
+    shell = pkgs.zsh;
+  };
+
+  # TODO: check if still needed
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+
+  home-manager.users.spacecadet = { ... }: {
+    imports = [
+      # my-doom-config.nixosModules.default # TODO
+      ../home-manager
+    ];
+    home.packages = builtins.attrValues {
+      inherit (pkgs) ncspot pavucontrol blueman libreoffice firefox brave gthumb;
+    };
+
+    programs.browserpass.enable = true;
+
+    programs.password-store = {
+      enable = true;
+      package = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
+    };
+
+    home.file.".icons/default".source = "${pkgs.vanilla-dmz}/share/icons/Vanilla-DMZ";
+  };
+}
+#+end_src
+
+******* TODO [#C] See if homeConfiguration can be reused for this :chore:to_think:
+
+******* TODO [#C] Migrate firefox to home-manager management :feat:
+
+******* TODO [#A] Add doom-config :migration:
+
+***** Uranium :migration:
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+          uranium = inputs.nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            modules = [
+              ./modules
+              ./modules/nixosSystems/uranium # (ref:uranium-import)
+              private-config.nixosModules.machines.uranium
+              { nixpkgs.overlays = [ inputs.my-sway-config.overlays.default ]; }
+            ];
+            # NOTE:
+            # This makes the inputs propagate into the modules and allows modules to refer to the inputs
+            # See network configuration as an example
+            specialArgs = inputs;
+          };
+#+end_src
+
+****** Uranium specific system :migration:
+:PROPERTIES:
+:header-args:nix+: :tangle modules/nixosSystems/uranium/default.nix
+:END:
+
+Imported [[(uranium-import)][here]].
+
+#+begin_src nix
+{ pkgs
+, lib
+, config
+, my-sway-config
+, my-doom-config
+, ...
+}:
+{
+  imports = [
+    my-sway-config.nixosModules.system
+  ];
+  home-manager.users.spacecadet = { ... }: {
+    imports = [
+      my-sway-config.nixosModules.default
+    ];
+    wayland.windowManager.sway.config = {
+      # Restore non-vm modifier
+      modifier = "Mod4";
+      # Output configuration
+      output = {
+        "eDP-1" = { "scale" = "1"; };
+      };
+    };
+    vt-sway.enableBrightness = true;
+  };
+}
+#+end_src
+
+****** TODO Uranium specific hardware :migration:
+
+***** TODO Neptunium :migration:
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix :tangle no
+          neptunium = inputs.nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            modules = [
+              ./modules
+              ./modules/nixosSystems/neptunium
+              private-config.nixosModules.machines.neptunium
+              # { nixpkgs.overlays = [ my-sway-config.overlays.default ]; }
+            ];
+            # NOTE:
+            # This makes the inputs propagate into the modules and allows modules to refer to the inputs
+            # See network configuration as an example
+            specialArgs = inputs;
+          };
+#+end_src
+
+****** TODO Neptunium specific system :migration:
+
+****** TODO Neptunium specific hardware :migration:
+
+***** "nixosConfigurations" outro :noexport:
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+        };
+#+end_src
+
+**** "Flake" output outro :noexport:
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+#+begin_src nix
+      };
+#+end_src
+
+** Flake outro :noexport:
+
+#+begin_src nix
+    };
+}
+#+end_src
+
+* References
+
+- Flake-parts + overlays consumption: https://codeberg.org/adamcstephens/dotfiles/src/commit/310d1f2bcc4518439502310ad927cbf33f8c38ea/flake.nix#L42
+- Flake parts config: https://git.sr.ht/~misterio/nix-config/tree/main/item/flake.nix
+
+* Projects
+
+** CI/CD
+
+*** TODO Setup a canary VM
+
+*** TODO Treefmt
+
+I have some shell files here -- need to auto format them
+
+*** TODO Checks for org file
+Mostly visual things that annoy me:
+
+- [ ] More than two newlines in a row
+- [ ] Hanging newline before end_src
+- [ ] Newline has to exist before begin_src
+- [ ] No duplicate headlines (messes up detangling)
+
+** Publish
+*** TODO [#C] Hugo publish :chore:
+
+** TODO Check all packages that are installed through system.environmentPackages - maybe move them to the user :chore:
+
+** TODO [#C] Consider merging tmux here :feat:
+That way I could reuse the configs on other machines
+
+** TODO Figure out TODO export :chore:
+
+Looks like ~tasks~ setting may do the trick:
+
+https://orgmode.org/manual/Export-Settings.html
+
+
+** STRT Hyprland migration plan [5/8]
+At the end of this project I want to have a fully working Hyprland config on neptunium.
+
+*** DONE System-wide settings
+*** DONE Base settings
+*** DONE Greeter
+**** DONE Write
+**** DONE Deploy with zsh
+**** DONE Evaluate
+*** DONE Home-specific settings
+*** DONE Xremap base config
+*** STRT Cleanup the hyprland module structure -- right now it sits under ~sway/~ which is confusing
+*** TODO Revisit packages installed through [home|environment]Packages and see if they can be configured through flake
+*** TODO Migrate uranium to hyprland
+** TODO Hyprland improvements [0/2]
+
+*** TODO Check out [[https://wiki.hyprland.org/Configuring/Example-configurations/][examples]]
+
+*** TODO [[*EWW -- Widgets][EWW -- Widgets]]
+
+*** TODO Declarative e-mail management
+
+** "Try out this software" stream
+
+This headline serves as a stream of (maybe) cool software that I want to try out, but not right now.
+
+- https://github.com/GyulyVGC/sniffnet
+
+* Literate project setup :noexport:
+
+#+name: mktagblock
+#+begin_src elisp :results none
+(require 'dash)
+(require 's)
+
+(defun org-freq-count (search targets &optional cmp)
+  (let ((cmp (if (functionp cmp)
+                 cmp
+               (lambda (a b) nil))))
+
+    (mapcar (lambda (x)
+              (list x (length (org-map-entries t (format search x) nil))))
+            (sort
+             (delete-dups
+              (-filter #'stringp targets))
+             cmp)
+            )))
+
+(defun org--tagblock-all-tags ()
+  (-filter #'stringp (-map #'car (append
+                                  (org-get-buffer-tags)
+                                  org-tag-alist
+                                  org-tag-persistent-alist))))
+
+(defun org-write-freq-count (search targets name)
+  (insert (s-concat
+           (if name (insert (format "#+name: %s\n" name)))
+           (mapconcat
+            (lambda (x) (format "| %s | %s |" (nth 0 x) (nth 1 x)))
+            (org-freq-count search targets)
+            "\n")))
+  (org-table-align))
+
+(defun org-dblock-write:tagblock (params)
+  (let ((todo (plist-get params :todo))
+        (tags (or (plist-get params :tags) (org--tagblock-all-tags)))
+        (label (plist-get params :label))
+        (caption (plist-get params :caption)))
+    (when caption (insert (format "#+caption: %s\n" caption)))
+    (org-write-freq-count (cond ((equal todo t)
+                                 (format "%%s/%s" (mapconcat 'identity
+                                                             org-not-done-keywords
+                                                             "|"
+                                                             )))
+                                ((listp todo)
+                                 (format "%%s/%s" (mapconcat 'identity
+                                                             todo
+                                                             "|"
+                                                             )))
+                                (t "%s"))
+                          tags
+                          label)))
+
+;;; tagblock definition ends here
+#+end_src
+
+
+;; Local Variables:
+;; eval: (progn (org-babel-goto-named-src-block "mkTagblock") (org-babel-execute-src-block) (outline-hide-sublevels 1))
+;; eval: (add-hook 'before-save-hook (lambda ()(org-update-all-dblocks)) nil t)
+;; End:

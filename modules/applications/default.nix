@@ -1,11 +1,9 @@
-{ ... }:
-
-{
+# [[file:../../new_project.org::*Application-specific configs][Application-specific configs:1]]
+{ ... }: {
   imports = [
     ./firejail.nix
     ./flatpak.nix
     ./media.nix
-    ./zathura.nix
-    ./calibre.nix
   ];
 }
+# Application-specific configs:1 ends here

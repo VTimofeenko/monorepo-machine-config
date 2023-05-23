@@ -27,16 +27,11 @@ Certain components of my config (mostly dealing with passwords and such) are not
 }
 ```
 
-# Specific outputs description
+### ZSH module
 
-## Modules
+#### Usage
 
-The flake comes with a `default` module that currently includes:
-
-- [zsh config](#ZSH-module)
-- nix-the-package-manager config
-
-It can be imported as
+To use this module separately from `default` one:
 
 ```nix
 {
@@ -46,12 +41,34 @@ It can be imported as
             # ...
             modules =
             [
-                inputs.monorepo.nixosModules.default
+                inputs.monorepo.nixosModules.zsh
             ];
         };
     };
 }
 ```
+
+and set the users' shells to zsh.
+
+#### Screenshot
+
+A screenshot showing open shell in the root of this project:
+
+![](.assets/zsh-screenshot.png)
+
+#### High-level features description
+
+1. Uses [starship](https://starship.rs/) to set up the prompt
+2. Highlights syntax in command line
+3. Automatically suggests command from history
+4. Shares history between currently running sessions
+5. (optionally) uses gpg-agent for ssh authentication
+6. Sets up [direnv](https://direnv.net/). ~.direnv~ can immediately create a Nix developemnt shell from a local flake.nix if it contains ~use flake~.
+7. Allows editing the current command in $EDITOR by hitting ESC and E: [01-vim-edit](./modules/zsh/plugins/01-vim-edit.zsh)
+8. Sets up simple way to change directory through stack of last visited dirs (`cd +1`, `+2`, `+3`, ...): [02-cd](./modules/zsh/plugins/02-cd.zsh)
+9. Creates a mechanism to use bookmarks by using double @ symbol: bookmarks: [bookmarks](./modules/zsh/plugins/bookmarks.zsh)
+10. Depending on the mode (typing vs editing in vim), shape of the cursor changes: [cursor_mode](./modules/zsh/plugins/cursor_mode.zsh)
+11. When entering `nix shell` -- zsh is preserved as the shell
 
 ### Nix module
 
@@ -80,54 +97,3 @@ To use this module separately from `default` one:
     };
 }
 ```
-
-### ZSH module
-
-#### Usage
-
-To use this module separately from `default` one:
-
-```nix
-{
-    outputs = inputs@{ ... }:
-    {
-        nixosConfigurations.machine-name = nixpkgs.lib.nixosSystem {
-            # ...
-            modules =
-            [
-                inputs.monorepo.nixosModules.zsh
-                {
-                    programs.vt-zsh =
-                        {
-                            starship_enable = true;
-                            direnv_enable = true;
-                        };
-                }
-            ];
-        };
-    };
-}
-```
-
-and set the users' shells to zsh.
-
-#### Screenshot
-
-A screenshot showing open shell in the root of this project:
-
-![](.assets/zsh-screenshot.png)
-
-#### High-level features description
-
-1. (optionally) uses [starship](https://starship.rs/) to set up the prompt
-2. Highlights syntax in command line
-3. Automatically suggests command from history
-4. Shares history between currently running sessions
-5. (optionally) uses gpg-agent for ssh authentication
-6. (optionally) sets up [direnv](https://direnv.net/). ~.direnv~ can immediately create a Nix developemnt shell from a local flake.nix if it contains ~use flake~.
-7. Allows editing the current command in $EDITOR by hitting ESC and E: [01-vim-edit](./modules/zsh/plugins/01-vim-edit.zsh)
-8. Sets up simple way to change directory through stack of last visited dirs (`cd +1`, `+2`, `+3`, ...): [02-cd](./modules/zsh/plugins/02-cd.zsh)
-9. Creates a mechanism to use bookmarks by using double @ symbol: bookmarks: [bookmarks](./modules/zsh/plugins/bookmarks.zsh)
-10. Depending on the mode (typing vs editing in vim), shape of the cursor changes: [cursor_mode](./modules/zsh/plugins/cursor_mode.zsh)
-
-For more details, see "*ZSH*" heading in `project.org`.

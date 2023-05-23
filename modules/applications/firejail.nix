@@ -1,6 +1,5 @@
-{ pkgs, lib, ... }:
-
-{
+# [[file:../../new_project.org::*Firejail][Firejail:1]]
+{ pkgs, lib, ... }: {
   programs.firejail.enable = true;
   programs.firejail.wrappedBinaries = {
     thunderbird = {
@@ -37,3 +36,4 @@
     };
   };
 }
+# Firejail:1 ends here
