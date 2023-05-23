@@ -1958,6 +1958,10 @@ Mostly visual things that annoy me:
 - [ ] Newline has to exist before begin_src
 - [ ] No duplicate headlines (messes up detangling)
 
+*** TODO Pre-commit checks
+- [ ] Nix dead code
+- [ ] Nix flake check
+
 ** Publish
 *** TODO [#C] Hugo publish :chore:
 
