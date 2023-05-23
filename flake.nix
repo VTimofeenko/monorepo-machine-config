@@ -157,7 +157,7 @@
             {
               help = "deploy local home manager config";
               name = "hm-switch";
-              command = "home-manager switch -- flake .";
+              command = "home-manager switch --flake .";
             }
           ];
         };
