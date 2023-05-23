@@ -73,7 +73,6 @@
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
   outputs =
     inputs@{ flake-parts
-    , nixos-hardware
     , private-config
     , self
     , ...

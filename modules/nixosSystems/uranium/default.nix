@@ -9,6 +9,10 @@
 {
   imports = [
     my-sway-config.nixosModules.system
+    ../../network/lan-wifi.nix
+    # TODO: add optional phone network here commented
+
+    ./hardware
   ];
   home-manager.users.spacecadet = { ... }: {
     imports = [
