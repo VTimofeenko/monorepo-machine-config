@@ -52,7 +52,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 | fix   |  2 |
 | feat  | 10 |
 | doc   |  0 |
-| chore | 10 |
+| chore | 14 |
 #+END
 * Flake
 :PROPERTIES:
@@ -1944,13 +1944,13 @@ The hardware configuration that was taken from nixos-hardware and slightly tweak
 
 ** CI/CD
 
-*** TODO Setup a canary VM
+*** TODO Setup a canary VM :chore:
 
-*** TODO Treefmt
+*** TODO Treefmt :chore:
 
 I have some shell files here -- need to auto format them
 
-*** TODO Checks for org file
+*** TODO Checks for org file :chore:
 Mostly visual things that annoy me:
 
 - [ ] More than two newlines in a row
@@ -1958,7 +1958,7 @@ Mostly visual things that annoy me:
 - [ ] Newline has to exist before begin_src
 - [ ] No duplicate headlines (messes up detangling)
 
-*** TODO Pre-commit checks
+*** TODO Pre-commit checks :chore:
 - [ ] Nix dead code
 - [ ] Nix flake check
 
