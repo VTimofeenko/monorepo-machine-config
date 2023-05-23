@@ -145,9 +145,9 @@
               command = "nix flake check && nixos-rebuild --flake .#neptunium --target-host root@neptunium.home.arpa switch";
             }
             {
-              help = "deploy neptunium";
-              name = "deploy-neptunium";
-              command = "nix flake check && nixos-rebuild --flake .#neptunium --target-host root@neptunium.home.arpa switch";
+              help = "deploy uranium";
+              name = "deploy-uranium";
+              command = "nix flake check && nixos-rebuild --flake .#uranium --target-host root@uranium.home.arpa switch";
             }
           ];
         };
