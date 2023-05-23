@@ -961,6 +961,11 @@ Imported [[(packages-hm-import)][here]].
               name = "deploy-local";
               command = "nix flake check && sudo nixos-rebuild switch --flake .";
             }
+            {
+              help = "deploy local home manager config";
+              name = "hm-switch";
+              command = "home-manager switch -- flake .";
+            }
           ];
         };
 #+end_src

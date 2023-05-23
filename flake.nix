@@ -154,6 +154,11 @@
               name = "deploy-local";
               command = "nix flake check && sudo nixos-rebuild switch --flake .";
             }
+            {
+              help = "deploy local home manager config";
+              name = "hm-switch";
+              command = "home-manager switch -- flake .";
+            }
           ];
         };
         # devShells:1 ends here
