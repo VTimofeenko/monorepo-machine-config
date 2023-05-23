@@ -149,6 +149,11 @@
               name = "deploy-uranium";
               command = "nix flake check && nixos-rebuild --flake .#uranium --target-host root@uranium.home.arpa switch";
             }
+            {
+              help = "deploy local machine";
+              name = "deploy-local";
+              command = "nix flake check && sudo nixos-rebuild switch --flake .";
+            }
           ];
         };
         # devShells:1 ends here
