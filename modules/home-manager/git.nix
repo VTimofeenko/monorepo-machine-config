@@ -18,6 +18,8 @@
     ignores = [
       # Vim swap files
       "*.swp"
+      # For Mac
+      ".DS_STORE"
     ];
     extraConfig = {
       url = {
