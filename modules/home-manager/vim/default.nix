@@ -46,7 +46,7 @@
         set shiftwidth=4
         set autoread
         autocmd FileType nix setlocal tabstop=2 shiftwidth=2
-        autocmd BufWritePost,FileWritePost *.nix silent !nix fmt >/dev/null 2>&1
+        autocmd FileType nix nnoremap <silent> <leader>f :%!nixpkgs-fmt<CR>
 
         set clipboard=unnamed${if pkgs.stdenv.system != "aarch64-darwin" then "plus" else ""}
         set mouse=
