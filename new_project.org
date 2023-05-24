@@ -1984,6 +1984,7 @@ Mostly visual things that annoy me:
 - [ ] No duplicate headlines (messes up detangling)
 
 *** TODO Pre-commit checks :chore:
+- [ ] Literate project file is tangled
 - [ ] Nix dead code
 - [ ] Nix flake check
 
