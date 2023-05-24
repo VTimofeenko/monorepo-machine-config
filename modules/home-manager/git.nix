@@ -5,7 +5,7 @@
   };
 
   # Directory where local overrides can be places
-  xdg.configFile.".config/git/local.d/.keep".source = builtins.toFile "keep" "";
+  xdg.configFile."git/local.d/.keep".source = builtins.toFile "keep" "";
   programs.git = {
     enable = true;
     aliases = {
