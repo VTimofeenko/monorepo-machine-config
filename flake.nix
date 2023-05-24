@@ -123,6 +123,7 @@
               modules = [
                 ./modules/home-manager/home.nix
                 ./modules/home-manager/vim
+                ./modules/home-manager/git.nix
                 ./modules/home-manager/_perUser/vtimofeenko.nix
               ];
             };

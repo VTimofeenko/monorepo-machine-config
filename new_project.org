@@ -276,11 +276,14 @@ https://github.com/guibou/nixGL
 :header-args:nix+: :tangle flake.nix
 :END:
 
+This user is on a macOS system with a lot of pre-existing configs, so the modules need some special care.
+
 #+begin_src nix
             vtimofeenko = mkHmc {
               modules = [
                 ./modules/home-manager/home.nix
                 ./modules/home-manager/vim
+                ./modules/home-manager/git.nix
                 ./modules/home-manager/_perUser/vtimofeenko.nix
               ];
             };
@@ -354,6 +357,11 @@ https://github.com/guibou/nixGL
   };
   home.username = "vtimofeenko";
   home.homeDirectory = "/Users/vtimofeenko";
+
+  programs.git = {
+    # Null it out first, to be defined in an include file
+    userEmail = lib.mkForce null;
+  };
 }
 #+end_src
 
@@ -882,6 +890,9 @@ Imported [[(git-hm-import)][here]].
   home.packages = builtins.attrValues {
     inherit (pkgs) git lazygit git-crypt;
   };
+
+  # Directory where local overrides can be places
+  xdg.configFile.".config/git/local.d/.keep".source = builtins.toFile "keep" "";
   programs.git = {
     enable = true;
     aliases = {
@@ -910,6 +921,9 @@ Imported [[(git-hm-import)][here]].
         };
       };
     };
+    includes = [
+      { path = "~/.config/git/local.d/gitconfig"; } # Local ad-hoc overrides for git config
+    ];
   };
 }
 #+end_src

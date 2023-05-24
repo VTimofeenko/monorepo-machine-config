@@ -3,6 +3,9 @@
   home.packages = builtins.attrValues {
     inherit (pkgs) git lazygit git-crypt;
   };
+
+  # Directory where local overrides can be places
+  xdg.configFile.".config/git/local.d/.keep".source = builtins.toFile "keep" "";
   programs.git = {
     enable = true;
     aliases = {
@@ -31,6 +34,9 @@
         };
       };
     };
+    includes = [
+      { path = "~/.config/git/local.d/gitconfig"; } # Local ad-hoc overrides for git config
+    ];
   };
 }
 # Git:1 ends here

@@ -61,5 +61,10 @@
   };
   home.username = "vtimofeenko";
   home.homeDirectory = "/Users/vtimofeenko";
+
+  programs.git = {
+    # Null it out first, to be defined in an include file
+    userEmail = lib.mkForce null;
+  };
 }
 # Vtimofeenko customization:1 ends here
