@@ -11,6 +11,7 @@
       co = "checkout";
       rv = "remote --verbose";
       unstage = "reset HEAD --";
+      pushall = "!git remote | xargs -L1 git push --all";
     };
     userEmail = "id@vtimofeenko.com";
     userName = "Vladimir Timofeenko";
