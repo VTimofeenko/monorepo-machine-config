@@ -1600,7 +1600,7 @@ Imported [[(user-import][here]].
 
 ******* TODO [#A] Add doom-config :migration:
 
-***** Uranium :migration:
+***** Uranium
 :PROPERTIES:
 :header-args:nix+: :tangle flake.nix
 :END:
@@ -1621,7 +1621,7 @@ Imported [[(user-import][here]].
           };
 #+end_src
 
-****** Uranium specific system :migration:
+****** Uranium specific system
 :PROPERTIES:
 :header-args:nix+: :tangle modules/nixosSystems/uranium/default.nix
 :END:
@@ -1642,7 +1642,7 @@ Imported [[(uranium-import)][here]].
     ../../network/lan-wifi.nix
     # TODO: add optional phone network here commented
 
-    ./hardware
+    ./hardware # (ref:uranium-hw-import)
   ];
   home-manager.users.spacecadet = { ... }: {
     imports = [
@@ -1663,10 +1663,12 @@ Imported [[(uranium-import)][here]].
 
 ******* TODO [#A] Add optional phone network commented :migration:
 
-****** Uranium specific hardware :migration:
+****** Uranium specific hardware
 :PROPERTIES:
 :header-args:nix+: :tangle modules/nixosSystems/uranium/hardware/default.nix
 :END:
+
+Imported [[(uranium-hw-import)][here]].
 
 #+begin_src nix
 { config

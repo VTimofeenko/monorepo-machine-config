@@ -12,7 +12,7 @@
     ../../network/lan-wifi.nix
     # TODO: add optional phone network here commented
 
-    ./hardware
+    ./hardware # (ref:uranium-hw-import)
   ];
   home-manager.users.spacecadet = { ... }: {
     imports = [
