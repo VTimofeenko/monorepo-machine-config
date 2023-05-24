@@ -9,7 +9,8 @@ in
   programs.zsh = {
     enable = true;
     autosuggestions.enable = true;
-    syntaxHighlighting.enable = true;
+    # Enabled inside the hm module
+    syntaxHighlighting.enable = false;
     # Enabled inside the hm module
     enableCompletion = false;
     inherit (userConfig.programs.zsh) shellAliases;

@@ -526,9 +526,9 @@ in
   programs.zsh = {
     enable = true;
     enableAutosuggestions = true;
-    enableSyntaxHighlighting = true;
     # NOTE: enabled manually inline
     enableCompletion = false;
+    enableSyntaxHighlighting = false;
     autocd = true;
     defaultKeymap = "viins";
     dotDir = ".config/zsh";
@@ -616,12 +616,14 @@ in
                   zstyle :bracketed-paste-magic paste-init pasteinit
                   zstyle :bracketed-paste-magic paste-finish pastefinish
 
-                  # Make comments visible on default background
-                  ZSH_HIGHLIGHT_STYLES[comment]='none'
 
                   # Alternative display for when I am in nix shell
                   # Also preserves zsh when entering nix shelll
                   ${pkgs.any-nix-shell}/bin/any-nix-shell zsh --info-right | source /dev/stdin
+
+                  source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+                  # Make comments visible on default background
+                  ZSH_HIGHLIGHT_STYLES[comment]='none'
       ''
       + # set SSH_AUTH_SOCK <=> gpg-agent is enabled in home-manager
       (if config.services ? gpg-agent.enable  # "?" is used so that lack of gpg-agent option does not cause an error
@@ -1082,7 +1084,8 @@ in
   programs.zsh = {
     enable = true;
     autosuggestions.enable = true;
-    syntaxHighlighting.enable = true;
+    # Enabled inside the hm module
+    syntaxHighlighting.enable = false;
     inherit (userConfig.programs.zsh) shellAliases;
     interactiveShellInit = userConfig.programs.zsh.initExtra;
     promptInit =
