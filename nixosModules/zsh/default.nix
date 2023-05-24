@@ -31,8 +31,6 @@ in
               ''eval "$(${pkgs.starship}/bin/starship init zsh)"''
               # Direnv setup
               ''eval "$(${pkgs.direnv}/bin/direnv hook zsh)"''
-              # Any nix shell setup
-              ''${pkgs.any-nix-shell}/bin/any-nix-shell zsh --info-right | source /dev/stdin''
             ]
         );
   };
