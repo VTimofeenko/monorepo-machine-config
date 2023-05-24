@@ -52,7 +52,7 @@
         set mouse=
 
         " clear search highlights by hitting ESC
-        nnoremap <ESC> :noh<CR>
+        nnoremap <silent> <ESC> :noh<CR>
       '';
   };
 }
