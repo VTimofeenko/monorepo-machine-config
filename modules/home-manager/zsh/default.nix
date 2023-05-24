@@ -80,8 +80,11 @@ in
                   # Add entry by "+" but do not exit menuselect
                   bindkey -M menuselect "+" accept-and-menu-complete
 
+                  # Enable the completions.
+                  # -i argument is used since /nix/store is owned by root:nixbld and compinit complains
+                  autoload -U compinit && compinit -C
+
                   # Color the completions
-                  autoload -Uz compinit
                   zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:l
         ower:]} l:|=* r:|=*' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]} l:|=* r:|=*'
                   zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}

@@ -807,6 +807,7 @@ cursor_mode
 ******* TODO [#C] See if rm -i alias can be adjusted not to display the full rm path :feat:
 ******* TODO [#C] Add noti for async notifications :feat:
 
+
 ****** Kitty
 :PROPERTIES:
 :header-args:nix+: :tangle modules/home-manager/kitty/default.nix
@@ -1086,6 +1087,8 @@ in
     autosuggestions.enable = true;
     # Enabled inside the hm module
     syntaxHighlighting.enable = false;
+    # Enabled inside the hm module
+    enableCompletion = false;
     inherit (userConfig.programs.zsh) shellAliases;
     interactiveShellInit = userConfig.programs.zsh.initExtra;
     promptInit =
