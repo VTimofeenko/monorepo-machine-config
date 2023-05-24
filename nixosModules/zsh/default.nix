@@ -10,6 +10,8 @@ in
     enable = true;
     autosuggestions.enable = true;
     syntaxHighlighting.enable = true;
+    # Enabled inside the hm module
+    enableCompletion = false;
     inherit (userConfig.programs.zsh) shellAliases;
     interactiveShellInit = userConfig.programs.zsh.initExtra;
     promptInit =

@@ -29,8 +29,9 @@ in
   programs.zsh = {
     enable = true;
     enableAutosuggestions = true;
-    enableCompletion = true;
     enableSyntaxHighlighting = true;
+    # NOTE: enabled manually inline
+    enableCompletion = false;
     autocd = true;
     defaultKeymap = "viins";
     dotDir = ".config/zsh";
