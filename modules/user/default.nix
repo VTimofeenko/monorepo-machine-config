@@ -18,7 +18,7 @@
 
   home-manager.users.spacecadet = { ... }: {
     imports = [
-      # my-doom-config.nixosModules.default # TODO
+      my-doom-config.nixosModules.default
       ../home-manager
     ];
     home.packages = builtins.attrValues {

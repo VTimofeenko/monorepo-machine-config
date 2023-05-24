@@ -3396,8 +3396,11 @@
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
-        "lastModified": 1684284914,
-        "narHash": "sha256-Xltn0QJ6YIhv9w82HCp2E4S04UuJa7AGCSI9mplonRs=",
+        "lastModified": 1684942106,
+        "narHash": "sha256-Rk7lX/8fEZmyUxUYrQCaYehLFqUOAq3egTaKhQrQ9gk=",
+        "ref": "refs/heads/master",
+        "rev": "b4bdb04ad70764fde7b07c3f221a5b6fe06051a1",
+        "revCount": 121,
         "type": "git",
         "url": "file:///home/spacecadet/code/doom-config"
       },

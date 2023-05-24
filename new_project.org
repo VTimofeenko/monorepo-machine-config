@@ -1575,7 +1575,7 @@ Imported [[(user-import][here]].
 
   home-manager.users.spacecadet = { ... }: {
     imports = [
-      # my-doom-config.nixosModules.default # TODO
+      my-doom-config.nixosModules.default
       ../home-manager
     ];
     home.packages = builtins.attrValues {
@@ -1598,7 +1598,8 @@ Imported [[(user-import][here]].
 
 ******* TODO [#C] Migrate firefox to home-manager management :feat:
 
-******* TODO [#A] Add doom-config :migration:
+******* DONE [#A] Add doom-config :migration:
+CLOSED: [2023-05-24 Wed 08:32]
 
 ***** Uranium
 :PROPERTIES:
