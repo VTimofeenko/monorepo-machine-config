@@ -153,12 +153,14 @@
             {
               help = "deploy local machine";
               name = "deploy-local";
-              command = "nix flake check && sudo nixos-rebuild switch --flake .";
-            }
-            {
-              help = "deploy local home manager config";
-              name = "hm-switch";
-              command = "home-manager switch --flake .";
+              command =
+                ''
+                  if [[ $(grep -q -s ^NAME= /etc/os-release | sed 's/^.*=//') == "NixOS" ]]; then
+                    nix flake check && sudo nixos-rebuild switch --flake .
+                  else
+                   home-manager switch --flake .
+                  fi
+                '';
             }
           ];
         };
