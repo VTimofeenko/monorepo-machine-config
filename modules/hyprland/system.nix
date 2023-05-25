@@ -1,7 +1,15 @@
 # [[file:../../new_project.org::*Hyprland config][Hyprland config:1]]
 # System level configs required for hyprland
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, ... }@inputs:
 {
+  imports = [
+    inputs.hyprland.nixosModules.default
+  ];
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
   programs.hyprland = {
     enable = true;
     xwayland = {

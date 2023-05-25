@@ -15,7 +15,7 @@
     agenix.nixosModules.default
     home-manager.nixosModules.home-manager
     my-tmux.nixosModule
-    wg-namespace-flake.nixosModules.default
+    # wg-namespace-flake.nixosModules.default # NOTE: imported on a per-host basis
 
     # this flake's nixosModules
     ../nixosModules/zsh # TODO: consider reusing from self ?

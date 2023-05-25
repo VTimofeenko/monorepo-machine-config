@@ -49,10 +49,10 @@ Certain components of my config (mostly dealing with passwords and such) are not
 
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
-| fix   |  2 |
+| fix   |  3 |
 | feat  | 26 |
 | doc   |  0 |
-| chore | 15 |
+| chore | 16 |
 #+END
 * Flake
 :PROPERTIES:
@@ -1228,7 +1228,7 @@ Garbage collection through ~nix.gc.automatic = true~ is not on since I tend to m
     agenix.nixosModules.default
     home-manager.nixosModules.home-manager
     my-tmux.nixosModule
-    wg-namespace-flake.nixosModules.default
+    # wg-namespace-flake.nixosModules.default # NOTE: imported on a per-host basis
 
     # this flake's nixosModules
     ../nixosModules/zsh # TODO: consider reusing from self ?
@@ -1635,19 +1635,22 @@ CLOSED: [2023-05-24 Wed 08:32]
 
 This module is an entry point to everything desktop environment-related.
 
+Imported [[(desktop-env-import)][here]].
+
 #+begin_src nix
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, ... }@inputs:
 {
   imports = [
     ./greeter.nix # (ref:greeter-import)
-    ./notifications.nix # (ref:notifications-de-import)
-    ./eww
     # ./wofi  # TODO: 23.05
     ../hyprland/system.nix # (ref:hyprland-system-import)
   ];
   home-manager.users.spacecadet = { pkgs, ... }: {
     imports = [
       ../hyprland/user.nix # (ref:hyprland-user-import)
+      ./eww # (ref:eww-import)
+      ./notifications.nix # (ref:notifications-de-import)
+      inputs.hyprland.homeManagerModules.default
     ];
   };
 }
@@ -1805,9 +1808,22 @@ Since I am not using the sessions directly, it may be worth declaring sessions f
 See "zsh as an alternative session", the name of the session in the list may be taken from the file
 
 
-******* TODO [#A] Wofi
+******* TODO Wofi :2305:
 
+Content in older commits.
 ******* TODO [#A] Eww -- widgets :feat:
+:PROPERTIES:
+:header-args:nix+: :tangle modules/de/eww/default.nix
+:END:
+
+Under development. Imported [[(eww-import)][here]].
+
+#+begin_src nix
+{ pkgs, ... }:
+{
+  home.packages = [ pkgs.eww-wayland ]; # Enough for development, for now.
+}
+#+end_src
 
 ****** Hyprland config
 :PROPERTIES:
@@ -1818,8 +1834,16 @@ Imported [[(hyprland-system-import)][here]].
 
 #+begin_src nix
 # System level configs required for hyprland
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, ... }@inputs:
 {
+  imports = [
+    inputs.hyprland.nixosModules.default
+  ];
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
   programs.hyprland = {
     enable = true;
     xwayland = {
@@ -2091,7 +2115,7 @@ rec {
 #+end_src
 
 
-******** TODO [#A] Xremap
+******** TODO [#A] Xremap :migration:
 
 
 ******** TODO [#C] Global "hyper+e" = emacs :feat:
@@ -2174,10 +2198,11 @@ Imported [[(uranium-import)][here]].
 , my-sway-config
 , my-doom-config
 , ...
-}:
+}@inputs:
 {
   imports = [
     my-sway-config.nixosModules.system
+    inputs.wg-namespace-flake.nixosModules.default
     ../../network/lan-wifi.nix
     # TODO: add optional phone network here commented
 
@@ -2437,12 +2462,12 @@ The hardware configuration that was taken from nixos-hardware and slightly tweak
 
 ******* TODO [#C] Split this up into more modular things :chore:
 
-***** TODO Neptunium :migration:
+***** STRT Neptunium :migration:
 :PROPERTIES:
 :header-args:nix+: :tangle flake.nix
 :END:
 
-#+begin_src nix :tangle no
+#+begin_src nix
           neptunium = inputs.nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
             modules = [
@@ -2458,9 +2483,191 @@ The hardware configuration that was taken from nixos-hardware and slightly tweak
           };
 #+end_src
 
-****** TODO Neptunium specific system :migration:
+****** Neptunium specific system :migration:
+:PROPERTIES:
+:header-args:nix+: :tangle modules/nixosSystems/neptunium/default.nix
+:END:
 
-****** TODO Neptunium specific hardware :migration:
+#+begin_src nix
+{ pkgs, config, lib, ... }@inputs:
+{
+  imports = [
+    ./access.nix # (ref:neptunium-access-import)
+    ./hardware # (ref:neptunium-hardware-import)
+    inputs.hyprland.nixosModules.default
+
+    ../../de # (ref:desktop-env-import)
+  ];
+}
+#+end_src
+
+******* Access
+:PROPERTIES:
+:header-args:nix+: :tangle modules/nixosSystems/neptunium/access.nix
+:END:
+
+Imported [[(neptunium-access-import)][here]].
+
+#+begin_src nix
+{ pkgs, config, lib, ... }:
+{
+  services.openssh = {
+    enable = true;
+    permitRootLogin = "yes";
+  };
+  users.users.root.openssh.authorizedKeys.keys = [
+    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDa78M7tTZW84yAsZuvgN1M6AUd3JB9wa8wMoR3cy59LtrU8FwHjJmCqlpyB7Wa9GrfJe7NEqJ077sYrGQZIw41xUJ7fKaa07Xj4GzASYTB0qlZrdr1WJ4XYif5eh7iXMps5F5saz0d3cJWOeKq6jSAwgkqT/tK5ykPm75uV0PyEvNI06pSqmJy+2VHUu1b3f/cwGHUrBzrJjLSvPBppRxpLc4nhNMIdf+G481MQHzCsdz0lIisGk4t+WcMPapH8nwSFDgKZ1ZesGqFaC/AvyRMuaASjFTk+eNMFgR5KQCCP48iaKkr/CGld9mGZyN8nQ9A0g6ckDQInnhef2EwVJFpfYktqBmi4DOfZksw65qY8eQFdQFxRoQ1D69fEsupX3AF0xgRPV+ByVxKCWz11CUR3+QhKJ7uzEhou/RS4GqG4TiR2+b0zMP/sGZwedNMJQYy1h3bfauo2NVmSJMFt8jKmb82tMcqCW6t71UITRmmluwDNHCyrVXLr3GrhOLylp+NBwzm33QlOZ3ExHV+77hM4vHJwpraR+WrzijzqwQ+ut9zNNWv87AS12++kOWsIZmIJk5idpAjUuxRI8ZjMHNZft9+jaARVVAyVFIzdegfLMJZIs8edaqGN1egERJ4FPU64aFosyymHLSmSAnVEIa7SB04BbWvE19kbRTdUG/Q1Q== cardno:000500006946"
+  ];
+}
+#+end_src
+
+******** TODO [#C] Make more generic :chore:
+
+
+****** Neptunium specific hardware
+:PROPERTIES:
+:header-args:nix+: :tangle modules/nixosSystems/neptunium/hardware/default.nix
+:END:
+
+Imported [[(neptunium-hardware-import)][here]].
+
+#+begin_src nix
+{ pkgs, config, lib, ... }:
+{
+  imports = [
+    ./nvidia-wayland.nix # (ref:nvidia-wayland-import)
+    ./bootloader.nix # (ref:neptunium-bootloader-import)
+    ./filesystems.nix # (ref:neptunium-filesystems-import)
+    ./network.nix # (ref:neptunium-network-import)
+  ];
+  system.stateVersion = "22.11";
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  time.hardwareClockInLocalTime = true; # otherwise dual-booted Windows has wrong time
+}
+#+end_src
+
+******* Nvidia 2070 with wayland
+:PROPERTIES:
+:header-args:nix+: :tangle modules/nixosSystems/neptunium/hardware/nvidia-wayland.nix
+:END:
+
+Imported [[(nvidia-wayland-import)][here]].
+
+This config seems to work for hyprland on Wayland. There are a couple of rough edges related to suspend/resume and the occasional artifact, but overall it's OK.
+
+The card in question:
+
+#+begin_quote
+# lspci -k | grep -A1 -E "VGA"
+09:00.0 VGA compatible controller: NVIDIA Corporation TU106 [GeForce RTX 2070] (rev a1)
+	Subsystem: eVga.com. Corp. Device 1071
+#+end_quote
+
+System config:
+
+#+begin_src nix
+{ config, pkgs, lib, ... }:
+{
+  # The settings are applied for both x11 and wayland
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  hardware.nvidia = {
+    # nvidia-drm.modeset=1 is required for some wayland compositors, e.g. sway
+    modesetting.enable = true;
+    package = pkgs.linuxKernel.packages.linux_6_1.nvidia_x11_beta;
+    # Suspend does not work with open
+    # open = true;
+    # Needed for suspend
+    powerManagement.enable = true;
+  };
+
+  boot.kernelPackages = pkgs.linuxPackages_6_1;
+
+  environment.variables = {
+    # NOTE: needed for mouse cursor to be visible
+    WLR_NO_HARDWARE_CURSORS = "1";
+    WLR_RENDERER = "vulkan";
+  };
+  # Apps on wayland seem to be unusable without this:
+  hardware.nvidia.forceFullCompositionPipeline = true;
+  hardware.video.hidpi.enable = lib.mkDefault true;
+}
+#+end_src
+
+******** TODO [#C] Fix the console resolution :fix:
+
+Upon boot the terminal resolution gets borked around stage 1
+
+******* Neptunium bootloader
+:PROPERTIES:
+:header-args:nix+: :tangle modules/nixosSystems/neptunium/hardware/bootloader.nix
+:END:
+
+Imported [[(neptunium-bootloader-import)][here]].
+
+#+begin_src nix
+{ pkgs, config, lib, ... }:
+{
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+    initrd = {
+      availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "sd_mod" ];
+      kernelModules = [ ];
+      luks.devices."crypt-root".device = "/dev/disk/by-uuid/687e04e3-c128-4736-8199-2a7a563b4a97";
+    };
+    kernelModules = [ "kvm-amd" ];
+    tmpOnTmpfs = true;
+    tmpOnTmpfsSize = "8G";
+  };
+}
+#+end_src
+
+******* Neptunium filesystems
+:PROPERTIES:
+:header-args:nix+: :tangle modules/nixosSystems/neptunium/hardware/filesystems.nix
+:END:
+
+Imported [[(neptunium-filesystems-import)][here]].
+
+#+begin_src nix
+{ config, pkgs, lib, ... }:
+{
+  fileSystems = {
+    "/" = {
+      device = "/dev/mapper/crypt-root";
+      fsType = "ext4";
+    };
+    "/boot" = {
+      device = "/dev/disk/by-uuid/3FFD-D8B4";
+      fsType = "vfat";
+    };
+  };
+  swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
+}
+#+end_src
+
+******* Neptunium network
+:PROPERTIES:
+:header-args:nix+: :tangle modules/nixosSystems/neptunium/hardware/network.nix
+:END:
+
+Imported [[(neptunium-network-import)][here]].
+
+#+begin_src nix
+{ config, pkgs, lib, ... }:
+{
+  networking.hostName = "neptunium";
+  networking.wireless.enable = lib.mkForce false;
+  networking.useDHCP = lib.mkForce true;
+  networking.firewall.enable = lib.mkForce false;
+}
+#+end_src
+
+******** TODO [#A] Enable firewall
+
 
 ***** "nixosConfigurations" outro :noexport:
 :PROPERTIES:

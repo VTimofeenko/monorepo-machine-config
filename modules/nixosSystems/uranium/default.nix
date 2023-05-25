@@ -5,10 +5,11 @@
 , my-sway-config
 , my-doom-config
 , ...
-}:
+}@inputs:
 {
   imports = [
     my-sway-config.nixosModules.system
+    inputs.wg-namespace-flake.nixosModules.default
     ../../network/lan-wifi.nix
     # TODO: add optional phone network here commented
 
