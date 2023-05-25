@@ -985,7 +985,7 @@ Imported [[(packages-hm-import)][here]].
               name = "deploy-local";
               command =
                 ''
-                  if [[ $(grep -q -s ^NAME= /etc/os-release | sed 's/^.*=//') == "NixOS" ]]; then
+                  if [[ $(grep -s ^NAME= /etc/os-release | sed 's/^.*=//') == "NixOS" ]]; then
                     nix flake check && sudo nixos-rebuild switch --flake .
                   else
                    home-manager switch --flake .
