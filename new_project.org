@@ -2715,6 +2715,8 @@ Mostly visual things that annoy me:
 - [ ] Newline has to exist before begin_src
 - [ ] No duplicate headlines (messes up detangling)
 
+    ~rg --no-filename --no-line-number "^\*+" | sed 's/^\*\+ //g' | sort | uniq -c | grep -v " 1 "~
+
 *** TODO Pre-commit checks :chore:
 - [ ] Literate project file is tangled
 - [ ] Nix dead code
