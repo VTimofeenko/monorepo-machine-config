@@ -1644,6 +1644,7 @@ Imported [[(desktop-env-import)][here]].
     ./greeter.nix # (ref:greeter-import)
     # ./wofi  # TODO: 23.05
     ../hyprland/system.nix # (ref:hyprland-system-import)
+    ./xremap
   ];
   home-manager.users.spacecadet = { pkgs, ... }: {
     imports = [
@@ -1822,6 +1823,143 @@ Under development. Imported [[(eww-import)][here]].
 { pkgs, ... }:
 {
   home.packages = [ pkgs.eww-wayland ]; # Enough for development, for now.
+}
+#+end_src
+
+******* Xremap
+:PROPERTIES:
+:header-args:nix+: :tangle modules/de/xremap/default.nix
+:END:
+
+#+begin_src nix
+{ pkgs, lib, config, ... }@inputs:
+{
+  imports = [
+    inputs.xremap-flake.nixosModules.default
+    ./shortcuts.nix
+  ];
+
+  services.xremap = {
+    withHypr = true;
+    userName = "spacecadet";
+    serviceMode = "user";
+  };
+}
+#+end_src
+
+******** Xremap shortcuts
+:PROPERTIES:
+:header-args:nix+: :tangle modules/de/xremap/shortcuts.nix
+:END:
+
+#+begin_src nix
+{ pkgs, lib, config, ... }@inputs:
+{
+  services.xremap.config = {
+    modmap = [
+      {
+        # Global remap CapsLock to Esc
+        name = "Global";
+        remap = { "CapsLock" = "Esc"; };
+      }
+    ];
+    keymap = [
+      {
+        name = "Bypass remaps";
+        remap = { "CTRL_L-SHIFT-ESC" = { escape_next_key = true; }; };
+      }
+      {
+        name = "Emacs-like shortcuts";
+        application =
+          {
+            "not" =
+              [
+                "kitty"
+                "Emacs"
+              ];
+          };
+        remap =
+          {
+            "CTRL_L-a" = "home";
+            "CTRL_L-e" = "end";
+            # Same, but select
+            "CTRL_L-Shift-a" = "Shift-home";
+            "CTRL_L-Shift-e" = "Shift-end";
+            "CTRL_L-W" = "C-Backspace";
+          };
+      }
+      {
+        name = "Global shortcuts";
+        application =
+          {
+            "not" =
+              [
+                "kitty"
+                "Emacs"
+              ];
+          };
+        remap =
+          {
+            # Select all
+            "SUPER-a" = "C-a";
+            # Copy
+            "SUPER-c" = "C-c";
+            # Cut
+            "SUPER-x" = "C-x";
+            # Undo
+            "SUPER-z" = "C-z";
+            # Paste
+            "SUPER-v" = "Shift-insert";
+            # Generic "close thing"
+            "SUPER-w" = "C-w";
+          };
+      }
+      {
+        name = "Global-like shortcuts for terminal and emacs";
+        application =
+          {
+            "only" =
+              [
+                "kitty"
+                "Emacs"
+              ];
+          };
+        remap =
+          {
+            # Copy
+            "SUPER-c" = "C-Shift-c";
+            # Paste
+            "SUPER-v" = "Shift-insert";
+          };
+      }
+      {
+        name = "Close stuff by super-w";
+        application =
+          {
+            "only" =
+              [
+                "firefox"
+                "brave-browser"
+              ];
+          };
+        remap =
+          {
+            "SUPER-w" = "C-w";
+            "SUPER-SHIFT-w" = "C-Shift-w";
+            "SUPER-t" = "C-t";
+            "SUPER-SHIFT-t" = "C-Shift-t";
+          };
+      }
+      {
+        name = "Brave set incognito to a sane shortcut";
+        application = { "only" = "brave-browser"; };
+        remap =
+          {
+            "C-Shift-p" = "C-Shift-n";
+          };
+      }
+    ];
+  };
 }
 #+end_src
 
@@ -2736,7 +2874,7 @@ Looks like ~tasks~ setting may do the trick:
 
 https://orgmode.org/manual/Export-Settings.html
 
-** TODO Hyprland migration plan [5/8]
+** STRT Hyprland migration plan [5/8]
 At the end of this project I want to have a fully working Hyprland config on neptunium.
 
 *** DONE System-wide settings
@@ -2747,7 +2885,8 @@ At the end of this project I want to have a fully working Hyprland config on nep
 **** DONE Evaluate
 *** DONE Home-specific settings
 *** DONE Xremap base config
-*** STRT Cleanup the hyprland module structure -- right now it sits under ~sway/~ which is confusing
+*** DONE Cleanup the hyprland module structure -- right now it sits under ~sway/~ which is confusing
+CLOSED: [2023-05-26 Fri 07:51]
 *** TODO Revisit packages installed through [home|environment]Packages and see if they can be configured through flake
 *** TODO Migrate uranium to hyprland
 ** TODO Hyprland improvements [0/2]
