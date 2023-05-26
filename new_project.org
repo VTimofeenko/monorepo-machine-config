@@ -52,7 +52,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 | fix   |  3 |
 | feat  | 26 |
 | doc   |  0 |
-| chore | 16 |
+| chore | 15 |
 #+END
 * Flake
 :PROPERTIES:
@@ -385,6 +385,7 @@ This user is on a macOS system with a lot of pre-existing configs, so the module
     ./zathura # (ref:zathura-hm-import)
     ./git.nix # (ref:git-hm-import)
     ./packages.nix # (ref:packages-hm-import)
+    ./media.nix # (ref:media-hm-import)
   ];
 }
 #+end_src
@@ -945,6 +946,30 @@ Imported [[(packages-hm-import)][here]].
 }
 #+end_src
 
+****** Media config
+:PROPERTIES:
+:header-args:nix+: :tangle modules/home-manager/media.nix
+:END:
+
+Imported [[(media-hm-import)][here]].
+
+#+begin_src nix
+{ pkgs, ... }: {
+  programs.mpv = {
+    enable = true;
+    bindings = {
+      WHEEL_UP = "add volume 5";
+      WHEEL_DOWN = "add volume -5";
+    };
+    config = {
+      hwdec = true;
+      save-position-on-quit = true;
+    };
+  };
+  programs.yt-dlp.enable = true;
+}
+#+end_src
+
 ****** TODO doom module :feat:
 ****** TODO ideavimrc :feat:
 ***** homeConfigurations outro :noexport:
@@ -1297,7 +1322,6 @@ Imported [[(applications-system-import)][here]]
   imports = [
     ./firejail.nix
     ./flatpak.nix
-    ./media.nix
   ];
 }
 #+end_src
@@ -1359,34 +1383,6 @@ Imported [[(applications-system-import)][here]]
   xdg.portal.enable = true;
 }
 #+end_src
-
-******* Media
-:PROPERTIES:
-:header-args:nix+: :tangle modules/applications/media.nix
-:END:
-
-#+begin_src nix
-{ pkgs, ... }: {
-  environment.systemPackages = builtins.attrValues {
-    inherit (pkgs) yt-dlp mpv;
-  };
-  # Configuration files
-  environment. etc = {
-    # judging by strace, mpv on NixOS expects it in etc.
-    "mpv/mpv.conf". text = ''
-      hwdec
-      save-position-on-quit
-    '';
-    "mpv/input.conf". text = ''
-      WHEEL_UP add volume 5
-      # mouse wheel for sound control
-      WHEEL_DOWN add volume -5
-    '';
-  };
-}
-#+end_src
-
-******** TODO Move to home manager programs :chore:
 
 ****** Virtualization
 :PROPERTIES:

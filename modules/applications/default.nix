@@ -3,7 +3,6 @@
   imports = [
     ./firejail.nix
     ./flatpak.nix
-    ./media.nix
   ];
 }
 # Application-specific configs:1 ends here
