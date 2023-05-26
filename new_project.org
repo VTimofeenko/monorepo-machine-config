@@ -2600,7 +2600,7 @@ The hardware configuration that was taken from nixos-hardware and slightly tweak
 
 ******* TODO [#C] Split this up into more modular things :chore:
 
-***** STRT Neptunium :migration:
+***** Neptunium :migration:
 :PROPERTIES:
 :header-args:nix+: :tangle flake.nix
 :END:
@@ -2874,7 +2874,7 @@ Looks like ~tasks~ setting may do the trick:
 
 https://orgmode.org/manual/Export-Settings.html
 
-** STRT Hyprland migration plan [5/8]
+** STRT Hyprland migration plan [6/8]
 At the end of this project I want to have a fully working Hyprland config on neptunium.
 
 *** DONE System-wide settings
@@ -2886,7 +2886,6 @@ At the end of this project I want to have a fully working Hyprland config on nep
 *** DONE Home-specific settings
 *** DONE Xremap base config
 *** DONE Cleanup the hyprland module structure -- right now it sits under ~sway/~ which is confusing
-CLOSED: [2023-05-26 Fri 07:51]
 *** TODO Revisit packages installed through [home|environment]Packages and see if they can be configured through flake
 *** TODO Migrate uranium to hyprland
 ** TODO Hyprland improvements [0/2]
