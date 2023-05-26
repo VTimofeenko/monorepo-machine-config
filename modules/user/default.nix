@@ -22,7 +22,7 @@
       ../home-manager
     ];
     home.packages = builtins.attrValues {
-      inherit (pkgs) ncspot pavucontrol blueman libreoffice firefox brave gthumb;
+      inherit (pkgs) pavucontrol blueman libreoffice firefox brave gthumb;
     };
 
     programs.browserpass.enable = true;
