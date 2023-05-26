@@ -113,7 +113,7 @@
             # [[file:new_project.org::*Deck][Deck:1]]
             deck = mkHmc {
               modules = [
-                ./modules/home-manager
+                ./modules/home-manager # (ref:deck-hm-import)
                 ./modules/home-manager/_perUser/deck.nix
               ];
             };

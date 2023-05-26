@@ -19,7 +19,7 @@
   home-manager.users.spacecadet = { ... }: {
     imports = [
       my-doom-config.nixosModules.default
-      ../home-manager
+      ../home-manager # (ref:linux-user-import)
     ];
     home.packages = builtins.attrValues {
       inherit (pkgs) pavucontrol blueman libreoffice firefox brave gthumb;

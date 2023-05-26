@@ -247,7 +247,7 @@ This section contains modules that can be imported into home manager.
 #+begin_src nix
             deck = mkHmc {
               modules = [
-                ./modules/home-manager
+                ./modules/home-manager # (ref:deck-hm-import)
                 ./modules/home-manager/_perUser/deck.nix
               ];
             };
@@ -373,6 +373,11 @@ This user is on a macOS system with a lot of pre-existing configs, so the module
 :PROPERTIES:
 :header-args:nix+: :tangle modules/home-manager/default.nix
 :END:
+
+This collection of modules is imported for home manager users on Linux:
+
+- [[(deck-hm-import)][Deck]]
+- [[(linux-user-import)][Standard Linux user]]
 
 #+begin_src nix
 { ... }:
@@ -1599,7 +1604,7 @@ Imported [[(user-import][here]].
   home-manager.users.spacecadet = { ... }: {
     imports = [
       my-doom-config.nixosModules.default
-      ../home-manager
+      ../home-manager # (ref:linux-user-import)
     ];
     home.packages = builtins.attrValues {
       inherit (pkgs) pavucontrol blueman libreoffice firefox brave gthumb;
