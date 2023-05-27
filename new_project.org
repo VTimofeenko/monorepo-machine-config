@@ -2254,8 +2254,8 @@ rec {
 #+end_src
 
 
-******** TODO [#A] Xremap :migration:
-
+******** DONE [#A] Xremap :migration:
+CLOSED: [2023-05-27 Sat 10:46]
 
 ******** TODO [#C] Global "hyper+e" = emacs :feat:
 
@@ -2875,7 +2875,7 @@ Looks like ~tasks~ setting may do the trick:
 
 https://orgmode.org/manual/Export-Settings.html
 
-** STRT Hyprland migration plan [6/8]
+** STRT Hyprland migration plan [7/8]
 At the end of this project I want to have a fully working Hyprland config on neptunium.
 
 *** DONE System-wide settings
@@ -2887,7 +2887,8 @@ At the end of this project I want to have a fully working Hyprland config on nep
 *** DONE Home-specific settings
 *** DONE Xremap base config
 *** DONE Cleanup the hyprland module structure -- right now it sits under ~sway/~ which is confusing
-*** TODO Revisit packages installed through [home|environment]Packages and see if they can be configured through flake
+*** DONE Revisit packages installed through [home|environment]Packages and see if they can be configured through flake
+CLOSED: [2023-05-26 Fri 09:01]
 *** TODO Migrate uranium to hyprland
 ** TODO Hyprland improvements [0/2]
 
