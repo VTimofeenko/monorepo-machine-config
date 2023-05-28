@@ -15,6 +15,7 @@
       rv = "remote --verbose";
       unstage = "reset HEAD --";
       pushall = "!git remote | xargs -L1 git push --all";
+      branch-note = "!git config branch.$(git symbolic-ref --short HEAD).note $( if [ $# -gt 0 ]; then $1; fi)";
     };
     userEmail = "id@vtimofeenko.com";
     userName = "Vladimir Timofeenko";
