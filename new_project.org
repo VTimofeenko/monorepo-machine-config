@@ -1867,6 +1867,9 @@ Under development. Imported [[(eww-import)][here]].
 
 #+begin_src nix
 { pkgs, lib, config, ... }@inputs:
+let
+  consoleLikeApps = [ "kitty" "Emacs" "kitty-dropterm" ];
+in
 {
   services.xremap.config = {
     modmap = [
@@ -1885,11 +1888,7 @@ Under development. Imported [[(eww-import)][here]].
         name = "Emacs-like shortcuts";
         application =
           {
-            "not" =
-              [
-                "kitty"
-                "Emacs"
-              ];
+            "not" = consoleLikeApps;
           };
         remap =
           {
@@ -1905,11 +1904,7 @@ Under development. Imported [[(eww-import)][here]].
         name = "Global shortcuts";
         application =
           {
-            "not" =
-              [
-                "kitty"
-                "Emacs"
-              ];
+            "not" = consoleLikeApps;
           };
         remap =
           {
@@ -1931,11 +1926,7 @@ Under development. Imported [[(eww-import)][here]].
         name = "Global-like shortcuts for terminal and emacs";
         application =
           {
-            "only" =
-              [
-                "kitty"
-                "Emacs"
-              ];
+            "only" = consoleLikeApps;
           };
         remap =
           {

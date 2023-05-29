@@ -1,5 +1,8 @@
 # [[file:../../../new_project.org::*Xremap shortcuts][Xremap shortcuts:1]]
 { pkgs, lib, config, ... }@inputs:
+let
+  consoleLikeApps = [ "kitty" "Emacs" "kitty-dropterm" ];
+in
 {
   services.xremap.config = {
     modmap = [
@@ -18,11 +21,7 @@
         name = "Emacs-like shortcuts";
         application =
           {
-            "not" =
-              [
-                "kitty"
-                "Emacs"
-              ];
+            "not" = consoleLikeApps;
           };
         remap =
           {
@@ -38,11 +37,7 @@
         name = "Global shortcuts";
         application =
           {
-            "not" =
-              [
-                "kitty"
-                "Emacs"
-              ];
+            "not" = consoleLikeApps;
           };
         remap =
           {
@@ -64,11 +59,7 @@
         name = "Global-like shortcuts for terminal and emacs";
         application =
           {
-            "only" =
-              [
-                "kitty"
-                "Emacs"
-              ];
+            "only" = consoleLikeApps;
           };
         remap =
           {
