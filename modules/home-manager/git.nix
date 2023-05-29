@@ -24,6 +24,8 @@
       "*.swp"
       # For Mac
       ".DS_STORE"
+      # where envrc stores its stuff
+      ".direnv/"
     ];
     extraConfig = {
       url = {
