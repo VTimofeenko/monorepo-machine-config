@@ -51,7 +51,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  3 |
-| feat  | 26 |
+| feat  | 28 |
 | doc   |  0 |
 | chore | 15 |
 #+END
@@ -1634,6 +1634,10 @@ Imported [[(user-import][here]].
 ******* DONE [#A] Add doom-config :migration:
 CLOSED: [2023-05-24 Wed 08:32]
 
+******* TODO Shortcut for Brave with ~--enable-blink-features=MiddleClickAutoscroll~ :feat:
+
+Source https://github.com/brave/brave-browser/issues/15576
+
 ****** Desktop environment
 :PROPERTIES:
 :header-args:nix+: :tangle modules/de/default.nix
@@ -2428,6 +2432,7 @@ Needs special workspace tho
 
 ******** TODO Check out [[https://github.com/Slackadays/Clipboard][Clipboard]] :to_think:
 
+******** TODO [[https://github.com/hyprwm/Hyprland/issues/1250][Ultrawide config]] :feat:
 
 ***** Uranium
 :PROPERTIES:
