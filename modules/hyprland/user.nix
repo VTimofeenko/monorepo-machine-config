@@ -7,13 +7,17 @@ let
 
   cliphist = "${pkgs.cliphist}/bin/cliphist";
 
-  launchShortcuts =
-    {
-      "Return" = "exec, ${pkgs.kitty}/bin/kitty";
-      "E" = "exec, ${pkgs.libsForQt5.dolphin}/bin/dolphin";
-      # Launches wofi with icons
-      "R" = "exec, ${pkgs.wofi}/bin/wofi --show drun -I";
-    };
+  utils = import ./utils.nix pkgs;
+
+  launchShortcuts = {
+    "Return" = "exec, ${pkgs.kitty}/bin/kitty";
+    "E" = "exec, ${pkgs.libsForQt5.dolphin}/bin/dolphin";
+    # Launches wofi with icons
+    "R" = "exec, ${pkgs.wofi}/bin/wofi --show drun -I";
+  };
+  shiftLaunchShortcuts = {
+    "grave" = "exec, ${lib.getExe utils.scratchpad-terminal}";
+  };
   focusShortcuts =
     {
       "H" = "movefocus, l";
@@ -29,6 +33,13 @@ let
           builtins.mapAttrs
             modLib.mkMainModBinding
             launchShortcuts
+        )
+      ++
+      builtins.attrValues
+        (
+          builtins.mapAttrs
+            modLib.mkMainModShiftBinding
+            shiftLaunchShortcuts
         )
     );
 
