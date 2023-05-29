@@ -7,6 +7,9 @@
     ../hyprland/system.nix # (ref:hyprland-system-import)
     ./xremap
   ];
+  home-manager.extraSpecialArgs = {
+    inherit (inputs) pyprland;
+  };
   home-manager.users.spacecadet = { pkgs, ... }: {
     imports = [
       ../hyprland/user.nix # (ref:hyprland-user-import)

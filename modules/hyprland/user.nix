@@ -45,7 +45,9 @@ let
 
 in
 {
-  imports = [ ];
+  imports = [
+    ./pyprland # (ref:pyprland-import)
+  ];
   wayland.windowManager.hyprland =
     {
       enable = true;

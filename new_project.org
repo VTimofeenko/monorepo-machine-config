@@ -148,6 +148,7 @@ Flake-parts:
 
     devshell.url = "github:numtide/devshell";
 
+    pyprland.url = "github:VTimofeenko/pyprland?ref=nix";
   };
 #+end_src
 
@@ -2073,7 +2074,9 @@ let
 
 in
 {
-  imports = [ ];
+  imports = [
+    ./pyprland # (ref:pyprland-import)
+  ];
   wayland.windowManager.hyprland =
     {
       enable = true;
@@ -2248,6 +2251,7 @@ in
 }
 #+end_src
 
+
 ******** Hyprland lib
 :PROPERTIES:
 :header-args:nix+: :tangle modules/hyprland/lib.nix
@@ -2320,6 +2324,56 @@ fi
 #+end_src
 
 ********** TODO Make it drop-down, not slide-from-the-right :feat:
+
+******** Pyprland config
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/pyprland/default.nix
+:END:
+
+Imported [[(pyprland-import)][here]].
+
+#+begin_src nix
+# Home-manager module for pyprland
+{ config, pkgs, lib, pyprland, ... }:
+let
+  droptermClass = "kitty-dropterm";
+in
+{
+  imports = [
+    pyprland.homeManagerModules.default
+  ];
+  services.pyprland.enable = true;
+  programs.pyprland = {
+    enable = true;
+    extraConfig = {
+      pyprland = {
+        plugins = [
+          "scratchpads"
+        ];
+      };
+      scratchpads = {
+        "term" = {
+          command = "${lib.getExe pkgs.kitty} --class ${droptermClass}";
+          animation = "fromTop";
+          unfocus = "hide";
+        };
+      };
+    };
+  };
+  # pypr-specific config
+  wayland.windowManager.hyprland.extraConfig =
+    lib.mkAfter
+      ''
+        exec-once = ${lib.getExe config.programs.pyprland.package};
+        bind = $mainMod SHIFT, Return, exec, pypr toggle term
+        $dropterm = ^(${droptermClass})$
+        windowrule = float,$dropterm
+        windowrule = workspace special silent,$dropterm
+        windowrule = size 75% 60%,$dropterm
+      '';
+}
+#+end_src
+
 
 ******** DONE [#A] Xremap :migration:
 CLOSED: [2023-05-27 Sat 10:46]

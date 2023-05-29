@@ -68,6 +68,7 @@
 
     devshell.url = "github:numtide/devshell";
 
+    pyprland.url = "github:VTimofeenko/pyprland?ref=nix";
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
