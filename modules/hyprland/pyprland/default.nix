@@ -30,7 +30,6 @@ in
   wayland.windowManager.hyprland.extraConfig =
     lib.mkAfter
       ''
-        exec-once = ${lib.getExe config.programs.pyprland.package};
         bind = $mainMod SHIFT, Return, exec, pypr toggle term
         $dropterm = ^(${droptermClass})$
         windowrule = float,$dropterm
