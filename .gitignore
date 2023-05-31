@@ -1,2 +1,4 @@
 .direnv/
-result/
+result
+# Rust output goes here
+target/

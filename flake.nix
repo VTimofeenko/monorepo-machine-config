@@ -69,6 +69,10 @@
     devshell.url = "github:numtide/devshell";
 
     pyprland.url = "github:VTimofeenko/pyprland?ref=nix";
+
+    nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
+
+    naersk.url = "github:nix-community/naersk/master";
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
@@ -89,85 +93,108 @@
       systems = [ "x86_64-linux" "aarch64-darwin" ];
       # Systems setting:1 ends here
       # [[file:new_project.org::*"perSystem" output]["perSystem" output:1]]
-      perSystem = { config, self', inputs', pkgs, system, ... }: {
-        # Per-system attributes can be defined here. The self' and inputs'
-        # module parameters provide easy access to attributes of the same
-        # system.
-        # "perSystem" output:1 ends here
-        # [[file:new_project.org::*Formatter][Formatter:1]]
-        formatter = pkgs.nixpkgs-fmt; # (ref:formatter)
-        # Formatter:1 ends here
-        # [[file:new_project.org::*homeConfigurations][homeConfigurations:1]]
-        legacyPackages.homeConfigurations =
-          let
-            /* Create the default homeManagerConfiguration with inherited pkgs.
+      perSystem = { config, self', inputs', pkgs, system, ... }:
+        let
+          pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
+        in
+        {
+          # Per-system attributes can be defined here. The self' and inputs'
+          # module parameters provide easy access to attributes of the same
+          # system.
+          # "perSystem" output:1 ends here
+          # [[file:new_project.org::*Formatter][Formatter:1]]
+          formatter = pkgs.nixpkgs-fmt; # (ref:formatter)
+          # Formatter:1 ends here
+          # [[file:new_project.org::*Packages][Packages:1]]
+          packages =
+            let
+              naersk-lib = pkgs-unstable.callPackage inputs.naersk { };
+            in
+            {
+              hyprland-lang-notifier = naersk-lib.buildPackage ./packages/hyprland-lang-notifier;
+            };
+          # Packages:1 ends here
+          # [[file:new_project.org::*homeConfigurations][homeConfigurations:1]]
+          legacyPackages.homeConfigurations =
+            let
+              /* Create the default homeManagerConfiguration with inherited pkgs.
 
                   The provided attrset will be merged into the homeManagerConfiguration.
 
                    Type: mkHmc :: attrset -> home-manger.lib.homeManagerConfiguration
 
                 */
-            mkHmc = attrset: inputs.home-manager.lib.homeManagerConfiguration ({ inherit pkgs; } // attrset);
-          in
-          {
-            # homeConfigurations:1 ends here
-            # [[file:new_project.org::*Deck][Deck:1]]
-            deck = mkHmc {
-              modules = [
-                ./modules/home-manager # (ref:deck-hm-import)
-                ./modules/home-manager/_perUser/deck.nix
-              ];
+              mkHmc = attrset: inputs.home-manager.lib.homeManagerConfiguration ({ inherit pkgs; } // attrset);
+            in
+            {
+              # homeConfigurations:1 ends here
+              # [[file:new_project.org::*Deck][Deck:1]]
+              deck = mkHmc {
+                modules = [
+                  ./modules/home-manager # (ref:deck-hm-import)
+                  ./modules/home-manager/_perUser/deck.nix
+                ];
+              };
+              # Deck:1 ends here
+              # [[file:new_project.org::*Vtimofeenko][Vtimofeenko:1]]
+              vtimofeenko = mkHmc {
+                modules = [
+                  ./modules/home-manager/home.nix
+                  ./modules/home-manager/vim
+                  ./modules/home-manager/git.nix
+                  ./modules/home-manager/_perUser/vtimofeenko.nix
+                ];
+              };
+              # Vtimofeenko:1 ends here
+              # [[file:new_project.org::*homeConfigurations outro][homeConfigurations outro:1]]
             };
-            # Deck:1 ends here
-            # [[file:new_project.org::*Vtimofeenko][Vtimofeenko:1]]
-            vtimofeenko = mkHmc {
-              modules = [
-                ./modules/home-manager/home.nix
-                ./modules/home-manager/vim
-                ./modules/home-manager/git.nix
-                ./modules/home-manager/_perUser/vtimofeenko.nix
-              ];
+          # homeConfigurations outro:1 ends here
+          # [[file:new_project.org::*devShells][devShells:1]]
+          devshells.default = {
+            env = [
+              {
+                name = "RUST_SRC_PATH";
+                value = pkgs-unstable.rustPlatform.rustLibSrc;
+              }
+            ];
+            commands = [
+              {
+                help = "preview README.md";
+                name = "preview";
+                command = "${pkgs.python310Packages.grip}/bin/grip .";
+              }
+              {
+                help = "deploy neptunium";
+                name = "deploy-neptunium";
+                command = "nix flake check && nixos-rebuild --flake .#neptunium --target-host root@neptunium.home.arpa switch";
+              }
+              {
+                help = "deploy uranium";
+                name = "deploy-uranium";
+                command = "nix flake check && nixos-rebuild --flake .#uranium --target-host root@uranium.home.arpa switch";
+              }
+              {
+                help = "deploy local machine";
+                name = "deploy-local";
+                command =
+                  ''
+                    if [[ $(grep -s ^NAME= /etc/os-release | sed 's/^.*=//') == "NixOS" ]]; then
+                      nix flake check && sudo nixos-rebuild switch --flake .
+                    else
+                     home-manager switch --flake .
+                    fi
+                  '';
+              }
+            ];
+            packages = builtins.attrValues {
+              inherit (pkgs-unstable) cargo rustc rustfmt pre-commit gcc;
+              inherit (pkgs-unstable.rustPackages) clippy;
             };
-            # Vtimofeenko:1 ends here
-            # [[file:new_project.org::*homeConfigurations outro][homeConfigurations outro:1]]
+
           };
-        # homeConfigurations outro:1 ends here
-        # [[file:new_project.org::*devShells][devShells:1]]
-        devshells.default = {
-          env = [ ];
-          commands = [
-            {
-              help = "preview README.md";
-              name = "preview";
-              command = "${pkgs.python310Packages.grip}/bin/grip .";
-            }
-            {
-              help = "deploy neptunium";
-              name = "deploy-neptunium";
-              command = "nix flake check && nixos-rebuild --flake .#neptunium --target-host root@neptunium.home.arpa switch";
-            }
-            {
-              help = "deploy uranium";
-              name = "deploy-uranium";
-              command = "nix flake check && nixos-rebuild --flake .#uranium --target-host root@uranium.home.arpa switch";
-            }
-            {
-              help = "deploy local machine";
-              name = "deploy-local";
-              command =
-                ''
-                  if [[ $(grep -s ^NAME= /etc/os-release | sed 's/^.*=//') == "NixOS" ]]; then
-                    nix flake check && sudo nixos-rebuild switch --flake .
-                  else
-                   home-manager switch --flake .
-                  fi
-                '';
-            }
-          ];
+          # devShells:1 ends here
+          # [[file:new_project.org::*perSystem outro][perSystem outro:1]]
         };
-        # devShells:1 ends here
-        # [[file:new_project.org::*perSystem outro][perSystem outro:1]]
-      };
       # perSystem outro:1 ends here
       # [[file:new_project.org::*"Flake" section]["Flake" section:1]]
       flake = {
