@@ -6,4 +6,6 @@ description = "Displays desktop notification when language changes in Hyprland."
 
 [dependencies]
 hyprland = "0.3.3"
-notify-rust = "4.8.0"
+
+[dependencies.notify-rust]
+version = "4.8.0"
