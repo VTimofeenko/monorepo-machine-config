@@ -11,8 +11,10 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.tmpOnTmpfs = true;
-  boot.tmpOnTmpfsSize = "8G";
+  boot.tmp = {
+    useTmpfs = true;
+    tmpfsSize = "8G";
+  };
   # Modules I want to ensure are there
   boot.initrd.availableKernelModules = [ "thunderbolt" "nvme" "usb_storage" "uas" ];
   boot.initrd.kernelModules = [ ];

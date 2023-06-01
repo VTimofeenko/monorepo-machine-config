@@ -2559,8 +2559,10 @@ Imported [[(uranium-hw-import)][here]].
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.tmpOnTmpfs = true;
-  boot.tmpOnTmpfsSize = "8G";
+  boot.tmp = {
+    useTmpfs = true;
+    tmpfsSize = "8G";
+  };
   # Modules I want to ensure are there
   boot.initrd.availableKernelModules = [ "thunderbolt" "nvme" "usb_storage" "uas" ];
   boot.initrd.kernelModules = [ ];
@@ -2936,8 +2938,10 @@ Imported [[(neptunium-bootloader-import)][here]].
       luks.devices."crypt-root".device = "/dev/disk/by-uuid/687e04e3-c128-4736-8199-2a7a563b4a97";
     };
     kernelModules = [ "kvm-amd" ];
-    tmpOnTmpfs = true;
-    tmpOnTmpfsSize = "8G";
+    tmp = {
+      useTmpfs = true;
+      tmpfsSize = "8G";
+    };
   };
 }
 #+end_src
