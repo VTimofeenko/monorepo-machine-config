@@ -217,6 +217,10 @@ in
           bind = $mainMod CTRL, N, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw
           # Clipboard history toggle
           bind = $mainMod CTRL, C, exec, ${cliphist} list | ${pkgs.wofi}/bin/wofi --show dmenu | ${cliphist} decode | ${pkgs.wl-clipboard}/bin/wl-copy
+
+          $pinentry = ^(pinentry-qt)$
+          windowrule = float,$pinentry
+          windowrule = size 25% 20%,$pinentry
         '' + mergedConfig;
     };
 }
