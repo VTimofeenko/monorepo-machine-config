@@ -4,9 +4,9 @@
   # Flake intro:1 ends here
   # [[file:new_project.org::*Inputs][Inputs:1]]
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-22.11";
+    nixpkgs.url = "nixpkgs/nixos-23.05";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    home-manager.url = "github:rycee/home-manager/release-22.11";
+    home-manager.url = "github:rycee/home-manager/release-23.05";
     agenix.url = "github:ryantm/agenix";
 
     # Theming and stuff
