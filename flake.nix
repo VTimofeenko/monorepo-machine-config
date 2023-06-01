@@ -193,7 +193,7 @@
               }
             ];
             packages = builtins.attrValues {
-              inherit (pkgs-unstable) cargo rustc rustfmt pre-commit gcc;
+              inherit (pkgs-unstable) cargo rustc rustfmt pre-commit gcc pkg-config;
               inherit (pkgs-unstable.rustPackages) clippy;
             };
 
