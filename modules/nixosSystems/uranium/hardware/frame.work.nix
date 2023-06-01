@@ -12,7 +12,8 @@
     nixos-hardware.nixosModules.common-pc-laptop-ssd
   ];
   # high-resolution display
-  hardware.video.hidpi.enable = lib.mkDefault true;
+  # NOTE: no longer works for 23.05
+  # hardware.video.hidpi.enable = lib.mkDefault true;
   # NOTE: required for wifi to work
   hardware.enableRedistributableFirmware = true;
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

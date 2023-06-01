@@ -23,6 +23,6 @@
   };
   # Apps on wayland seem to be unusable without this:
   hardware.nvidia.forceFullCompositionPipeline = true;
-  hardware.video.hidpi.enable = lib.mkDefault true;
+  # hardware.video.hidpi.enable = lib.mkDefault true;
 }
 # Nvidia 2070 with wayland:1 ends here
