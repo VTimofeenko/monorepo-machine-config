@@ -87,6 +87,7 @@
       # [[file:new_project.org::*Imports][Imports:1]]
       imports = [
         inputs.devshell.flakeModule
+        inputs.flake-parts.flakeModules.easyOverlay
       ];
       # Imports:1 ends here
       # [[file:new_project.org::*Systems setting][Systems setting:1]]
@@ -114,6 +115,11 @@
               hyprland-lang-notifier = naersk-lib.buildPackage ./packages/hyprland-lang-notifier;
             };
           # Packages:1 ends here
+          # [[file:new_project.org::*Overlays][Overlays:1]]
+          overlayAttrs = {
+            inherit (config.packages) hyprland-lang-notifier;
+          };
+          # Overlays:1 ends here
           # [[file:new_project.org::*homeConfigurations][homeConfigurations:1]]
           legacyPackages.homeConfigurations =
             let

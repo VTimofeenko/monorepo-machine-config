@@ -183,6 +183,7 @@ Flake-parts:
 #+begin_src nix
       imports = [
         inputs.devshell.flakeModule
+        inputs.flake-parts.flakeModules.easyOverlay
       ];
 #+end_src
 
@@ -235,6 +236,19 @@ perSystem contains the default formatter and a sample of homeManagerConfiguratio
             {
               hyprland-lang-notifier = naersk-lib.buildPackage ./packages/hyprland-lang-notifier;
             };
+#+end_src
+
+**** Overlays
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+[[https://flake.parts/overlays.html?highlight=overlay#an-overlay-for-free-with-flake-parts][Flake-parts]] make overlays super easy to create:
+
+#+begin_src nix
+          overlayAttrs = {
+            inherit (config.packages) hyprland-lang-notifier;
+          };
 #+end_src
 
 **** homeConfigurations
