@@ -1,7 +1,10 @@
 # [[file:../../new_project.org::*User hyprland config][User hyprland config:1]]
 # Home manaager module to configure hyprland
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, osConfig, ... }:
 let
+  # Example of using system-wide configuration in home-manager module
+  inherit (osConfig.networking) hostName;
+
   # Custom lib.nix for module-specific logic
   modLib = import ./lib.nix;
 
@@ -106,7 +109,10 @@ in
               col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
               col.inactive_border = rgba(595959aa)
 
-              layout = dwindle
+              layout = ${if hostName == "neptunium"
+                then "master"
+                else "dwindle"
+               }
           }
 
           decoration {
@@ -149,7 +155,17 @@ in
 
           master {
               # See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
-              new_is_master = true
+              # When creating a new window - it should be off to the side
+              new_is_master = false
+              # Make master window occupy only half of the screen
+              mfact = 0.5
+              ${if hostName == "neptunium"
+                then
+                ''
+                  # for neptunium - use the master centered layout
+                  orientation = center
+                ''
+                else ""}
           }
 
           gestures {

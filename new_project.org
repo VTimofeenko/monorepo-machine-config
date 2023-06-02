@@ -51,7 +51,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  4 |
-| feat  | 31 |
+| feat  | 30 |
 | doc   |  0 |
 | chore | 15 |
 #+END
@@ -2087,8 +2087,11 @@ Imported [[(hyprland-user-import)][here]].
 
 #+begin_src nix
 # Home manaager module to configure hyprland
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, osConfig, ... }:
 let
+  # Example of using system-wide configuration in home-manager module
+  inherit (osConfig.networking) hostName;
+
   # Custom lib.nix for module-specific logic
   modLib = import ./lib.nix;
 
@@ -2193,7 +2196,10 @@ in
               col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
               col.inactive_border = rgba(595959aa)
 
-              layout = dwindle
+              layout = ${if hostName == "neptunium"
+                then "master"
+                else "dwindle"
+               }
           }
 
           decoration {
@@ -2236,7 +2242,17 @@ in
 
           master {
               # See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
-              new_is_master = true
+              # When creating a new window - it should be off to the side
+              new_is_master = false
+              # Make master window occupy only half of the screen
+              mfact = 0.5
+              ${if hostName == "neptunium"
+                then
+                ''
+                  # for neptunium - use the master centered layout
+                  orientation = center
+                ''
+                else ""}
           }
 
           gestures {
@@ -2495,7 +2511,8 @@ Needs special workspace tho
 
 ******** TODO Check out [[https://github.com/Slackadays/Clipboard][Clipboard]] :to_think:
 
-******** TODO [[https://github.com/hyprwm/Hyprland/issues/1250][Ultrawide config]] :feat:
+******** DONE [[https://github.com/hyprwm/Hyprland/issues/1250][Ultrawide config]] :feat:
+CLOSED: [2023-06-02 Fri 11:36]
 
 ***** Uranium
 :PROPERTIES:
