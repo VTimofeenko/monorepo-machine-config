@@ -25,6 +25,9 @@ let
       "K" = "movefocus, u";
       "J" = "movefocus, d";
     };
+  hyperBindings = {
+    "E" = "focuswindow, ^(Emacs)$";
+  };
   mergedConfig = builtins.concatStringsSep
     "\n"
     (
@@ -40,6 +43,13 @@ let
           builtins.mapAttrs
             modLib.mkMainModShiftBinding
             shiftLaunchShortcuts
+        )
+      ++
+      builtins.attrValues
+        (
+          builtins.mapAttrs
+            modLib.mkHyperBinding
+            hyperBindings
         )
     );
 

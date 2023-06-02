@@ -43,7 +43,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo ("DONE" "CNCL") :caption done :tags ("fix" "feat" "doc" "chore")
 #+caption: done
 | fix   | 0 |
-| feat  | 2 |
+| feat  | 3 |
 | doc   | 0 |
 | chore | 0 |
 #+END
@@ -1933,6 +1933,7 @@ in
       }
       {
         name = "Emacs-like shortcuts";
+        exact_match = true;
         application =
           {
             "not" = consoleLikeApps;
@@ -2111,6 +2112,9 @@ let
       "K" = "movefocus, u";
       "J" = "movefocus, d";
     };
+  hyperBindings = {
+    "E" = "focuswindow, ^(Emacs)$";
+  };
   mergedConfig = builtins.concatStringsSep
     "\n"
     (
@@ -2126,6 +2130,13 @@ let
           builtins.mapAttrs
             modLib.mkMainModShiftBinding
             shiftLaunchShortcuts
+        )
+      ++
+      builtins.attrValues
+        (
+          builtins.mapAttrs
+            modLib.mkHyperBinding
+            hyperBindings
         )
     );
 
@@ -2327,6 +2338,7 @@ rec {
   mkMainModShiftBinding = _mkBinding "$mainMod ${shift}";
   mkMainModCtrlBinding = _mkBinding "$mainMod ${ctrl}";
   mkMainModAltBinding = _mkBinding "$mainMod ${ctrl}";
+  mkHyperBinding = _mkBinding "$mainMod ${shift}${ctrl}${alt}";
 }
 #+end_src
 
@@ -2437,7 +2449,8 @@ in
 ******** DONE [#A] Xremap :migration:
 CLOSED: [2023-05-27 Sat 10:46]
 
-******** TODO [#C] Global "hyper+e" = emacs :feat:
+******** DONE [#C] Global "hyper+e" = emacs :feat:
+CLOSED: [2023-06-02 Fri 11:18]
 
 ******** TODO Add notification to language switch setup :feat:
 

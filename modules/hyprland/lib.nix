@@ -8,5 +8,6 @@ rec {
   mkMainModShiftBinding = _mkBinding "$mainMod ${shift}";
   mkMainModCtrlBinding = _mkBinding "$mainMod ${ctrl}";
   mkMainModAltBinding = _mkBinding "$mainMod ${ctrl}";
+  mkHyperBinding = _mkBinding "$mainMod ${shift}${ctrl}${alt}";
 }
 # Hyprland lib:1 ends here

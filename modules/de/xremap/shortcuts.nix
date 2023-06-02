@@ -19,6 +19,7 @@ in
       }
       {
         name = "Emacs-like shortcuts";
+        exact_match = true;
         application =
           {
             "not" = consoleLikeApps;
