@@ -2009,12 +2009,18 @@ in
             "C-Shift-p" = "C-Shift-n";
           };
       }
+      {
+        # Easier to press with a thumb
+        name = "Remap alt-backspace to ctrl-backspace";
+        remap = { "ALT-Backspace" = "C-Backspace"; };
+      }
     ];
   };
 }
 #+end_src
 
-********* TODO Alt-backspace = ctrl-backspace :feat:
+********* DONE Alt-backspace = ctrl-backspace :feat:
+CLOSED: [2023-06-02 Fri 10:27]
 
 ****** Hyprland config
 :PROPERTIES:

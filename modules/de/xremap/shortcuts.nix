@@ -95,6 +95,11 @@ in
             "C-Shift-p" = "C-Shift-n";
           };
       }
+      {
+        # Easier to press with a thumb
+        name = "Remap alt-backspace to ctrl-backspace";
+        remap = { "ALT-Backspace" = "C-Backspace"; };
+      }
     ];
   };
 }
