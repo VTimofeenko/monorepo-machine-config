@@ -51,7 +51,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  3 |
-| feat  | 28 |
+| feat  | 29 |
 | doc   |  0 |
 | chore | 15 |
 #+END
@@ -2014,6 +2014,8 @@ in
 }
 #+end_src
 
+********* TODO Alt-backspace = ctrl-backspace :feat:
+
 ****** Hyprland config
 :PROPERTIES:
 :header-args:nix+: :tangle modules/hyprland/system.nix
@@ -3048,6 +3050,14 @@ Mostly visual things that annoy me:
 ** Publish
 *** TODO [#C] Hugo publish :chore:
 
+** STRT [#A] 23.05 migration [0/3]
+
+*** TODO Check all todos marked with 23.05 tag
+
+*** TODO Check [[https://nixos.org/manual/nixos/stable/release-notes.html][what's new]] in 23.05
+
+*** TODO Check all todos with high priority
+
 ** TODO Check all packages that are installed through system.environmentPackages - maybe move them to the user :chore:
 
 ** TODO [#C] Consider merging tmux here :feat:
@@ -3059,7 +3069,7 @@ Looks like ~tasks~ setting may do the trick:
 
 https://orgmode.org/manual/Export-Settings.html
 
-** STRT Hyprland migration plan [7/8]
+** TODO Hyprland migration plan [7/8]
 At the end of this project I want to have a fully working Hyprland config on neptunium.
 
 *** DONE System-wide settings
