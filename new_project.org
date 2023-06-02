@@ -43,7 +43,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo ("DONE" "CNCL") :caption done :tags ("fix" "feat" "doc" "chore")
 #+caption: done
 | fix   | 0 |
-| feat  | 3 |
+| feat  | 4 |
 | doc   | 0 |
 | chore | 0 |
 #+END
@@ -2468,9 +2468,13 @@ CLOSED: [2023-05-27 Sat 10:46]
 ******** DONE [#C] Global "hyper+e" = emacs :feat:
 CLOSED: [2023-06-02 Fri 11:18]
 
-******** TODO Add notification to language switch setup :feat:
+******** TODO [#C] Super + mouse click = ctrl + click. Super+shift to move window :feat:
+
+******** TODO [#A] Add notification to language switch setup :feat:
 
 ******** TODO [#C] Global "hyper-b" = browser :feat:
+
+To determine "browser" would probably need MIME configuration to open html stuff.
 
 ******** TODO focus mode_toggle to switch focus between floating windows and tiled ones :feat:
 
@@ -2497,19 +2501,25 @@ Needs special workspace tho
 
 ******** TODO port over sound control mode :feat:
 
-******** TODO port over workspace edit/renumber/rename mode :feat:
+******** TODO [#A] port over workspace edit/renumber/rename mode :feat:
 
-******** TODO Port over the resize mode :feat:
+******** TODO [#A] Port over the resize mode :feat:
 
-******** TODO [#C] Port the shutdown mode :feat:
+******** TODO [#C] Consider a new launcher :feat:
 
-******** TODO Consider a new launcher :feat:
+******** TODO [#C] Fix the xremap ordering for hyprland :feat:
 
-******** TODO Fix the xremap ordering for hyprland :feat:
+Works for now
 
 ******** TODO Colorscheme :feat:
 
 ******** TODO Check out [[https://github.com/Slackadays/Clipboard][Clipboard]] :to_think:
+
+******** TODO [#A] Power mode :feat:
+
+I really need those super+\ -> suspend/poweroff things
+
+******** TODO [#A] Make sure lock on suspend works
 
 ******** DONE [[https://github.com/hyprwm/Hyprland/issues/1250][Ultrawide config]] :feat:
 CLOSED: [2023-06-02 Fri 11:36]
