@@ -213,16 +213,25 @@
             # those are more easily expressed in perSystem.
             # "Flake" section:1 ends here
             # [[file:new_project.org::*"nixosModules" output]["nixosModules" output:1]]
-            nixosModules = rec {
-              default = { ... }: {
-                imports = [
-                  zsh
-                  nix-config
-                ];
+            nixosModules =
+              let
+                inherit (flake-parts-lib) importApply;
+              in
+              rec {
+                default = { ... }: {
+                  imports = [
+                    zsh
+                    nix-config
+                  ];
+                };
+                zsh = import ./nixosModules/zsh; # (ref:zsh-module-import)
+                nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
+
+                # Using a separate attribute for these to prevent garbage warnings about unknown outputs
+                hmModules = {
+                  hyprland-language-switch-notifier = importApply ./nixosModules/hyprland-language-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:lang-switch-import)
+                };
               };
-              zsh = import ./nixosModules/zsh; # (ref:zsh-module-import)
-              nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
-            };
             # "nixosModules" output:1 ends here
             # [[file:new_project.org::*"nixosConfigurations" output]["nixosConfigurations" output:1]]
             nixosConfigurations = {
