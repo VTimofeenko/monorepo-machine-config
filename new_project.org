@@ -1768,6 +1768,9 @@ Imported [[(desktop-env-import)][here]].
       ./notifications.nix # (ref:notifications-de-import)
       inputs.hyprland.homeManagerModules.default
     ];
+    home.packages = builtins.attrValues {
+      inherit (pkgs) wl-clipboard;
+    };
   };
 }
 #+end_src

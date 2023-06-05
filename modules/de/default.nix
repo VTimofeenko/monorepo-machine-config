@@ -19,6 +19,9 @@
       ./notifications.nix # (ref:notifications-de-import)
       inputs.hyprland.homeManagerModules.default
     ];
+    home.packages = builtins.attrValues {
+      inherit (pkgs) wl-clipboard;
+    };
   };
 }
 # Desktop environment:1 ends here
