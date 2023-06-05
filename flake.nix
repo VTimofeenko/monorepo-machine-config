@@ -117,6 +117,7 @@
                 in
                 {
                   hyprland-lang-notifier = naersk-lib.buildPackage ./packages/hyprland-lang-notifier;
+                  hyprland-switch-lang-on-xremap = naersk-lib.buildPackage ./packages/hyprland-switch-lang-on-xremap;
                 };
               # Packages:1 ends here
               # [[file:new_project.org::*Overlays][Overlays:1]]
@@ -234,7 +235,7 @@
             # [[file:new_project.org::*"nixosConfigurations" output]["nixosConfigurations" output:1]]
             nixosConfigurations =
               let
-                specialArgs = inputs // { selfModules = self.nixosModules; };
+                specialArgs = inputs // { selfModules = self.nixosModules; selfPkgs = self.packages; };
               in
               {
                 # "nixosConfigurations" output:1 ends here

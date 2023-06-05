@@ -1,9 +1,11 @@
 # [[file:../../new_project.org::*User hyprland config][User hyprland config:1]]
 # Home manaager module to configure hyprland
-{ config, pkgs, lib, osConfig, ... }:
+{ config, pkgs, lib, osConfig, selfPkgs, ... }:
 let
   # Example of using system-wide configuration in home-manager module
   inherit (osConfig.networking) hostName;
+
+  selfPkgs' = selfPkgs.${pkgs.stdenv.system};
 
   # Custom lib.nix for module-specific logic
   modLib = import ./lib.nix;
@@ -89,7 +91,6 @@ in
           # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
           input {
               kb_layout = us,ru
-              kb_options = grp:win_space_toggle
 
               follow_mouse = 1
 
@@ -248,6 +249,8 @@ in
           $pinentry = ^(pinentry-qt)$
           windowrule = float,$pinentry
           windowrule = size 25% 20%,$pinentry
+          bind = $mainMod SHIFT, Space, focuscurrentorlast
+          bind = $mainMod, Space, exec, ${lib.getExe selfPkgs'.hyprland-switch-lang-on-xremap}
         '' + mergedConfig;
     };
 }

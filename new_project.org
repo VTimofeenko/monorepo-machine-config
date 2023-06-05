@@ -239,6 +239,7 @@ perSystem contains the default formatter and a sample of homeManagerConfiguratio
                 in
                 {
                   hyprland-lang-notifier = naersk-lib.buildPackage ./packages/hyprland-lang-notifier;
+                  hyprland-switch-lang-on-xremap = naersk-lib.buildPackage ./packages/hyprland-switch-lang-on-xremap;
                 };
 #+end_src
 
@@ -1335,7 +1336,7 @@ in
 #+begin_src nix
             nixosConfigurations =
               let
-                specialArgs = inputs // { selfModules = self.nixosModules; };
+                specialArgs = inputs // { selfModules = self.nixosModules; selfPkgs = self.packages; };
               in
               {
 #+end_src
@@ -1758,6 +1759,7 @@ Imported [[(desktop-env-import)][here]].
   home-manager.extraSpecialArgs = {
     inherit (inputs) pyprland;
     inherit (inputs.selfModules) hyprland-language-switch-notifier;
+    inherit (inputs) selfPkgs;
   };
   home-manager.users.spacecadet = { pkgs, ... }: {
     imports = [
@@ -2141,10 +2143,12 @@ Imported [[(hyprland-user-import)][here]].
 
 #+begin_src nix
 # Home manaager module to configure hyprland
-{ config, pkgs, lib, osConfig, ... }:
+{ config, pkgs, lib, osConfig, selfPkgs, ... }:
 let
   # Example of using system-wide configuration in home-manager module
   inherit (osConfig.networking) hostName;
+
+  selfPkgs' = selfPkgs.${pkgs.stdenv.system};
 
   # Custom lib.nix for module-specific logic
   modLib = import ./lib.nix;
@@ -2230,7 +2234,6 @@ in
           # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
           input {
               kb_layout = us,ru
-              kb_options = grp:win_space_toggle
 
               follow_mouse = 1
 
@@ -2389,6 +2392,8 @@ in
           $pinentry = ^(pinentry-qt)$
           windowrule = float,$pinentry
           windowrule = size 25% 20%,$pinentry
+          bind = $mainMod SHIFT, Space, focuscurrentorlast
+          bind = $mainMod, Space, exec, ${lib.getExe selfPkgs'.hyprland-switch-lang-on-xremap}
         '' + mergedConfig;
     };
 }
@@ -2546,7 +2551,7 @@ CLOSED: [2023-06-05 Mon 08:23]
 
 To determine "browser" would probably need MIME configuration to open html stuff.
 
-******** TODO focus mode_toggle to switch focus between floating windows and tiled ones :feat:
+******** STRT focus mode_toggle to switch focus between floating windows and tiled ones :feat:
 
 ******** DONE [#A] consider super+ctrl+grave for terminal :feat:
 CLOSED: [2023-05-28 Sun 17:39]
