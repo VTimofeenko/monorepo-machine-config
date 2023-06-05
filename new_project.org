@@ -1119,7 +1119,6 @@ Imported [[(media-hm-import)][here]].
                 ];
               };
               zsh = import ./nixosModules/zsh; # (ref:zsh-module-import)
-              # asddas
               nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
             };
 #+end_src

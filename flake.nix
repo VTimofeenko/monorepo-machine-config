@@ -221,7 +221,6 @@
                 ];
               };
               zsh = import ./nixosModules/zsh; # (ref:zsh-module-import)
-              # asddas
               nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
             };
             # "nixosModules" output:1 ends here
