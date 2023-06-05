@@ -234,40 +234,38 @@
               };
             # "nixosModules" output:1 ends here
             # [[file:new_project.org::*"nixosConfigurations" output]["nixosConfigurations" output:1]]
-            nixosConfigurations = {
-              # "nixosConfigurations" output:1 ends here
-              # [[file:new_project.org::*Uranium][Uranium:1]]
-              uranium = inputs.nixpkgs.lib.nixosSystem {
-                system = "x86_64-linux";
-                modules = [
-                  ./modules
-                  ./modules/nixosSystems/uranium # (ref:uranium-import)
-                  private-config.nixosModules.machines.uranium
-                  { nixpkgs.overlays = [ inputs.my-sway-config.overlays.default ]; }
-                ];
-                # NOTE:
-                # This makes the inputs propagate into the modules and allows modules to refer to the inputs
-                # See network configuration as an example
-                specialArgs = inputs;
+            nixosConfigurations =
+              let
+                specialArgs = inputs // { selfModules = self.nixosModules; };
+              in
+              {
+                # "nixosConfigurations" output:1 ends here
+                # [[file:new_project.org::*Uranium][Uranium:1]]
+                uranium = inputs.nixpkgs.lib.nixosSystem {
+                  system = "x86_64-linux";
+                  modules = [
+                    ./modules
+                    ./modules/nixosSystems/uranium # (ref:uranium-import)
+                    private-config.nixosModules.machines.uranium
+                    { nixpkgs.overlays = [ inputs.my-sway-config.overlays.default ]; }
+                  ];
+                  inherit specialArgs;
+                };
+                # Uranium:1 ends here
+                # [[file:new_project.org::*Neptunium][Neptunium:1]]
+                neptunium = inputs.nixpkgs.lib.nixosSystem {
+                  system = "x86_64-linux";
+                  modules = [
+                    ./modules
+                    ./modules/nixosSystems/neptunium
+                    private-config.nixosModules.machines.neptunium
+                    # { nixpkgs.overlays = [ my-sway-config.overlays.default ]; }
+                  ];
+                  inherit specialArgs;
+                };
+                # Neptunium:1 ends here
+                # [[file:new_project.org::*"nixosConfigurations" outro]["nixosConfigurations" outro:1]]
               };
-              # Uranium:1 ends here
-              # [[file:new_project.org::*Neptunium][Neptunium:1]]
-              neptunium = inputs.nixpkgs.lib.nixosSystem {
-                system = "x86_64-linux";
-                modules = [
-                  ./modules
-                  ./modules/nixosSystems/neptunium
-                  private-config.nixosModules.machines.neptunium
-                  # { nixpkgs.overlays = [ my-sway-config.overlays.default ]; }
-                ];
-                # NOTE:
-                # This makes the inputs propagate into the modules and allows modules to refer to the inputs
-                # See network configuration as an example
-                specialArgs = inputs;
-              };
-              # Neptunium:1 ends here
-              # [[file:new_project.org::*"nixosConfigurations" outro]["nixosConfigurations" outro:1]]
-            };
             # "nixosConfigurations" outro:1 ends here
             # [[file:new_project.org::*"Flake" output outro]["Flake" output outro:1]]
           };

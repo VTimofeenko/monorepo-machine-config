@@ -1335,7 +1335,11 @@ in
 :END:
 
 #+begin_src nix
-            nixosConfigurations = {
+            nixosConfigurations =
+              let
+                specialArgs = inputs // { selfModules = self.nixosModules; };
+              in
+              {
 #+end_src
 
 ***** Common system configuration modules
@@ -2580,19 +2584,16 @@ CLOSED: [2023-06-02 Fri 11:36]
 :END:
 
 #+begin_src nix
-              uranium = inputs.nixpkgs.lib.nixosSystem {
-                system = "x86_64-linux";
-                modules = [
-                  ./modules
-                  ./modules/nixosSystems/uranium # (ref:uranium-import)
-                  private-config.nixosModules.machines.uranium
-                  { nixpkgs.overlays = [ inputs.my-sway-config.overlays.default ]; }
-                ];
-                # NOTE:
-                # This makes the inputs propagate into the modules and allows modules to refer to the inputs
-                # See network configuration as an example
-                specialArgs = inputs;
-              };
+                uranium = inputs.nixpkgs.lib.nixosSystem {
+                  system = "x86_64-linux";
+                  modules = [
+                    ./modules
+                    ./modules/nixosSystems/uranium # (ref:uranium-import)
+                    private-config.nixosModules.machines.uranium
+                    { nixpkgs.overlays = [ inputs.my-sway-config.overlays.default ]; }
+                  ];
+                  inherit specialArgs;
+                };
 #+end_src
 
 ****** Uranium specific system
@@ -2885,19 +2886,16 @@ The hardware configuration that was taken from nixos-hardware and slightly tweak
 :END:
 
 #+begin_src nix
-              neptunium = inputs.nixpkgs.lib.nixosSystem {
-                system = "x86_64-linux";
-                modules = [
-                  ./modules
-                  ./modules/nixosSystems/neptunium
-                  private-config.nixosModules.machines.neptunium
-                  # { nixpkgs.overlays = [ my-sway-config.overlays.default ]; }
-                ];
-                # NOTE:
-                # This makes the inputs propagate into the modules and allows modules to refer to the inputs
-                # See network configuration as an example
-                specialArgs = inputs;
-              };
+                neptunium = inputs.nixpkgs.lib.nixosSystem {
+                  system = "x86_64-linux";
+                  modules = [
+                    ./modules
+                    ./modules/nixosSystems/neptunium
+                    private-config.nixosModules.machines.neptunium
+                    # { nixpkgs.overlays = [ my-sway-config.overlays.default ]; }
+                  ];
+                  inherit specialArgs;
+                };
 #+end_src
 
 ****** Neptunium specific system :migration:
@@ -3092,7 +3090,7 @@ Imported [[(neptunium-network-import)][here]].
 :END:
 
 #+begin_src nix
-            };
+              };
 #+end_src
 
 **** "Flake" output outro :noexport:
