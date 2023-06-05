@@ -172,7 +172,11 @@ Flake-parts:
     , self
     , ...
     }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
+    flake-parts.lib.mkFlake
+      { inherit inputs; }
+      (
+        { withSystem, flake-parts-lib, ... }:
+        {
 #+end_src
 
 *** Imports
@@ -181,10 +185,10 @@ Flake-parts:
 :END:
 
 #+begin_src nix
-      imports = [
-        inputs.devshell.flakeModule
-        inputs.flake-parts.flakeModules.easyOverlay
-      ];
+          imports = [
+            inputs.devshell.flakeModule
+            inputs.flake-parts.flakeModules.easyOverlay
+          ];
 #+end_src
 
 *** Systems setting
@@ -193,7 +197,7 @@ Flake-parts:
 :END:
 
 #+begin_src nix
-      systems = [ "x86_64-linux" "aarch64-darwin" ];
+          systems = [ "x86_64-linux" "aarch64-darwin" ];
 #+end_src
 
 *** "perSystem" output
@@ -204,14 +208,14 @@ Flake-parts:
 perSystem contains the default formatter and a sample of homeManagerConfiguration. The formatter is also used in [[file:.dir-locals.el][.dirs-local.el]] in the process of "compiling" this project.
 
 #+begin_src nix
-      perSystem = { config, self', inputs', pkgs, system, ... }:
-        let
-          pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
-        in
-        {
-          # Per-system attributes can be defined here. The self' and inputs'
-          # module parameters provide easy access to attributes of the same
-          # system.
+          perSystem = { config, self', inputs', pkgs, system, ... }:
+            let
+              pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
+            in
+            {
+              # Per-system attributes can be defined here. The self' and inputs'
+              # module parameters provide easy access to attributes of the same
+              # system.
 #+end_src
 
 **** Formatter
@@ -220,7 +224,7 @@ perSystem contains the default formatter and a sample of homeManagerConfiguratio
 :END:
 
 #+begin_src nix
-          formatter = pkgs.nixpkgs-fmt; # (ref:formatter)
+              formatter = pkgs.nixpkgs-fmt; # (ref:formatter)
 #+end_src
 
 **** Packages
@@ -229,13 +233,13 @@ perSystem contains the default formatter and a sample of homeManagerConfiguratio
 :END:
 
 #+begin_src nix
-          packages =
-            let
-              naersk-lib = pkgs-unstable.callPackage inputs.naersk { };
-            in
-            {
-              hyprland-lang-notifier = naersk-lib.buildPackage ./packages/hyprland-lang-notifier;
-            };
+              packages =
+                let
+                  naersk-lib = pkgs-unstable.callPackage inputs.naersk { };
+                in
+                {
+                  hyprland-lang-notifier = naersk-lib.buildPackage ./packages/hyprland-lang-notifier;
+                };
 #+end_src
 
 **** Overlays
@@ -246,9 +250,9 @@ perSystem contains the default formatter and a sample of homeManagerConfiguratio
 [[https://flake.parts/overlays.html?highlight=overlay#an-overlay-for-free-with-flake-parts][Flake-parts]] make overlays super easy to create:
 
 #+begin_src nix
-          overlayAttrs = {
-            inherit (config.packages) hyprland-lang-notifier;
-          };
+              overlayAttrs = {
+                inherit (config.packages) hyprland-lang-notifier;
+              };
 #+end_src
 
 **** homeConfigurations
@@ -259,18 +263,18 @@ perSystem contains the default formatter and a sample of homeManagerConfiguratio
 This section contains modules that can be imported into home manager.
 
 #+begin_src nix
-          legacyPackages.homeConfigurations =
-            let
-              /* Create the default homeManagerConfiguration with inherited pkgs.
+              legacyPackages.homeConfigurations =
+                let
+                  /* Create the default homeManagerConfiguration with inherited pkgs.
 
                   The provided attrset will be merged into the homeManagerConfiguration.
 
                    Type: mkHmc :: attrset -> home-manger.lib.homeManagerConfiguration
 
-                */
-              mkHmc = attrset: inputs.home-manager.lib.homeManagerConfiguration ({ inherit pkgs; } // attrset);
-            in
-            {
+                  */
+                  mkHmc = attrset: inputs.home-manager.lib.homeManagerConfiguration ({ inherit pkgs; } // attrset);
+                in
+                {
 #+end_src
 
 ***** Special users
@@ -284,12 +288,12 @@ This section contains modules that can be imported into home manager.
 :END:
 
 #+begin_src nix
-              deck = mkHmc {
-                modules = [
-                  ./modules/home-manager # (ref:deck-hm-import)
-                  ./modules/home-manager/_perUser/deck.nix
-                ];
-              };
+                  deck = mkHmc {
+                    modules = [
+                      ./modules/home-manager # (ref:deck-hm-import)
+                      ./modules/home-manager/_perUser/deck.nix
+                    ];
+                  };
 #+end_src
 
 ******* Deck customization
@@ -318,14 +322,14 @@ https://github.com/guibou/nixGL
 This user is on a macOS system with a lot of pre-existing configs, so the modules need some special care.
 
 #+begin_src nix
-              vtimofeenko = mkHmc {
-                modules = [
-                  ./modules/home-manager/home.nix
-                  ./modules/home-manager/vim
-                  ./modules/home-manager/git.nix
-                  ./modules/home-manager/_perUser/vtimofeenko.nix
-                ];
-              };
+                  vtimofeenko = mkHmc {
+                    modules = [
+                      ./modules/home-manager/home.nix
+                      ./modules/home-manager/vim
+                      ./modules/home-manager/git.nix
+                      ./modules/home-manager/_perUser/vtimofeenko.nix
+                    ];
+                  };
 #+end_src
 
 ******* Vtimofeenko customization
@@ -1025,7 +1029,7 @@ Imported [[(media-hm-import)][here]].
 :END:
 
 #+begin_src nix
-            };
+                };
 #+end_src
 
 **** devShells
@@ -1034,48 +1038,48 @@ Imported [[(media-hm-import)][here]].
 :END:
 
 #+begin_src nix
-          devshells.default = {
-            env = [
-              {
-                name = "RUST_SRC_PATH";
-                value = pkgs-unstable.rustPlatform.rustLibSrc;
-              }
-            ];
-            commands = [
-              {
-                help = "preview README.md";
-                name = "preview";
-                command = "${pkgs.python310Packages.grip}/bin/grip .";
-              }
-              {
-                help = "deploy neptunium";
-                name = "deploy-neptunium";
-                command = "nix flake check && nixos-rebuild --flake .#neptunium --target-host root@neptunium.home.arpa switch";
-              }
-              {
-                help = "deploy uranium";
-                name = "deploy-uranium";
-                command = "nix flake check && nixos-rebuild --flake .#uranium --target-host root@uranium.home.arpa switch";
-              }
-              {
-                help = "deploy local machine";
-                name = "deploy-local";
-                command =
-                  ''
-                    if [[ $(grep -s ^NAME= /etc/os-release | sed 's/^.*=//') == "NixOS" ]]; then
-                      nix flake check && sudo nixos-rebuild switch --flake .
-                    else
-                     home-manager switch --flake .
-                    fi
-                  '';
-              }
-            ];
-            packages = builtins.attrValues {
-              inherit (pkgs-unstable) cargo rustc rustfmt pre-commit gcc pkg-config;
-              inherit (pkgs-unstable.rustPackages) clippy;
-            };
+              devshells.default = {
+                env = [
+                  {
+                    name = "RUST_SRC_PATH";
+                    value = pkgs-unstable.rustPlatform.rustLibSrc;
+                  }
+                ];
+                commands = [
+                  {
+                    help = "preview README.md";
+                    name = "preview";
+                    command = "${pkgs.python310Packages.grip}/bin/grip .";
+                  }
+                  {
+                    help = "deploy neptunium";
+                    name = "deploy-neptunium";
+                    command = "nix flake check && nixos-rebuild --flake .#neptunium --target-host root@neptunium.home.arpa switch";
+                  }
+                  {
+                    help = "deploy uranium";
+                    name = "deploy-uranium";
+                    command = "nix flake check && nixos-rebuild --flake .#uranium --target-host root@uranium.home.arpa switch";
+                  }
+                  {
+                    help = "deploy local machine";
+                    name = "deploy-local";
+                    command =
+                      ''
+                        if [[ $(grep -s ^NAME= /etc/os-release | sed 's/^.*=//') == "NixOS" ]]; then
+                          nix flake check && sudo nixos-rebuild switch --flake .
+                        else
+                         home-manager switch --flake .
+                        fi
+                      '';
+                  }
+                ];
+                packages = builtins.attrValues {
+                  inherit (pkgs-unstable) cargo rustc rustfmt pre-commit gcc pkg-config;
+                  inherit (pkgs-unstable.rustPackages) clippy;
+                };
 
-          };
+              };
 #+end_src
 
 ***** TODO move to deploy-rs :chore:
@@ -1086,7 +1090,7 @@ Imported [[(media-hm-import)][here]].
 :END:
 
 #+begin_src nix
-        };
+            };
 #+end_src
 
 *** "Flake" section
@@ -1095,10 +1099,10 @@ Imported [[(media-hm-import)][here]].
 :END:
 
 #+begin_src nix
-      flake = {
-        # The usual flake attributes can be defined here, including system-
-        # agnostic ones like nixosModule and system-enumerating ones, although
-        # those are more easily expressed in perSystem.
+          flake = {
+            # The usual flake attributes can be defined here, including system-
+            # agnostic ones like nixosModule and system-enumerating ones, although
+            # those are more easily expressed in perSystem.
 #+end_src
 
 **** "nixosModules" output
@@ -1107,17 +1111,17 @@ Imported [[(media-hm-import)][here]].
 :END:
 
 #+begin_src nix
-        nixosModules = rec {
-          default = { ... }: {
-            imports = [
-              zsh
-              nix-config
-            ];
-          };
-          zsh = import ./nixosModules/zsh; # (ref:zsh-module-import)
-          # asddas
-          nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
-        };
+            nixosModules = rec {
+              default = { ... }: {
+                imports = [
+                  zsh
+                  nix-config
+                ];
+              };
+              zsh = import ./nixosModules/zsh; # (ref:zsh-module-import)
+              # asddas
+              nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
+            };
 #+end_src
 
 ***** zsh (system)
@@ -1285,7 +1289,7 @@ Garbage collection through ~nix.gc.automatic = true~ is not on since I tend to m
 :END:
 
 #+begin_src nix
-        nixosConfigurations = {
+            nixosConfigurations = {
 #+end_src
 
 ***** Common system configuration modules
@@ -2470,7 +2474,7 @@ CLOSED: [2023-06-02 Fri 11:18]
 
 ******** TODO [#C] Super + mouse click = ctrl + click. Super+shift to move window :feat:
 
-******** TODO [#A] Add notification to language switch setup :feat:
+******** STRT [#A] Add notification to language switch setup :feat:
 
 ******** TODO [#C] Global "hyper-b" = browser :feat:
 
@@ -2530,19 +2534,19 @@ CLOSED: [2023-06-02 Fri 11:36]
 :END:
 
 #+begin_src nix
-          uranium = inputs.nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            modules = [
-              ./modules
-              ./modules/nixosSystems/uranium # (ref:uranium-import)
-              private-config.nixosModules.machines.uranium
-              { nixpkgs.overlays = [ inputs.my-sway-config.overlays.default ]; }
-            ];
-            # NOTE:
-            # This makes the inputs propagate into the modules and allows modules to refer to the inputs
-            # See network configuration as an example
-            specialArgs = inputs;
-          };
+              uranium = inputs.nixpkgs.lib.nixosSystem {
+                system = "x86_64-linux";
+                modules = [
+                  ./modules
+                  ./modules/nixosSystems/uranium # (ref:uranium-import)
+                  private-config.nixosModules.machines.uranium
+                  { nixpkgs.overlays = [ inputs.my-sway-config.overlays.default ]; }
+                ];
+                # NOTE:
+                # This makes the inputs propagate into the modules and allows modules to refer to the inputs
+                # See network configuration as an example
+                specialArgs = inputs;
+              };
 #+end_src
 
 ****** Uranium specific system
@@ -2835,19 +2839,19 @@ The hardware configuration that was taken from nixos-hardware and slightly tweak
 :END:
 
 #+begin_src nix
-          neptunium = inputs.nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            modules = [
-              ./modules
-              ./modules/nixosSystems/neptunium
-              private-config.nixosModules.machines.neptunium
-              # { nixpkgs.overlays = [ my-sway-config.overlays.default ]; }
-            ];
-            # NOTE:
-            # This makes the inputs propagate into the modules and allows modules to refer to the inputs
-            # See network configuration as an example
-            specialArgs = inputs;
-          };
+              neptunium = inputs.nixpkgs.lib.nixosSystem {
+                system = "x86_64-linux";
+                modules = [
+                  ./modules
+                  ./modules/nixosSystems/neptunium
+                  private-config.nixosModules.machines.neptunium
+                  # { nixpkgs.overlays = [ my-sway-config.overlays.default ]; }
+                ];
+                # NOTE:
+                # This makes the inputs propagate into the modules and allows modules to refer to the inputs
+                # See network configuration as an example
+                specialArgs = inputs;
+              };
 #+end_src
 
 ****** Neptunium specific system :migration:
@@ -3042,7 +3046,7 @@ Imported [[(neptunium-network-import)][here]].
 :END:
 
 #+begin_src nix
-        };
+            };
 #+end_src
 
 **** "Flake" output outro :noexport:
@@ -3051,13 +3055,14 @@ Imported [[(neptunium-network-import)][here]].
 :END:
 
 #+begin_src nix
-      };
+          };
 #+end_src
 
 ** Flake outro :noexport:
 
 #+begin_src nix
-    };
+        }
+      );
 }
 #+end_src
 
