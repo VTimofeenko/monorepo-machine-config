@@ -1281,6 +1281,7 @@ To use this module separately from `default` one:
 Garbage collection through ~nix.gc.automatic = true~ is not on since I tend to manually clean it up from time to time.
 
 ***** TODO vim (system) :feat:
+***** TODO [#A] vim (system) :feat:
 
 **** "nixosConfigurations" output
 :PROPERTIES:
