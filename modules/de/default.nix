@@ -9,6 +9,7 @@
   ];
   home-manager.extraSpecialArgs = {
     inherit (inputs) pyprland;
+    inherit (inputs.selfModules) hyprland-language-switch-notifier;
   };
   home-manager.users.spacecadet = { pkgs, ... }: {
     imports = [

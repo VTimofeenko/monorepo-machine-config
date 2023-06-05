@@ -43,7 +43,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo ("DONE" "CNCL") :caption done :tags ("fix" "feat" "doc" "chore")
 #+caption: done
 | fix   | 0 |
-| feat  | 4 |
+| feat  | 5 |
 | doc   | 0 |
 | chore | 0 |
 #+END
@@ -51,7 +51,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  4 |
-| feat  | 30 |
+| feat  | 29 |
 | doc   |  0 |
 | chore | 15 |
 #+END
@@ -1125,10 +1125,8 @@ Imported [[(media-hm-import)][here]].
                 zsh = import ./nixosModules/zsh; # (ref:zsh-module-import)
                 nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
 
-                # Using a separate attribute for these to prevent garbage warnings about unknown outputs
-                hmModules = {
-                  hyprland-language-switch-notifier = importApply ./nixosModules/hyprland-language-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:lang-switch-import)
-                };
+                # Home manager modules follow
+                hyprland-language-switch-notifier = importApply ./nixosModules/hyprland-language-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:lang-switch-import)
               };
 #+end_src
 
@@ -1759,6 +1757,7 @@ Imported [[(desktop-env-import)][here]].
   ];
   home-manager.extraSpecialArgs = {
     inherit (inputs) pyprland;
+    inherit (inputs.selfModules) hyprland-language-switch-notifier;
   };
   home-manager.users.spacecadet = { pkgs, ... }: {
     imports = [
@@ -2077,6 +2076,7 @@ in
 ********* DONE Alt-backspace = ctrl-backspace :feat:
 CLOSED: [2023-06-02 Fri 10:27]
 
+
 ******* TODO Manage MIME associations through home-manager :feat:
 
 ****** Hyprland config
@@ -2201,6 +2201,7 @@ in
 {
   imports = [
     ./pyprland # (ref:pyprland-import)
+    ./hyprland-language-switch-notifier # (ref:use-lang-switch-notifier-import)
   ];
   wayland.windowManager.hyprland =
     {
@@ -2515,6 +2516,20 @@ in
 }
 #+end_src
 
+******** Hyprland language switch notifier
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/hyprland-language-switch-notifier/default.nix
+:END:
+
+Imported [[(use-lang-switch-notifier-import)][here]].
+
+#+begin_src nix
+{ config, pkgs, lib, hyprland-language-switch-notifier, ... }:
+{
+  imports = [ hyprland-language-switch-notifier ];
+  services.hyprland-language-switch-notifier.enable = true;
+}
+#+end_src
 
 ******** DONE [#A] Xremap :migration:
 CLOSED: [2023-05-27 Sat 10:46]
@@ -2524,7 +2539,8 @@ CLOSED: [2023-06-02 Fri 11:18]
 
 ******** TODO [#C] Super + mouse click = ctrl + click. Super+shift to move window :feat:
 
-******** STRT [#A] Add notification to language switch setup :feat:
+******** DONE [#A] Add notification to language switch setup :feat:
+CLOSED: [2023-06-05 Mon 08:23]
 
 ******** TODO [#C] Global "hyper-b" = browser :feat:
 

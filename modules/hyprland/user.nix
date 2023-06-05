@@ -60,6 +60,7 @@ in
 {
   imports = [
     ./pyprland # (ref:pyprland-import)
+    ./hyprland-language-switch-notifier # (ref:use-lang-switch-notifier-import)
   ];
   wayland.windowManager.hyprland =
     {

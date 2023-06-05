@@ -227,10 +227,8 @@
                 zsh = import ./nixosModules/zsh; # (ref:zsh-module-import)
                 nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
 
-                # Using a separate attribute for these to prevent garbage warnings about unknown outputs
-                hmModules = {
-                  hyprland-language-switch-notifier = importApply ./nixosModules/hyprland-language-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:lang-switch-import)
-                };
+                # Home manager modules follow
+                hyprland-language-switch-notifier = importApply ./nixosModules/hyprland-language-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:lang-switch-import)
               };
             # "nixosModules" output:1 ends here
             # [[file:new_project.org::*"nixosConfigurations" output]["nixosConfigurations" output:1]]
