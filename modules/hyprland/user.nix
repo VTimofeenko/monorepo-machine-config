@@ -64,6 +64,7 @@ in
     ./pyprland # (ref:pyprland-import)
     ./hyprland-language-switch-notifier # (ref:use-lang-switch-notifier-import)
     ./keybinds # (ref:hyprland-bindings-import)
+    ./modes # (ref:hyprland-modes-import)
   ];
   wayland.windowManager.hyprland =
     {

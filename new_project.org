@@ -43,7 +43,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo ("DONE" "CNCL") :caption done :tags ("fix" "feat" "doc" "chore")
 #+caption: done
 | fix   | 0 |
-| feat  | 7 |
+| feat  | 9 |
 | doc   | 0 |
 | chore | 0 |
 #+END
@@ -51,7 +51,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  4 |
-| feat  | 27 |
+| feat  | 26 |
 | doc   |  0 |
 | chore | 15 |
 #+END
@@ -2212,6 +2212,7 @@ in
     ./pyprland # (ref:pyprland-import)
     ./hyprland-language-switch-notifier # (ref:use-lang-switch-notifier-import)
     ./keybinds # (ref:hyprland-bindings-import)
+    ./modes # (ref:hyprland-modes-import)
   ];
   wayland.windowManager.hyprland =
     {
@@ -2435,8 +2436,10 @@ To make the previous section a little smaller I will split the keybinds into ind
   wayland.windowManager.hyprland.extraConfig =
     lib.mkAfter
       ''
-        binde=, XF86AudioRaiseVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 10%+
         binde=, XF86AudioLowerVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ -10%+
+        binde=, XF86AudioRaiseVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 10%+
+        binde=, F2, exec, ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ -10%+
+        binde=, F3, exec, ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 10%+
       '';
 }
 #+end_src
@@ -2460,6 +2463,135 @@ To make the previous section a little smaller I will split the keybinds into ind
 }
 #+end_src
 
+******** Hyprland modes
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/modes/default.nix
+:END:
+
+Imported [[(hyprland-modes-import)][here]].
+
+To make the previous section a little smaller I will split the keybinds into individual files loosely grouped by the category of their use.
+
+#+begin_src nix
+{ pkgs, config, lib, ... }:
+let
+  /* Type: mkModeBinding :: (str -> str -> str) -> module */
+  mkModeBinding = modeEnterKeyBind: modeName: modeBinds: {
+    wayland.windowManager.hyprland.extraConfig =
+      lib.mkAfter
+        ''
+          bind = ${modeEnterKeyBind},submap,${modeName}
+          submap = ${modeName}
+
+          ${modeBinds}
+
+
+          # use escape to go back to global map
+          bind=,escape,submap,reset
+          submap = reset
+        '';
+  };
+in
+{
+  # A novel and elegant importApply!
+  imports = builtins.map
+    (module: (import module mkModeBinding))
+    [
+      ./sound_ctl.nix
+      ./resize_ctl.nix
+      # ./workspace_edit.nix # TODO
+      ./power_ctl.nix
+    ];
+}
+#+end_src
+
+********* Sound_ctl
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/modes/sound_ctl.nix
+:END:
+
+#+begin_src nix
+mkModeBinding:
+{ pkgs, config, lib, ... }:
+let
+  execWpctl = "exec, ${pkgs.wireplumber}/bin/wpctl";
+in
+mkModeBinding
+  "SUPERCTRL,M"
+  "sound_ctl"
+  ''
+    binde=, XF86AudioLowerVolume, ${execWpctl} set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ -10%+
+    binde=, XF86AudioRaiseVolume, ${execWpctl} set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 10%+
+    binde=, F2, ${execWpctl} set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ -10%+
+    binde=, F3, ${execWpctl} set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 10%+
+    # Silence the output
+    bind=, s, ${execWpctl} set-sink-mute @DEFAULT_AUDIO_SINK@ toggle
+    bind=, F1, ${execWpctl} set-sink-mute @DEFAULT_AUDIO_SINK@ toggle
+    bind=, XF86AudioMute, ${execWpctl} set-sink-mute @DEFAULT_AUDIO_SINK@ toggle
+    # Mute the mic
+    bind=, m, ${execWpctl} set-source-mute @DEFAULT_AUDIO_SOURCE@ toggle
+    bind=, XF86AudioMicMute, ${execWpctl} set-source-mute @DEFAULT_AUDIO_SOURCE@ toggle
+  ''
+#+end_src
+
+********* Resize_ctl
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/modes/resize_ctl.nix
+:END:
+
+#+begin_src nix
+mkModeBinding:
+{ pkgs, config, lib, ... }:
+mkModeBinding
+  # Mode enter keybind
+  "SUPERCTRL,R"
+  # Mode name keybind
+  "resize"
+  ''
+    # sets repeatable binds for resizing the active window
+    binde=,h,resizeactive,10 0
+    binde=,l,resizeactive,-10 0
+    binde=,k,resizeactive,0 -10
+    binde=,j,resizeactive,0 10
+    binde=SHIFT,h,resizeactive,100 0
+    binde=SHIFT,l,resizeactive,-100 0
+    binde=SHIFT,k,resizeactive,0 -100
+    binde=SHIFT,j,resizeactive,0 100
+  ''
+#+end_src
+********* TODO Workspace_edit :feat:
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/modes/workspace_edit_ctl.nix
+:END:
+
+Mode to rename/renumber workspaces. For now I want to try working without a bar.
+
+#+begin_src nix
+{ pkgs, config, lib, ... }:
+{ }
+#+end_src
+********* Power_ctl
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/modes/power_ctl.nix
+:END:
+
+#+begin_src nix
+mkModeBinding:
+{ pkgs, config, lib, ... }:
+mkModeBinding
+  "SUPERCTRL, \\"
+  "Power"
+  ''
+    # Exit hyprland
+    bind=, Q, exit
+    # Suspend
+    bind=, S, exec, systemctl suspend
+    # Shutdown
+    bind=SHIFT, S, exec, systemctl shutdown
+    # Reboot
+    bind=SHIFT, R, exec, systemctl reboot
+  ''
+#+end_src
 ******** Hyprland lib
 :PROPERTIES:
 :header-args:nix+: :tangle modules/hyprland/lib.nix
@@ -2637,11 +2769,11 @@ CLOSED: [2023-06-06 Tue 08:39]
 - [ ] Brightnessctl
 
 
-******** TODO port over sound control mode :feat:
+******** DONE port over sound control mode :feat:
+CLOSED: [2023-06-06 Tue 10:48]
 
-******** TODO [#A] port over workspace edit/renumber/rename mode :feat:
-
-******** TODO [#A] Port over the resize mode :feat:
+******** DONE [#A] Port over the resize mode :feat:
+CLOSED: [2023-06-06 Tue 10:48]
 
 ******** TODO [#C] Consider a new launcher :feat:
 
@@ -2653,14 +2785,14 @@ Works for now
 
 ******** TODO Check out [[https://github.com/Slackadays/Clipboard][Clipboard]] :to_think:
 
-******** TODO [#A] Power mode :feat:
-
-I really need those super+\ -> suspend/poweroff things
-
 ******** TODO [#A] Make sure lock on suspend works
 
 ******** DONE [[https://github.com/hyprwm/Hyprland/issues/1250][Ultrawide config]] :feat:
 CLOSED: [2023-06-02 Fri 11:36]
+
+******** TODO "which key" for modes :feat:
+
+Whenever a mode is triggered -- it would be helpful to show a list of keybinds similar to emacs.
 
 ***** Uranium
 :PROPERTIES:
