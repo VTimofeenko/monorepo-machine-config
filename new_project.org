@@ -43,7 +43,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo ("DONE" "CNCL") :caption done :tags ("fix" "feat" "doc" "chore")
 #+caption: done
 | fix   | 0 |
-| feat  | 5 |
+| feat  | 6 |
 | doc   | 0 |
 | chore | 0 |
 #+END
@@ -51,7 +51,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  4 |
-| feat  | 29 |
+| feat  | 28 |
 | doc   |  0 |
 | chore | 15 |
 #+END
@@ -2554,7 +2554,8 @@ CLOSED: [2023-06-05 Mon 08:23]
 
 To determine "browser" would probably need MIME configuration to open html stuff.
 
-******** STRT focus mode_toggle to switch focus between floating windows and tiled ones :feat:
+******** DONE focus mode_toggle to switch focus between floating windows and tiled ones :feat:
+CLOSED: [2023-06-06 Tue 08:20]
 
 ******** DONE [#A] consider super+ctrl+grave for terminal :feat:
 CLOSED: [2023-05-28 Sun 17:39]
