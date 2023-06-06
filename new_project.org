@@ -536,6 +536,8 @@ Imported [[(vim-hm-import)][here]].
 }
 #+end_src
 
+******* TODO Add path completion :feat:
+
 ****** zsh (home-manager)
 :PROPERTIES:
 :header-args:nix+: :tangle modules/home-manager/zsh/default.nix
