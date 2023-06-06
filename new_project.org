@@ -239,6 +239,7 @@ perSystem contains the default formatter and a sample of homeManagerConfiguratio
                 in
                 {
                   hyprland-lang-notifier = naersk-lib.buildPackage ./packages/hyprland-lang-notifier;
+                  hyprland-mode-notifier = naersk-lib.buildPackage ./packages/hyprland-mode-notifier;
                   hyprland-switch-lang-on-xremap = naersk-lib.buildPackage ./packages/hyprland-switch-lang-on-xremap;
                 };
 #+end_src
@@ -1130,6 +1131,7 @@ Imported [[(media-hm-import)][here]].
 
                 # Home manager modules follow
                 hyprland-language-switch-notifier = importApply ./nixosModules/hyprland-language-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:lang-switch-import)
+                hyprland-mode-switch-notifier = importApply ./nixosModules/hyprland-mode-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:mode-switch-import)
               };
 #+end_src
 
@@ -1316,6 +1318,41 @@ in
     systemd.user.services.hyprland-language-switch-notifier = {
       Unit = {
         Description = "Notifies user when language is switched";
+        BindsTo = [ "hyprland-session.target" ];
+      };
+      Service = {
+        ExecStart = "${lib.getExe pkg}";
+      };
+      Install.WantedBy = [ "graphical-session.target" ];
+    };
+  };
+}
+#+end_src
+
+****** hyprland mode switch notifier
+:PROPERTIES:
+:header-args:nix+: :tangle nixosModules/hyprland-mode-switch-notifier/default.nix
+:END:
+
+Imported [[(lang-switch-import)][here]].
+
+#+begin_src nix
+# Home manager module to configure a user service that notifies when mode is switched
+{ localFlake, withSystem }:
+{ pkgs, lib, self, config, ... }:
+with lib;
+let
+  cfg = config.services.hyprland-mode-switch-notifier;
+  pkg = localFlake.packages.${pkgs.stdenv.hostPlatform.system}.hyprland-mode-notifier;
+in
+{
+  options.services.hyprland-mode-switch-notifier = {
+    enable = mkEnableOption "hyprland mode switch notifications";
+  };
+  config = mkIf cfg.enable {
+    systemd.user.services.hyprland-mode-switch-notifier = {
+      Unit = {
+        Description = "Notifies user when mode is switched";
         BindsTo = [ "hyprland-session.target" ];
       };
       Service = {
@@ -1760,7 +1797,7 @@ Imported [[(desktop-env-import)][here]].
   ];
   home-manager.extraSpecialArgs = {
     inherit (inputs) pyprland;
-    inherit (inputs.selfModules) hyprland-language-switch-notifier;
+    inherit (inputs.selfModules) hyprland-language-switch-notifier hyprland-mode-switch-notifier;
     inherit (inputs) selfPkgs;
   };
   home-manager.users.spacecadet = { pkgs, ... }: {
@@ -2211,6 +2248,7 @@ in
   imports = [
     ./pyprland # (ref:pyprland-import)
     ./hyprland-language-switch-notifier # (ref:use-lang-switch-notifier-import)
+    ./hyprland-mode-switch-notifier # (ref:use-mode-switch-notifier-import)
     ./keybinds # (ref:hyprland-bindings-import)
     ./modes # (ref:hyprland-modes-import)
   ];
@@ -2726,6 +2764,21 @@ Imported [[(use-lang-switch-notifier-import)][here]].
 {
   imports = [ hyprland-language-switch-notifier ];
   services.hyprland-language-switch-notifier.enable = true;
+}
+#+end_src
+
+******** Hyprland mode switch notifier
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/hyprland-mode-switch-notifier/default.nix
+:END:
+
+Imported [[(use-mode-switch-notifier-import)][here]].
+
+#+begin_src nix
+{ config, pkgs, lib, hyprland-mode-switch-notifier, ... }:
+{
+  imports = [ hyprland-mode-switch-notifier ];
+  services.hyprland-mode-switch-notifier.enable = true;
 }
 #+end_src
 

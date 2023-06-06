@@ -1,0 +1,11 @@
+[package]
+name = "hyprland-mode-notifier"
+version = "0.1.0"
+edition = "2021"
+description = "Displays desktop notification when mode is entered."
+
+[dependencies]
+hyprland = "0.3.3"
+
+[dependencies.notify-rust]
+version = "4.8.0"

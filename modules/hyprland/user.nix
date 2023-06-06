@@ -63,6 +63,7 @@ in
   imports = [
     ./pyprland # (ref:pyprland-import)
     ./hyprland-language-switch-notifier # (ref:use-lang-switch-notifier-import)
+    ./hyprland-mode-switch-notifier # (ref:use-mode-switch-notifier-import)
     ./keybinds # (ref:hyprland-bindings-import)
     ./modes # (ref:hyprland-modes-import)
   ];

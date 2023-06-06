@@ -117,6 +117,7 @@
                 in
                 {
                   hyprland-lang-notifier = naersk-lib.buildPackage ./packages/hyprland-lang-notifier;
+                  hyprland-mode-notifier = naersk-lib.buildPackage ./packages/hyprland-mode-notifier;
                   hyprland-switch-lang-on-xremap = naersk-lib.buildPackage ./packages/hyprland-switch-lang-on-xremap;
                 };
               # Packages:1 ends here
@@ -230,6 +231,7 @@
 
                 # Home manager modules follow
                 hyprland-language-switch-notifier = importApply ./nixosModules/hyprland-language-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:lang-switch-import)
+                hyprland-mode-switch-notifier = importApply ./nixosModules/hyprland-mode-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:mode-switch-import)
               };
             # "nixosModules" output:1 ends here
             # [[file:new_project.org::*"nixosConfigurations" output]["nixosConfigurations" output:1]]
