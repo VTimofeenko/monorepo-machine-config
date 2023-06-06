@@ -42,16 +42,16 @@ Certain components of my config (mostly dealing with passwords and such) are not
 
 #+BEGIN: tagblock :todo ("DONE" "CNCL") :caption done :tags ("fix" "feat" "doc" "chore")
 #+caption: done
-| fix   | 0 |
-| feat  | 9 |
-| doc   | 0 |
-| chore | 0 |
+| fix   |  0 |
+| feat  | 11 |
+| doc   |  0 |
+| chore |  0 |
 #+END
 
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  5 |
-| feat  | 26 |
+| feat  | 28 |
 | doc   |  0 |
 | chore | 15 |
 #+END
@@ -2791,14 +2791,14 @@ CLOSED: [2023-06-02 Fri 11:18]
 ******** TODO [#C] Super + mouse click = ctrl + click. Super+shift to move window :feat:
 
 ******** DONE [#A] Add notification to language switch setup :feat:
-CLOSED: [2023-06-05 Mon 08:23]
+CLOSED: [2023-06-06 Tue 11:32]
 
 ******** TODO [#C] Global "hyper-b" = browser :feat:
 
 To determine "browser" would probably need MIME configuration to open html stuff.
 
 ******** DONE focus mode_toggle to switch focus between floating windows and tiled ones :feat:
-CLOSED: [2023-06-06 Tue 08:20]
+CLOSED: [2023-06-06 Tue 11:33]
 
 ******** DONE [#A] consider super+ctrl+grave for terminal :feat:
 CLOSED: [2023-05-28 Sun 17:39]
@@ -2830,8 +2830,17 @@ CLOSED: [2023-06-06 Tue 10:48]
 
 ******** TODO [#C] Consider a new launcher :feat:
 
+******** DONE [#A] port over workspace edit/renumber/rename mode :feat:
+CLOSED: [2023-06-06 Tue 11:34]
+
+******** DONE [#A] Port over the resize mode :feat:
+CLOSED: [2023-06-06 Tue 11:34]
+
 ******** TODO [#C] Fix the xremap ordering for hyprland :feat:
 
+******** TODO [#C] Consider a new launcher :feat:
+
+******** TODO [#C] Fix the xremap ordering for hyprland :feat:
 Works for now
 
 ******** TODO Colorscheme :feat:
