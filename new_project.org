@@ -50,7 +50,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
-| fix   |  4 |
+| fix   |  5 |
 | feat  | 26 |
 | doc   |  0 |
 | chore | 15 |
@@ -2390,7 +2390,6 @@ in
           bind = $mainMod, O, fullscreen, 1  # fOcus
 
           bind = $mainMod CTRL, Q, exec, ${pkgs.swaylock}/bin/swaylock -fF -k -c 000000
-          bind = $mainMod CTRL, M, exit,
           # Toggle notification pane
           bind = $mainMod CTRL, N, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw
           # Clipboard history toggle
@@ -2592,6 +2591,7 @@ mkModeBinding
     bind=SHIFT, R, exec, systemctl reboot
   ''
 #+end_src
+********** TODO Make hyprland exit clean -- stop all needed services :fix:
 ******** Hyprland lib
 :PROPERTIES:
 :header-args:nix+: :tangle modules/hyprland/lib.nix
