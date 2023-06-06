@@ -43,7 +43,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo ("DONE" "CNCL") :caption done :tags ("fix" "feat" "doc" "chore")
 #+caption: done
 | fix   | 0 |
-| feat  | 6 |
+| feat  | 7 |
 | doc   | 0 |
 | chore | 0 |
 #+END
@@ -51,7 +51,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  4 |
-| feat  | 28 |
+| feat  | 27 |
 | doc   |  0 |
 | chore | 15 |
 #+END
@@ -2209,6 +2209,7 @@ in
   imports = [
     ./pyprland # (ref:pyprland-import)
     ./hyprland-language-switch-notifier # (ref:use-lang-switch-notifier-import)
+    ./keybinds # (ref:hyprland-bindings-import)
   ];
   wayland.windowManager.hyprland =
     {
@@ -2402,6 +2403,61 @@ in
 }
 #+end_src
 
+******** Hyprland key binds
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/keybinds/default.nix
+:END:
+
+Imported [[(hyprland-bindings-import)][here]].
+
+To make the previous section a little smaller I will split the keybinds into individual files loosely grouped by the category of their use.
+
+#+begin_src nix
+{ pkgs, config, lib, ... }:
+{
+  imports = [
+    ./audio.nix
+    ./brightness.nix
+  ];
+}
+#+end_src
+
+********* Audio
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/keybinds/audio.nix
+:END:
+
+#+begin_src nix
+{ pkgs, config, lib, ... }:
+{
+  wayland.windowManager.hyprland.extraConfig =
+    lib.mkAfter
+      ''
+        binde=, XF86AudioRaiseVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 10%+
+        binde=, XF86AudioLowerVolume, exec, ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ -10%+
+      '';
+}
+#+end_src
+
+********* Brightness
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/keybinds/brightness.nix
+:END:
+
+#+begin_src nix
+{ pkgs, config, lib, ... }:
+{
+  wayland.windowManager.hyprland.extraConfig =
+    lib.mkAfter
+      ''
+        binde=, XF86MonBrightnessDown, exec, ${lib.getExe pkgs.brightnessctl} set 10%-
+        binde=, F7, exec, ${lib.getExe pkgs.brightnessctl} set 10%-
+        binde=, XF86MonBrightnessUp, exec, ${lib.getExe pkgs.brightnessctl} set +10%
+        binde=, F8, exec, ${lib.getExe pkgs.brightnessctl} set +10%
+      '';
+}
+#+end_src
+
 ******** Hyprland lib
 :PROPERTIES:
 :header-args:nix+: :tangle modules/hyprland/lib.nix
@@ -2572,7 +2628,8 @@ for_window [title="scratchpad_term"] floating enable, move scratchpad
 Needs special workspace tho
 
 
-******** TODO Port over F-and-XF86-whatever bindings :feat:
+******** DONE Port over F-and-XF86-whatever bindings :feat:
+CLOSED: [2023-06-06 Tue 08:39]
 
 - [ ] Sound control
 - [ ] Brightnessctl
