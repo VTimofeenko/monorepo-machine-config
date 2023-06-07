@@ -723,6 +723,8 @@ in
       lg = "${pkgs.lazygit}/bin/lazygit";
       # Colorize IP output
       ip = "ip -c";
+      # Neat display of all relevant things in lsblk
+      lsblk = "lsblk --topology --fs -o NAME,SIZE,TYPE,LABEL,UUID,FSAVAIL,FSUSE%,MOUNTPOINTS";
     };
   };
   programs.direnv = {
