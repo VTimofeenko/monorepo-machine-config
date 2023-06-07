@@ -16,16 +16,16 @@ in
       enable = true;
       name = "wifi-lan";
       dns = lan.dns_servers;
-      address = [ local_address ];
-      gateway = [ lan.defaultGateway ];
       # Search domain goes here
       domains = [ lan.domain ];
       networkConfig = {
+        Address = [ "${local_address}/24" ];
+        Gateway = lan.defaultGateway;
         DHCP = "no";
         DNSSEC = "yes";
         DNSOverTLS = "no";
         # Disable ipv6 explicitly
-        LinkLocalAddressing = "ipv4";
+        LinkLocalAddressing = "no";
       };
     };
   };
