@@ -13,6 +13,8 @@
         vim-commentary
         vim-nix
         delimitMate
+        coq_nvim
+        coq-artifacts
       ];
     extraConfig =
       ''
@@ -53,6 +55,8 @@
 
         " clear search highlights by hitting ESC
         nnoremap <silent> <ESC> :noh<CR>
+        " enable coq
+        let g:coq_settings = { 'auto_start': 'shut-up' }
       '';
   };
 }

@@ -43,7 +43,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo ("DONE" "CNCL") :caption done :tags ("fix" "feat" "doc" "chore")
 #+caption: done
 | fix   |  0 |
-| feat  | 11 |
+| feat  | 12 |
 | doc   |  0 |
 | chore |  0 |
 #+END
@@ -51,7 +51,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  5 |
-| feat  | 28 |
+| feat  | 27 |
 | doc   |  0 |
 | chore | 15 |
 #+END
@@ -492,6 +492,8 @@ Imported [[(vim-hm-import)][here]].
         vim-commentary
         vim-nix
         delimitMate
+        coq_nvim
+        coq-artifacts
       ];
     extraConfig =
       ''
@@ -532,12 +534,15 @@ Imported [[(vim-hm-import)][here]].
 
         " clear search highlights by hitting ESC
         nnoremap <silent> <ESC> :noh<CR>
+        " enable coq
+        let g:coq_settings = { 'auto_start': 'shut-up' }
       '';
   };
 }
 #+end_src
 
-******* TODO Add path completion :feat:
+******* DONE Add path completion :feat:
+CLOSED: [2023-06-07 Wed 11:58]
 
 ****** zsh (home-manager)
 :PROPERTIES:
