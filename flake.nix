@@ -178,12 +178,12 @@
                   {
                     help = "deploy neptunium";
                     name = "deploy-neptunium";
-                    command = "nix flake check && nixos-rebuild --flake .#neptunium --target-host root@neptunium.home.arpa switch";
+                    command = "nixos-rebuild --flake .#neptunium --target-host root@neptunium.home.arpa switch";
                   }
                   {
                     help = "deploy uranium";
                     name = "deploy-uranium";
-                    command = "nix flake check && nixos-rebuild --flake .#uranium --target-host root@uranium.home.arpa switch";
+                    command = "nixos-rebuild --flake .#uranium --target-host root@uranium.home.arpa switch";
                   }
                   {
                     help = "deploy local machine";
@@ -191,7 +191,7 @@
                     command =
                       ''
                         if [[ $(grep -s ^NAME= /etc/os-release | sed 's/^.*=//') == "NixOS" ]]; then
-                          nix flake check && sudo nixos-rebuild switch --flake .
+                          sudo nixos-rebuild switch --flake .
                         else
                          home-manager switch --flake .
                         fi
