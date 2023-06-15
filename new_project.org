@@ -875,6 +875,8 @@ cursor_mode
 ******* TODO [#C] See if rm -i alias can be adjusted not to display the full rm path :feat:
 ******* TODO [#C] Add noti for async notifications :feat:
 ******* TODO [#C] Manage fzf colors :feat:
+******* TODO Check out [[https://justingarrison.com/blog/2023-06-05-zsh-global-aliases/][global aliases]] :to_think:
+******* TODO Consider adding [[https://github.com/samwho/spacer][spacer]] :to_think:
 
 ****** Kitty
 :PROPERTIES:
@@ -990,6 +992,8 @@ Imported [[(git-hm-import)][here]].
   };
 }
 #+end_src
+
+******* TODO Check out [[https://www.hschne.at/git-aliases/][git aliases]] :to_think:
 
 ****** Home-packages
 :PROPERTIES:
@@ -1972,6 +1976,7 @@ Since I am not using the sessions directly, it may be worth declaring sessions f
 
 See "zsh as an alternative session", the name of the session in the list may be taken from the file
 
+******** TODO Check out [[https://github.com/rharish101/ReGreet][ReGreet]] :to_think:
 
 ******* TODO Add wofi management :feat:
 
@@ -3481,6 +3486,13 @@ This headline serves as a stream of (maybe) cool software that I want to try out
 
 - Sniffnet (~programs.sniffnet~) -- monitor network traffic
 - Atuin (~services.atuin~) -- shell history sync
+-
+
+** Reference configs [0/1]
+
+"TODO" = check it out
+
+*** TODO [[https://github.com/fufexan/dotfiles/blob/main/home/wayland/hyprland/config.nix][Fufexan/dotfiles]]
 
 * Literate project setup :noexport:
 
