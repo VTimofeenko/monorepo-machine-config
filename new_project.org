@@ -527,8 +527,14 @@ in
                     ['<tab>'] = cmp.mapping.confirm { select = true },
                   },
                   sources = cmp.config.sources({
-                    { name = 'nvim_lsp' },
-                    { name = 'luasnip' },
+                    ${if cfg.enableLangServers
+                      then
+                        ''
+                          { name = 'nvim_lsp' },
+                          { name = 'luasnip' },
+                        ''
+                      else ""
+                    }
                     { name = 'path' },
                     { name = 'buffer' },
                   }),
