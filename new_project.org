@@ -539,6 +539,12 @@ in
                     { name = 'buffer' },
                   }),
                 }
+                cmp.setup.cmdline('/', {
+                    mapping = cmp.mapping.preset.cmdline(),
+                    sources = {
+                        { name = 'buffer' }
+                    }
+                })
                 cmp.setup.cmdline(':', {
                     mapping = cmp.mapping.preset.cmdline(),
                     sources = cmp.config.sources({
@@ -555,6 +561,7 @@ in
                 })
               '';
           }
+          pkgs.vimPlugins.cmp-buffer
           pkgs.vimPlugins.cmp-cmdline
           pkgs.vimPlugins.cmp-path
           pkgs.vimPlugins.luasnip
@@ -3602,6 +3609,12 @@ Imported [[(neptunium-network-import)][here]].
 
 - Flake-parts + overlays consumption: https://codeberg.org/adamcstephens/dotfiles/src/commit/310d1f2bcc4518439502310ad927cbf33f8c38ea/flake.nix#L42
 - Flake parts config: https://git.sr.ht/~misterio/nix-config/tree/main/item/flake.nix
+
+** Nix flake system management notes
+
+*** ~nixos-rebuild switch --option substitute false --flake .~ :: to rebuild the system offline, without reaching out to nix cache
+
+*** ~nixos-rebuild switch --rollback~ :: to roll back to previous gen
 
 * Projects
 

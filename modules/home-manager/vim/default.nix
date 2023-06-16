@@ -58,6 +58,12 @@ in
                     { name = 'buffer' },
                   }),
                 }
+                cmp.setup.cmdline('/', {
+                    mapping = cmp.mapping.preset.cmdline(),
+                    sources = {
+                        { name = 'buffer' }
+                    }
+                })
                 cmp.setup.cmdline(':', {
                     mapping = cmp.mapping.preset.cmdline(),
                     sources = cmp.config.sources({
@@ -74,6 +80,7 @@ in
                 })
               '';
           }
+          pkgs.vimPlugins.cmp-buffer
           pkgs.vimPlugins.cmp-cmdline
           pkgs.vimPlugins.cmp-path
           pkgs.vimPlugins.luasnip
