@@ -66,6 +66,7 @@ in
     ./hyprland-mode-switch-notifier # (ref:use-mode-switch-notifier-import)
     ./keybinds # (ref:hyprland-bindings-import)
     ./modes # (ref:hyprland-modes-import)
+    (./per-host-configs + "/${hostName}.nix") # (ref:per-machine-hyprland-config)
   ];
   wayland.windowManager.hyprland =
     {

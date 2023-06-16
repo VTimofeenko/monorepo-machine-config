@@ -2413,6 +2413,7 @@ in
     ./hyprland-mode-switch-notifier # (ref:use-mode-switch-notifier-import)
     ./keybinds # (ref:hyprland-bindings-import)
     ./modes # (ref:hyprland-modes-import)
+    (./per-host-configs + "/${hostName}.nix") # (ref:per-machine-hyprland-config)
   ];
   wayland.windowManager.hyprland =
     {
@@ -2944,6 +2945,45 @@ Imported [[(use-mode-switch-notifier-import)][here]].
 }
 #+end_src
 
+******** Hyprland per-host configs
+
+This section hosts machine-specific Hyprland configuration that is dynamically loaded [[(per-machine-hyprland-config)][here]].
+
+********* Neptunium hyprland config
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/per-host-configs/neptunium.nix
+:END:
+
+#+begin_src nix
+{ ... }:
+{
+  wayland.windowManager.hyprland = {
+    extraConfig = '''';
+  };
+}
+#+end_src
+
+********* Uranium hyprland config
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/per-host-configs/uranium.nix
+:END:
+
+#+begin_src nix
+{ ... }:
+{
+  wayland.windowManager.hyprland = {
+    extraConfig =
+      ''
+        monitor=eDP-1,2256x1504@60,0x0,1
+        # Touchpad that pretends to be a mouse?
+        device:frmw0001:00-32ac:0006-consumer-control-1 {
+          sensitivity = 1.0
+        }
+      '';
+  };
+}
+#+end_src
+
 ******** DONE [#A] Xremap :migration:
 CLOSED: [2023-05-27 Sat 10:46]
 
@@ -3018,6 +3058,7 @@ CLOSED: [2023-06-02 Fri 11:36]
 
 Whenever a mode is triggered -- it would be helpful to show a list of keybinds similar to emacs.
 
+
 ***** Uranium
 :PROPERTIES:
 :header-args:nix+: :tangle flake.nix
@@ -3053,27 +3094,13 @@ Imported [[(uranium-import)][here]].
 }@inputs:
 {
   imports = [
-    my-sway-config.nixosModules.system
+    ../../de
     inputs.wg-namespace-flake.nixosModules.default
     ../../network/lan-wifi.nix
     # TODO: add optional phone network here commented
 
     ./hardware # (ref:uranium-hw-import)
   ];
-  home-manager.users.spacecadet = { ... }: {
-    imports = [
-      my-sway-config.nixosModules.default
-    ];
-    wayland.windowManager.sway.config = {
-      # Restore non-vm modifier
-      modifier = "Mod4";
-      # Output configuration
-      output = {
-        "eDP-1" = { "scale" = "1"; };
-      };
-    };
-    vt-sway.enableBrightness = true;
-  };
 }
 #+end_src
 
