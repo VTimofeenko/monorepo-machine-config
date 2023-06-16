@@ -3075,17 +3075,18 @@ Works for now
 
 ******** TODO Colorscheme :feat:
 
-******** TODO Check out [[https://github.com/Slackadays/Clipboard][Clipboard]] :to_think:
+******** TODO [#C] Check out [[https://github.com/Slackadays/Clipboard][Clipboard]] :to_think:
 
 ******** TODO [#A] Make sure lock on suspend works
 
 ******** DONE [[https://github.com/hyprwm/Hyprland/issues/1250][Ultrawide config]] :feat:
 CLOSED: [2023-06-02 Fri 11:36]
 
-******** TODO "which key" for modes :feat:
+******** TODO [#C] "which key" for modes :feat:
 
 Whenever a mode is triggered -- it would be helpful to show a list of keybinds similar to emacs.
 
+******** TODO GTK theme
 
 ***** Uranium
 :PROPERTIES:
@@ -3666,7 +3667,7 @@ Looks like ~tasks~ setting may do the trick:
 
 https://orgmode.org/manual/Export-Settings.html
 
-** TODO Hyprland migration plan [7/9]
+** STRT Hyprland migration plan [8/9]
 At the end of this project I want to have a fully working Hyprland config on neptunium.
 
 *** DONE System-wide settings
@@ -3682,7 +3683,8 @@ At the end of this project I want to have a fully working Hyprland config on nep
 CLOSED: [2023-05-26 Fri 09:01]
 *** TODO Finish not low-priority tasks from [[*User hyprland config][User hyprland config]]
 
-*** TODO Migrate uranium to hyprland
+*** DONE Migrate uranium to hyprland
+CLOSED: [2023-06-16 Fri 11:43]
 ** TODO Hyprland improvements [0/2]
 
 *** TODO Check out [[https://wiki.hyprland.org/Configuring/Example-configurations/][examples]]
