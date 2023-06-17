@@ -67,6 +67,7 @@ in
     ./keybinds # (ref:hyprland-bindings-import)
     ./modes # (ref:hyprland-modes-import)
     (./per-host-configs + "/${hostName}.nix") # (ref:per-machine-hyprland-config)
+    ./lock # (ref:lock-hyprland-import)
   ];
   wayland.windowManager.hyprland =
     {
@@ -243,7 +244,6 @@ in
           bind = $mainMod, F, fullscreen  # Fullscreen
           bind = $mainMod, O, fullscreen, 1  # fOcus
 
-          bind = $mainMod CTRL, Q, exec, ${pkgs.swaylock}/bin/swaylock -fF -k -c 000000
           # Toggle notification pane
           bind = $mainMod CTRL, N, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw
           # Clipboard history toggle
