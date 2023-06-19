@@ -237,7 +237,7 @@ in
           bind = $mainMod, mouse_up, workspace, e-1
 
           # Move/resize windows with mainMod + LMB/RMB and dragging
-          bindm = $mainMod, mouse:272, movewindow
+          bindm = $mainMod SHIFT, mouse:272, movewindow
           bindm = $mainMod, mouse:273, resizewindow
 
           bind = $mainMod SHIFT, T, togglefloating
