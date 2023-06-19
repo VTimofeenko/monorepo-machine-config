@@ -2443,6 +2443,7 @@ in
     ./modes # (ref:hyprland-modes-import)
     (./per-host-configs + "/${hostName}.nix") # (ref:per-machine-hyprland-config)
     ./lock # (ref:lock-hyprland-import)
+    ./theme # (ref:hyprland-theme-import)
   ];
   wayland.windowManager.hyprland =
     {
@@ -3055,6 +3056,90 @@ in
 }
 #+end_src
 
+******** Hyprland theme
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/theme/default.nix
+:END:
+
+Imported [[(hyprland-theme-import)][here]].
+
+#+begin_src nix
+{ pkgs, ... }:
+let
+  # Script from sway wiki to set needed variables
+  set_gsettings = pkgs.writeShellScript "set_gsettings" ''
+    PATH=${pkgs.glib}/bin:$PATH
+
+    config="''${XDG_CONFIG_HOME:-$HOME/.config}/gtk-3.0/settings.ini"
+    if [ ! -f "$config" ]; then exit 1; fi
+
+    gnome_schema="org.gnome.desktop.interface"
+    gtk_theme="$(grep 'gtk-theme-name' "$config" | sed 's/.*\s*=\s*//')"
+    icon_theme="$(grep 'gtk-icon-theme-name' "$config" | sed 's/.*\s*=\s*//')"
+    cursor_theme="$(grep 'gtk-cursor-theme-name' "$config" | sed 's/.*\s*=\s*//')"
+    font_name="$(grep 'gtk-font-name' "$config" | sed 's/.*\s*=\s*//')"
+    gsettings set "$gnome_schema" gtk-theme "$gtk_theme"
+    gsettings set "$gnome_schema" icon-theme "$icon_theme"
+    gsettings set "$gnome_schema" cursor-theme "$cursor_theme"
+    gsettings set "$gnome_schema" font-name "$font_name"
+  '';
+in
+rec {
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Materia";
+      package = pkgs.materia-theme;
+    };
+    iconTheme = {
+      name = "Papirus-Dark-Maia";
+      package = pkgs.papirus-maia-icon-theme;
+    };
+    cursorTheme = {
+      name = "Quintom_Ink";
+      package = pkgs.quintom-cursor-theme;
+    };
+    gtk3.extraConfig = {
+      gtk-application-prefer-dark-theme = true;
+      gtk-icon-theme-name = "Papirus-Dark-Maia";
+      # gtk-cursor-theme-name = "Quintom_Ink";
+    };
+  };
+  qt = {
+    enable = true;
+    platformTheme = "gtk";
+    style.name = "breeze";
+  };
+  dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      cursor-theme = "Quintom_Ink";
+    };
+  };
+  xdg.systemDirs.data = [
+    "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
+    "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
+  ];
+  wayland.windowManager.hyprland.extraConfig =
+    ''
+      exec-once=${set_gsettings}
+      exec-once=hyprctl setcursor ${gtk.cursorTheme.name} 24
+
+      # Taken from home manager qt config's home.sessionVariables
+      env=QT_QPA_PLATFORMTHEME,${if qt.platformTheme == "gtk" then
+        "gtk2"
+      else if qt.platformTheme == "qtct" then
+        "qt5ct"
+      else
+        qt.platformTheme}
+      env=QT_STYLE_OVERRIDE,${qt.style.name}
+    '';
+
+  # Installs adwaita as the fallback
+  home.packages = [ pkgs.gnome.gnome-themes-extra ];
+}
+#+end_src
+
+
 ******** DONE [#A] Xremap :migration:
 CLOSED: [2023-05-27 Sat 10:46]
 
@@ -3130,7 +3215,7 @@ CLOSED: [2023-06-02 Fri 11:36]
 
 Whenever a mode is triggered -- it would be helpful to show a list of keybinds similar to emacs.
 
-******** TODO GTK theme
+******** STRT GTK theme
 
 ***** Uranium
 :PROPERTIES:

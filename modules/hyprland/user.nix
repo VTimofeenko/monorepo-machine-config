@@ -68,6 +68,7 @@ in
     ./modes # (ref:hyprland-modes-import)
     (./per-host-configs + "/${hostName}.nix") # (ref:per-machine-hyprland-config)
     ./lock # (ref:lock-hyprland-import)
+    ./theme # (ref:hyprland-theme-import)
   ];
   wayland.windowManager.hyprland =
     {
