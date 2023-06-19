@@ -2891,11 +2891,11 @@
         "wireguard-namespace": "wireguard-namespace_3"
       },
       "locked": {
-        "lastModified": 1679932082,
-        "narHash": "sha256-75C9d3GAYOp7LmqOFQtJiUbG6XGgI7gUzkNZ6FySouE=",
+        "lastModified": 1687200806,
+        "narHash": "sha256-pNhZeYEhY11F9odGoKa2Y9vKV7IPJ+FmWu2FzeZPoJc=",
         "ref": "refs/heads/master",
-        "rev": "2888b3942b1fcf6caac381faf3cc8b6268d057fe",
-        "revCount": 260,
+        "rev": "41e99520068f8d40afb51e21404031e767f90b77",
+        "revCount": 261,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/home-infrastructure.git"
       },
@@ -7138,11 +7138,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1687200349,
-        "narHash": "sha256-yoUex37fauN4OC+kxoRWnLNzS+Tq5ar14rj6SKZP3Sw=",
+        "lastModified": 1687200900,
+        "narHash": "sha256-hzfHRmRuhgiFr4aS7gscqHuN9/M4V34QvODGTPJgJZY=",
         "ref": "master",
-        "rev": "17352ef331e07808c9055c1de47ef9e8cf6959e9",
-        "revCount": 88,
+        "rev": "2a28674cc26699628b3a6068f79a907a310cd339",
+        "revCount": 89,
         "type": "git",
         "url": "file:///home/spacecadet/code/private-flake"
       },
