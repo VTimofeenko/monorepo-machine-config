@@ -8,9 +8,9 @@ mkModeBinding
   "SUPERCTRL,M"
   "sound_ctl"
   ''
-    binde=, XF86AudioLowerVolume, ${execWpctl} set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ -10%+
+    binde=, XF86AudioLowerVolume, ${execWpctl} set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 10%-
     binde=, XF86AudioRaiseVolume, ${execWpctl} set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 10%+
-    binde=, F2, ${execWpctl} set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ -10%+
+    binde=, F2, ${execWpctl} set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 10%-
     binde=, F3, ${execWpctl} set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 10%+
     # Silence the output
     bind=, s, ${execWpctl} set-sink-mute @DEFAULT_AUDIO_SINK@ toggle
