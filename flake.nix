@@ -12,8 +12,6 @@
     # Theming and stuff
     base16 = {
       url = "github:SenchoPens/base16.nix";
-      # One input only
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     color_scheme = {
