@@ -142,7 +142,7 @@ Flake-parts:
     hyprland.url = "github:hyprwm/Hyprland";
 
     # Service that remaps arbitrary keyboard combinations
-    xremap-flake.url = "github:xremap/nix-flake";
+    xremap-flake.url = "github:xremap/nix-flake?ref=20-home-manager-module";
 
     devshell.url = "github:numtide/devshell";
 
@@ -292,6 +292,8 @@ This section contains modules that can be imported into home manager.
                     modules = [
                       ./modules/home-manager # (ref:deck-hm-import)
                       ./modules/home-manager/_perUser/deck.nix
+                      inputs.xremap-flake.homeManagerModules.default # Enables xmreap without any features
+                      ./modules/de/xremap/shortcuts.nix # Reuses xremap bindings from mainconfigs
                     ];
                   };
 #+end_src

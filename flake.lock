@@ -9177,15 +9177,16 @@
         "xremap": "xremap_5"
       },
       "locked": {
-        "lastModified": 1688422605,
-        "narHash": "sha256-OAK6j6iZdrlk98rHtSLPiGT76pxcGcLNa2qoS31lElM=",
+        "lastModified": 1688424774,
+        "narHash": "sha256-T6pMGAmpDy9mC40uzkhMQe8+0hqrPWSsrUZMFqrATRM=",
         "owner": "xremap",
         "repo": "nix-flake",
-        "rev": "a07fa2621ea9ff9a5ce5a4b653fe3e5f95e44ba6",
+        "rev": "74d08d22f718ba4e142c9648fee01d0a80f82c07",
         "type": "github"
       },
       "original": {
         "owner": "xremap",
+        "ref": "20-home-manager-module",
         "repo": "nix-flake",
         "type": "github"
       }
