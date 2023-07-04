@@ -62,7 +62,7 @@
     hyprland.url = "github:hyprwm/Hyprland";
 
     # Service that remaps arbitrary keyboard combinations
-    xremap-flake.url = "github:xremap/nix-flake?ref=20-home-manager-module";
+    xremap-flake.url = "github:xremap/nix-flake";
 
     devshell.url = "github:numtide/devshell";
 
