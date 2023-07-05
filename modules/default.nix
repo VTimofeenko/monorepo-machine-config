@@ -17,8 +17,8 @@
     # wg-namespace-flake.nixosModules.default # NOTE: imported on a per-host basis
 
     # this flake's nixosModules
-    ../nixosModules/zsh # TODO: consider reusing from self ?
-    ../nixosModules/nix # TODO: consider reusing from self ?
+    selfModules.zsh
+    selfModules.nix-config
     selfModules.tmux
 
 
