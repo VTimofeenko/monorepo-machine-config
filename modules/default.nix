@@ -5,8 +5,8 @@
 , lib
 , agenix
 , home-manager
-, my-tmux
 , wg-namespace-flake
+, selfModules
 , ...
 }:
 {
@@ -14,12 +14,13 @@
     # Modules from imports
     agenix.nixosModules.default
     home-manager.nixosModules.home-manager
-    my-tmux.nixosModule
     # wg-namespace-flake.nixosModules.default # NOTE: imported on a per-host basis
 
     # this flake's nixosModules
     ../nixosModules/zsh # TODO: consider reusing from self ?
     ../nixosModules/nix # TODO: consider reusing from self ?
+    selfModules.tmux
+
 
     # local modules
     ./fonts.nix

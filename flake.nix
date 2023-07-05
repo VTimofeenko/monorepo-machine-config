@@ -26,14 +26,6 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    my-tmux = {
-      url = "github:VTimofeenko/tmux-flake";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        base16.follows = "base16";
-        color_scheme.follows = "color_scheme";
-      };
-    };
 
     my-nvim-flake.url = "github:VTimofeenko/nvim-flake";
 
@@ -227,6 +219,7 @@
                   ];
                 };
                 zsh = import ./nixosModules/zsh; # (ref:zsh-module-import)
+                tmux = importApply ./nixosModules/tmux { localFlake = self; inherit inputs; }; # (ref:tmux-module-import)
                 nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
 
                 # Home manager modules follow

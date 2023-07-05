@@ -1010,7 +1010,7 @@
         "my-doom-config": "my-doom-config_2",
         "my-nvim-flake": "my-nvim-flake_2",
         "my-sway-config": "my-sway-config_2",
-        "my-tmux": "my-tmux_2",
+        "my-tmux": "my-tmux",
         "nixos-hardware": "nixos-hardware_2",
         "nixpkgs": [
           "private-config",
@@ -1059,7 +1059,7 @@
         "my-doom-config": "my-doom-config_3",
         "my-nvim-flake": "my-nvim-flake_3",
         "my-sway-config": "my-sway-config_3",
-        "my-tmux": "my-tmux_3",
+        "my-tmux": "my-tmux_2",
         "nixos-hardware": "nixos-hardware_3",
         "nixpkgs": [
           "private-config",
@@ -1117,7 +1117,7 @@
         "my-doom-config": "my-doom-config_4",
         "my-nvim-flake": "my-nvim-flake_4",
         "my-sway-config": "my-sway-config_4",
-        "my-tmux": "my-tmux_4",
+        "my-tmux": "my-tmux_3",
         "nixos-hardware": "nixos-hardware_4",
         "nixpkgs": [
           "private-config",
@@ -3893,12 +3893,21 @@
     "my-tmux": {
       "inputs": {
         "base16": [
+          "private-config",
+          "home-infrastructure",
+          "desktop-monorepo",
           "base16"
         ],
         "color_scheme": [
+          "private-config",
+          "home-infrastructure",
+          "desktop-monorepo",
           "color_scheme"
         ],
         "nixpkgs": [
+          "private-config",
+          "home-infrastructure",
+          "desktop-monorepo",
           "nixpkgs"
         ]
       },
@@ -3922,15 +3931,24 @@
           "private-config",
           "home-infrastructure",
           "desktop-monorepo",
+          "private-config",
+          "home-infrastructure",
+          "desktop-monorepo",
           "base16"
         ],
         "color_scheme": [
           "private-config",
           "home-infrastructure",
           "desktop-monorepo",
+          "private-config",
+          "home-infrastructure",
+          "desktop-monorepo",
           "color_scheme"
         ],
         "nixpkgs": [
+          "private-config",
+          "home-infrastructure",
+          "desktop-monorepo",
           "private-config",
           "home-infrastructure",
           "desktop-monorepo",
@@ -3952,50 +3970,6 @@
       }
     },
     "my-tmux_3": {
-      "inputs": {
-        "base16": [
-          "private-config",
-          "home-infrastructure",
-          "desktop-monorepo",
-          "private-config",
-          "home-infrastructure",
-          "desktop-monorepo",
-          "base16"
-        ],
-        "color_scheme": [
-          "private-config",
-          "home-infrastructure",
-          "desktop-monorepo",
-          "private-config",
-          "home-infrastructure",
-          "desktop-monorepo",
-          "color_scheme"
-        ],
-        "nixpkgs": [
-          "private-config",
-          "home-infrastructure",
-          "desktop-monorepo",
-          "private-config",
-          "home-infrastructure",
-          "desktop-monorepo",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1670367302,
-        "narHash": "sha256-IwH0kBwrgZpl+QSla6awqHm9LTT6qIoEXfQ9QYCqvbM=",
-        "owner": "VTimofeenko",
-        "repo": "tmux-flake",
-        "rev": "5241df0aa458b88ca603a94f03985cec73557e79",
-        "type": "github"
-      },
-      "original": {
-        "owner": "VTimofeenko",
-        "repo": "tmux-flake",
-        "type": "github"
-      }
-    },
-    "my-tmux_4": {
       "inputs": {
         "base16": [
           "private-config",
@@ -7766,7 +7740,6 @@
         "my-doom-config": "my-doom-config",
         "my-nvim-flake": "my-nvim-flake",
         "my-sway-config": "my-sway-config",
-        "my-tmux": "my-tmux",
         "naersk": "naersk_4",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_15",

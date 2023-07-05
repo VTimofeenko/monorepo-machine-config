@@ -43,7 +43,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo ("DONE" "CNCL") :caption done :tags ("fix" "feat" "doc" "chore")
 #+caption: done
 | fix   |  0 |
-| feat  | 12 |
+| feat  | 13 |
 | doc   |  0 |
 | chore |  0 |
 #+END
@@ -51,7 +51,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  5 |
-| feat  | 27 |
+| feat  | 26 |
 | doc   |  0 |
 | chore | 15 |
 #+END
@@ -104,14 +104,6 @@ Flake-parts:
       inputs = {
         agenix.follows = "agenix";
         nixpkgs.follows = "nixpkgs";
-      };
-    };
-    my-tmux = {
-      url = "github:VTimofeenko/tmux-flake";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        base16.follows = "base16";
-        color_scheme.follows = "color_scheme";
       };
     };
 
@@ -1429,6 +1421,7 @@ Imported [[(media-hm-import)][here]].
                   ];
                 };
                 zsh = import ./nixosModules/zsh; # (ref:zsh-module-import)
+                tmux = importApply ./nixosModules/tmux { localFlake = self; inherit inputs; }; # (ref:tmux-module-import)
                 nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
 
                 # Home manager modules follow
@@ -1532,6 +1525,367 @@ in
   # System-level completions need this
   environment.pathsToLink = [ "/share/zsh" ];
 }
+#+end_src
+
+***** Tmux
+:PROPERTIES:
+:header-args:nix+: :tangle nixosModules/tmux/default.nix
+:END:
+
+Imported [[(tmux-module-import)][here]].
+
+#+begin_src nix
+{ localFlake, inputs }:
+{ pkgs, config, lib, ... }:
+let
+  colorSchemeName = "atlas";
+  rendered_color_scheme = with inputs; (base16.outputs.lib { inherit pkgs; lib = pkgs.lib; }).mkSchemeAttrs "${color_scheme}/${colorSchemeName}.yaml";
+  mkTmuxConf =
+    with builtins; ''
+      # Main config
+      ${readFile ./tmux.conf}
+    '' + (with rendered_color_scheme; (
+      let
+        default_background = "#" + base00;
+        default_foreground = "#" + base07;
+        /* helper functions */
+        mkbg = _: "bg=#" + _;
+        mkfg = _: "fg=#" + _;
+      in
+      builtins.concatStringsSep "\n" (lib.attrsets.attrValues (lib.attrsets.mapAttrs (k: v: "set -g ${k} \"${toString v}\"") {
+        /* Status (background of the pane) */
+        "status-interval" = 1;
+        "status" = "on";
+        "status-style" = "${mkfg base07},${mkbg base00}";
+        "message-style" = mkfg base01 + "," + mkbg base0A;
+        "message-command-style" = mkfg base01 + "," + mkbg base0A;
+        /* Copy mode */
+        "mode-style" = "${mkfg base00},${mkbg base0E}";
+
+        /* Panes */
+        "pane-border-style" = "${mkfg base04}";
+        "display-panes-colour" = "#${base04}";
+        "pane-active-border-style" = "${mkfg base0E}";
+        "display-panes-active-colour" = "#${base02}";
+
+        /* The name of the session is here */
+        "status-left" = "#[${mkfg base00},${mkbg base0E},bold] #S #[${mkfg base0E},${mkbg base00},nobold]";
+        /* The format of the window bars that follow the session name */
+        "window-status-format" = "#[${mkfg base00},${mkbg base04}] #[${mkfg base07},${mkbg base04}]#I #[${mkfg base07},${mkbg base04}]#W #F #[${mkfg base04},${mkbg base00}]";
+        /* Active window. Symbol helps with additional highlighting. */
+        "window-status-current-format" = "#[${mkfg base00},${mkbg base02}] #[${mkfg base07},${mkbg base02}]#I #[${mkfg base00},${mkbg base02}] #[${mkfg base07},${mkbg base02}]#W: #F #[${mkfg base02},${mkbg base00}]";
+
+        /* Clock + hostname */
+        "status-right" = "#[${mkfg base04},${mkbg base00}]#[${mkfg base07},${mkbg base04}] %b %-d %R #[${mkfg base0C},${mkbg base04}]#[${mkfg base07},${mkbg base0C}] #H ";
+        /* bell */
+        "window-status-bell-style" = "${mkfg base01},${mkbg base08}";
+      }))
+    ));
+  plugins = with pkgs.tmuxPlugins; [ ];
+in
+{
+  programs.tmux = {
+    enable = true;
+    /* Commented out, since set in the mkTmuxConf function */
+    # terminal = "tmux-256color";
+    keyMode = "vi";
+    baseIndex = 1;
+    escapeTime = 1;
+    extraConfig = ''
+      ${mkTmuxConf}
+
+      # Plugins
+      ${lib.concatStrings (map (x: "run-shell ${x.rtp}\n") plugins)}
+    '';
+  };
+}
+#+end_src
+
+****** Tmux.conf
+:PROPERTIES:
+:header-args:conf+: :tangle nixosModules/tmux/tmux.conf
+:END:
+
+#+begin_src conf
+# vim: foldmarker=[[[,]]] foldmethod=marker
+
+# This config is mostly based on these articles:
+# https://ianthehenry.com/posts/how-to-configure-tmux/
+# https://ianthehenry.com/posts/tmux-psa/
+
+# Global stuff [[[
+set -g history-limit 50000
+set -g renumber-windows on
+set -g base-index 1
+setw -g pane-base-index 1
+
+
+set -g default-terminal "tmux-256color"
+set -as terminal-overrides ',xterm*:Tc:sitm=\E[3m'
+set -as terminal-overrides ',*:Setulc=\E[58::2::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m' # underscore colours - needs tmux-3.
+
+# Clear shortcuts
+unbind -a -T prefix
+unbind -a -T root
+unbind -a -T copy-mode-vi
+
+# Set prefix to ctrl+F, to press with one hand
+set-option -g prefix C-f
+# ]]]
+
+# Copy mode bindings [[[
+bind -N "Enter copy mode" Space                 copy-mode
+bind -N "Exit copy mode" -T                     copy-mode-vi Escape send -X cancel
+bind -N "Exit copy mode" -T                     copy-mode-vi C-c send -X cancel
+bind -N "Enter copy mode and begin selection" v copy-mode \; send -X begin-selection
+bind -N "Begin selection" -T                    copy-mode-vi v send -X begin-selection
+# Binding to enter the copy mode and jump halfpage up
+bind -N "Enter copy and jump up" C-u copy-mode\; send -X halfpage-up
+
+# Copy
+bind -N "Y(ank) = Copy" -T                      copy-mode-vi y send -X copy-pipe 'wl-copy'
+bind -N "Enter = Copy" -T                       copy-mode-vi Enter send -X copy-pipe-and-cancel 'wl-copy'
+bind -N "Space = clear selection if present" -T copy-mode-vi Space if -F "#{selection_present}" { send -X clear-selection }
+# Paste
+bind -N "(p)aste" p paste-buffer -p
+
+# Navigation [[[
+# Base cursor navigation
+bind -N "Vim-like move cursor left"  -T copy-mode-vi h send -X cursor-left
+bind -N "Vim-like move cursor down"  -T copy-mode-vi j send -X cursor-down
+bind -N "Vim-like move cursor up"    -T copy-mode-vi k send -X cursor-up
+bind -N "Vim-like move cursor right" -T copy-mode-vi l send -X cursor-right
+# Word jumping
+# Make it vim-like, from default config
+bind -T copy-mode-vi w send -X next-word
+bind -T copy-mode-vi W send -X next-space
+bind -T copy-mode-vi e send -X next-word-end
+bind -T copy-mode-vi E send -X next-space-end
+bind -T copy-mode-vi b send -X previous-word
+bind -T copy-mode-vi B send -X previous-space
+# General jumping
+bind -N "Vim-like: Go to beginning of the line" -T copy-mode-vi 0 send -X start-of-line
+bind -N "Vim-like: Go to end of the line"       -T copy-mode-vi $ send -X end-of-line
+bind -N "(g)o to the beginning of the session"  -T copy-mode-vi g send -X history-top
+bind -N "(G)o to the end of the session"        -T copy-mode-vi G send -X history-bottom
+bind -N "with ctrl: Go halfpage-(u)p"           -T copy-mode-vi u send -X halfpage-up
+bind -N "with ctrl: Go halfpage-(d)own"         -T copy-mode-vi d send -X halfpage-down
+
+# Advanced jumping
+# Taken from https://github.com/ianthehenry/dotfiles/blob/master/.tmux.conf
+# Slightly adapted to starship's default two-line prompt
+bind -n M-Up {
+  copy-mode
+
+  send -X start-of-line
+  # I use a non-breaking space because tmux trims trailing whitespace off of
+  # scrollback lines. That means if you hit enter without typing anything,
+  # you will have a line like "~/src ➜" in your scrollback buffer instead of
+  # "~/src ➜ ". But the nbsp does not get chopped like this.
+  # send -X search-backward-text "❯ "
+  send -X search-backward-text "\u00A0"
+
+  # if we are on the very first prompt line, the search-backward-text will do
+  # nothing, and we'll be stuck at the start-of-line. So we want to reposition
+  # the cursor after the prompt unconditionally:
+  send -X start-of-line
+  send -X search-forward-text "\u00A0"
+
+  # now we clear the search text
+  send -X stop-selection
+
+  # and then reposition the cursor to match the beginning of the text
+  # Added: since I am using single-character "anchor", running cursor-right only once
+  send -X cursor-right
+}
+bind -n M-Down {
+  copy-mode
+  send -X search-forward-text "\u00A0"
+  send -X stop-selection
+  send -X cursor-right
+}
+bind -n S-M-Up {
+  copy-mode
+  send -X clear-selection
+
+  # Doing this twice in a row is code for "go to the start
+  # of the soft-wrapped line." You cannot get the same effect
+  # with -N 2. This effectively puts us at the start of the
+  # current line, even if it is a command input that has wrapped
+  # over the edge of the screen.
+  send -X start-of-line
+  send -X start-of-line
+
+  send -X cursor-up
+  send -X start-of-line
+  send -X start-of-line
+
+  # note that ${copy_cursor_line} is the displayed line, not the physical
+  # line. so this won't detect that we're on a prompt in the case of a
+  # partial line output right before us, or in the case that the arrow is
+  # soft-wrapped to be on a new line
+  if -F "#{m:*\u00A0*,#{copy_cursor_line}}" {
+    # if you're on a prompt line, select the text after the prompt
+    send -X search-forward-text "\u00A0"
+    send -X stop-selection
+    send -X cursor-right
+    send -X begin-selection
+    # run it twice to handle soft-wrapped lines
+    send -X end-of-line
+    send -X end-of-line
+
+    # remove this block in mode-keys emacs
+    if "#{m:*\u00A0?*,#{copy_cursor_line}}" {
+      send -X cursor-left
+    }
+  } {
+    send -X end-of-line
+    send -X end-of-line
+
+    # on emacs, you have to move one more to the right to select the
+    # newline character. this is not necessary in vi mode.
+    # send -X cursor-right
+
+    # yes, it would be nice to use select-line, but the trick to move by
+    # physical lines doesn't work in visual line mode
+    send -X begin-selection
+    send -X search-backward-text "\u00A0"
+    send -X end-of-line
+    send -X end-of-line
+    send -X cursor-right
+    send -X stop-selection
+  }
+}
+
+# select the "block" below the cursor
+bind -n S-M-Down {
+  copy-mode
+  send -X clear-selection
+
+  send -X end-of-line
+  send -X end-of-line
+  send -X cursor-right
+
+  if -F "#{m:*\u00A0*,#{copy_cursor_line}}" {
+    # if you are on a prompt line, select the text after the prompt
+    send -X search-forward-text "\u00A0"
+    send -X stop-selection
+    send -X cursor-right
+    send -X begin-selection
+    send -X end-of-line
+    send -X end-of-line
+
+    # remove this block in mode-keys emacs
+    if "#{m:*\u00A0?*,#{copy_cursor_line}}" {
+      send -X cursor-left # comment out this line in mode-keys emacs
+    }
+  } {
+    # if you are not on a prompt line, you're on the first line of output
+    send -X begin-selection
+    send -X search-forward-text "\u00A0"
+    send -X start-of-line
+    send -X start-of-line
+
+    # this is what you want to do in mode-keys vi:
+    send -X cursor-left
+    send -X stop-selection
+
+    # but in mode-keys emacs you want to do this, to grab the trailing newline
+    # but still leave your cursor positioned in the output, so that if you run
+    # the command again it does the right thing:
+    #
+    # send -X stop-selection
+    # send -X cursor-left
+    #
+    # Doing this demonstrates a strange bug in tmux's selection highlighting.
+    # Even though the first character of the "next" line is *not* selected,
+    # it still *renders* as if it's selected when you stop-selection and
+    # reposition your cursor. I need to report/fix this. But it's late and
+    # I'm lazy.
+  }
+}
+
+# ]]]
+
+# Search
+bind -N "Search forward" -T copy-mode-vi / command-prompt -i -p "(search down)" { send -X search-forward-incremental  "%%%" }
+bind -N "Search forward" /  copy-mode \; command-prompt -i -p "(search down)" { send -X search-forward-incremental  "%%%" }
+bind -N "Search back" ?     copy-mode \; command-prompt -i -p "(search up)"   { send -X search-backward-incremental "%%%" }
+bind -N "Search back" -T    copy-mode-vi ? command-prompt -i -p "(search up)"   { send -X search-backward-incremental "%%%" }
+bind -N "Search back" -T    copy-mode-vi n send -X search-again
+bind -N "Search back" -T    copy-mode-vi N send -X search-reverse
+# Select
+bind -N "Vim-like: select whole line"            -T copy-mode-vi V send -X select-line
+bind -N "Vim-like: select whole line right away" V  copy-mode \; send -X select-line
+
+# ]]]
+
+# Layout [[[
+# Splits:
+## Create
+# '\' and '-' are used as if they were their shift counterparts, "|" and "_" which kinda look like splitting the pane horizontally and vertically
+bind -N "Split: create horizontal"   -T prefix \\ split-window -h -c "#{pane_current_path}"
+bind -N "Split: create vertical"     -T prefix - split-window -v -c "#{pane_current_path}"
+bind -N "~ to create Quake-style dropdown terminal on top"   -T prefix '~' split-window -b -f -l 10 -c "#{pane_current_path}"
+## Navigate
+bind -N "Select left pane"  -r h select-pane -L
+bind -N "Select lower pane" -r j select-pane -D
+bind -N "Select upper pane" -r k select-pane -U
+bind -N "Select right pane" -r l select-pane -R
+## Move panes
+bind -N "Move pane to left"          -T prefix C-h swap-pane -s '{left-of}'
+bind -N "Move pane to bottom"        -T prefix C-j swap-pane -s '{down-of}'
+bind -N "Move pane to top"           -T prefix C-k swap-pane -s '{up-of}'
+bind -N "Move pane to right"         -T prefix C-l swap-pane -s '{right-of}'
+bind -N "Break a pane to new window" -T prefix ! break-pane
+## Fix layouts
+# These shortcuts are meant to work as shift+corresponding split command
+bind -N "Even out the layout vertically"    _ select-layout even-vertical
+bind -N "Even out the layout horizontally"  | select-layout even-horizontal
+
+## Pane resizing
+bind -N "Grow the pane to the left"  -r M-H resize-pane -L 10
+bind -N "Grow the pane down"         -r M-J resize-pane -D 10
+bind -N "Grow the pane up"           -r M-K resize-pane -U 10
+bind -N "Grow the pane to the right" -r M-L resize-pane -R 10
+
+# Windows:
+bind -N "Create new window"                     c new-window -a -t '{end}'
+bind -N "Next window"                           n next-window
+bind -N "Go to last window"                     ` last-window
+bind -N "Go to last window (double-tap prefix)" C-f last-window
+bind -N "Kill window"                           x confirm-before -p "kill-window #W? (y/n)" kill-window
+bind -N "Full screen toggle"                    z resize-pane -Z
+# Renaming
+bind -N "Rename window"                         C-r command-prompt -I "#W" "rename-window '%%'"
+bind -N "Rename session"                        C-M-r command-prompt -I "#W" "rename-session '%%'"
+
+# Jump to window by number
+bind 1 select-window -t 1
+bind 2 select-window -t 2
+bind 3 select-window -t 3
+bind 4 select-window -t 4
+bind 5 select-window -t 5
+bind 6 select-window -t 6
+bind 7 select-window -t 7
+bind 8 select-window -t 8
+bind 9 select-window -t 9
+bind 0 select-window -t 0
+#]]]
+
+# Misc [[[
+bind d detach-client
+bind : command-prompt
+bind Enter command-prompt
+bind r source-file -F "/etc/tmux.conf" \; display "Reloaded"
+bind -N "F1 to list keys" F1 list-keys -N \; list-keys
+# ]]]
+
+# UI [[[
+# Display the current process on the top of the pane
+set -g pane-border-status top
+set -g pane-border-format "#{pane_index} #{pane_current_command}"
+# ]]]
 #+end_src
 
 ***** Nix-the-package-manager config
@@ -1694,8 +2048,8 @@ in
 , lib
 , agenix
 , home-manager
-, my-tmux
 , wg-namespace-flake
+, selfModules
 , ...
 }:
 {
@@ -1703,12 +2057,13 @@ in
     # Modules from imports
     agenix.nixosModules.default
     home-manager.nixosModules.home-manager
-    my-tmux.nixosModule
     # wg-namespace-flake.nixosModules.default # NOTE: imported on a per-host basis
 
     # this flake's nixosModules
     ../nixosModules/zsh # TODO: consider reusing from self ?
     ../nixosModules/nix # TODO: consider reusing from self ?
+    selfModules.tmux
+
 
     # local modules
     ./fonts.nix
@@ -3900,7 +4255,8 @@ CLOSED: [2023-06-02 Fri 10:42]
 
 ** TODO Check all packages that are installed through system.environmentPackages - maybe move them to the user :chore:
 
-** TODO [#C] Consider merging tmux here :feat:
+** DONE [#C] Consider merging tmux here :feat:
+CLOSED: [2023-07-04 Tue 19:13]
 That way I could reuse the configs on other machines
 
 ** TODO Figure out TODO export :chore:
