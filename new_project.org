@@ -3683,7 +3683,8 @@ CLOSED: [2023-06-02 Fri 11:36]
 
 Whenever a mode is triggered -- it would be helpful to show a list of keybinds similar to emacs.
 
-******** STRT GTK theme
+******** DONE GTK theme
+CLOSED: [2023-07-10 Mon 11:35]
 
 ***** Uranium
 :PROPERTIES:
@@ -4265,7 +4266,7 @@ Looks like ~tasks~ setting may do the trick:
 
 https://orgmode.org/manual/Export-Settings.html
 
-** STRT Hyprland migration plan [8/9]
+** DONE Hyprland migration plan [9/9]
 At the end of this project I want to have a fully working Hyprland config on neptunium.
 
 *** DONE System-wide settings
@@ -4279,7 +4280,8 @@ At the end of this project I want to have a fully working Hyprland config on nep
 *** DONE Cleanup the hyprland module structure -- right now it sits under ~sway/~ which is confusing
 *** DONE Revisit packages installed through [home|environment]Packages and see if they can be configured through flake
 CLOSED: [2023-05-26 Fri 09:01]
-*** TODO Finish not low-priority tasks from [[*User hyprland config][User hyprland config]]
+*** DONE Finish not low-priority tasks from [[*User hyprland config][User hyprland config]]
+CLOSED: [2023-07-10 Mon 11:35]
 
 *** DONE Migrate uranium to hyprland
 CLOSED: [2023-06-16 Fri 11:43]
