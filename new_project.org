@@ -497,7 +497,7 @@ in
         inherit (pkgs.nodePackages) bash-language-server;
       });
       plugins =
-        (builtins.attrValues { inherit (pkgs.vimPlugins) vim-surround vim-commentary vim-nix delimitMate; })
+        (builtins.attrValues { inherit (pkgs.vimPlugins) vim-surround vim-commentary vim-nix delimitMate vim-strip-trailing-whitespace; })
         ++
         [
           {
