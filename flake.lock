@@ -3540,11 +3540,11 @@
         "nixpkgs": "nixpkgs_6"
       },
       "locked": {
-        "lastModified": 1685027552,
-        "narHash": "sha256-hecCtUvbc24aeF/aaLn0DEWB9I1Ptdj1qKxKrzzvThw=",
+        "lastModified": 1689959312,
+        "narHash": "sha256-0FNzy0UOcL1rZd+CaCT55Gerd0Tmt9IpvnKErx0aBs0=",
         "ref": "refs/heads/master",
-        "rev": "b87639bbce93b9c072c2fe24dc352d401e2e9a6d",
-        "revCount": 124,
+        "rev": "1d6f7f089bb0c6c29a99d00759362108670077b2",
+        "revCount": 125,
         "type": "git",
         "url": "file:///home/spacecadet/code/doom-config"
       },
@@ -4825,11 +4825,11 @@
         "ws-butler": "ws-butler"
       },
       "locked": {
-        "lastModified": 1683249650,
+        "lastModified": 1689075996,
         "narHash": "sha256-NwBzz2CHNtT0oDqAGewByQ5OFnAWf+ewHUrK0F44xZk=",
         "owner": "nix-community",
         "repo": "nix-doom-emacs",
-        "rev": "588ccf37fa9eb9d2ec787b91c989dcd6892983e9",
+        "rev": "9a5b34d9ba30842eb8f0d7deb08bf03a75930471",
         "type": "github"
       },
       "original": {
@@ -6377,11 +6377,11 @@
     },
     "nixpkgs_6": {
       "locked": {
-        "lastModified": 1683627095,
-        "narHash": "sha256-8u9SejRpL2TrMuHBdhYh4FKc1OGPDLyWTpIbNTtoHsA=",
+        "lastModified": 1688392541,
+        "narHash": "sha256-lHrKvEkCPTUO+7tPfjIcb7Trk6k31rz18vkyqmkeJfY=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "a08e061a4ee8329747d54ddf1566d34c55c895eb",
+        "rev": "ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b",
         "type": "github"
       },
       "original": {
