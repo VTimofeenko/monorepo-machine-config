@@ -51,7 +51,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  5 |
-| feat  | 26 |
+| feat  | 27 |
 | doc   |  0 |
 | chore | 15 |
 #+END
@@ -827,6 +827,8 @@ in
 
 ******* DONE Add path completion :feat:
 CLOSED: [2023-06-07 Wed 11:58]
+
+******* TODO Add which-key :feat:
 
 ****** zsh (home-manager)
 :PROPERTIES:
