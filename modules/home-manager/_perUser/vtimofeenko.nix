@@ -6,6 +6,7 @@
     package = lib.mkForce pkgs.hello; # Not using nix-darwin, no need to manage the app.
     settings = {
       font_family = "JetBrainsMono Nerd Font Mono";
+      enable_audio_bell = false;
       cursor_blink_interval = "0";
       inactive_text_alpha = "0.85";
       tab_bar_margin_width = 9;
