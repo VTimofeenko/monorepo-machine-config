@@ -51,9 +51,9 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  5 |
-| feat  | 27 |
+| feat  | 28 |
 | doc   |  0 |
-| chore | 15 |
+| chore | 16 |
 #+END
 * Flake
 :PROPERTIES:
@@ -246,6 +246,10 @@ perSystem contains the default formatter and a sample of homeManagerConfiguratio
                 inherit (config.packages) hyprland-lang-notifier;
               };
 #+end_src
+
+***** TODO Add other custom packages here :chore:
+
+***** TODO Add hyprland native notification for when custom tools fail :feat:
 
 **** homeConfigurations
 :PROPERTIES:
