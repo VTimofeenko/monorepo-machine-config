@@ -1,5 +1,5 @@
 # [[file:../../../new_project.org::*Vtimofeenko customization][Vtimofeenko customization:1]]
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, inputs', ... }:
 {
   programs.kitty = {
     enable = true;
@@ -67,5 +67,6 @@
     # Null it out first, to be defined in an include file
     userEmail = lib.mkForce null;
   };
+  home.packages = [ inputs'.snowcli.packages.default ] ++ (builtins.attrValues { inherit (pkgs) fzf killall bat jq direnv curl wget fd inetutils ripgrep dig unzip htop starship; });
 }
 # Vtimofeenko customization:1 ends here
