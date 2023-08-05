@@ -9,7 +9,7 @@
   networking.wireless = {
     enable = true;
     networks = {
-      "SomeFakeAccessPoint".psk = "" };
+      "SomeFakeAccessPoint".psk = ""; };
     };
     systemd.network.networks = {
       "30-adhoc-wifi" = {
