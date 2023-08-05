@@ -27,6 +27,23 @@ in
         ++
         [
           {
+            plugin = pkgs.vimPlugins.which-key-nvim;
+            type = "lua";
+            config =
+              ''
+                local wk = require("which-key")
+
+                wk.register({
+                  w = {
+                    name = "window",
+                    s = { ":split<CR>", "Split horizontally" },
+                    v = { ":vsplit<CR>", "Split vertically" },
+                    d = { "<C-w>c", "Close window" }
+                  },
+                }, { prefix = "<leader>" })
+              '';
+          }
+          {
             plugin = pkgs.vimPlugins.nvim-cmp;
             type = "lua";
             config =
@@ -313,11 +330,6 @@ in
           nnoremap <leader>wk <C-w>k
           nnoremap <leader>wj <C-w>j
           nnoremap <leader>wh <C-w>h
-
-          nnoremap <silent> <leader>ws :split<CR>
-          nnoremap <silent> <leader>wv :vsplit<CR>
-          " close the _window_, not the buffer
-          nnoremap <silent> <leader>wd <C-w>c
 
           set number relativenumber
           set modelines=1
