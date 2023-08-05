@@ -329,6 +329,7 @@ This user is on a macOS system with a lot of pre-existing configs, so the module
                       ./modules/home-manager/home.nix
                       ./modules/home-manager/vim
                       ./modules/home-manager/git.nix
+                      ./modules/home-manager/zsh
                       ./modules/home-manager/_perUser/vtimofeenko.nix
                     ];
                   };
