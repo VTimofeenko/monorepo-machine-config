@@ -3774,45 +3774,59 @@ CLOSED: [2023-07-10 Mon 11:35]
 Imported [[(uranium-import)][here]].
 
 #+begin_src nix
-{ pkgs
-, lib
+{ lib
 , config
-, my-sway-config
-, my-doom-config
 , ...
 }@inputs:
-let
-  cfg = config.myMachines.uranium;
-in
 {
   imports = [
     ../../de
     inputs.wg-namespace-flake.nixosModules.default
     # TODO: add optional phone network here commented
-    ../../network/ethernet.nix
-    ../../network/public-firewall.nix
+    # ../../network/ethernet.nix
+    # ../../network/public-firewall.nix
     ./hardware # (ref:uranium-hw-import)
+    ./network-selector.nix
   ];
-  # options.myMachines.uranium = {
-  #   network = lib.mkOption {
-  #     description = "Which network to use";
-  #     type = lib.types.enum [ "wifi-lan" "eth" ];
-  #     default = "wifi-lan";
-  #   };
-  # };
-  # config = { myMachines.uranium.network = "eth"; }
-  #          //
-  #          ( lib.mkIf (cfg.network != "wifi-lan") (import ../../network/public-firewall.nix  lib) )
-  #          //
-  #          ( lib.mkIf (cfg.network == "eth") (import ../../network/ethernet.nix) )
-  #          //
-  #          ( lib.mkIf (cfg.network == "wifi-lan") (import ../../network/lan-wifi.nix { inherit config lib; inherit (inputs) infra; }) )
-  # ;
-  # config.myMachines.uranium.network = "eth";
+  options.myMachines.uranium = {
+    network = lib.mkOption {
+      description = "Which network to use";
+      type = lib.types.enum [ "wifi-lan" "eth" ];
+      default = "wifi-lan";
+    };
+  };
+  config = {
+    myMachines.uranium.network = "eth";
+  };
 }
 #+end_src
 
 ******* TODO [#A] Add optional phone network commented :migration:
+
+******* Network selector
+:PROPERTIES:
+:header-args:nix+: :tangle modules/nixosSystems/uranium/network-selector.nix
+:END:
+
+A small module that merges the appropriate network config, based on the value of "network" option
+
+#+begin_src nix
+{ config, lib, ... }@inputs:
+let
+  cfg = config.myMachines.uranium.network;
+in
+lib.mkMerge [
+  (lib.mkIf (cfg != "wifi-lan") (import ../../network/public-firewall.nix { inherit lib; }))
+  (lib.mkIf (cfg == "eth") (import ../../network/ethernet.nix))
+  (lib.mkIf (cfg == "wifi-lan") (
+    import ../../network/lan-wifi.nix {
+      inherit config lib;
+      inherit (inputs) infra;
+    }
+  ))
+]
+#+end_src
+
 
 ****** Uranium specific hardware
 :PROPERTIES:
