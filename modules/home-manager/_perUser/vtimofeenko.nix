@@ -68,5 +68,8 @@
     userEmail = lib.mkForce null;
   };
   home.packages = [ inputs'.snowcli.packages.default ] ++ (builtins.attrValues { inherit (pkgs) fzf killall bat jq direnv curl wget fd inetutils ripgrep dig unzip htop starship; });
+  home.sessionVariables = {
+    EDITOR = "nvim";
+  };
 }
 # Vtimofeenko customization:1 ends here
