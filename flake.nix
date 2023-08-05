@@ -8,6 +8,7 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     home-manager.url = "github:rycee/home-manager/release-23.05";
     agenix.url = "github:ryantm/agenix";
+    snowcli.url = "github:sfc-gh-vtimofeenko/snowcli?ref=nix-flake&dir=contrib/nix";
 
     # Theming and stuff
     base16 = {
