@@ -126,7 +126,10 @@
                    Type: mkHmc :: attrset -> home-manger.lib.homeManagerConfiguration
 
                   */
-                  mkHmc = attrset: inputs.home-manager.lib.homeManagerConfiguration ({ inherit pkgs; } // attrset);
+                  mkHmc = attrset: inputs.home-manager.lib.homeManagerConfiguration ({
+                    inherit pkgs;
+                    extraSpecialArgs = { inherit inputs' inputs; selfModules = self.nixosModule; selfPkgs = self.packages; };
+                  } // attrset);
                 in
                 {
                   # homeConfigurations:1 ends here
