@@ -16,7 +16,7 @@
   options.myMachines.uranium = {
     network = lib.mkOption {
       description = "Which network to use";
-      type = lib.types.enum [ "wifi-lan" "eth" ];
+      type = lib.types.enum [ "wifi-lan" "eth" "adhoc-wifi" ];
       default = "wifi-lan";
     };
   };
