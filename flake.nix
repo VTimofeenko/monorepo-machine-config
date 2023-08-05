@@ -85,7 +85,7 @@
           ];
           # Imports:1 ends here
           # [[file:new_project.org::*Systems setting][Systems setting:1]]
-          systems = [ "x86_64-linux" "aarch64-darwin" ];
+          systems = [ "x86_64-linux" "aarch64-darwin" "aarch64-linux" ];
           # Systems setting:1 ends here
           # [[file:new_project.org::*"perSystem" output]["perSystem" output:1]]
           perSystem = { config, self', inputs', pkgs, system, ... }:
