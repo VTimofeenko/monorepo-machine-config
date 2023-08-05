@@ -61,7 +61,7 @@
     };
   };
   home.username = "vtimofeenko";
-  home.homeDirectory = "/Users/vtimofeenko";
+  home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/vtimofeenko" else "/home/vtimofeenko";
 
   programs.git = {
     # Null it out first, to be defined in an include file
