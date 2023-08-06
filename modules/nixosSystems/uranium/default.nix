@@ -7,9 +7,6 @@
   imports = [
     ../../de
     inputs.wg-namespace-flake.nixosModules.default
-    # TODO: add optional phone network here commented
-    # ../../network/ethernet.nix
-    # ../../network/public-firewall.nix
     ./hardware # (ref:uranium-hw-import)
     ./network-selector.nix
   ];
@@ -21,7 +18,7 @@
     };
   };
   config = {
-    myMachines.uranium.network = "eth";
+    myMachines.uranium.network = "wifi-lan";
   };
 }
 # Uranium specific system:1 ends here
