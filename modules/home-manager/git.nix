@@ -41,5 +41,15 @@
       { path = "~/.config/git/local.d/gitconfig"; } # Local ad-hoc overrides for git config
     ];
   };
+  programs.gh = {
+    enable = true;
+    settings = {
+      git_protocol = "https";
+      prompt = "enabled";
+      aliases = {
+        prco = "pr checkout"
+      };
+    };
+  };
 }
 # Git:1 ends here
