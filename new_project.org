@@ -447,7 +447,6 @@ This collection of modules is imported for home manager users on Linux:
     ./home.nix
     ./vim # (ref:vim-hm-import)
     ./kitty # (ref:kitty-hm-import)
-    ./zsh # (ref:zsh-hm-import)
     ./zathura # (ref:zathura-hm-import)
     ./git.nix # (ref:git-hm-import)
     ./packages.nix # (ref:packages-hm-import)
@@ -871,7 +870,7 @@ CLOSED: [2023-08-07 Mon 14:07]
 :header-args:nix+: :tangle modules/home-manager/zsh/default.nix
 :END:
 
-Imported [[(vim-hm-import)][here]].
+Imported [[(zsh-hm-import)][here]].
 
 *NOTE*: for system-level completions to function correctly, zsh needs:
 
@@ -885,7 +884,11 @@ in system-level config.
 
 #+begin_src nix
 # home-manager clone of the original zsh module
-{ pkgs, config, lib, ... }:
+{ pkgs
+, config
+, inputs
+, ...
+}:
 let
   zshOptionsToSet = [
     "INTERACTIVE_COMMENTS" # allow bash-style comments
@@ -906,10 +909,12 @@ let
     # cd management
     "AUTO_CD" # automatically cd into directory
   ];
+  inherit (pkgs.stdenv) system;
 in
 {
   home.packages = builtins.attrValues {
-    inherit (pkgs) fzf killall bat jq direnv curl wget fd inetutils ripgrep lsof dig unzip htop spacer;
+    inherit (pkgs) fzf killall bat jq direnv curl wget fd inetutils ripgrep lsof dig unzip htop;
+    inherit (inputs.nixpkgs-unstable.legacyPackages.${system}) spacer;
   };
   programs.zsh = {
     enable = true;
@@ -1468,7 +1473,7 @@ Imported [[(media-hm-import)][here]].
                     nix-config
                   ];
                 };
-                zsh = import ./nixosModules/zsh; # (ref:zsh-module-import)
+                zsh = importApply ./nixosModules/zsh inputs; # (ref:zsh-module-import)
                 tmux = importApply ./nixosModules/tmux { localFlake = self; inherit inputs; }; # (ref:tmux-module-import)
                 nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
 
@@ -1534,10 +1539,11 @@ A screenshot showing open shell in the root of this project:
 #+end_src
 
 #+begin_src nix
+inputs:
 { pkgs, config, lib, ... }:
 let
   # This kinda imports the user module and exposes the parameters through userConfig attrset
-  userConfig = import ../../modules/home-manager/zsh { inherit pkgs config lib; };
+  userConfig = import ../../modules/home-manager/zsh { inherit pkgs config inputs; };
 in
 {
   environment.systemPackages = userConfig.home.packages;
@@ -2108,7 +2114,7 @@ in
     # wg-namespace-flake.nixosModules.default # NOTE: imported on a per-host basis
 
     # this flake's nixosModules
-    selfModules.zsh
+    selfModules.zsh # (ref:zsh-hm-import)
     selfModules.nix-config
     selfModules.tmux
 

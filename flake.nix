@@ -223,7 +223,7 @@
                     nix-config
                   ];
                 };
-                zsh = import ./nixosModules/zsh; # (ref:zsh-module-import)
+                zsh = importApply ./nixosModules/zsh inputs; # (ref:zsh-module-import)
                 tmux = importApply ./nixosModules/tmux { localFlake = self; inherit inputs; }; # (ref:tmux-module-import)
                 nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
 

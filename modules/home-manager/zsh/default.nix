@@ -1,6 +1,10 @@
-# [[file:../../../new_project.org::*zsh (home-manager)][zsh (home-manager):1]]
+# [[file:../../../new_project.org::*zsh (home-manager)][zsh (home-manager):2]]
 # home-manager clone of the original zsh module
-{ pkgs, config, lib, ... }:
+{ pkgs
+, config
+, inputs
+, ...
+}:
 let
   zshOptionsToSet = [
     "INTERACTIVE_COMMENTS" # allow bash-style comments
@@ -21,10 +25,12 @@ let
     # cd management
     "AUTO_CD" # automatically cd into directory
   ];
+  inherit (pkgs.stdenv) system;
 in
 {
   home.packages = builtins.attrValues {
-    inherit (pkgs) fzf killall bat jq direnv curl wget fd inetutils ripgrep lsof dig unzip htop spacer;
+    inherit (pkgs) fzf killall bat jq direnv curl wget fd inetutils ripgrep lsof dig unzip htop;
+    inherit (inputs.nixpkgs-unstable.legacyPackages.${system}) spacer;
   };
   programs.zsh = {
     enable = true;
@@ -175,4 +181,4 @@ in
     enableNushellIntegration = false;
   };
 }
-# zsh (home-manager):1 ends here
+# zsh (home-manager):2 ends here

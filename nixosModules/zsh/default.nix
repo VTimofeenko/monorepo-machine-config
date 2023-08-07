@@ -1,8 +1,9 @@
 # [[file:../../new_project.org::*zsh (system)][zsh (system):2]]
+inputs:
 { pkgs, config, lib, ... }:
 let
   # This kinda imports the user module and exposes the parameters through userConfig attrset
-  userConfig = import ../../modules/home-manager/zsh { inherit pkgs config lib; };
+  userConfig = import ../../modules/home-manager/zsh { inherit pkgs config inputs; };
 in
 {
   environment.systemPackages = userConfig.home.packages;
