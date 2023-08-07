@@ -907,7 +907,7 @@ let
 in
 {
   home.packages = builtins.attrValues {
-    inherit (pkgs) fzf killall bat jq direnv curl wget fd inetutils ripgrep lsof dig unzip htop;
+    inherit (pkgs) fzf killall bat jq direnv curl wget fd inetutils ripgrep lsof dig unzip htop spacer;
   };
   programs.zsh = {
     enable = true;

@@ -1,4 +1,4 @@
-# [[file:../../../new_project.org::*zsh (home-manager)][zsh (home-manager):2]]
+# [[file:../../../new_project.org::*zsh (home-manager)][zsh (home-manager):1]]
 # home-manager clone of the original zsh module
 { pkgs, config, lib, ... }:
 let
@@ -24,7 +24,7 @@ let
 in
 {
   home.packages = builtins.attrValues {
-    inherit (pkgs) fzf killall bat jq direnv curl wget fd inetutils ripgrep lsof dig unzip htop;
+    inherit (pkgs) fzf killall bat jq direnv curl wget fd inetutils ripgrep lsof dig unzip htop spacer;
   };
   programs.zsh = {
     enable = true;
@@ -175,4 +175,4 @@ in
     enableNushellIntegration = false;
   };
 }
-# zsh (home-manager):2 ends here
+# zsh (home-manager):1 ends here
