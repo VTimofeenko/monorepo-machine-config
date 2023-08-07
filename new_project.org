@@ -43,7 +43,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo ("DONE" "CNCL") :caption done :tags ("fix" "feat" "doc" "chore")
 #+caption: done
 | fix   |  0 |
-| feat  | 13 |
+| feat  | 14 |
 | doc   |  0 |
 | chore |  0 |
 #+END
@@ -51,7 +51,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  5 |
-| feat  | 28 |
+| feat  | 27 |
 | doc   |  0 |
 | chore | 16 |
 #+END
@@ -863,7 +863,8 @@ in
 ******* DONE Add path completion :feat:
 CLOSED: [2023-06-07 Wed 11:58]
 
-******* TODO Add which-key :feat:
+******* DONE Add which-key :feat:
+CLOSED: [2023-08-07 Mon 14:07]
 
 ****** zsh (home-manager)
 :PROPERTIES:
