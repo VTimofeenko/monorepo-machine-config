@@ -47,7 +47,7 @@
       git_protocol = "https";
       prompt = "enabled";
       aliases = {
-        prco = "pr checkout"
+        prco = "pr checkout";
       };
     };
   };
