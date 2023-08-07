@@ -60,6 +60,7 @@
       color21 = "#F2A44E";
     };
   };
+  programs.gh.settings.git_protocol = lib.mkForce "https";
   home.username = "vtimofeenko";
   home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/vtimofeenko" else "/home/vtimofeenko";
 
