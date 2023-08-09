@@ -113,9 +113,7 @@
                 };
               # Packages:1 ends here
               # [[file:new_project.org::*Overlays][Overlays:1]]
-              overlayAttrs = {
-                inherit (config.packages) hyprland-lang-notifier;
-              };
+              overlayAttrs = builtins.attrValues config.packages;
               # Overlays:1 ends here
               # [[file:new_project.org::*homeConfigurations][homeConfigurations:1]]
               legacyPackages.homeConfigurations =
