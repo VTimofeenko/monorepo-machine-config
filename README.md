@@ -27,6 +27,14 @@ Certain components of my config (mostly dealing with passwords and such) are not
 }
 ```
 
+# Overlay
+
+This flake contains an overlay with three packages:
+
+1. `hyprland-lang-notifier` -- shows a desktop notification when language is changed
+2. `hyprland-mode-notifier` -- shows notification when Hyprland mode is changed
+3. `hyprland-switch-lang-on-xremap` -- intercepts configured shortcut and changes language only on specific input
+
 ### ZSH module
 
 #### Usage
