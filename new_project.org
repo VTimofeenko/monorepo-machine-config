@@ -1341,8 +1341,6 @@ Imported [[(git-hm-import)][here]].
 }
 #+end_src
 
-******* TODO Check out [[https://www.hschne.at/git-aliases/][git aliases]] :to_think:
-
 ****** Home-packages
 :PROPERTIES:
 :header-args:nix+: :tangle modules/home-manager/packages.nix
