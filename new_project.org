@@ -2554,6 +2554,7 @@ Imported [[(user-import][here]].
 , config
 , lib
 , my-doom-config
+, nixpkgs-unstable
 , ...
 }:
 {
@@ -2567,10 +2568,15 @@ Imported [[(user-import][here]].
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
 
-  home-manager.users.spacecadet = { ... }: {
+  home-manager.users.spacecadet = { ... }:
+  let
+    zsh-module = import ../home-manager/zsh { inputs = { inherit nixpkgs-unstable;}; inherit config pkgs;};
+  in
+  {
     imports = [
       my-doom-config.nixosModules.default
       ../home-manager # (ref:linux-user-import)
+      zsh-module
     ];
     home.packages = builtins.attrValues {
       inherit (pkgs) pavucontrol blueman libreoffice firefox brave gthumb;
