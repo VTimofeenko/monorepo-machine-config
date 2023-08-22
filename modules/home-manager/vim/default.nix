@@ -1,8 +1,13 @@
 # [[file:../../../new_project.org::*Vim][Vim:1]]
 # Home manager module that configures neovim with some plugins
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, inputs, ... }:
 let
   cfg = config.programs.vt-vim-config;
+  hmts = pkgs.vimUtils.buildVimPluginFrom2Nix {
+    pname = "hmts";
+    version = "master";
+    src = inputs.hmts;
+  };
 in
 {
   options.programs.vt-vim-config = with lib; {
@@ -23,7 +28,9 @@ in
         inherit (pkgs.nodePackages) bash-language-server;
       });
       plugins =
-        (builtins.attrValues { inherit (pkgs.vimPlugins) vim-surround vim-commentary vim-nix delimitMate vim-strip-trailing-whitespace; })
+        (builtins.attrValues {
+          inherit (pkgs.vimPlugins) vim-surround vim-commentary vim-nix delimitMate vim-strip-trailing-whitespace;
+        })
         ++
         [
           {
@@ -222,6 +229,28 @@ in
           then
             [
               pkgs.vimPlugins.cmp-nvim-lsp
+              {
+                plugin = pkgs.vimPlugins.nvim-treesitter;
+                type = "lua";
+                config = ''
+                  local configs = require 'nvim-treesitter.configs';
+                  configs.setup {
+                  highlight = { enable = true },
+                  }
+                '';
+              }
+              pkgs.vimPlugins.nvim-treesitter-parsers.nix
+              pkgs.vimPlugins.nvim-treesitter-parsers.rust
+              pkgs.vimPlugins.nvim-treesitter-parsers.bash
+              pkgs.vimPlugins.nvim-treesitter-parsers.lua
+              pkgs.vimPlugins.nvim-treesitter-parsers.sql
+              pkgs.vimPlugins.nvim-treesitter-parsers.markdown
+              pkgs.vimPlugins.nvim-treesitter-parsers.yaml
+              pkgs.vimPlugins.nvim-treesitter-parsers.python
+              pkgs.vimPlugins.nvim-treesitter-parsers.json
+              pkgs.vimPlugins.nvim-treesitter-parsers.ini
+              pkgs.vimPlugins.nvim-treesitter-parsers.toml
+              hmts
               {
                 plugin = pkgs.vimPlugins.fidget-nvim;
                 type = "lua";

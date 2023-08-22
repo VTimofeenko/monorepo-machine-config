@@ -2942,6 +2942,23 @@
         "type": "github"
       }
     },
+    "hmts": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1691525513,
+        "narHash": "sha256-il5m+GlNt0FzZjefl1q8ZxWHg0+gQps0vigt+eoIy8A=",
+        "owner": "calops",
+        "repo": "hmts.nvim",
+        "rev": "594dd17c870afb7f6517723c8963f6eb144e3c0d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "calops",
+        "ref": "v1.2.0",
+        "repo": "hmts.nvim",
+        "type": "github"
+      }
+    },
     "home-infrastructure": {
       "inputs": {
         "agenix": "agenix_2",
@@ -7784,6 +7801,7 @@
         "color_scheme": "color_scheme",
         "devshell": "devshell",
         "flake-parts": "flake-parts",
+        "hmts": "hmts",
         "home-manager": "home-manager_2",
         "hyprland": "hyprland",
         "infra": "infra",

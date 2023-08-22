@@ -43,7 +43,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo ("DONE" "CNCL") :caption done :tags ("fix" "feat" "doc" "chore")
 #+caption: done
 | fix   |  0 |
-| feat  | 14 |
+| feat  | 15 |
 | doc   |  0 |
 | chore |  2 |
 #+END
@@ -51,7 +51,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  5 |
-| feat  | 28 |
+| feat  | 27 |
 | doc   |  0 |
 | chore | 15 |
 #+END
@@ -144,6 +144,11 @@ Flake-parts:
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
 
     naersk.url = "github:nix-community/naersk/master";
+
+    hmts = {
+      url = "github:calops/hmts.nvim?ref=v1.2.0";
+      flake = false;
+    };
   };
 #+end_src
 
@@ -507,9 +512,14 @@ Imported [[(vim-hm-import)][here]].
 
 #+begin_src nix
 # Home manager module that configures neovim with some plugins
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, inputs, ... }:
 let
   cfg = config.programs.vt-vim-config;
+  hmts = pkgs.vimUtils.buildVimPluginFrom2Nix {
+    pname = "hmts";
+    version = "master";
+    src = inputs.hmts;
+  };
 in
 {
   options.programs.vt-vim-config = with lib; {
@@ -530,7 +540,9 @@ in
         inherit (pkgs.nodePackages) bash-language-server;
       });
       plugins =
-        (builtins.attrValues { inherit (pkgs.vimPlugins) vim-surround vim-commentary vim-nix delimitMate vim-strip-trailing-whitespace; })
+        (builtins.attrValues {
+          inherit (pkgs.vimPlugins) vim-surround vim-commentary vim-nix delimitMate vim-strip-trailing-whitespace;
+        })
         ++
         [
           {
@@ -730,6 +742,28 @@ in
             [
               pkgs.vimPlugins.cmp-nvim-lsp
               {
+                plugin = pkgs.vimPlugins.nvim-treesitter;
+                type = "lua";
+                config = ''
+                  local configs = require 'nvim-treesitter.configs';
+                  configs.setup {
+                  highlight = { enable = true },
+                  }
+                '';
+              }
+              pkgs.vimPlugins.nvim-treesitter-parsers.nix
+              pkgs.vimPlugins.nvim-treesitter-parsers.rust
+              pkgs.vimPlugins.nvim-treesitter-parsers.bash
+              pkgs.vimPlugins.nvim-treesitter-parsers.lua
+              pkgs.vimPlugins.nvim-treesitter-parsers.sql
+              pkgs.vimPlugins.nvim-treesitter-parsers.markdown
+              pkgs.vimPlugins.nvim-treesitter-parsers.yaml
+              pkgs.vimPlugins.nvim-treesitter-parsers.python
+              pkgs.vimPlugins.nvim-treesitter-parsers.json
+              pkgs.vimPlugins.nvim-treesitter-parsers.ini
+              pkgs.vimPlugins.nvim-treesitter-parsers.toml
+              hmts
+              {
                 plugin = pkgs.vimPlugins.fidget-nvim;
                 type = "lua";
                 config = "require('fidget').setup {}";
@@ -876,7 +910,8 @@ CLOSED: [2023-06-07 Wed 11:58]
 ******* DONE Add which-key :feat:
 CLOSED: [2023-08-07 Mon 14:07]
 
-******* TODO Add hmts for nested contained file syntax :feat:
+******* DONE Add hmts for nested contained file syntax :feat:
+CLOSED: [2023-08-22 Tue 13:11]
 
 ****** zsh (home-manager)
 :PROPERTIES:

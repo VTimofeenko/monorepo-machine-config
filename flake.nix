@@ -64,6 +64,11 @@
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
 
     naersk.url = "github:nix-community/naersk/master";
+
+    hmts = {
+      url = "github:calops/hmts.nvim?ref=v1.2.0";
+      flake = false;
+    };
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
