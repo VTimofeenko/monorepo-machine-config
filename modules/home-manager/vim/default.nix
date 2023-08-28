@@ -34,6 +34,20 @@ in
         ++
         [
           {
+            plugin = pkgs.vimPlugins.hop-nvim;
+            type = "lua";
+            config = # lua
+              ''
+                local hop = require('hop')
+                hop.setup()
+                local wk = require("which-key")
+
+                wk.register({
+                  j = { ":HopWord<CR>", "Jump" }
+                }, { prefix = "<leader>" })
+              '';
+          }
+          {
             plugin = pkgs.vimPlugins.which-key-nvim;
             type = "lua";
             config =
