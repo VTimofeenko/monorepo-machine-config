@@ -8,6 +8,11 @@ let
     version = "master";
     src = inputs.hmts;
   };
+  scratch-plugin = pkgs.vimUtils.buildVimPluginFrom2Nix {
+    pname = "scratch";
+    version = "master";
+    src = inputs.vim-scratch-plugin;
+  };
 in
 {
   options.programs.vt-vim-config = with lib; {
@@ -290,6 +295,25 @@ in
               pkgs.vimPlugins.nvim-treesitter-parsers.toml
               hmts
               {
+                plugin = scratch-plugin;
+                type = "lua";
+                config =
+                  # lua
+                  ''
+                    -- Open scratch from bottom side
+                    vim.g["scratch_top"] = 0
+                    -- Disable default mappings
+                    vim.g["scratch_no_mappings"] = 1
+                    -- Disable autohide
+                    vim.g["scratch_autohide"] = 0
+
+                    local wk = require("which-key")
+                    wk.register({
+                      x = { ":Scratch<CR>", "Open scratch"}
+                    }, { prefix = "<leader>" })
+                  '';
+              }
+              {
                 plugin = pkgs.vimPlugins.fidget-nvim;
                 type = "lua";
                 config = "require('fidget').setup {}";
@@ -309,7 +333,7 @@ in
                       q = { vim.diagnostic.setloclist, "Add buffer diagnostics to the location list"},
                       r = { vim.lsp.buf.rename, "LSP rename"},
                       a = { vim.lsp.buf.code_action, "LSP code actions"},
-                      a = { vim.lsp.buf.format, "LSP format"}
+                      f = { vim.lsp.buf.format, "LSP format"}
                     }, { prefix = "<leader>" })
 
                     wk.register({

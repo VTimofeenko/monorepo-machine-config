@@ -7815,6 +7815,7 @@
         "private-config": "private-config",
         "pyprland": "pyprland",
         "snowcli": "snowcli",
+        "vim-scratch-plugin": "vim-scratch-plugin",
         "wg-namespace-flake": "wg-namespace-flake_4",
         "xremap-flake": "xremap-flake_5"
       }
@@ -8707,6 +8708,22 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "vim-scratch-plugin": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1620018304,
+        "narHash": "sha256-P8SuMZKckMu+9AUI89X8+ymJvJhlsbT7UR7XjnWwwz8=",
+        "owner": "mtth",
+        "repo": "scratch.vim",
+        "rev": "adf826b1ac067cdb4168cb6066431cff3a2d37a3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mtth",
+        "repo": "scratch.vim",
         "type": "github"
       }
     },
