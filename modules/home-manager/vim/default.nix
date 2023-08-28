@@ -298,26 +298,30 @@ in
                 plugin = pkgs.vimPlugins.nvim-lspconfig;
                 type = "lua";
                 config =
+                  # lua
                   ''
-                    local lsp_mappings = {
-                      { 'gD', vim.lsp.buf.declaration },
-                      { 'gd', vim.lsp.buf.definition },
-                      { 'gi', vim.lsp.buf.implementation },
-                      { 'gr', vim.lsp.buf.references },
-                      { '[d', vim.diagnostic.goto_prev },
-                      { ']d', vim.diagnostic.goto_next },
-                      { '<leader>' , vim.lsp.buf.hover },
-                      { '<leader>s', vim.lsp.buf.signature_help },
-                      { '<leader>d', vim.diagnostic.open_float },
-                      { '<leader>q', vim.diagnostic.setloclist },
-                      { '<leader>r', vim.lsp.buf.rename },
-                      { '<leader>a', vim.lsp.buf.code_action },
-                      { '<leader>f', vim.lsp.buf.format },
-                              }
-                    for i, map in pairs(lsp_mappings) do
-                      vim.keymap.set('n', map[1], function() map[2]() end)
-                    end
-                    vim.keymap.set('x', '\\a', function() vim.lsp.buf.code_action() end)
+                    local wk = require("which-key")
+
+                    wk.register({
+                      s = { vim.lsp.buf.signature_help, "See signature help"},
+                      h = { vim.lsp.buf.hover, "Trigger hover"},
+                      d = { vim.diagnostic.open_float, "Show diagnostics in a floating window."},
+                      q = { vim.diagnostic.setloclist, "Add buffer diagnostics to the location list"},
+                      r = { vim.lsp.buf.rename, "LSP rename"},
+                      a = { vim.lsp.buf.code_action, "LSP code actions"},
+                      a = { vim.lsp.buf.format, "LSP format"}
+                    }, { prefix = "<leader>" })
+
+                    wk.register({
+                      ["gD"] = { vim.lsp.buf.declaration, "Go to declaration"},
+                      ["gd"] = { vim.lsp.buf.definition, "Go to definition"},
+                      ["gi"] = { vim.lsp.buf.implementation, "Go to implementation"},
+                      ["gr"] = { vim.lsp.buf.references, "Go to references"},
+                      ["[d"] = { vim.diagnostic.goto_prev, "Previous diagnostic"},
+                      ["]d"] = { vim.diagnostic.goto_next, "Next diagnostic"},
+                    })
+
+                    --vim.keymap.set('x', '\\a', function() vim.lsp.buf.code_action() end)
 
                     local caps = vim.tbl_deep_extend(
                       'force',
