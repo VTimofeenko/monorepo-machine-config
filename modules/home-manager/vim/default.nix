@@ -34,6 +34,23 @@ in
         ++
         [
           {
+            plugin = pkgs.vimPlugins.telescope-nvim;
+            type = "lua";
+            config =
+              # lua
+              ''
+                local telescope = require('telescope')
+                telescope.setup()
+
+                local wk = require("which-key")
+                wk.register({
+                  ["<leader>"] = { require'telescope.builtin'.find_files, "Find files" },
+                  ["<leader>b"] = { require'telescope.builtin'.buffers, "Buffers" },
+                  ["/"] = { require'telescope.builtin'.live_grep, "Live grep" }
+                }, { prefix = "<leader>" })
+              '';
+          }
+          {
             plugin = pkgs.vimPlugins.hop-nvim;
             type = "lua";
             config = # lua
