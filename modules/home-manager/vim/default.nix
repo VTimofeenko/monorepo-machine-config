@@ -51,6 +51,7 @@ in
             plugin = pkgs.vimPlugins.which-key-nvim;
             type = "lua";
             config =
+              # lua
               ''
                 local wk = require("which-key")
 
@@ -59,7 +60,11 @@ in
                     name = "window",
                     s = { ":split<CR>", "Split horizontally" },
                     v = { ":vsplit<CR>", "Split vertically" },
-                    d = { "<C-w>c", "Close window" }
+                    d = { "<C-w>c", "Close window" },
+                    h = { "<C-w>h", "Focus left" },
+                    j = { "<C-w>j", "Focus bottom" },
+                    k = { "<C-w>k", "Focus up" },
+                    l = { "<C-w>l", "Focus right" }
                   },
                 }, { prefix = "<leader>" })
               '';
@@ -368,11 +373,6 @@ in
           syntax on
 
           let mapleader="\<Space>"
-
-          nnoremap <leader>wl <C-w>l
-          nnoremap <leader>wk <C-w>k
-          nnoremap <leader>wj <C-w>j
-          nnoremap <leader>wh <C-w>h
 
           set number relativenumber
           set modelines=1
