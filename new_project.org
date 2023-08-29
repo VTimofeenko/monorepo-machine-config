@@ -149,6 +149,10 @@ Flake-parts:
       url = "github:calops/hmts.nvim?ref=v1.2.0";
       flake = false;
     };
+    vim-scratch-plugin = {
+      url = "github:mtth/scratch.vim";
+      flake = false;
+    };
   };
 #+end_src
 
@@ -520,6 +524,11 @@ let
     version = "master";
     src = inputs.hmts;
   };
+  scratch-plugin = pkgs.vimUtils.buildVimPluginFrom2Nix {
+    pname = "scratch";
+    version = "master";
+    src = inputs.vim-scratch-plugin;
+  };
 in
 {
   options.programs.vt-vim-config = with lib; {
@@ -546,6 +555,23 @@ in
         ++
         [
           {
+            plugin = pkgs.vimPlugins.telescope-nvim;
+            type = "lua";
+            config =
+              # lua
+              ''
+                local telescope = require('telescope')
+                telescope.setup()
+
+                local wk = require("which-key")
+                wk.register({
+                  ["<leader>"] = { require'telescope.builtin'.find_files, "Find files" },
+                  ["<leader>b"] = { require'telescope.builtin'.buffers, "Buffers" },
+                  ["/"] = { require'telescope.builtin'.live_grep, "Live grep" }
+                }, { prefix = "<leader>" })
+              '';
+          }
+          {
             plugin = pkgs.vimPlugins.hop-nvim;
             type = "lua";
             config = # lua
@@ -565,6 +591,8 @@ in
             config =
               # lua
               ''
+                vim.o.timeout = true
+                vim.o.timeoutlen = 300
                 local wk = require("which-key")
 
                 wk.register({
@@ -783,6 +811,25 @@ in
               pkgs.vimPlugins.nvim-treesitter-parsers.toml
               hmts
               {
+                plugin = scratch-plugin;
+                type = "lua";
+                config =
+                  # lua
+                  ''
+                    -- Open scratch from bottom side
+                    vim.g["scratch_top"] = 0
+                    -- Disable default mappings
+                    vim.g["scratch_no_mappings"] = 1
+                    -- Disable autohide
+                    vim.g["scratch_autohide"] = 0
+
+                    local wk = require("which-key")
+                    wk.register({
+                      x = { ":Scratch<CR>", "Open scratch"}
+                    }, { prefix = "<leader>" })
+                  '';
+              }
+              {
                 plugin = pkgs.vimPlugins.fidget-nvim;
                 type = "lua";
                 config = "require('fidget').setup {}";
@@ -791,26 +838,30 @@ in
                 plugin = pkgs.vimPlugins.nvim-lspconfig;
                 type = "lua";
                 config =
+                  # lua
                   ''
-                    local lsp_mappings = {
-                      { 'gD', vim.lsp.buf.declaration },
-                      { 'gd', vim.lsp.buf.definition },
-                      { 'gi', vim.lsp.buf.implementation },
-                      { 'gr', vim.lsp.buf.references },
-                      { '[d', vim.diagnostic.goto_prev },
-                      { ']d', vim.diagnostic.goto_next },
-                      { '<leader>' , vim.lsp.buf.hover },
-                      { '<leader>s', vim.lsp.buf.signature_help },
-                      { '<leader>d', vim.diagnostic.open_float },
-                      { '<leader>q', vim.diagnostic.setloclist },
-                      { '<leader>r', vim.lsp.buf.rename },
-                      { '<leader>a', vim.lsp.buf.code_action },
-                      { '<leader>f', vim.lsp.buf.format },
-                              }
-                    for i, map in pairs(lsp_mappings) do
-                      vim.keymap.set('n', map[1], function() map[2]() end)
-                    end
-                    vim.keymap.set('x', '\\a', function() vim.lsp.buf.code_action() end)
+                    local wk = require("which-key")
+
+                    wk.register({
+                      s = { vim.lsp.buf.signature_help, "See signature help"},
+                      h = { vim.lsp.buf.hover, "Trigger hover"},
+                      d = { vim.diagnostic.open_float, "Show diagnostics in a floating window."},
+                      q = { vim.diagnostic.setloclist, "Add buffer diagnostics to the location list"},
+                      r = { vim.lsp.buf.rename, "LSP rename"},
+                      a = { vim.lsp.buf.code_action, "LSP code actions"},
+                      f = { vim.lsp.buf.format, "LSP format"}
+                    }, { prefix = "<leader>" })
+
+                    wk.register({
+                      ["gD"] = { vim.lsp.buf.declaration, "Go to declaration"},
+                      ["gd"] = { vim.lsp.buf.definition, "Go to definition"},
+                      ["gi"] = { vim.lsp.buf.implementation, "Go to implementation"},
+                      ["gr"] = { vim.lsp.buf.references, "Go to references"},
+                      ["[d"] = { vim.diagnostic.goto_prev, "Previous diagnostic"},
+                      ["]d"] = { vim.diagnostic.goto_next, "Next diagnostic"},
+                    })
+
+                    --vim.keymap.set('x', '\\a', function() vim.lsp.buf.code_action() end)
 
                     local caps = vim.tbl_deep_extend(
                       'force',
