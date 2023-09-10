@@ -76,9 +76,8 @@ in
       systemdIntegration = true;
       xwayland = {
         enable = true;
-        hidpi = true;
       };
-      nvidiaPatches = true;
+      enableNvidiaPatches = true;
       extraConfig =
         ''
           env = LIBVA_DRIVER_NAME,nvidia
