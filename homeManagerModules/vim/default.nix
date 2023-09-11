@@ -435,6 +435,9 @@ in
           hi Visual term=bold,reverse cterm=bold,reverse
           " make the completion visible on light background
           hi Pmenu term=bold,reverse cterm=bold,reverse ctermfg=LightBlue ctermbg=Black
+          " set comments to be distinct from strings
+          hi Comment ctermfg=5
+
           set expandtab
           set tabstop=4
           set shiftwidth=4
