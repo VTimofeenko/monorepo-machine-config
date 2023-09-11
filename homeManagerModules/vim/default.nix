@@ -98,6 +98,7 @@ in
             plugin = pkgs.vimPlugins.nvim-cmp;
             type = "lua";
             config =
+              # lua
               ''
                 local cmp = require('cmp')
                 cmp.setup {
@@ -165,6 +166,7 @@ in
             plugin = pkgs.vimPlugins.luasnip;
             type = "lua";
             config =
+              # lua
               ''
                 local ls = require("luasnip")
                 -- some shorthands...
@@ -276,12 +278,14 @@ in
               {
                 plugin = pkgs.vimPlugins.nvim-treesitter;
                 type = "lua";
-                config = ''
-                  local configs = require 'nvim-treesitter.configs';
-                  configs.setup {
-                  highlight = { enable = true },
-                  }
-                '';
+                config =
+                  # lua
+                  ''
+                    local configs = require 'nvim-treesitter.configs';
+                    configs.setup {
+                    highlight = { enable = true },
+                    }
+                  '';
               }
               pkgs.vimPlugins.nvim-treesitter-parsers.nix
               pkgs.vimPlugins.nvim-treesitter-parsers.rust
@@ -317,7 +321,7 @@ in
               {
                 plugin = pkgs.vimPlugins.fidget-nvim;
                 type = "lua";
-                config = "require('fidget').setup {}";
+                config = /* lua */ "require('fidget').setup {}";
               }
               {
                 plugin = pkgs.vimPlugins.nvim-lspconfig;
@@ -405,6 +409,7 @@ in
           else [ ]
         );
       extraLuaConfig =
+        # lua
         ''
           -- Highlight the yanked region
           local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
@@ -417,6 +422,7 @@ in
           })
         '';
       extraConfig =
+        # vim
         ''
           syntax on
 
