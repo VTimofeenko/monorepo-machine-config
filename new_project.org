@@ -783,6 +783,25 @@ in
           pkgs.vimPlugins.cmp-path
           pkgs.vimPlugins.luasnip
           pkgs.vimPlugins.cmp_luasnip
+          {
+            plugin = scratch-plugin;
+            type = "lua";
+            config =
+              # lua
+              ''
+                -- Open scratch from bottom side
+                vim.g["scratch_top"] = 0
+                -- Disable default mappings
+                vim.g["scratch_no_mappings"] = 1
+                -- Disable autohide
+                vim.g["scratch_autohide"] = 0
+
+                local wk = require("which-key")
+                wk.register({
+                  x = { ":Scratch<CR>", "Open scratch"}
+                }, { prefix = "<leader>" })
+              '';
+          }
         ]
         ++
         (
@@ -814,25 +833,6 @@ in
               pkgs.vimPlugins.nvim-treesitter-parsers.ini
               pkgs.vimPlugins.nvim-treesitter-parsers.toml
               hmts
-              {
-                plugin = scratch-plugin;
-                type = "lua";
-                config =
-                  # lua
-                  ''
-                    -- Open scratch from bottom side
-                    vim.g["scratch_top"] = 0
-                    -- Disable default mappings
-                    vim.g["scratch_no_mappings"] = 1
-                    -- Disable autohide
-                    vim.g["scratch_autohide"] = 0
-
-                    local wk = require("which-key")
-                    wk.register({
-                      x = { ":Scratch<CR>", "Open scratch"}
-                    }, { prefix = "<leader>" })
-                  '';
-              }
               {
                 plugin = pkgs.vimPlugins.fidget-nvim;
                 type = "lua";
