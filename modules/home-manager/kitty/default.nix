@@ -5,7 +5,7 @@
   programs.kitty = {
     enable = true;
     # theme = "Neopolitan";
-    theme = "Doom Vibrant";
+    theme = "Modus Vivendi Tinted";
     settings = {
       cursor_blink_interval = 0;
       background_opacity = "0.95";
