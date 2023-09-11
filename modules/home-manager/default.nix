@@ -3,7 +3,6 @@
 {
   imports = [
     ./home.nix
-    ./vim # (ref:vim-hm-import)
     ./kitty # (ref:kitty-hm-import)
     ./zathura # (ref:zathura-hm-import)
     ./git.nix # (ref:git-hm-import)

@@ -1,17 +1,18 @@
-# [[file:../../../new_project.org::*Vim][Vim:1]]
+# [[file:../../new_project.org::*Vim][Vim:1]]
 # Home manager module that configures neovim with some plugins
-{ pkgs, config, lib, inputs, ... }:
+{ localFlake, inputs }:
+{ pkgs, config, lib, ... }:
 let
   cfg = config.programs.vt-vim-config;
   hmts = pkgs.vimUtils.buildVimPluginFrom2Nix {
     pname = "hmts";
     version = "master";
-    src = inputs.hmts;
+    src = localFlake.inputs.hmts;
   };
   scratch-plugin = pkgs.vimUtils.buildVimPluginFrom2Nix {
     pname = "scratch";
     version = "master";
-    src = inputs.vim-scratch-plugin;
+    src = localFlake.inputs.vim-scratch-plugin;
   };
 in
 {

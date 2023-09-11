@@ -155,7 +155,7 @@
                   vtimofeenko = mkHmc {
                     modules = [
                       ./modules/home-manager/home.nix
-                      ./modules/home-manager/vim
+                      self.homeManagerModules.vim
                       ./modules/home-manager/git.nix
                       ./modules/home-manager/zsh
                       ./modules/home-manager/_perUser/vtimofeenko.nix
@@ -213,68 +213,75 @@
             };
           # perSystem outro:1 ends here
           # [[file:new_project.org::*"Flake" section]["Flake" section:1]]
-          flake = {
-            # The usual flake attributes can be defined here, including system-
-            # agnostic ones like nixosModule and system-enumerating ones, although
-            # those are more easily expressed in perSystem.
-            # "Flake" section:1 ends here
-            # [[file:new_project.org::*"nixosModules" output]["nixosModules" output:1]]
-            nixosModules =
-              let
-                inherit (flake-parts-lib) importApply;
-              in
-              rec {
-                default = { ... }: {
-                  imports = [
-                    zsh
-                    nix-config
-                  ];
-                };
-                zsh = importApply ./nixosModules/zsh inputs; # (ref:zsh-module-import)
-                tmux = importApply ./nixosModules/tmux { localFlake = self; inherit inputs; }; # (ref:tmux-module-import)
-                nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
+          flake =
+            let
+              inherit (flake-parts-lib) importApply;
+            in
+            {
+              # The usual flake attributes can be defined here, including system-
+              # agnostic ones like nixosModule and system-enumerating ones, although
+              # those are more easily expressed in perSystem.
+              # "Flake" section:1 ends here
+              # [[file:new_project.org::*"nixosModules" output]["nixosModules" output:1]]
+              nixosModules =
+                rec {
+                  default = { ... }: {
+                    imports = [
+                      zsh
+                      nix-config
+                    ];
+                  };
+                  zsh = importApply ./nixosModules/zsh inputs; # (ref:zsh-module-import)
+                  tmux = importApply ./nixosModules/tmux { localFlake = self; inherit inputs; }; # (ref:tmux-module-import)
+                  nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
 
-                # Home manager modules follow
-                hyprland-language-switch-notifier = importApply ./nixosModules/hyprland-language-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:lang-switch-import)
-                hyprland-mode-switch-notifier = importApply ./nixosModules/hyprland-mode-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:mode-switch-import)
-              };
-            # "nixosModules" output:1 ends here
-            # [[file:new_project.org::*"nixosConfigurations" output]["nixosConfigurations" output:1]]
-            nixosConfigurations =
-              let
-                specialArgs = inputs // { selfModules = self.nixosModules; selfPkgs = self.packages; };
-              in
-              {
-                # "nixosConfigurations" output:1 ends here
-                # [[file:new_project.org::*Uranium][Uranium:1]]
-                uranium = inputs.nixpkgs.lib.nixosSystem {
-                  system = "x86_64-linux";
-                  modules = [
-                    ./modules
-                    ./modules/nixosSystems/uranium # (ref:uranium-import)
-                    private-config.nixosModules.machines.uranium
-                    { nixpkgs.overlays = [ inputs.my-sway-config.overlays.default ]; }
-                  ];
-                  inherit specialArgs;
+                  # Home manager modules follow
+                  hyprland-language-switch-notifier = importApply ./nixosModules/hyprland-language-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:lang-switch-import)
+                  hyprland-mode-switch-notifier = importApply ./nixosModules/hyprland-mode-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:mode-switch-import)
                 };
-                # Uranium:1 ends here
-                # [[file:new_project.org::*Neptunium][Neptunium:1]]
-                neptunium = inputs.nixpkgs.lib.nixosSystem {
-                  system = "x86_64-linux";
-                  modules = [
-                    ./modules
-                    ./modules/nixosSystems/neptunium
-                    private-config.nixosModules.machines.neptunium
-                    # { nixpkgs.overlays = [ my-sway-config.overlays.default ]; }
-                  ];
-                  inherit specialArgs;
+              # "nixosModules" output:1 ends here
+              # [[file:new_project.org::*"nixosConfigurations" output]["nixosConfigurations" output:1]]
+              nixosConfigurations =
+                let
+                  specialArgs = inputs // { selfModules = self.nixosModules; selfPkgs = self.packages; selfHMModules = self.homeManagerModules; };
+                in
+                {
+                  # "nixosConfigurations" output:1 ends here
+                  # [[file:new_project.org::*Uranium][Uranium:1]]
+                  uranium = inputs.nixpkgs.lib.nixosSystem {
+                    system = "x86_64-linux";
+                    modules = [
+                      ./modules
+                      ./modules/nixosSystems/uranium # (ref:uranium-import)
+                      private-config.nixosModules.machines.uranium
+                      { nixpkgs.overlays = [ inputs.my-sway-config.overlays.default ]; }
+                    ];
+                    inherit specialArgs;
+                  };
+                  # Uranium:1 ends here
+                  # [[file:new_project.org::*Neptunium][Neptunium:1]]
+                  neptunium = inputs.nixpkgs.lib.nixosSystem {
+                    system = "x86_64-linux";
+                    modules = [
+                      ./modules
+                      ./modules/nixosSystems/neptunium
+                      private-config.nixosModules.machines.neptunium
+                      # { nixpkgs.overlays = [ my-sway-config.overlays.default ]; }
+                    ];
+                    inherit specialArgs;
+                  };
+                  # Neptunium:1 ends here
+                  # [[file:new_project.org::*"nixosConfigurations" outro]["nixosConfigurations" outro:1]]
                 };
-                # Neptunium:1 ends here
-                # [[file:new_project.org::*"nixosConfigurations" outro]["nixosConfigurations" outro:1]]
+              # "nixosConfigurations" outro:1 ends here
+              # [[file:new_project.org::*"homeManagerModules" output]["homeManagerModules" output:1]]
+              homeManagerModules = {
+                default = { };
+                vim = importApply ./homeManagerModules/vim { localFlake = self; inherit inputs; };
               };
-            # "nixosConfigurations" outro:1 ends here
-            # [[file:new_project.org::*"Flake" output outro]["Flake" output outro:1]]
-          };
+              # "homeManagerModules" output:1 ends here
+              # [[file:new_project.org::*"Flake" output outro]["Flake" output outro:1]]
+            };
           # "Flake" output outro:1 ends here
           # [[file:new_project.org::*Flake outro][Flake outro:1]]
         }

@@ -4,6 +4,7 @@
 , lib
 , my-doom-config
 , nixpkgs-unstable
+, selfHMModules
 , ...
 }:
 {
@@ -25,6 +26,7 @@
       imports = [
         my-doom-config.nixosModules.default
         ../home-manager # (ref:linux-user-import)
+        selfHMModules.vim
         zsh-module
       ];
       home.packages = builtins.attrValues {

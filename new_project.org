@@ -346,7 +346,7 @@ This user is on a macOS system with a lot of pre-existing configs, so the module
                   vtimofeenko = mkHmc {
                     modules = [
                       ./modules/home-manager/home.nix
-                      ./modules/home-manager/vim
+                      self.homeManagerModules.vim
                       ./modules/home-manager/git.nix
                       ./modules/home-manager/zsh
                       ./modules/home-manager/_perUser/vtimofeenko.nix
@@ -465,7 +465,6 @@ This collection of modules is imported for home manager users on Linux:
 {
   imports = [
     ./home.nix
-    ./vim # (ref:vim-hm-import)
     ./kitty # (ref:kitty-hm-import)
     ./zathura # (ref:zathura-hm-import)
     ./git.nix # (ref:git-hm-import)
@@ -503,7 +502,7 @@ home.file = {
 
 ****** Vim
 :PROPERTIES:
-:header-args:nix+: :tangle modules/home-manager/vim/default.nix
+:header-args:nix+: :tangle homeManagerModules/vim/default.nix
 :END:
 
 Having switched to emacs for most of text-based work, I still use neovim for one-off editing stuff in terminal.
@@ -516,18 +515,19 @@ Imported [[(vim-hm-import)][here]].
 
 #+begin_src nix
 # Home manager module that configures neovim with some plugins
-{ pkgs, config, lib, inputs, ... }:
+{ localFlake, inputs }:
+{ pkgs, config, lib, ... }:
 let
   cfg = config.programs.vt-vim-config;
   hmts = pkgs.vimUtils.buildVimPluginFrom2Nix {
     pname = "hmts";
     version = "master";
-    src = inputs.hmts;
+    src = localFlake.inputs.hmts;
   };
   scratch-plugin = pkgs.vimUtils.buildVimPluginFrom2Nix {
     pname = "scratch";
     version = "master";
-    src = inputs.vim-scratch-plugin;
+    src = localFlake.inputs.vim-scratch-plugin;
   };
 in
 {
@@ -1562,10 +1562,14 @@ Imported [[(media-hm-import)][here]].
 :END:
 
 #+begin_src nix
-          flake = {
-            # The usual flake attributes can be defined here, including system-
-            # agnostic ones like nixosModule and system-enumerating ones, although
-            # those are more easily expressed in perSystem.
+          flake =
+            let
+              inherit (flake-parts-lib) importApply;
+            in
+            {
+              # The usual flake attributes can be defined here, including system-
+              # agnostic ones like nixosModule and system-enumerating ones, although
+              # those are more easily expressed in perSystem.
 #+end_src
 
 **** "nixosModules" output
@@ -1574,25 +1578,22 @@ Imported [[(media-hm-import)][here]].
 :END:
 
 #+begin_src nix
-            nixosModules =
-              let
-                inherit (flake-parts-lib) importApply;
-              in
-              rec {
-                default = { ... }: {
-                  imports = [
-                    zsh
-                    nix-config
-                  ];
-                };
-                zsh = importApply ./nixosModules/zsh inputs; # (ref:zsh-module-import)
-                tmux = importApply ./nixosModules/tmux { localFlake = self; inherit inputs; }; # (ref:tmux-module-import)
-                nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
+              nixosModules =
+                rec {
+                  default = { ... }: {
+                    imports = [
+                      zsh
+                      nix-config
+                    ];
+                  };
+                  zsh = importApply ./nixosModules/zsh inputs; # (ref:zsh-module-import)
+                  tmux = importApply ./nixosModules/tmux { localFlake = self; inherit inputs; }; # (ref:tmux-module-import)
+                  nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
 
-                # Home manager modules follow
-                hyprland-language-switch-notifier = importApply ./nixosModules/hyprland-language-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:lang-switch-import)
-                hyprland-mode-switch-notifier = importApply ./nixosModules/hyprland-mode-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:mode-switch-import)
-              };
+                  # Home manager modules follow
+                  hyprland-language-switch-notifier = importApply ./nixosModules/hyprland-language-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:lang-switch-import)
+                  hyprland-mode-switch-notifier = importApply ./nixosModules/hyprland-mode-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:mode-switch-import)
+                };
 #+end_src
 
 ***** zsh (system)
@@ -2195,11 +2196,11 @@ in
 :END:
 
 #+begin_src nix
-            nixosConfigurations =
-              let
-                specialArgs = inputs // { selfModules = self.nixosModules; selfPkgs = self.packages; };
-              in
-              {
+              nixosConfigurations =
+                let
+                  specialArgs = inputs // { selfModules = self.nixosModules; selfPkgs = self.packages; selfHMModules = self.homeManagerModules; };
+                in
+                {
 #+end_src
 
 ***** Common system configuration modules
@@ -2655,6 +2656,7 @@ Imported [[(user-import][here]].
 , lib
 , my-doom-config
 , nixpkgs-unstable
+, selfHMModules
 , ...
 }:
 {
@@ -2676,6 +2678,7 @@ Imported [[(user-import][here]].
       imports = [
         my-doom-config.nixosModules.default
         ../home-manager # (ref:linux-user-import)
+        selfHMModules.vim
         zsh-module
       ];
       home.packages = builtins.attrValues {
@@ -3963,16 +3966,16 @@ CLOSED: [2023-07-10 Mon 11:35]
 :END:
 
 #+begin_src nix
-                uranium = inputs.nixpkgs.lib.nixosSystem {
-                  system = "x86_64-linux";
-                  modules = [
-                    ./modules
-                    ./modules/nixosSystems/uranium # (ref:uranium-import)
-                    private-config.nixosModules.machines.uranium
-                    { nixpkgs.overlays = [ inputs.my-sway-config.overlays.default ]; }
-                  ];
-                  inherit specialArgs;
-                };
+                  uranium = inputs.nixpkgs.lib.nixosSystem {
+                    system = "x86_64-linux";
+                    modules = [
+                      ./modules
+                      ./modules/nixosSystems/uranium # (ref:uranium-import)
+                      private-config.nixosModules.machines.uranium
+                      { nixpkgs.overlays = [ inputs.my-sway-config.overlays.default ]; }
+                    ];
+                    inherit specialArgs;
+                  };
 #+end_src
 
 ****** Uranium specific system
@@ -4283,16 +4286,16 @@ The hardware configuration that was taken from nixos-hardware and slightly tweak
 :END:
 
 #+begin_src nix
-                neptunium = inputs.nixpkgs.lib.nixosSystem {
-                  system = "x86_64-linux";
-                  modules = [
-                    ./modules
-                    ./modules/nixosSystems/neptunium
-                    private-config.nixosModules.machines.neptunium
-                    # { nixpkgs.overlays = [ my-sway-config.overlays.default ]; }
-                  ];
-                  inherit specialArgs;
-                };
+                  neptunium = inputs.nixpkgs.lib.nixosSystem {
+                    system = "x86_64-linux";
+                    modules = [
+                      ./modules
+                      ./modules/nixosSystems/neptunium
+                      private-config.nixosModules.machines.neptunium
+                      # { nixpkgs.overlays = [ my-sway-config.overlays.default ]; }
+                    ];
+                    inherit specialArgs;
+                  };
 #+end_src
 
 ****** Neptunium specific system :migration:
@@ -4487,16 +4490,29 @@ Imported [[(neptunium-network-import)][here]].
 :END:
 
 #+begin_src nix
-              };
+                };
 #+end_src
 
+**** "homeManagerModules" output
+:PROPERTIES:
+:header-args:nix+: :tangle flake.nix
+:END:
+
+This output contains all reusable home manager modules that are later dogfed into per-user and per-machine configurations.
+
+#+begin_src nix
+              homeManagerModules = {
+                default = { };
+                vim = importApply ./homeManagerModules/vim { localFlake = self; inherit inputs; };
+              };
+#+end_src
 **** "Flake" output outro :noexport:
 :PROPERTIES:
 :header-args:nix+: :tangle flake.nix
 :END:
 
 #+begin_src nix
-          };
+            };
 #+end_src
 
 ** Flake outro :noexport:
