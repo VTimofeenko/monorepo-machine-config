@@ -188,6 +188,9 @@ in
               allow_workspace_cycles = true  # This is needed for workspace_back_and_forth behavior to be similar to sway
           }
 
+          monitor=DP-2,3440x1440@120.0,0x0,1.0
+          monitor=DVI-D-1,1920x1080@119.982002,3440x0,1.0
+
           # Example windowrule v1
           # windowrule = float, ^(kitty)$
           # Example windowrule v2
