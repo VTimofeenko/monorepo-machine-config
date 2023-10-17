@@ -14,6 +14,7 @@ let
     version = "master";
     src = localFlake.inputs.vim-scratch-plugin;
   };
+  pkgs-unstable = localFlake.inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.system};
 in
 {
   options.programs.vt-vim-config = with lib; {
@@ -36,6 +37,7 @@ in
       plugins =
         (builtins.attrValues {
           inherit (pkgs.vimPlugins) vim-surround vim-commentary vim-nix delimitMate vim-strip-trailing-whitespace;
+          inherit (pkgs-unstable.vimPlugins) vim-nickel;
         })
         ++
         [
@@ -317,6 +319,7 @@ in
               pkgs.vimPlugins.nvim-treesitter-parsers.json
               pkgs.vimPlugins.nvim-treesitter-parsers.ini
               pkgs.vimPlugins.nvim-treesitter-parsers.toml
+              pkgs-unstable.vimPlugins.nvim-treesitter-parsers.nickel
               hmts
               {
                 plugin = pkgs.vimPlugins.fidget-nvim;
@@ -403,6 +406,10 @@ in
                         }
                       }
                     }
+                    require('lspconfig').nickel_ls.setup {
+                      autostart = true,
+                      cmd = { '${lib.getExe pkgs-unstable.nls}' },
+                    }
                   '';
               }
             ]
@@ -418,6 +425,11 @@ in
             vim.highlight.on_yank({timeout=70})
             end,
             group = highlight_group,
+            pattern = '*',
+          })
+          -- Automatically resize splits when window size changes
+          vim.api.nvim_create_autocmd('VimResized', {
+            command = 'wincmd =',
             pattern = '*',
           })
         '';
