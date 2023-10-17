@@ -566,7 +566,7 @@ in
                 local wk = require("which-key")
                 wk.register({
                   ["<leader>"] = { require'telescope.builtin'.find_files, "Find files" },
-                  ["<leader>b"] = { require'telescope.builtin'.buffers, "Buffers" },
+                  ["b"] = { require'telescope.builtin'.buffers, "Buffers" },
                   ["/"] = { require'telescope.builtin'.live_grep, "Live grep" }
                 }, { prefix = "<leader>" })
               '';
