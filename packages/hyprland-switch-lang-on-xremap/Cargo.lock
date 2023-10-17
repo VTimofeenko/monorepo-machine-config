@@ -215,7 +215,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "hyprland-switch-lang-on-main-device"
+name = "hyprland-switch-lang-on-xremap"
 version = "0.1.0"
 dependencies = [
  "hyprland",
