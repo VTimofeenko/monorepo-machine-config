@@ -1616,6 +1616,7 @@ Imported [[(media-hm-import)][here]].
                   # Home manager modules follow
                   hyprland-language-switch-notifier = importApply ./nixosModules/hyprland-language-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:lang-switch-import)
                   hyprland-mode-switch-notifier = importApply ./nixosModules/hyprland-mode-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:mode-switch-import)
+                  hyprland-workspace-notifier = importApply ./nixosModules/hyprland-workspace-notifier { localFlake = self; inherit withSystem; }; # (ref:workspace-import)
                 };
 #+end_src
 
@@ -2210,6 +2211,43 @@ in
 }
 #+end_src
 
+****** hyprland workspace notifier
+:PROPERTIES:
+:header-args:nix+: :tangle nixosModules/hyprland-workspace-notifier/default.nix
+:END:
+
+Imported [[(workspace-import)][here]].
+
+#+begin_src nix
+# Home manager module to configure a user service that notifies when workspace was switched
+{ localFlake, withSystem }:
+{ pkgs, lib, self, config, ... }:
+with lib;
+let
+  pkgName = "hyprland-workspace-notifier";
+
+  cfg = config.services.${pkgName};
+  pkg = localFlake.packages.${pkgs.stdenv.hostPlatform.system}.${pkgName};
+in
+{
+  options.services.${pkgName} = {
+    enable = mkEnableOption "hyprland workspace change notifications";
+  };
+  config = mkIf cfg.enable {
+    systemd.user.services.${pkgName} = {
+      Unit = {
+        Description = "Notifies user when the workspace is switched";
+        BindsTo = [ "hyprland-session.target" ];
+      };
+      Service = {
+        ExecStart = "${lib.getExe pkg}";
+      };
+      Install.WantedBy = [ "graphical-session.target" ];
+    };
+  };
+}
+#+end_src
+
 
 ***** TODO [#A] vim (system) :feat:
 
@@ -2751,7 +2789,7 @@ Imported [[(desktop-env-import)][here]].
   ];
   home-manager.extraSpecialArgs = {
     inherit (inputs) pyprland;
-    inherit (inputs.selfModules) hyprland-language-switch-notifier hyprland-mode-switch-notifier;
+    inherit (inputs.selfModules) hyprland-language-switch-notifier hyprland-mode-switch-notifier hyprland-workspace-notifier;
     inherit (inputs) selfPkgs;
   };
   home-manager.users.spacecadet = { pkgs, ... }: {
@@ -3203,6 +3241,7 @@ in
     ./pyprland # (ref:pyprland-import)
     ./hyprland-language-switch-notifier # (ref:use-lang-switch-notifier-import)
     ./hyprland-mode-switch-notifier # (ref:use-mode-switch-notifier-import)
+    ./hyprland-workspace-notifier # (ref:use-workspace-import)
     ./keybinds # (ref:hyprland-bindings-import)
     ./modes # (ref:hyprland-modes-import)
     (./per-host-configs + "/${hostName}.nix") # (ref:per-machine-hyprland-config)
@@ -3739,6 +3778,24 @@ Imported [[(use-mode-switch-notifier-import)][here]].
 {
   imports = [ hyprland-mode-switch-notifier ];
   services.hyprland-mode-switch-notifier.enable = true;
+}
+#+end_src
+
+******** Hyprland workspace notifier
+:PROPERTIES:
+:header-args:nix+: :tangle modules/hyprland/hyprland-workspace-notifier/default.nix
+:END:
+
+Imported [[(use-workspace-import))][here]].
+
+#+begin_src nix
+args@{ config, pkgs, lib, ... }:
+let
+  srvName = "hyprland-workspace-notifier";
+in
+{
+  imports = [ args.${srvName} ];
+  services.${srvName}.enable = true;
 }
 #+end_src
 

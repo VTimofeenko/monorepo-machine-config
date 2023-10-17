@@ -239,6 +239,7 @@
                   # Home manager modules follow
                   hyprland-language-switch-notifier = importApply ./nixosModules/hyprland-language-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:lang-switch-import)
                   hyprland-mode-switch-notifier = importApply ./nixosModules/hyprland-mode-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:mode-switch-import)
+                  hyprland-workspace-notifier = importApply ./nixosModules/hyprland-workspace-notifier { localFlake = self; inherit withSystem; }; # (ref:workspace-import)
                 };
               # "nixosModules" output:1 ends here
               # [[file:new_project.org::*"nixosConfigurations" output]["nixosConfigurations" output:1]]
