@@ -7,7 +7,7 @@
   ];
 
   services.xremap = {
-    withHypr = true;
+    withWlroots = true;
     userName = "spacecadet";
     serviceMode = "user";
   };

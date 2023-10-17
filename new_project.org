@@ -2938,7 +2938,7 @@ Under development. Imported [[(eww-import)][here]].
   ];
 
   services.xremap = {
-    withHypr = true;
+    withWlroots = true;
     userName = "spacecadet";
     serviceMode = "user";
   };
