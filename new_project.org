@@ -241,6 +241,7 @@ perSystem contains the default formatter and a sample of homeManagerConfiguratio
                   hyprland-lang-notifier = naersk-lib.buildPackage ./packages/hyprland-lang-notifier;
                   hyprland-mode-notifier = naersk-lib.buildPackage ./packages/hyprland-mode-notifier;
                   hyprland-switch-lang-on-xremap = naersk-lib.buildPackage ./packages/hyprland-switch-lang-on-xremap;
+                  hyprland-workspace-notifier = naersk-lib.buildPackage ./packages/hyprland-workspace-notifier;
                 };
 #+end_src
 

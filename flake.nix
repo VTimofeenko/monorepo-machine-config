@@ -119,6 +119,7 @@
                   hyprland-lang-notifier = naersk-lib.buildPackage ./packages/hyprland-lang-notifier;
                   hyprland-mode-notifier = naersk-lib.buildPackage ./packages/hyprland-mode-notifier;
                   hyprland-switch-lang-on-xremap = naersk-lib.buildPackage ./packages/hyprland-switch-lang-on-xremap;
+                  hyprland-workspace-notifier = naersk-lib.buildPackage ./packages/hyprland-workspace-notifier;
                 };
               # Packages:1 ends here
               # [[file:new_project.org::*Overlays][Overlays:1]]
