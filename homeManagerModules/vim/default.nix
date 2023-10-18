@@ -41,6 +41,21 @@ in
         })
         ++
         [
+          pkgs.vimPlugins.nvim-web-devicons
+          {
+            plugin = pkgs.vimPlugins.telescope-file-browser-nvim;
+            type = "lua";
+            config =
+              # lua
+              ''
+                require("telescope").load_extension "file_browser"
+                require("which-key").register({
+                  F = {
+                    f = { require'telescope'.extensions.file_browser.file_browser, "Find files on filesystem" }
+                  },
+                }, { prefix = "<leader>" })
+              '';
+          }
           {
             plugin = pkgs.vimPlugins.telescope-nvim;
             type = "lua";
