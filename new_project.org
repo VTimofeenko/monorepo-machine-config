@@ -784,6 +784,17 @@ in
                 }, {
                     key = "nix",
                 })
+                ls.add_snippets("nickel", {
+                    -- "Let .. in" template
+                    s("let", {
+                        -- Instead of a linebreak, tab by hand
+                        t({ "let", "\t" }),
+                        i(1),
+                        t({ "", "in" }),
+                    }),
+                }, {
+                    key = "nickel",
+                })
 
                 -- set type to "autosnippets" for adding autotriggered snippets.
                 ls.add_snippets("all", {
