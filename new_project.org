@@ -532,6 +532,7 @@ let
     src = localFlake.inputs.vim-scratch-plugin;
   };
   pkgs-unstable = localFlake.inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.system};
+  stable-plugins = pkgs.vimPlugins;
 in
 {
   options.programs.vt-vim-config = with lib; {
@@ -558,6 +559,23 @@ in
         })
         ++
         [
+          {
+            plugin = stable-plugins.todo-comments-nvim; # Highlights TODO/NOTE/etc comments
+            type = "lua";
+            config = # lua
+              ''
+                local tc = require("todo-comments")
+                tc.setup()
+
+                vim.keymap.set("n", "]t", function()
+                  tc.jump_next()
+                end, { desc = "Next todo comment" })
+
+                vim.keymap.set("n", "[t", function()
+                  tc.jump_prev()
+                end, { desc = "Previous todo comment" })
+              '';
+          }
           pkgs.vimPlugins.nvim-web-devicons
           {
             plugin = pkgs.vimPlugins.telescope-file-browser-nvim;
