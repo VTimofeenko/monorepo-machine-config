@@ -586,7 +586,10 @@ in
                 wk.register({
                   ["<leader>"] = { require'telescope.builtin'.find_files, "Find files" },
                   ["b"] = { require'telescope.builtin'.buffers, "Buffers" },
-                  ["/"] = { require'telescope.builtin'.live_grep, "Live grep" }
+                  ["/"] = { require'telescope.builtin'.live_grep, "Live grep" },
+                  F = {
+                    r = { require'telescope.builtin'.oldfiles, "Open recent files" }
+                  },
                 }, { prefix = "<leader>" })
               '';
           }
