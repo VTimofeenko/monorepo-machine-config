@@ -57,6 +57,12 @@ in
                 vim.keymap.set("n", "[t", function()
                   tc.jump_prev()
                 end, { desc = "Previous todo comment" })
+
+                require("which-key").register({
+                  t = {
+                    t = { ":TodoTelescope<CR>", "Telescope with todos" }
+                  },
+                }, { prefix = "<leader>" })
               '';
           }
           pkgs.vimPlugins.nvim-web-devicons
