@@ -35,6 +35,7 @@ in
         inherit (pkgs) rnix-lsp nil rust-analyzer;
         inherit (pkgs.nodePackages) bash-language-server;
         inherit (pkgs) shellcheck;
+        inherit (pkgs) lua-language-server;
       });
       plugins =
         (builtins.attrValues {
@@ -349,6 +350,14 @@ in
           if cfg.enableLangServers
           then
             [
+              {
+                plugin = stable-plugins.neodev-nvim;
+                type = "lua";
+                config =
+                  # lua
+                  ''
+                    require("neodev").setup({})'';
+              }
               pkgs.vimPlugins.cmp-nvim-lsp
               {
                 plugin = pkgs.vimPlugins.nvim-treesitter;
@@ -463,6 +472,11 @@ in
                     require('lspconfig').nickel_ls.setup {
                       autostart = true,
                       cmd = { '${lib.getExe pkgs-unstable.nls}' },
+                    }
+                    require('lspconfig').lua_ls.setup {
+                      autostart = true,
+                      capabilities = caps,
+                      Lua = { completion = { callSnippet = "Replace" } } -- Needed by neodev-vim
                     }
                   '';
               }
