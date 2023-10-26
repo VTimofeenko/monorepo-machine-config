@@ -51,7 +51,7 @@ Certain components of my config (mostly dealing with passwords and such) are not
 #+BEGIN: tagblock :todo t :caption todo :tags ("fix" "feat" "doc" "chore")
 #+caption: todo
 | fix   |  5 |
-| feat  | 27 |
+| feat  | 26 |
 | doc   |  0 |
 | chore | 15 |
 #+END
@@ -3740,45 +3740,6 @@ in
   };
 }
 #+end_src
-
-********* Scratchpad terminal
-
-#+begin_src sh :tangle modules/hyprland/utils/scratchpad-terminal
-TERM="kitty"
-TERM_TITLE="dropdown-terminal"
-GET_CLIENTS_CMD="hyprctl clients" # can be swaymsg -t get_tree
-# DISPATCHER_EXEC_CMD="hyprctl dispatch exec \"[workspace special:${TERM_TITLE} silent;float]\""
-DISPATCHER_EXEC_CMD=(hyprctl dispatch "exec [workspace special:${TERM_TITLE} silent;float]" "${TERM} -T ${TERM_TITLE}")
-SCRATCHPAD_TOGGLE_CMD="hyprctl dispatch togglespecialworkspace ${TERM_TITLE}"  # swaymsg scratchpad show
-
-is_terminal_running() {
-    if ${GET_CLIENTS_CMD} | grep "${TERM_TITLE}" >/dev/null; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-if ! is_terminal_running; then
-    "${DISPATCHER_EXEC_CMD[@]}" >/dev/null 2>&1
-    # Not sure why, but without this workspace is not activated
-    sleep 0.35
-    ${SCRATCHPAD_TOGGLE_CMD} >/dev/null 2>&1
-else
-    ${SCRATCHPAD_TOGGLE_CMD} >/dev/null 2>&1
-fi
-
-# for _ in {0..9}; do
-#     # Try to show the terminal
-#     if is_terminal_running; then
-#         ${SCRATCHPAD_TOGGLE_CMD} >/dev/null 2>&1
-#         exit
-#     fi
-#     sleep 0.1
-# done
-#+end_src
-
-********** TODO [#C] Make it drop-down, not slide-from-the-right :feat:
 
 ******** Pyprland config
 :PROPERTIES:
