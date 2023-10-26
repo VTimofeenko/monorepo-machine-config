@@ -374,7 +374,7 @@ in
     settings =
       settings //
       {
-        font_family = "JetBrainsMono Nerd Font Mono";
+        font_family = "JetBrainsMono Nerd Font";
         tab_separator = ''""'';
         tab_title_template = "{fmt.fg._5c6370}{fmt.bg.default}{fmt.fg._abb2bf}{fmt.bg._5c6370} {title.split()[0]} {fmt.fg._5c6370}{fmt.bg.default} ";
         active_tab_title_template = "{fmt.fg._29b5e8}{fmt.bg.default}{fmt.fg._ffffff}{fmt.bg._29b5e8} {title.split()[0]} {fmt.fg._29b5e8}{fmt.bg.default} ";
