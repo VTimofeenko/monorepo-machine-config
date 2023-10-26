@@ -34,6 +34,7 @@ in
       extraPackages = lib.mkIf cfg.enableLangServers (builtins.attrValues {
         inherit (pkgs) rnix-lsp nil rust-analyzer;
         inherit (pkgs.nodePackages) bash-language-server;
+        inherit (pkgs) shellcheck;
       });
       plugins =
         (builtins.attrValues {
