@@ -1,9 +1,12 @@
 # [[file:../../../new_project.org::*Lockscreen][Lockscreen:1]]
-{ pkgs, lib, ... }:
+{ pkgs, lib, selfPkgs, ... }:
 let
-  lockCmd = "${lib.getExe pkgs.swaylock} --daemonize --show-failed-attempts --show-keyboard-layout --color 000000";
+  lockCmd = "${setEnCmd} && ${lib.getExe pkgs.swaylock} --daemonize --show-failed-attempts --show-keyboard-layout --color 000000";
   # NOTE: may be pulling in hyprctl from nixpkgs and not the flake
   hyprctlCmd = "${pkgs.hyprland}/bin/hyprctl";
+
+  selfPkgs' = selfPkgs.${pkgs.stdenv.system};
+  setEnCmd = "${lib.getExe selfPkgs'.hyprland-switch-lang-on-xremap} set_en";
 in
 {
   wayland.windowManager.hyprland.extraConfig =
@@ -14,7 +17,7 @@ in
           key_press_enables_dpms = true
         }
 
-        bind = $mainMod CTRL, Q, exec, loginctl lock-session
+        bind = $mainMod CTRL, Q, exec, ${setEnCmd} && loginctl lock-session
       '';
   services.swayidle = {
     enable = true;
