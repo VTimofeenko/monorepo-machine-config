@@ -1852,7 +1852,7 @@ inputs:
 { pkgs, config, lib, ... }:
 let
   # This kinda imports the user module and exposes the parameters through userConfig attrset
-  userConfig = import ../../modules/home-manager/zsh { inherit pkgs config inputs; };
+  userConfig = import ../../modules/home-manager/zsh { inherit pkgs config inputs lib; };
 in
 {
   environment.systemPackages = userConfig.home.packages;
@@ -2905,7 +2905,7 @@ Imported [[(user-import][here]].
 
   home-manager.users.spacecadet = { ... }:
     let
-      zsh-module = import ../home-manager/zsh { inputs = { inherit nixpkgs-unstable; }; inherit config pkgs; };
+      zsh-module = import ../home-manager/zsh { inputs = { inherit nixpkgs-unstable; }; inherit config pkgs lib; };
     in
     {
       imports = [
