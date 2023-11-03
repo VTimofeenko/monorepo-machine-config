@@ -1220,6 +1220,11 @@ in
       ignorePatterns = [ "rm *" "pkill *" ];
       ignoreSpace = false;
     };
+    # W/A for missing completions
+    # Source: https://github.com/nix-community/home-manager/issues/2562
+    initExtraBeforeCompInit = ''
+      fpath+=("${config.home.profileDirectory}"/share/zsh/site-functions "${config.home.profileDirectory}"/share/zsh/$ZSH_VERSION/functions "${config.home.profileDirectory}"/share/zsh/vendor-completions)
+    '';
     initExtra =
       /* Turns a list into a single string. */
       builtins.concatStringsSep "\n" (map (x: "setopt ${x}") zshOptionsToSet)
