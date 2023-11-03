@@ -1196,11 +1196,12 @@ let
     "AUTO_CD" # automatically cd into directory
   ];
   inherit (pkgs.stdenv) system;
+  pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
 in
 {
   home.packages = builtins.attrValues {
     inherit (pkgs) fzf killall bat jq direnv curl wget fd inetutils ripgrep lsof dig unzip htop;
-    inherit (inputs.nixpkgs-unstable.legacyPackages.${system}) spacer;
+    inherit (pkgs-unstable) spacer;
   };
   programs.zsh = {
     enable = true;
