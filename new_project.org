@@ -1328,13 +1328,13 @@ in
       e = "$EDITOR";
       nvim = "$EDITOR";
       vim = "$EDITOR";
-      ls = "${lib.getExe pkgs-unstable.eza} -h --group-directories-first --icons";
+      ls = "${getExe pkgs-unstable.eza} -h --group-directories-first --icons";
       l = "ls";
       ll = "ls -l";
       la = "ls -al";
-      ka = "${pkgs.killall}/bin/killall";
+      ka = "${getExe pkgs.killall}";
       mkd = "mkdir -pv";
-      ga = "${pkgs.git}/bin/git add";
+      ga = "${getExe pkgs.git} add";
       gau = "ga -u";
       grep = "grep --color=auto";
       mv = "mv -v";
@@ -1343,7 +1343,7 @@ in
       ccopy = if pkgs.stdenv.isDarwin then "pbcopy" else "${pkgs.wl-clipboard}/bin/wl-copy";
       syu = "systemctl --user";
       cde = "cd /etc/nixos";
-      lg = "${pkgs.lazygit}/bin/lazygit";
+      lg = "${getExe pkgs.lazygit}";
       # Colorize IP output
       ip = "ip -c";
       # Neat display of all relevant things in lsblk
