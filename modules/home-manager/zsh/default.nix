@@ -28,6 +28,7 @@ let
   ];
   inherit (pkgs.stdenv) system;
   pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
+  inherit (lib) getExe;
 in
 {
   home.packages = builtins.attrValues {
@@ -136,7 +137,8 @@ in
 
                   # Alternative display for when I am in nix shell
                   # Also preserves zsh when entering nix shelll
-                  ${pkgs.any-nix-shell}/bin/any-nix-shell zsh --info-right | source /dev/stdin
+                  # NOTE: no --info-right flag, redundant with starship
+                  ${getExe pkgs.any-nix-shell} zsh | source /dev/stdin
 
                   source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
                   # Make comments visible on default background
