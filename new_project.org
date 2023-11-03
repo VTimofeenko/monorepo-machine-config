@@ -1359,6 +1359,10 @@ in
     enableFishIntegration = false;
     enableIonIntegration = false;
     enableNushellIntegration = false;
+    settings = {
+      nix_shell.symbol = " ";
+      lua.symbol = " ";
+    };
   };
 }
 #+end_src

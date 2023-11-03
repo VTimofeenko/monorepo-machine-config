@@ -189,6 +189,10 @@ in
     enableFishIntegration = false;
     enableIonIntegration = false;
     enableNushellIntegration = false;
+    settings = {
+      nix_shell.symbol = " ";
+      lua.symbol = " ";
+    };
   };
 }
 # zsh (home-manager):2 ends here
