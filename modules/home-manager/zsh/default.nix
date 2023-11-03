@@ -3,6 +3,7 @@
 { pkgs
 , config
 , inputs
+, lib
 , ...
 }:
 let
@@ -32,6 +33,7 @@ in
   home.packages = builtins.attrValues {
     inherit (pkgs) fzf killall bat jq direnv curl wget fd inetutils ripgrep lsof dig unzip htop;
     inherit (pkgs-unstable) spacer;
+    inherit (pkgs-unstable) eza; # To install completions
   };
   programs.zsh = {
     enable = true;
@@ -149,7 +151,7 @@ in
       e = "$EDITOR";
       nvim = "$EDITOR";
       vim = "$EDITOR";
-      ls = "${pkgs.exa}/bin/exa -h --group-directories-first --icons";
+      ls = "${lib.getExe pkgs-unstable.eza} -h --group-directories-first --icons";
       l = "ls";
       ll = "ls -l";
       la = "ls -al";
