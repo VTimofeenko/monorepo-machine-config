@@ -1312,9 +1312,6 @@ in
                   source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
                   # Make comments visible on default background
                   ZSH_HIGHLIGHT_STYLES[comment]='none'
-
-                  autoload -U add-zsh-hook
-                  add-zsh-hook -Uz chpwd (){ ls -a; }
       ''
       + # set SSH_AUTH_SOCK <=> gpg-agent is enabled in home-manager
       (if config.services ? gpg-agent.enable  # "?" is used so that lack of gpg-agent option does not cause an error
