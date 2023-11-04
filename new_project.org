@@ -1199,6 +1199,9 @@ let
   inherit (pkgs.stdenv) system;
   pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
   inherit (lib) getExe;
+  # NOTE: a bit naive way to detect if imported in home-manager
+  homeDir = if config ? home then config.home.homeDirectory else config.users.users.spacecadet.home;
+  profileDir = if config ? home then config.home.profileDirectory else "${homeDir}/.nix-profile";
 in
 {
   home.packages = builtins.attrValues {
@@ -1224,7 +1227,7 @@ in
     # W/A for missing completions
     # Source: https://github.com/nix-community/home-manager/issues/2562
     initExtraBeforeCompInit = ''
-      fpath+=("${config.home.profileDirectory}"/share/zsh/site-functions "${config.home.profileDirectory}"/share/zsh/$ZSH_VERSION/functions "${config.home.profileDirectory}"/share/zsh/vendor-completions)
+      fpath+=("${profileDir}"/share/zsh/site-functions "${profileDir}"/share/zsh/$ZSH_VERSION/functions "${profileDir}"/share/zsh/vendor-completions)
     '';
     initExtra =
       /* Turns a list into a single string. */
@@ -1352,7 +1355,7 @@ in
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
-    config.whitelist.prefix = [ "${config.home.homeDirectory}/code" ];
+    config.whitelist.prefix = [ "${homeDir}/code" ];
   };
   programs.starship = {
     enable = true;
