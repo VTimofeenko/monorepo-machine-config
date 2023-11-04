@@ -96,7 +96,6 @@ in
                   bindkey -M menuselect "+" accept-and-menu-complete
 
                   # Enable the completions.
-                  # -i argument is used since /nix/store is owned by root:nixbld and compinit complains
                   autoload -U compinit && compinit -C
 
                   # Color the completions
