@@ -7,7 +7,8 @@
 }:
 {
   imports = [
-    nixos-hardware.nixosModules.common-cpu-intel
+    # nixos-hardware.nixosModules.common-cpu-intel
+    nixos-hardware.nixosModules.common-cpu-amd
     nixos-hardware.nixosModules.common-pc-laptop
     nixos-hardware.nixosModules.common-pc-laptop-ssd
   ];
@@ -17,25 +18,41 @@
   # NOTE: required for wifi to work
   hardware.enableRedistributableFirmware = true;
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-  boot.kernelParams = [
-    # For Power consumption
-    # https://kvark.github.io/linux/framework/2021/10/17/framework-nixos.html
+  boot = {
+    kernelParams = [
+      # For Power consumption
+      # https://kvark.github.io/linux/framework/2021/10/17/framework-nixos.html
 
-    # "mem_sleep_default=deep"
-    # For Power consumption
-    # https://community.frame.work/t/linux-battery-life-tuning/6665/156
-    "nvme.noacpi=1"
-  ];
+      # "mem_sleep_default=deep"
+      # For Power consumption
+      # https://community.frame.work/t/linux-battery-life-tuning/6665/156
+      # Breaks AMD?
+      # "nvme.noacpi=1"
+    ];
 
+    # Fix TRRS headphones missing a mic
+    # https://community.frame.work/t/headset-microphone-on-linux/12387/3
+    extraModprobeConfig = ''
+      options snd-hda-intel model=dell-headset-multi
+    '';
 
-  # Fix TRRS headphones missing a mic
-  # https://community.frame.work/t/headset-microphone-on-linux/12387/3
-  boot.extraModprobeConfig = ''
-    options snd-hda-intel model=dell-headset-multi
-  '';
+    # For GPU support
+    initrd.kernelModules = [ "amdgpu" ];
+  };
 
   # For fingerprint support
   /* services.fprintd.enable = lib.mkDefault true; */
+
+  services.xserver = {
+    enable = true;
+    videoDrivers = [ "amdgpu" ];
+  };
+
+  hardware.opengl.extraPackages = builtins.attrValues { inherit (pkgs) rocm-opencl-icd rocm-opencl-runtime; };
+  hardware.opengl = {
+    driSupport = true;
+    driSupport32Bit = true;
+  };
 
   # Custom udev rules
   services.udev.extraRules = ''

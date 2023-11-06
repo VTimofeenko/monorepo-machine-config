@@ -18,7 +18,7 @@
   # Modules I want to ensure are there
   boot.initrd.availableKernelModules = [ "thunderbolt" "nvme" "usb_storage" "uas" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" "coretemp" ];
+  boot.kernelModules = [ "kvm-amd" "coretemp" ];
   boot.extraModulePackages = [ ];
   # Frame.work needs latest kernel for BT and Wi-Fi to work.
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -125,18 +125,20 @@
 
   # Hardware acceleration
   # Taken from https://nixos.wiki/wiki/Accelerated_Video_Playback
-  nixpkgs.config.packageOverrides = pkgs: {
-    vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-  };
-  hardware.opengl = {
-    enable = true;
-    extraPackages = with pkgs; [
-      intel-media-driver # LIBVA_DRIVER_NAME=iHD
-      vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-      vaapiVdpau
-      libvdpau-va-gl
-    ];
-  };
+  # TODO: AMD hw acceleration?
+
+  # nixpkgs.config.packageOverrides = pkgs: {
+  #   vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+  # };
+  # hardware.opengl = {
+  #   enable = true;
+  #   extraPackages = with pkgs; [
+  #     # intel-media-driver # LIBVA_DRIVER_NAME=iHD
+  #     # vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+  #     # vaapiVdpau
+  #     # libvdpau-va-gl
+  #   ];
+  # };
   services.fwupd = {
     enable = true;
     extraRemotes = [ "lvfs-testing" ];
@@ -150,7 +152,9 @@
   services.udisks2.enable = true;
   # NOTE: Wireless config is here for now, until refactoring of default.nix is done
   systemd.network.links."10-wifi-lan" = {
-    matchConfig.PermanentMACAddress = "f8:b5:4d:d7:16:53";
+    matchConfig.PermanentMACAddress = "14:ac:60:29:76:dd";
+    # FIXME: AMD
+    # matchConfig.PermanentMACAddress = "14:ac:60:29:76:dd";
     linkConfig.Name = "wifi-lan";
   };
 }
