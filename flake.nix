@@ -28,16 +28,6 @@
       };
     };
 
-    my-nvim-flake.url = "github:VTimofeenko/nvim-flake";
-
-    my-sway-config = {
-      url = "git+file:///home/spacecadet/code/sway-flake?ref=master";
-      inputs = {
-        base16.follows = "base16";
-        color-scheme.follows = "color_scheme";
-      };
-    };
-    # nur.url = "github:nix-community/NUR";
     my-doom-config = {
       url = "git+file:///home/spacecadet/code/doom-config";
       # url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/doom-config.git";
@@ -256,7 +246,6 @@
                       ./modules
                       ./modules/nixosSystems/uranium # (ref:uranium-import)
                       private-config.nixosModules.machines.uranium
-                      { nixpkgs.overlays = [ inputs.my-sway-config.overlays.default ]; }
                     ];
                     inherit specialArgs;
                   };
@@ -268,7 +257,6 @@
                       ./modules
                       ./modules/nixosSystems/neptunium
                       private-config.nixosModules.machines.neptunium
-                      # { nixpkgs.overlays = [ my-sway-config.overlays.default ]; }
                     ];
                     inherit specialArgs;
                   };
