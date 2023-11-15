@@ -1,4 +1,3 @@
-set -x
 INPUTNAME=${1}
 GIT_ROOT=$(git rev-parse --show-toplevel)
 
