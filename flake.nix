@@ -63,6 +63,11 @@
       url = "github:mtth/scratch.vim";
       flake = false;
     };
+    pre-commit-hooks-nix = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs-stable.follows = "nixpkgs";
+    };
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
@@ -79,6 +84,7 @@
         let
           inherit (flake-parts-lib) importApply;
           localDevshellCmds = importApply ./lib/flakeLib/devShell.nix { inherit withSystem self; };
+          localPrecommitEnv = importApply ./lib/flakeLib/preCommit.nix { inherit withSystem; };
         in
         {
           # Outputs intro:1 ends here
@@ -86,7 +92,9 @@
           imports = [
             inputs.devshell.flakeModule
             inputs.flake-parts.flakeModules.easyOverlay
+            inputs.pre-commit-hooks-nix.flakeModule
             localDevshellCmds
+            localPrecommitEnv
           ];
           # Imports:1 ends here
           # [[file:new_project.org::*Systems setting][Systems setting:1]]
