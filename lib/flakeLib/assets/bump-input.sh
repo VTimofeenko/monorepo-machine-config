@@ -11,7 +11,12 @@ else
         echo "⚠️  WARN: unstaging files"
         git reset
     fi
+    echo "❄️  nix flake output:"
+    echo "----"
     nix flake lock --update-input "${INPUTNAME}"
+    echo "----"
+
+    echo " Adding a commit"
     (cd "$GIT_ROOT" && git commit --no-verify flake.lock -m "[ci]: bumping input ${INPUTNAME}") # no-verify prevents pre-commit hooks, not needed here
 fi
 
