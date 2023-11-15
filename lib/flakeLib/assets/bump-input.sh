@@ -1,3 +1,4 @@
+set -x
 INPUTNAME=${1}
 GIT_ROOT=$(git rev-parse --show-toplevel)
 
@@ -10,8 +11,8 @@ else
     if ! git diff --cached --quiet; then
         echo "⚠️  WARN: unstaging files"
         git reset
-        nix flake lock --update-input "${INPUTNAME}"
     fi
+    nix flake lock --update-input "${INPUTNAME}"
     (cd "$GIT_ROOT" && git commit --no-verify flake.lock -m "[ci]: bumping input ${INPUTNAME}") # no-verify prevents pre-commit hooks, not needed here
 fi
 
