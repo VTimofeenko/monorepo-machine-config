@@ -85,6 +85,7 @@
           inherit (flake-parts-lib) importApply;
           localDevshellCmds = importApply ./lib/flakeLib/devShell.nix { inherit withSystem self; };
           localPrecommitEnv = importApply ./lib/flakeLib/preCommit.nix { inherit withSystem; };
+          localInputsBumper = importApply ./lib/flakeLib/bumpInputs.nix { inherit withSystem self; changingInputs = [ "my-nvim-flake" ]; };
         in
         {
           # Outputs intro:1 ends here
@@ -95,6 +96,7 @@
             inputs.pre-commit-hooks-nix.flakeModule
             localDevshellCmds
             localPrecommitEnv
+            localInputsBumper
           ];
           # Imports:1 ends here
           # [[file:new_project.org::*Systems setting][Systems setting:1]]
