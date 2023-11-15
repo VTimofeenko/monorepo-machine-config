@@ -1,4 +1,5 @@
 # flake module that brings in the deployment commands
+# TODO: add this module to the flake outputs for reuse
 { withSystem, self }:
 { lib, config, self, inputs, ... }:
 let
