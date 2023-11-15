@@ -76,12 +76,17 @@
       { inherit inputs; }
       (
         { withSystem, flake-parts-lib, ... }:
+        let
+          inherit (flake-parts-lib) importApply;
+          localDevshellCmds = importApply ./lib/flakeLib/devShell.nix { inherit withSystem self; };
+        in
         {
           # Outputs intro:1 ends here
           # [[file:new_project.org::*Imports][Imports:1]]
           imports = [
             inputs.devshell.flakeModule
             inputs.flake-parts.flakeModules.easyOverlay
+            localDevshellCmds
           ];
           # Imports:1 ends here
           # [[file:new_project.org::*Systems setting][Systems setting:1]]
@@ -164,35 +169,7 @@
                     value = pkgs-unstable.rustPlatform.rustLibSrc;
                   }
                 ];
-                commands = [
-                  {
-                    help = "preview README.md";
-                    name = "preview";
-                    command = "${pkgs.python310Packages.grip}/bin/grip .";
-                  }
-                  {
-                    help = "deploy neptunium";
-                    name = "deploy-neptunium";
-                    command = "nixos-rebuild --flake .#neptunium --target-host root@neptunium.home.arpa switch";
-                  }
-                  {
-                    help = "deploy uranium";
-                    name = "deploy-uranium";
-                    command = "nixos-rebuild --flake .#uranium --target-host root@uranium.home.arpa switch";
-                  }
-                  {
-                    help = "deploy local machine";
-                    name = "deploy-local";
-                    command =
-                      ''
-                        if [[ $(grep -s ^NAME= /etc/os-release | sed 's/^.*=//') == "NixOS" ]]; then
-                          sudo nixos-rebuild switch --flake .
-                        else
-                         home-manager switch --flake .
-                        fi
-                      '';
-                  }
-                ];
+                commands = [ ];
                 packages = builtins.attrValues {
                   inherit (pkgs-unstable) cargo rustc rustfmt pre-commit gcc pkg-config;
                   inherit (pkgs-unstable.rustPackages) clippy;
