@@ -3522,11 +3522,8 @@
         "vim-scratch-plugin": "vim-scratch-plugin"
       },
       "locked": {
-        "lastModified": 1700010049,
-        "narHash": "sha256-2WJUdBTKEHwad1nYeNjxBuVRY8+HzZMCwxmhTPJkdsA=",
-        "ref": "refs/heads/master",
-        "rev": "b614ff49207ea56556f02652f1260092e900941a",
-        "revCount": 27,
+        "lastModified": 1700161256,
+        "narHash": "sha256-XyU9ba9VpjqBax28X2UpRXh55UnzCIKuXYABJP7UWp4=",
         "type": "git",
         "url": "file:///home/spacecadet/code/temp-nvim-flake"
       },
