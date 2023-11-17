@@ -1,5 +1,6 @@
 # [[file:../../new_project.org::*Git][Git:1]]
 { pkgs, ... }: {
+  # TODO: Syntax highlighting in lg https://github.com/jesseduffield/lazygit/discussions/1335
   home.packages = builtins.attrValues {
     inherit (pkgs) git lazygit git-crypt;
   };
