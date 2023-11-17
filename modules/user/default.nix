@@ -27,6 +27,9 @@
         my-doom-config.nixosModules.default
         ../home-manager # (ref:linux-user-import)
         selfHMModules.vim
+        {
+          programs.myNvim = { enable = true; withLangServers = true; };
+        }
         zsh-module
       ];
       home.packages = builtins.attrValues {

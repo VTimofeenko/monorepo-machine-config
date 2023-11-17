@@ -10,6 +10,8 @@
     agenix.url = "github:ryantm/agenix";
     snowcli.url = "github:sfc-gh-vtimofeenko/snowcli?ref=nix-flake&dir=contrib/nix";
 
+    nixpkgs-lib.url = "github:NixOS/nixpkgs/nixos-unstable?dir=lib";
+
     # Theming and stuff
     base16 = {
       url = "github:SenchoPens/base16.nix";
@@ -48,6 +50,7 @@
     xremap-flake.url = "github:xremap/nix-flake";
 
     devshell.url = "github:numtide/devshell";
+    devshell.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     pyprland.url = "github:VTimofeenko/pyprland?ref=nix";
 
@@ -59,14 +62,20 @@
       url = "github:calops/hmts.nvim?ref=v1.2.0";
       flake = false;
     };
-    vim-scratch-plugin = {
-      url = "github:mtth/scratch.vim";
-      flake = false;
-    };
     pre-commit-hooks-nix = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       inputs.nixpkgs-stable.follows = "nixpkgs";
+
+    };
+    # vim plugins
+    vim-scratch-plugin = {
+      url = "github:mtth/scratch.vim";
+      flake = false;
+    };
+    nvim-devdocs = {
+      url = "github:luckasRanarison/nvim-devdocs";
+      flake = false;
     };
   };
   # Inputs:1 ends here
@@ -85,7 +94,9 @@
           inherit (flake-parts-lib) importApply;
           localDevshellCmds = importApply ./lib/flakeLib/devShell.nix { inherit withSystem self; };
           localPrecommitEnv = importApply ./lib/flakeLib/preCommit.nix { inherit withSystem; };
-          localInputsBumper = importApply ./lib/flakeLib/bumpInputs.nix { inherit withSystem self; changingInputs = [ "my-nvim-flake" "private-config"]; };
+          localInputsBumper = importApply ./lib/flakeLib/bumpInputs.nix { inherit withSystem self; changingInputs = [ "private-config" ]; };
+          nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
+
         in
         {
           # Outputs intro:1 ends here
@@ -97,6 +108,7 @@
             localDevshellCmds
             localPrecommitEnv
             localInputsBumper
+            nvimModule
           ];
           # Imports:1 ends here
           # [[file:new_project.org::*Systems setting][Systems setting:1]]
@@ -252,10 +264,10 @@
                 };
               # "nixosConfigurations" outro:1 ends here
               # [[file:new_project.org::*"homeManagerModules" output]["homeManagerModules" output:1]]
-              homeManagerModules = {
-                default = { };
-                vim = importApply ./homeManagerModules/vim { localFlake = self; inherit inputs; };
-              };
+              # homeManagerModules = {
+              #   default = { };
+              #   vim = importApply ./homeManagerModules/vim { localFlake = self; inherit inputs; };
+              # };
               # "homeManagerModules" output:1 ends here
               # [[file:new_project.org::*"Flake" output outro]["Flake" output outro:1]]
             };
