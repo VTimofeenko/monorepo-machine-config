@@ -109,6 +109,7 @@
             localPrecommitEnv
             localInputsBumper
             nvimModule
+            ./lib/flakeLib/mkHomeManagerOutputsMerge.nix
           ];
           # Imports:1 ends here
           # [[file:new_project.org::*Systems setting][Systems setting:1]]
