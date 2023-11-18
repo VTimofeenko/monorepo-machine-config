@@ -9,6 +9,9 @@ rec {
   # TODO: Better manpager
   # TODO: pass fzf completion
   # TODO: ctrl+t to descend into directory
+  # TODO: fd with fzf
+  # TODO: make fzf-tab autocomplete right away
+  # TODO: style fzf (needs semantic styles)
 
   # Shell aliases
   shellAliases = {
