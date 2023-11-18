@@ -57,7 +57,7 @@ rec {
       fd# find replacement with saner syntax
       inetutils# a couple of utilities to be kept offline
       moreutils# a collection of additional tools
-      busybox# yet another kitchen sink collection of tools
+      file# Detects what kind of file is this
       ripgrep# useful grep replacement
       lsof# shows file handles
       dig# quick DNS tester
