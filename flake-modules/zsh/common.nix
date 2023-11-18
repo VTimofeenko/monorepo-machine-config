@@ -8,6 +8,7 @@ rec {
   # TODO: z for cd?
   # TODO: Better manpager
   # TODO: pass fzf completion
+  # TODO: ctrl+t to descend into directory
 
   # Shell aliases
   shellAliases = {
