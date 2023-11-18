@@ -91,12 +91,13 @@
       (
         { withSystem, flake-parts-lib, ... }:
         let
+          inherit (inputs.nixpkgs-lib) lib;# A faster way to propagate lib to certain modules
           inherit (flake-parts-lib) importApply;
           localDevshellCmds = importApply ./lib/flakeLib/devShell.nix { inherit withSystem self; };
           localPrecommitEnv = importApply ./lib/flakeLib/preCommit.nix { inherit withSystem; };
           localInputsBumper = importApply ./lib/flakeLib/bumpInputs.nix { inherit withSystem self; changingInputs = [ "private-config" ]; };
           nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
-
+          zshModule = importApply ./flake-modules/zsh { inherit self lib; };
         in
         {
           # Outputs intro:1 ends here
@@ -109,6 +110,7 @@
             localPrecommitEnv
             localInputsBumper
             nvimModule
+            zshModule
             ./lib/flakeLib/mkHomeManagerOutputsMerge.nix
           ];
           # Imports:1 ends here
@@ -218,11 +220,10 @@
                 rec {
                   default = { ... }: {
                     imports = [
-                      zsh
+                      self.nixosModules.zsh
                       nix-config
                     ];
                   };
-                  zsh = importApply ./nixosModules/zsh inputs; # (ref:zsh-module-import)
                   tmux = importApply ./nixosModules/tmux { localFlake = self; inherit inputs; }; # (ref:tmux-module-import)
                   nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
 
@@ -265,10 +266,6 @@
                 };
               # "nixosConfigurations" outro:1 ends here
               # [[file:new_project.org::*"homeManagerModules" output]["homeManagerModules" output:1]]
-              # homeManagerModules = {
-              #   default = { };
-              #   vim = importApply ./homeManagerModules/vim { localFlake = self; inherit inputs; };
-              # };
               # "homeManagerModules" output:1 ends here
               # [[file:new_project.org::*"Flake" output outro]["Flake" output outro:1]]
             };

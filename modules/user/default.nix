@@ -30,7 +30,7 @@
         {
           programs.myNvim = { enable = true; withLangServers = true; };
         }
-        zsh-module
+        selfHMModules.zsh
       ];
       home.packages = builtins.attrValues {
         inherit (pkgs) pavucontrol blueman libreoffice firefox brave gthumb;

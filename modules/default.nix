@@ -17,7 +17,8 @@
     # wg-namespace-flake.nixosModules.default # NOTE: imported on a per-host basis
 
     # this flake's nixosModules
-    selfModules.zsh # (ref:zsh-hm-import)
+    selfModules.zsh
+    selfModules.zshHMCompanionModule
     selfModules.nix-config
     selfModules.tmux
 
