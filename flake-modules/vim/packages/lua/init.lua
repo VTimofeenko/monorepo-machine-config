@@ -80,8 +80,11 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 -- Automatically resize splits when window size changes
 vim.api.nvim_create_autocmd("VimResized", {
-	command = "wincmd =",
 	pattern = "*",
+	callback = function()
+		vim.api.nvim_command('redraw')
+		vim.api.nvim_command('wincmd =')
+	end,
 })
 KITTY_SCROLLBACK = function(INPUT_LINE_NUMBER, CURSOR_LINE, CURSOR_COLUMN)
 	vim.opt.encoding = "utf-8"
