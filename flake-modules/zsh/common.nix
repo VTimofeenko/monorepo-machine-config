@@ -4,7 +4,6 @@ let
   inherit (pkgs.lib) getExe concatMapStringsSep concatStringsSep;
 in
 rec {
-  # TODO: add alias for cd-ing into a package base directory. I seem to be doing that often
   # TODO: z for cd?
   # TODO: Better manpager
   # TODO: pass fzf completion
@@ -128,7 +127,7 @@ rec {
       ''
       # alias that cd-s into nix package's directory in store
       ''
-        cdnixpkg(){ cd $(dirname $(readlink $(which $1)))}
+        cdnixpkg(){cd $(dirname $(readlink --canonicalize $(which $1)))}
       ''
       # Debug stuff
       ''
