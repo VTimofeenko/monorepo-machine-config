@@ -215,4 +215,7 @@ rec {
     baseDir = ./myPlugins;
     list = [ "vim-edit" "cd-stack" "bookmarks" "cursor_mode" ];
   };
+  variables = {
+      EDITOR = "nvim";
+  };
 }

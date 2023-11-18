@@ -34,4 +34,5 @@ in
     };
   };
   programs.starship.enable = true;
+  environment = { inherit (commonSettings) variables; };
 }

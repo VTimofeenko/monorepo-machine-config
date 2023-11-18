@@ -42,9 +42,7 @@ in
         fpath+=("${profileDir}"/share/zsh/site-functions "${profileDir}"/share/zsh/$ZSH_VERSION/functions "${profileDir}"/share/zsh/vendor-completions)
       '';
     # initExtraFirst # Commands that should be added to top of .zshrc.
-    localVariables = {
-      EDITOR = "nvim";
-    };
+    localVariables = commonSettings.variables;
     plugins =
       [{ name = "fzf-tab"; src = "${pkgs.zsh-fzf-tab}/share/fzf-tab"; }] ++
       (with commonSettings.plugins;
