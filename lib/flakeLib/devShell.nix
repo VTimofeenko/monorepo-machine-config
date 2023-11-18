@@ -31,7 +31,7 @@ let
                 (machineName: {
                   help = "Deploy remote ${machineName}";
                   name = "${machineName}"; # 'deploy-' prefix will be added automatically
-                  command = "nixos-rebuild --flake .#{machineName} --target-host root@${machineName}.home.arpa switch";
+                  command = "nixos-rebuild --flake \${PRJ_ROOT}#{machineName} --target-host root@${machineName}.home.arpa switch"; # PRJ_ROOT is set <=> we're in direnv. Prevents extra warnings
                 })
                 (builtins.attrNames self.nixosConfigurations)) ++
               [
@@ -42,9 +42,9 @@ let
                     # bash
                     ''
                       if [[ $(grep -s ^NAME= /etc/os-release | sed 's/^.*=//') == "NixOS" ]]; then
-                        sudo nixos-rebuild switch --flake .
+                        sudo nixos-rebuild switch --flake ''${PRJ_ROOT} # PRJ_ROOT is set <=> we're in direnv. Prevents extra warnings
                       else # Not a NixOS machine
-                       home-manager switch --flake .
+                       home-manager switch --flake ''${PRJ_ROOT}
                       fi'';
                 }
               ];
