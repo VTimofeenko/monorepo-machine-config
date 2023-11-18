@@ -180,6 +180,13 @@ let
           config = builtins.readFile ./lua/which-key.lua;
         }
         {
+          pkg = pkgs.vimPlugins.vim-easy-align; # Aligns text by pattern
+          config =
+            # lua
+            ''
+              vim.api.nvim_set_keymap("x", "ga", "<Plug>(EasyAlign)", {})'';
+        }
+        {
           # TODO: hop in visual mode
           pkg = pkgs.vimPlugins.hop-nvim;
           config = # lua
