@@ -6,10 +6,8 @@ in
 rec {
   # TODO: z for cd?
   # TODO: Better manpager
-  # TODO: pass fzf completion
   # TODO: ctrl+t to descend into directory
   # TODO: fd with fzf
-  # TODO: make fzf-tab autocomplete right away
   # TODO: style fzf (needs semantic styles)
   # TODO: After 23.11 -- fzf-preview with kitty
 
@@ -166,6 +164,48 @@ rec {
       # ''
       #   zstyle ':completion:*:*:*:default' menu yes select search
       # ''
+      # fzf-tab config
+      (
+        let
+          previewers = rec {
+            dir = "${getExe pkgs-unstable.eza} -1 --color=always $realpath";
+            file = "${getExe pkgs.bat} --plain --color=always $realpath";
+            dispatcher =
+              # bash
+              ''
+                if [[ -d $realpath ]]; then
+                  ${dir}
+                elif [[ -f $realpath ]]; then
+                  ${file}
+                fi
+              '';
+          };
+        in
+        ''
+          # disable sort when completing `git checkout`
+          zstyle ':completion:*:git-checkout:*' sort false
+          # set descriptions format to enable group support
+          zstyle ':completion:*:descriptions' format '[%d]'
+          # set list-colors to enable filename colorizing
+          zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
+          # preview directory's content with eza when completing cd
+          zstyle ':fzf-tab:complete:cd:*' fzf-preview '${previewers.dir}'
+
+          # preview file's content with bat when completing vim
+          zstyle ':fzf-tab:complete:$EDITOR:*' fzf-preview '${previewers.dispatcher}'
+          # Quickly accept suggestion
+          zstyle ':fzf-tab:*' fzf-bindings 'space:accept'
+          zstyle ':fzf-tab:*' accept-line enter
+          # Kill processes
+          zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
+          zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
+            '[[ $group == "[process ID]" ]] && ps --pid=$word -o cmd -w -w'
+          zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags --preview-window=down:3:wrap
+
+          # Systemctl
+          zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
+        ''
+      )
     ]
   ;
   completionInit = ''
