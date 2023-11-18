@@ -125,7 +125,7 @@ rec {
       ''
       # alias that cd-s into nix package's directory in store
       ''
-        cdnixpkg(){ cd $(dirname $(which $1))}
+        cdnixpkg(){ cd $(dirname $(readlink $(which $1)))}
       ''
       # Debug stuff
       ''
