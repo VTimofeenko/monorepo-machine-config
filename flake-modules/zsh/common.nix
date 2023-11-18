@@ -4,10 +4,7 @@ let
   inherit (pkgs.lib) getExe concatMapStringsSep concatStringsSep;
 in
 rec {
-  # TODO: z for cd?
   # TODO: Better manpager
-  # TODO: ctrl+t to descend into directory
-  # TODO: fd with fzf
   # TODO: style fzf (needs semantic styles)
   # TODO: After 23.11 -- fzf-preview with kitty
 
@@ -217,5 +214,7 @@ rec {
   };
   variables = {
       EDITOR = "nvim";
+      FZF_CTRL_T_COMMAND="${getExe pkgs.fd} .";
+      FZF_ALT_C_COMMAND="${getExe pkgs.fd} -t d .";
   };
 }
