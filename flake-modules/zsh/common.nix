@@ -32,6 +32,7 @@ rec {
     vidir = "${pkgs.moreutils}/bin/vidir --verbose";
     ccopy = if pkgs.stdenv.isDarwin then "pbcopy" else "${pkgs.wl-clipboard}/bin/wl-copy";
     syu = "systemctl --user";
+    ju = "journalctl --user";
     cde = "cd /etc/nixos";
     lg = "${getExe pkgs.lazygit}";
     # Colorize IP output
