@@ -11,6 +11,7 @@ rec {
   # TODO: fd with fzf
   # TODO: make fzf-tab autocomplete right away
   # TODO: style fzf (needs semantic styles)
+  # TODO: After 23.11 -- fzf-preview with kitty
 
   # Shell aliases
   shellAliases = {
