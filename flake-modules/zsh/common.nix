@@ -215,8 +215,8 @@ rec {
     list = [ "vim-edit" "cd-stack" "bookmarks" "cursor_mode" ];
   };
   variables = {
-      EDITOR = "nvim";
-      FZF_CTRL_T_COMMAND="${getExe pkgs.fd} .";
-      FZF_ALT_C_COMMAND="${getExe pkgs.fd} -t d .";
+    EDITOR = "nvim";
+    FZF_CTRL_T_COMMAND = "${getExe pkgs.fd} .";
+    FZF_ALT_C_COMMAND = "${getExe pkgs.fd} -t d .";
   };
 }
