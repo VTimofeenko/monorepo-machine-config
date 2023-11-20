@@ -114,6 +114,7 @@
                 inputs.flake-parts.flakeModules.easyOverlay
                 inputs.pre-commit-hooks-nix.flakeModule
               ]
+              ./lib/flakeLib/mkHomeManagerOutputsMerge.nix
               # Construct imports from this flake's flake modules
               (lib.lists.flatten (map builtins.attrValues [ self-flake-modules publicFlakeModules ]))
             ]);
