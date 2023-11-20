@@ -98,6 +98,7 @@
           localInputsBumper = importApply ./lib/flakeLib/bumpInputs.nix { inherit withSystem self lib flake-parts-lib; };
           nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
           zshModule = importApply ./flake-modules/zsh { inherit self lib; };
+          gitModule = importApply ./flake-modules/git;
         in
         {
           # Outputs intro:1 ends here
@@ -111,6 +112,7 @@
             localInputsBumper
             nvimModule
             zshModule
+            gitModule
             ./lib/flakeLib/mkHomeManagerOutputsMerge.nix
           ];
           # Imports:1 ends here

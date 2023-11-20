@@ -1,8 +1,11 @@
-# [[file:../../new_project.org::*Git][Git:1]]
-{ pkgs, ... }: {
-  # TODO: Syntax highlighting in lg https://github.com/jesseduffield/lazygit/discussions/1335
+# Home manager module that configures git
+{ pkgs, lib, ... }:
+let
+  inherit (lib) getExe;
+in
+{
   home.packages = builtins.attrValues {
-    inherit (pkgs) git lazygit git-crypt;
+    inherit (pkgs) git git-crypt;
   };
 
   # Directory where local overrides can be places
@@ -29,15 +32,11 @@
       # where envrc stores its stuff
       ".direnv/"
     ];
-    extraConfig = {
-      url = {
-        "https://github.com/" = {
-          insteadOf = [
-            "gh:"
-            "github:"
-          ];
-        };
-      };
+    extraConfig.url."https://github.com/" = {
+      insteadOf = [
+        "gh:"
+        "github:"
+      ];
     };
     includes = [
       { path = "~/.config/git/local.d/gitconfig"; } # Local ad-hoc overrides for git config
@@ -45,11 +44,20 @@
   };
   programs.gh = {
     enable = true;
+    settings.prompt = "enabled";
+    settings.aliases.prco = "pr checkout";
+  };
+  programs.lazygit = {
+    # TODO: Lazygit color scheme to match the rest. Needs semantic colors?
+    enable = true;
     settings = {
-      prompt = "enabled";
-      aliases = {
-        prco = "pr checkout";
+      gui.theme = rec {
+        selectedLineBgColor = [
+          "#595959" #gray35
+        ];
+        selectedRangeBgColor = selectedLineBgColor;
       };
+      git.paging.pager = "${getExe pkgs.diff-so-fancy}";
     };
   };
 }
