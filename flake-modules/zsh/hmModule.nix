@@ -85,4 +85,12 @@ in
       lua.symbol = " ";
     };
   };
+  # TODO: style bat properly
+  programs.bat = {
+    enable = true;
+    config = {
+      map-syntax = [ "flake.lock:JSON" ];
+      theme = "1337";
+    };
+  };
 }
