@@ -201,6 +201,8 @@ rec {
 
           # Systemctl
           zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
+          # Space to continue completions
+          zstyle ':fzf-tab:*' continuous-trigger space
         ''
       )
     ]
