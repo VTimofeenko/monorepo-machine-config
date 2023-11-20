@@ -4,13 +4,13 @@ let
   inherit (pkgs.lib) getExe concatMapStringsSep concatStringsSep;
 in
 rec {
-  # TODO: Better manpager
   # TODO: style fzf (needs semantic styles)
   # TODO: After 23.11 -- fzf-preview with kitty
 
   # Shell aliases
   shellAliases = {
     e = "$EDITOR";
+    man = "man -P 'nvim +Man!'";
     nvim = "$EDITOR";
     vim = "$EDITOR";
     ls = "${getExe pkgs-unstable.eza} -h --group-directories-first --icons=auto";
