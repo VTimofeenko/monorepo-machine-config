@@ -93,28 +93,30 @@
         let
           inherit (inputs.nixpkgs-lib) lib;# A faster way to propagate lib to certain modules
           inherit (flake-parts-lib) importApply;
-          localDevshellCmds = importApply ./lib/flakeLib/devShell.nix { inherit withSystem self; };
-          localPrecommitEnv = importApply ./lib/flakeLib/preCommit.nix { inherit withSystem; };
-          localInputsBumper = importApply ./lib/flakeLib/bumpInputs.nix { inherit withSystem self lib flake-parts-lib; };
-          nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
-          zshModule = importApply ./flake-modules/zsh { inherit self lib; };
-          gitModule = importApply ./flake-modules/git;
+          self-flake-modules = {
+            localDevshellCmds = importApply ./lib/flakeLib/devShell.nix { inherit withSystem self; };
+            localPrecommitEnv = importApply ./lib/flakeLib/preCommit.nix { inherit withSystem; };
+            localInputsBumper = importApply ./lib/flakeLib/bumpInputs.nix { inherit withSystem self lib flake-parts-lib; };
+          };
+          publicFlakeModules = {
+            nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
+            zshModule = importApply ./flake-modules/zsh { inherit self lib; };
+            gitModule = importApply ./flake-modules/git;
+          };
         in
         {
           # Outputs intro:1 ends here
           # [[file:new_project.org::*Imports][Imports:1]]
-          imports = [
-            inputs.devshell.flakeModule
-            inputs.flake-parts.flakeModules.easyOverlay
-            inputs.pre-commit-hooks-nix.flakeModule
-            localDevshellCmds
-            localPrecommitEnv
-            localInputsBumper
-            nvimModule
-            zshModule
-            gitModule
-            ./lib/flakeLib/mkHomeManagerOutputsMerge.nix
-          ];
+          imports =
+            (builtins.concatLists [
+              [
+                inputs.devshell.flakeModule
+                inputs.flake-parts.flakeModules.easyOverlay
+                inputs.pre-commit-hooks-nix.flakeModule
+              ]
+              # Construct imports from this flake's flake modules
+              (lib.lists.flatten (map builtins.attrValues [ self-flake-modules publicFlakeModules ]))
+            ]);
           # Imports:1 ends here
           # [[file:new_project.org::*Systems setting][Systems setting:1]]
           systems = [ "x86_64-linux" "aarch64-darwin" "aarch64-linux" ];
@@ -215,6 +217,7 @@
               inherit (flake-parts-lib) importApply;
             in
             {
+              flake-modules = self-flake-modules;
               # The usual flake attributes can be defined here, including system-
               # agnostic ones like nixosModule and system-enumerating ones, although
               # those are more easily expressed in perSystem.
