@@ -2,11 +2,28 @@
 # WARN: Experimental, use at your own risk
 
 # self is only used to double-check inputs
-{ withSystem, self, changingInputs }:
+{ withSystem, self, lib, flake-parts-lib, ... }:
+let
+  inherit (flake-parts-lib) mkPerSystemOption;
+  inherit (lib) mkOption types;
+in
+
 {
-  perSystem = { system, ... }: {
+  options.perSystem = mkPerSystemOption ({ config, pkgs, ... }: {
+    options.changingInputs = mkOption {
+      description = ''
+        List of names of quickly changing inputs.
+
+        This list will be turned into shell commands through devshell.
+      '';
+      type = types.listOf types.str;
+      default = [ ];
+    };
+
+  });
+  config.perSystem = { system, ... }: {
     devshells.default = withSystem system
-      ({ pkgs, ... }:
+      ({ pkgs, config, ... }:
         let
           bumpScript = pkgs.writeShellApplication {
             name = "bump-input";
@@ -26,7 +43,7 @@
                 command = /* bash */ "${pkgs.lib.getExe bumpScript} ${inputName}";
                 category = "flake management";
               })
-              changingInputs);
+              config.changingInputs);
         });
   };
 }

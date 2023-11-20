@@ -95,7 +95,7 @@
           inherit (flake-parts-lib) importApply;
           localDevshellCmds = importApply ./lib/flakeLib/devShell.nix { inherit withSystem self; };
           localPrecommitEnv = importApply ./lib/flakeLib/preCommit.nix { inherit withSystem; };
-          localInputsBumper = importApply ./lib/flakeLib/bumpInputs.nix { inherit withSystem self; changingInputs = [ "private-config" ]; };
+          localInputsBumper = importApply ./lib/flakeLib/bumpInputs.nix { inherit withSystem self lib flake-parts-lib; };
           nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
           zshModule = importApply ./flake-modules/zsh { inherit self lib; };
         in
@@ -186,7 +186,9 @@
                   # [[file:new_project.org::*homeConfigurations outro][homeConfigurations outro:1]]
                 };
               # homeConfigurations outro:1 ends here
+              changingInputs = [ "private-config" ];
               # [[file:new_project.org::*devShells][devShells:1]]
+
               devshells.default = {
                 env = [
                   {
