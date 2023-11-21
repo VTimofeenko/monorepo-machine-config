@@ -141,18 +141,6 @@
               # [[file:new_project.org::*Formatter][Formatter:1]]
               formatter = pkgs.nixpkgs-fmt; # (ref:formatter)
               # Formatter:1 ends here
-              # [[file:new_project.org::*Packages][Packages:1]]
-              packages =
-                let
-                  naersk-lib = pkgs-unstable.callPackage inputs.naersk { };
-                in
-                {
-                  hyprland-lang-notifier = naersk-lib.buildPackage ./packages/hyprland-lang-notifier;
-                  hyprland-mode-notifier = naersk-lib.buildPackage ./packages/hyprland-mode-notifier;
-                  hyprland-switch-lang-on-xremap = naersk-lib.buildPackage ./packages/hyprland-switch-lang-on-xremap;
-                  hyprland-workspace-notifier = naersk-lib.buildPackage ./packages/hyprland-workspace-notifier;
-                };
-              # Packages:1 ends here
               # [[file:new_project.org::*Overlays][Overlays:1]]
               overlayAttrs = builtins.attrValues config.packages;
               # Overlays:1 ends here
