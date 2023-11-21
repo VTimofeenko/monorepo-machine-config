@@ -76,7 +76,7 @@ let
 
           local wk = require("which-key")
           wk.register({
-            ["<leader>"] = { function() require'telescope.builtin'.find_files({cwd=vim.env.PRJ_ROOT}) end, "Find files in project" },
+            ["<leader>"] = { function() require'telescope.builtin'.find_files({cwd=vim.env.PRJ_ROOT, path_display = {"truncate"}}) end, "Find files in project" },
             ["b"] = { require'telescope.builtin'.buffers, "Buffers" },
             ["/"] = { function() require'telescope.builtin'.live_grep({glob_pattern = "!*.lock"}) end, "Live grep" },
             f = {
