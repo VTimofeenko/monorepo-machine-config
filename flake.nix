@@ -84,8 +84,7 @@
       inputs.nixpkgs-lib.follows = "nixpkgs-lib";
     };
     my-flake-modules = {
-      # url = "git+file:///home/spacecadet/code/flake-modules";
-      url = "path:///home/spacecadet/code/flake-modules";
+      url = "github:VTimofeenko/flake-modules";
       inputs = {
         nixpkgs.follows = "nixpkgs-unstable";
         nixpkgs-unstable.follows = "nixpkgs-unstable";

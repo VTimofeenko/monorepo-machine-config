@@ -3444,14 +3444,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1700531634,
-        "narHash": "sha256-QauJr9ohpmz+p3TVazSeChZZojF7RQd2D0N8GDsQR3A=",
-        "path": "/home/spacecadet/code/flake-modules",
-        "type": "path"
+        "lastModified": 1700532566,
+        "narHash": "sha256-Rz/wEVA2AI1bfltUokyqHZCXhR7D5y9b9M5UXd4ViBo=",
+        "owner": "VTimofeenko",
+        "repo": "flake-modules",
+        "rev": "ac38e3a5286c6a447653cd1cfd8b70b0421e9fdb",
+        "type": "github"
       },
       "original": {
-        "path": "/home/spacecadet/code/flake-modules",
-        "type": "path"
+        "owner": "VTimofeenko",
+        "repo": "flake-modules",
+        "type": "github"
       }
     },
     "my-nvim-flake": {
