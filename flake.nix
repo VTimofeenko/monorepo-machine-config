@@ -77,6 +77,25 @@
       url = "github:luckasRanarison/nvim-devdocs";
       flake = false;
     };
+
+    # My development stuff
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs-lib";
+    };
+    my-flake-modules = {
+      # url = "git+file:///home/spacecadet/code/flake-modules";
+      url = "path:///home/spacecadet/code/flake-modules";
+      inputs = {
+        nixpkgs.follows = "nixpkgs-unstable";
+        nixpkgs-unstable.follows = "nixpkgs-unstable";
+        nixpkgs-stable.follows = "nixpkgs";
+        nixpkgs-lib.follows = "nixpkgs-lib";
+        flake-parts.follows = "flake-parts";
+        pre-commit-hooks-nix.follows = "pre-commit-hooks-nix";
+        devshell.follows = "devshell";
+      };
+    };
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
@@ -93,11 +112,6 @@
         let
           inherit (inputs.nixpkgs-lib) lib;# A faster way to propagate lib to certain modules
           inherit (flake-parts-lib) importApply;
-          self-flake-modules = {
-            localDevshellCmds = importApply ./lib/flakeLib/devShell.nix { inherit withSystem self; };
-            localPrecommitEnv = importApply ./lib/flakeLib/preCommit.nix { inherit withSystem; };
-            localInputsBumper = importApply ./lib/flakeLib/bumpInputs.nix { inherit withSystem self lib flake-parts-lib; };
-          };
           publicFlakeModules = {
             nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
             zshModule = importApply ./flake-modules/zsh { inherit self lib; };
@@ -113,10 +127,9 @@
                 inputs.devshell.flakeModule
                 inputs.flake-parts.flakeModules.easyOverlay
                 inputs.pre-commit-hooks-nix.flakeModule
-                ./lib/flakeLib/mkHomeManagerOutputsMerge.nix
               ]
               # Construct imports from this flake's flake modules
-              (lib.lists.flatten (map builtins.attrValues [ self-flake-modules publicFlakeModules ]))
+              (lib.lists.flatten (map builtins.attrValues [ inputs.my-flake-modules.flake-modules publicFlakeModules ]))
             ]);
           # Imports:1 ends here
           # [[file:new_project.org::*Systems setting][Systems setting:1]]
@@ -218,7 +231,8 @@
               inherit (flake-parts-lib) importApply;
             in
             {
-              flake-modules = self-flake-modules;
+              # Pass this through
+              inherit (inputs.my-flake-modules) flake-modules;
               # The usual flake attributes can be defined here, including system-
               # agnostic ones like nixosModule and system-enumerating ones, although
               # those are more easily expressed in perSystem.
