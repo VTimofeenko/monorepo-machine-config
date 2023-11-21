@@ -189,17 +189,6 @@
                     ];
                   };
                   # Deck:1 ends here
-                  # [[file:new_project.org::*Vtimofeenko][Vtimofeenko:1]]
-                  vtimofeenko = mkHmc {
-                    modules = [
-                      ./modules/home-manager/home.nix
-                      self.homeManagerModules.vim
-                      ./modules/home-manager/git.nix
-                      ./modules/home-manager/zsh
-                      ./modules/home-manager/_perUser/vtimofeenko.nix
-                    ];
-                  };
-                  # Vtimofeenko:1 ends here
                   # [[file:new_project.org::*homeConfigurations outro][homeConfigurations outro:1]]
                 };
               # homeConfigurations outro:1 ends here
