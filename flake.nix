@@ -58,10 +58,6 @@
 
     naersk.url = "github:nix-community/naersk/master";
 
-    hmts = {
-      url = "github:calops/hmts.nvim?ref=v1.2.0";
-      flake = false;
-    };
     pre-commit-hooks-nix = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
