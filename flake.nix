@@ -56,8 +56,6 @@
 
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
 
-    naersk.url = "github:nix-community/naersk/master";
-
     pre-commit-hooks-nix = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
