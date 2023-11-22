@@ -74,18 +74,10 @@ in
     (./per-host-configs + "/${hostName}.nix") # (ref:per-machine-hyprland-config)
     ./lock # (ref:lock-hyprland-import)
     ./theme # (ref:hyprland-theme-import)
-  ]
-  ++
-  (with selfHMModules; [
-    hyprland-language-switch-notifier
-    hyprland-mode-switch-notifier
-    hyprland-workspace-switch-notifier
-  ]);
+    selfHMModules.hyprland-helpers
+  ];
 
-  services.hyprland-language-switch-notifier.enable = true;
-  services.hyprland-mode-switch-notifier.enable = true;
-  services.hyprland-workspace-notifier.enable = true;
-
+  services.hyprland-helpers.enable = true;
 
   wayland.windowManager.hyprland =
     {

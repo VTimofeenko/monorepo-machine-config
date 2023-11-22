@@ -96,7 +96,7 @@
   flake =
     {
       homeManagerModules = {
-        # hyprland-helpers = # TODO: Make a single module to enable everything
+        hyprland-helpers = import ./homeManagerModules self;
         hyprland-language-switch-notifier = import ./homeManagerModules/hyprland-language-switch-notifier.nix self;
         hyprland-mode-switch-notifier = import ./homeManagerModules/hyprland-mode-switch-notifier.nix self;
         hyprland-workspace-switch-notifier = import ./homeManagerModules/hyprland-workspace-notifier.nix self;
