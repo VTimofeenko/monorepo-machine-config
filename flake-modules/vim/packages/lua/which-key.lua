@@ -49,3 +49,11 @@ vim.api.nvim_set_keymap(
 	"<cmd>lua require'which-key'.show(',', {mode='n'})<cr>",
 	{ silent = true }
 )
+
+wk.register({
+	T = {
+		N = { "<cmd>set number! relativenumber!<cr>", "Toggle all numbers" },
+		n = { "<cmd>set number!<cr>", "Toggle number" },
+		r = { "<cmd>set relativenumber!<cr>", "Toggle relative numbers" }
+	},
+}, { prefix = "<leader>" })
