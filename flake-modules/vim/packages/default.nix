@@ -51,11 +51,11 @@ let
         config = builtins.readFile ./lua/lspconfig.lua;
       }
       {
-        pkg = pkgs.vimPlugins.nvim-treesitter-context;
+        pkg = pkgs.vimPlugins.nvim-treesitter-context; # Adds LSP context on the top
         config = builtins.readFile ./lua/treesitter-context.lua;
       }
       {
-        pkg = pkgs.vimPlugins.nvim-ufo;
+        pkg = pkgs.vimPlugins.nvim-ufo; # Adds LSP folds
         config = builtins.readFile ./lua/ufo.lua;
       }
       {
