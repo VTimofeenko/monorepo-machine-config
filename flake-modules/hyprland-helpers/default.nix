@@ -14,7 +14,10 @@
       craneLib = self.inputs.crane.lib.${system}; # NOTE: not inputs' since it seems to strip non-standard outputs.
     in
     {
-      packages = withSystem system ({ inputs', pkgs, ... }:
+      packages = withSystem system ({ pkgs
+                                      # , inputs'
+                                    , ...
+                                    }:
         let
           version = "0.1.0";
           /*
@@ -28,9 +31,7 @@
             name = "hyprland-helpers";
             pname = name;
             meta.mainProgram = ""; # There is no explicit main package here
-            buildInputs = [
-              # Add additional build inputs here
-            ] ++ lib.optionals pkgs.stdenv.isDarwin [
+            buildInputs = lib.optionals pkgs.stdenv.isDarwin [
               # Additional darwin specific inputs can be set here
               pkgs.libiconv
             ];

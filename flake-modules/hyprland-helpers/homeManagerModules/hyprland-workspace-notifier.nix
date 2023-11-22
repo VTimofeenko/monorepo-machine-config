@@ -1,13 +1,13 @@
 # [[file:../../new_project.org::*hyprland workspace notifier][hyprland workspace notifier:1]]
 # Home manager module to configure a user service that notifies when workspace was switched
 localFlake:
-{ pkgs, lib, self, config, ... }:
-with lib;
+{ pkgs, lib, config, ... }:
 let
   pkgName = "hyprland-workspace-notifier";
 
   cfg = config.services.${pkgName};
   pkg = localFlake.packages.${pkgs.stdenv.hostPlatform.system}.${pkgName};
+  inherit (lib) mkEnableOption mkIf;
 in
 {
   options.services.${pkgName} = {

@@ -1,6 +1,6 @@
 # The module that imports other hyprland helpers and mass-enables them
 localFlake:
-{ pkgs, lib, self, config, ... }:
+{ lib, config, ... }:
 let
   cfg = config.services.hyprland-helpers;
   inherit (lib) mkEnableOption mkIf;
@@ -15,8 +15,10 @@ in
     enable = mkEnableOption "hyprland mode switch notifications";
   };
   config = mkIf cfg.enable {
-    services.hyprland-language-switch-notifier.enable = true;
-    services.hyprland-mode-switch-notifier.enable = true;
-    services.hyprland-workspace-notifier.enable = true;
+    services = {
+      hyprland-language-switch-notifier.enable = true;
+      hyprland-mode-switch-notifier.enable = true;
+      hyprland-workspace-notifier.enable = true;
+    };
   };
 }
