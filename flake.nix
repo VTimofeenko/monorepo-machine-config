@@ -123,7 +123,7 @@
           inherit (flake-parts-lib) importApply;
           publicFlakeModules = {
             nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
-            zshModule = importApply ./flake-modules/zsh { inherit self lib; };
+            zshModule = importApply ./flake-modules/zsh { inherit self; };
             gitModule = importApply ./flake-modules/git;
             hyprlandHelpersModule = importApply ./flake-modules/hyprland-helpers { inherit withSystem lib self; };
           };
