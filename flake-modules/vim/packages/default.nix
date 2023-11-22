@@ -62,6 +62,10 @@ let
         pkg = mkPluginFromInput "nvim-devdocs"; # devdocs.io inside nvim
         config = builtins.readFile ./lua/devdocs.lua;
       }
+      {
+        pkg = pkgs.vimPlugins.nvim-colorizer-lua;
+        config = /* lua */ "require('colorizer').setup()";
+      }
     ];
   };
 
