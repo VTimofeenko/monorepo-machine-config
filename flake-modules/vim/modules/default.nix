@@ -18,7 +18,7 @@ in
     withLangServers = mkEnableOption "Enable language server plugins";
   };
   config = mkIf cfg.enable {
-    ${outer}.${inner} = assert assertMsg (config.programs.neovim.enable == false) "This module is not compatible with the standard neovim module";
+    ${outer}.${inner} = assert assertMsg (!config.programs.neovim.enable) "This module is not compatible with the standard neovim module";
       [ (if cfg.withLangServers then localPkgs'.vimWithLangs else localPkgs'.vim) ];
   };
 }

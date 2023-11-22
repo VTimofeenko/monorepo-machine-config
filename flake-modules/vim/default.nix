@@ -12,13 +12,13 @@
         vim = pkgBuilder commonArgs;
         vimWithLangs = pkgBuilder (commonArgs // { enableLangServers = true; });
       in
-      (rec {
+      rec {
         inherit vim vimWithLangs;
         nvim = vim;
         nvimWithLangs = vimWithLangs;
         neovim = vim;
         neovimWithLangs = vimWithLangs;
-      }));
+      });
   };
   flake =
     let
