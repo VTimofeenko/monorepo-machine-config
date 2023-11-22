@@ -1,6 +1,12 @@
 # [[file:../../new_project.org::*User hyprland config][User hyprland config:1]]
 # Home manaager module to configure hyprland
-{ config, pkgs, lib, osConfig, selfPkgs, ... }:
+{ pkgs
+, lib
+, osConfig
+, selfPkgs
+, selfHMModules
+, ...
+}:
 let
   # Example of using system-wide configuration in home-manager module
   inherit (osConfig.networking) hostName;
@@ -62,15 +68,25 @@ in
 {
   imports = [
     ./pyprland # (ref:pyprland-import)
-    ./hyprland-language-switch-notifier # (ref:use-lang-switch-notifier-import)
-    ./hyprland-mode-switch-notifier # (ref:use-mode-switch-notifier-import)
-    ./hyprland-workspace-notifier # (ref:use-workspace-import)
+    # ./hyprland-workspace-notifier # (ref:use-workspace-import)
     ./keybinds # (ref:hyprland-bindings-import)
     ./modes # (ref:hyprland-modes-import)
     (./per-host-configs + "/${hostName}.nix") # (ref:per-machine-hyprland-config)
     ./lock # (ref:lock-hyprland-import)
     ./theme # (ref:hyprland-theme-import)
-  ];
+  ]
+  ++
+  (with selfHMModules; [
+    hyprland-language-switch-notifier
+    hyprland-mode-switch-notifier
+    hyprland-workspace-switch-notifier
+  ]);
+
+  services.hyprland-language-switch-notifier.enable = true;
+  services.hyprland-mode-switch-notifier.enable = true;
+  services.hyprland-workspace-notifier.enable = true;
+
+
   wayland.windowManager.hyprland =
     {
       enable = true;

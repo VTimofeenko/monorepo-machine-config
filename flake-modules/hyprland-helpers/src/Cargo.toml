@@ -1,0 +1,15 @@
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+members = [
+"hyprland-lang-notifier",
+"hyprland-mode-notifier",
+"hyprland-switch-lang-on-xremap",
+"hyprland-workspace-notifier"
+]
+resolver = "2"
+
+[workspace.dependencies]
+hyprland = "0.3.12"
+notify-rust = "4.10.0"
+clap = { version = "4.4.8", features = ["derive"] }

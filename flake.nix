@@ -89,6 +89,22 @@
         devshell.follows = "devshell";
       };
     };
+    # Rust
+    crane = {
+      url = "github:ipetkov/crane";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.rust-analyzer-src.follows = "";
+    };
+
+    advisory-db = {
+      url = "github:rustsec/advisory-db";
+      flake = false;
+    };
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
@@ -109,6 +125,7 @@
             nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
             zshModule = importApply ./flake-modules/zsh { inherit self lib; };
             gitModule = importApply ./flake-modules/git;
+            hyprlandHelpersModule = importApply ./flake-modules/hyprland-helpers { inherit withSystem lib self; };
           };
         in
         {
@@ -178,16 +195,10 @@
               # [[file:new_project.org::*devShells][devShells:1]]
 
               devshells.default = {
-                env = [
-                  {
-                    name = "RUST_SRC_PATH";
-                    value = pkgs-unstable.rustPlatform.rustLibSrc;
-                  }
-                ];
+                env = [ ];
                 commands = [ ];
                 packages = builtins.attrValues {
-                  inherit (pkgs-unstable) cargo rustc rustfmt pre-commit gcc pkg-config;
-                  inherit (pkgs-unstable.rustPackages) clippy;
+                  inherit (pkgs-unstable) pre-commit gcc pkg-config;
                 };
 
               };
@@ -218,11 +229,6 @@
                   };
                   tmux = importApply ./nixosModules/tmux { localFlake = self; inherit inputs; }; # (ref:tmux-module-import)
                   nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
-
-                  # Home manager modules follow
-                  hyprland-language-switch-notifier = importApply ./nixosModules/hyprland-language-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:lang-switch-import)
-                  hyprland-mode-switch-notifier = importApply ./nixosModules/hyprland-mode-switch-notifier { localFlake = self; inherit withSystem; }; # (ref:mode-switch-import)
-                  hyprland-workspace-notifier = importApply ./nixosModules/hyprland-workspace-notifier { localFlake = self; inherit withSystem; }; # (ref:workspace-import)
                 };
               # "nixosModules" output:1 ends here
               # [[file:new_project.org::*"nixosConfigurations" output]["nixosConfigurations" output:1]]

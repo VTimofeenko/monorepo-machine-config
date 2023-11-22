@@ -1,6 +1,6 @@
 # [[file:../../new_project.org::*hyprland mode switch notifier][hyprland mode switch notifier:1]]
 # Home manager module to configure a user service that notifies when mode is switched
-{ localFlake, withSystem }:
+localFlake:
 { pkgs, lib, self, config, ... }:
 with lib;
 let
