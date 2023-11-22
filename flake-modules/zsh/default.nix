@@ -1,5 +1,7 @@
 # Flake module that exposes my zsh config as a home manager and NixOS modules
-{ self, lib }:
+{ self
+  #, lib
+}:
 {
   # TODO: fzf ignore lock files for completion unless it's the only option
   flake = {

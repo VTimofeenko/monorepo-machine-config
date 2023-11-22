@@ -1,6 +1,6 @@
 # NixOS module that configures zsh
 { self }:
-{ pkgs, config, lib, ... }:
+{ pkgs, lib, ... }:
 let
   inherit (self) inputs;
   commonSettings = import ./common.nix {
