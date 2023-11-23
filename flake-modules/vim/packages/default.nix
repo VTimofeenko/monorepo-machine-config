@@ -64,7 +64,7 @@ let
       }
       {
         pkg = pkgs.vimPlugins.nvim-colorizer-lua;
-        config = /* lua */ "require('colorizer').setup()";
+        config = builtins.readFile ./lua/colorizer.lua;
       }
     ];
   };
