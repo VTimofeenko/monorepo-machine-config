@@ -78,6 +78,10 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs-lib";
     };
+    # TODO: move to upstream url once pull/133 is merged
+    treefmt-nix.url = "github:VTimofeenko/treefmt-nix?ref=nickel-syntax-fix";
+    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs-unstable";
+
     my-flake-modules = {
       url = "github:VTimofeenko/flake-modules";
       inputs = {
@@ -88,6 +92,7 @@
         flake-parts.follows = "flake-parts";
         pre-commit-hooks-nix.follows = "pre-commit-hooks-nix";
         devshell.follows = "devshell";
+        treefmt-nix.follows = "treefmt-nix";
       };
     };
     # Rust
@@ -138,6 +143,7 @@
                 inputs.devshell.flakeModule
                 inputs.flake-parts.flakeModules.easyOverlay
                 inputs.pre-commit-hooks-nix.flakeModule
+                inputs.treefmt-nix.flakeModule
               ]
               # Construct imports from this flake's flake modules
               (lib.lists.flatten (map builtins.attrValues [ inputs.my-flake-modules.flake-modules publicFlakeModules ]))
@@ -152,13 +158,6 @@
               pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
             in
             {
-              # Per-system attributes can be defined here. The self' and inputs'
-              # module parameters provide easy access to attributes of the same
-              # system.
-              # "perSystem" output:1 ends here
-              # [[file:new_project.org::*Formatter][Formatter:1]]
-              formatter = pkgs.nixpkgs-fmt; # (ref:formatter)
-              # Formatter:1 ends here
               # [[file:new_project.org::*Overlays][Overlays:1]]
               overlayAttrs = builtins.attrValues config.packages;
               # Overlays:1 ends here
@@ -194,6 +193,11 @@
               # homeConfigurations outro:1 ends here
               changingInputs = [ "private-config" ];
               # [[file:new_project.org::*devShells][devShells:1]]
+
+              format-module = {
+                languages = [ "lua" "shell" ];
+                addFormattersToDevshell = true;
+              };
 
               devshells.default = {
                 env = [ ];
