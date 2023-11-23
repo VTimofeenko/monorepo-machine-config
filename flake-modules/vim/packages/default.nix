@@ -107,7 +107,7 @@ let
 
   completionPlugins = [
     {
-      pkg = pkgs.vimPlugins.nvim-cmp;
+      pkg = pkgs.vimPlugins.nvim-cmp; # TODO: revise this, old config that I copy pasted back and forth
       config =
         # lua
         ''
