@@ -191,7 +191,7 @@
                   # [[file:new_project.org::*homeConfigurations outro][homeConfigurations outro:1]]
                 };
               # homeConfigurations outro:1 ends here
-              changingInputs = [ "private-config" ];
+              changingInputs = [ "private-config" "my-flake-modules" ];
               # [[file:new_project.org::*devShells][devShells:1]]
 
               format-module = {
