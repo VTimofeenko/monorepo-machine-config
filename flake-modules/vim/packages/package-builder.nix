@@ -1,5 +1,5 @@
 /*
-This module builds the neovim shell application
+  This module builds the neovim shell application
 */
 
 { pkgs # nixpkgs packages

@@ -83,8 +83,8 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 vim.api.nvim_create_autocmd("VimResized", {
 	pattern = "*",
 	callback = function()
-		vim.api.nvim_command('redraw')
-		vim.api.nvim_command('wincmd =')
+		vim.api.nvim_command("redraw")
+		vim.api.nvim_command("wincmd =")
 	end,
 })
 KITTY_SCROLLBACK = function(INPUT_LINE_NUMBER, CURSOR_LINE, CURSOR_COLUMN)

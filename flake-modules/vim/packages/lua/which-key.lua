@@ -54,6 +54,6 @@ wk.register({
 	T = {
 		N = { "<cmd>set number! relativenumber!<cr>", "Toggle all numbers" },
 		n = { "<cmd>set number!<cr>", "Toggle number" },
-		r = { "<cmd>set relativenumber!<cr>", "Toggle relative numbers" }
+		r = { "<cmd>set relativenumber!<cr>", "Toggle relative numbers" },
 	},
 }, { prefix = "<leader>" })
