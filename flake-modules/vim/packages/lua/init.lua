@@ -26,6 +26,7 @@ options.tabstop = 4
 options.shiftwidth = 4
 options.autoread = true
 options.mouse = ""
+options.scrolloff = 4 -- Keep 4 lines of context around the cursor. Also helps with treesitter context
 
 -- Lua overwrites the groups, need to save them first
 local pmenuGroup = vim.api.nvim_get_hl(0, { name = "Pmenu" })
