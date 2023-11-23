@@ -6,7 +6,6 @@
 }:
 let
   # TODO: add 1. enter -> 2. for markdown
-  # TODO: Readonly toggle
 
   # Common plugins with no upfront configuration required.
   commonPlugins = builtins.attrValues {
