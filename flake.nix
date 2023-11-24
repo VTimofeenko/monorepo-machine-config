@@ -194,9 +194,14 @@
               changingInputs = [ "private-config" "my-flake-modules" ];
               # [[file:new_project.org::*devShells][devShells:1]]
 
+              # My modules config
               format-module = {
                 languages = [ "lua" "shell" ];
                 addFormattersToDevshell = true;
+              };
+              devshellCmds.deployment = {
+                enable = true;
+                localDeployment = true;
               };
 
               devshells.default = {
