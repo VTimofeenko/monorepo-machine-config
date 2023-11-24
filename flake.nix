@@ -208,7 +208,7 @@
                 env = [ ];
                 commands = [ ];
                 packages = builtins.attrValues {
-                  inherit (pkgs-unstable) pre-commit gcc pkg-config;
+                  inherit (pkgs-unstable) gcc pkg-config;
                 };
 
               };
