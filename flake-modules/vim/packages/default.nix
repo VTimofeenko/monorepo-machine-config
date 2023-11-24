@@ -6,6 +6,7 @@
 }:
 let
   # TODO: add 1. enter -> 2. for markdown
+  # TODO: LSP code action should trigger reformat
 
   # Common plugins with no upfront configuration required.
   commonPlugins = builtins.attrValues {
