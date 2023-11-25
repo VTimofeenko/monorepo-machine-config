@@ -86,20 +86,28 @@ in
       xwayland = {
         enable = true;
       };
-      enableNvidiaPatches = true;
+      enableNvidiaPatches = (hostName == "neptunium");
       extraConfig =
         ''
-          env = LIBVA_DRIVER_NAME,nvidia
+          env = LIBVA_DRIVER_NAME,${if hostName == "neptunium"
+                then "nvidia"
+                else "radeonsi"
+               }
           env = XDG_SESSION_TYPE,wayland
+          ${if hostName == "neptunium"
+          then ''
           env = GBM_BACKEND,nvidia-drm
           env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+          '' else ""}
           env = WLR_NO_HARDWARE_CURSORS,1
 
           # Some default env vars.
           env = XCURSOR_SIZE,24
 
+          # TODO: move this to proper systemd service
           exec-once = systemd-cat --identifier=swaync ${pkgs.swaynotificationcenter}/bin/swaync
           # Clipboard manager
+          # TODO: move this to proper systemd service
           exec-once = ${pkgs.wl-clipboard}/bin/wl-paste --watch ${cliphist} store
 
           # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
