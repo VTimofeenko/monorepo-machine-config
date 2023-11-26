@@ -5881,11 +5881,11 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1700678569,
-        "narHash": "sha256-2Ki+2UvOidxEb3xB4ADqlbPQ2BZOF4uZMR094O8or2I=",
+        "lastModified": 1700851152,
+        "narHash": "sha256-3PWITNJZyA3jz5IGREJRfSykM6xSLmD8u5A3WpBCyDM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "8f1180704ac35baded1a74164365ac7cdfba6f38",
+        "rev": "1216a5ba22a93a4a3a3bfdb4bff0f4727c576fcc",
         "type": "github"
       },
       "original": {
@@ -6158,6 +6158,21 @@
       "original": {
         "owner": "emacsattic",
         "repo": "nose",
+        "type": "github"
+      }
+    },
+    "nur": {
+      "locked": {
+        "lastModified": 1700969927,
+        "narHash": "sha256-eb1fxSIn9h8G7bkQ/7yIVJc1OShB4aCBOk5Ho0zR9aY=",
+        "owner": "nix-community",
+        "repo": "NUR",
+        "rev": "41baba347708b140c1dde7dc387ae1b16a396448",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "NUR",
         "type": "github"
       }
     },
@@ -7197,6 +7212,7 @@
         "nixpkgs": "nixpkgs_5",
         "nixpkgs-lib": "nixpkgs-lib",
         "nixpkgs-unstable": "nixpkgs-unstable",
+        "nur": "nur",
         "nvim-devdocs": "nvim-devdocs",
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
         "private-config": "private-config",

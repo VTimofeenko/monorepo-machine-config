@@ -9,6 +9,7 @@
     home-manager.url = "github:rycee/home-manager/release-23.05";
     agenix.url = "github:ryantm/agenix";
     snowcli.url = "github:sfc-gh-vtimofeenko/snowcli?ref=nix-flake&dir=contrib/nix";
+    nur.url = "github:nix-community/NUR";
 
     nixpkgs-lib.url = "github:NixOS/nixpkgs/nixos-unstable?dir=lib";
 
@@ -252,6 +253,7 @@
                   uranium = inputs.nixpkgs.lib.nixosSystem {
                     system = "x86_64-linux";
                     modules = [
+                      inputs.nur.nixosModules.nur
                       ./modules
                       ./modules/nixosSystems/uranium # (ref:uranium-import)
                       private-config.nixosModules.machines.uranium
@@ -263,6 +265,7 @@
                   neptunium = inputs.nixpkgs.lib.nixosSystem {
                     system = "x86_64-linux";
                     modules = [
+                      inputs.nur.nixosModules.nur
                       ./modules
                       ./modules/nixosSystems/neptunium
                       private-config.nixosModules.machines.neptunium
