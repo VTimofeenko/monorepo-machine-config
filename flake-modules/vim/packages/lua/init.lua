@@ -130,6 +130,10 @@ end
 -- Function to handle default imports in nix
 local function open_file()
 	local word_under_cursor = vim.fn.expand('<cWORD>') -- WORD under cursor
+
+	-- Remove the trailing ';' if present
+	word_under_cursor = word_under_cursor:gsub(';$', '')
+
 	local file_path = vim.fn.expand('%:p:h') .. '/' .. word_under_cursor
 
 	-- Check if it's a directory or a file
