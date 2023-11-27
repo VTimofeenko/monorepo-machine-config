@@ -2,7 +2,7 @@
 mkModeBinding:
 { pkgs, config, lib, ... }:
 mkModeBinding
-  "SUPERCTRL, \\"
+  "SUPERCTRL,P"
   "Power"
   ''
     # Exit hyprland
