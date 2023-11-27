@@ -5,6 +5,7 @@
 , osConfig
 , selfPkgs
 , selfHMModules
+, config
 , ...
 }:
 let
@@ -63,7 +64,6 @@ let
             hyperBindings
         )
     );
-
 in
 {
   imports = [
@@ -105,10 +105,10 @@ in
           env = XCURSOR_SIZE,24
 
           # TODO: move this to proper systemd service
-          exec-once = systemd-cat --identifier=swaync ${pkgs.swaynotificationcenter}/bin/swaync
+          # exec-once = systemd-cat --identifier=swaync ${pkgs.swaynotificationcenter}/bin/swaync
           # Clipboard manager
           # TODO: move this to proper systemd service
-          exec-once = ${pkgs.wl-clipboard}/bin/wl-paste --watch ${cliphist} store
+          # exec-once = ${pkgs.wl-clipboard}/bin/wl-paste --watch ${cliphist} store
 
           # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
           input {

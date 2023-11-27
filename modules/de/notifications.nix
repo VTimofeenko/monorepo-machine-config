@@ -1,7 +1,21 @@
 # [[file:../../new_project.org::*Notification daemon][Notification daemon:1]]
-{ pkgs, ... }:
+# Home-manager module for swaync
+{ pkgs, lib, ... }:
 {
-  xdg.configFile."/swaync/config.json".text =
+    /* Removed piece
+        "scripts": {
+          "example-script": {
+            "exec": "echo 'Do something...'",
+            "urgency": "Normal"
+          },
+          "example-action-script": {
+            "exec": "echo 'Do something actionable!'",
+            "urgency": "Normal",
+            "run-on": "action"
+          }
+        },
+    */
+  xdg.configFile."swaync/config.json".text =
     # Taken from swaync 0.8.0
     ''
       {
@@ -29,18 +43,8 @@
         "transition-time": 200,
         "hide-on-clear": false,
         "hide-on-action": true,
+        "scripts": {},
         "script-fail-notify": true,
-        "scripts": {
-          "example-script": {
-            "exec": "echo 'Do something...'",
-            "urgency": "Normal"
-          },
-          "example-action-script": {
-            "exec": "echo 'Do something actionable!'",
-            "urgency": "Normal",
-            "run-on": "action"
-          }
-        },
         "notification-visibility": {
           "example-name": {
             "state": "muted",
@@ -80,5 +84,26 @@
       }
     ''
   ;
+  systemd.user.services.swaync =
+    let
+      target = "graphical-session.target";
+    in
+    {
+      Unit = {
+        Description = "Sway notification center";
+        PartOf = [ target ];
+        After = [ target ];
+        # BindsTo = [ target ]; # TODO: needed?
+        ConditionEnvironment = "WAYLAND_DISPLAY";
+      };
+      Service = {
+        Type = "simple";
+        ExecStart = "${lib.getExe pkgs.swaynotificationcenter}";
+        Restart = "always";
+      };
+      Install = {
+        WantedBy = [ target ];
+      };
+    };
 }
 # Notification daemon:1 ends here
