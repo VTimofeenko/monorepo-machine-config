@@ -41,8 +41,12 @@ let
     pkgs.neovim-unwrapped
     (nvimConfig // { inherit wrapperArgs; });
 in
-pkgs.writeShellApplication {
+pkgs.symlinkJoin {
   name = "nvim";
-  runtimeInputs = [ wrappedNvim ];
-  text = "nvim -u ${initLuaFile} \"$@\"";
+  paths = [ wrappedNvim ];
+  buildInputs = [ pkgs.makeWrapper ];
+  postBuild = ''
+    wrapProgram $out/bin/nvim \
+      --add-flags "-u ${initLuaFile}" `# prepend my init.lua file`
+  '';
 }
