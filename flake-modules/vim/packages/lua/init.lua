@@ -127,6 +127,26 @@ KITTY_SCROLLBACK = function(INPUT_LINE_NUMBER, CURSOR_LINE, CURSOR_COLUMN)
 	})
 end
 
+-- Function to handle default imports in nix
+local function open_file()
+	local word_under_cursor = vim.fn.expand('<cWORD>') -- WORD under cursor
+	local file_path = vim.fn.expand('%:p:h') .. '/' .. word_under_cursor
+
+	-- Check if it's a directory or a file
+	local is_directory = vim.fn.isdirectory(file_path)
+
+	if is_directory == 1 then
+		-- It's a directory, open the corresponding default.txt file
+		file_path = file_path .. '/default.nix'
+	end
+
+	vim.cmd('edit ' .. file_path)
+end
+
+local wk = require("which-key")
+wk.register({ ["gf"] = { open_file, "Open file under cursor" } })
+
+
 -- nvim part follows
 
 -- set clipboard=unnamed${if pkgs.stdenv.system != "aarch64-darwin" then "plus" else ""}
