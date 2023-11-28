@@ -17,6 +17,7 @@
       ../hyprland/user.nix # (ref:hyprland-user-import)
       ./eww # (ref:eww-import)
       ./notifications.nix # (ref:notifications-de-import)
+      ./wallpaper.nix
       inputs.hyprland.homeManagerModules.default
     ];
     home.packages = builtins.attrValues {

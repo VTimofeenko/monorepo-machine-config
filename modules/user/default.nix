@@ -1,7 +1,5 @@
 # [[file:../../new_project.org::*NixOS user configs][NixOS user configs:1]]
 { pkgs
-, config
-, lib
 , my-doom-config
 , nixpkgs-unstable
 , selfHMModules
@@ -18,6 +16,9 @@
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
 
+  home-manager.extraSpecialArgs = {
+    inherit nixpkgs-unstable;
+  };
   home-manager.users.spacecadet = { ... }:
     let
       zsh-module = import ../home-manager/zsh { inputs = { inherit nixpkgs-unstable; }; inherit config pkgs lib; };
