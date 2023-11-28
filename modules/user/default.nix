@@ -20,9 +20,6 @@
     inherit nixpkgs-unstable;
   };
   home-manager.users.spacecadet = { ... }:
-    let
-      zsh-module = import ../home-manager/zsh { inputs = { inherit nixpkgs-unstable; }; inherit config pkgs lib; };
-    in
     {
       imports = [
         my-doom-config.nixosModules.default
