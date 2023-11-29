@@ -1,6 +1,7 @@
 # Flake module that exposes my custom neovim package and a module to configure it
 { withSystem, self }:
 {
+  # TODO: wl-clipboard <=> WAYLAND_DISPLAY is set
   perSystem = { system, ... }: {
     packages = withSystem system ({ inputs', ... }:
       let
