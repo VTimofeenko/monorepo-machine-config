@@ -37,10 +37,10 @@ in
             runtimeInputs = [ pkgs-unstable.swww pkgs.coreutils-full pkgs.fd ];
             text =
               ''
-              WALLPAPER=$(fd --absolute-path --full-path ~/Pictures/Wallpapers/ | shuf | head -n1)
-              swww img "''${WALLPAPER}"
+                WALLPAPER=$(fd --absolute-path --full-path ~/Pictures/Wallpapers/ | shuf | head -n1)
+                swww img "''${WALLPAPER}"
               '';
-            }) + "/bin/set-random-wallpaper";
+          }) + "/bin/set-random-wallpaper";
         };
         Install = {
           WantedBy = [ target ];
