@@ -1,4 +1,4 @@
-use log::{info, warn, debug};
+use log::{debug, info, warn};
 use regex::Regex;
 use std::process::Command;
 
@@ -7,21 +7,21 @@ static PAST_SIGNATURE_KEY: &str = "HYPRLAND_HELPERS_PAST_HYPRLAND_INSTANCE_SIGNA
 fn restart_session() {
     // TODO: match success/failure
     debug!("Restarting hyprland-session.target");
-    let _ = Command::new("/run/current-system/sw/bin/systemctl").args([
-        "--user",
-        "restart",
-        "hyprland-session.target",
-    ]).output();
+    let _ = Command::new("/run/current-system/sw/bin/systemctl")
+        .args(["--user", "restart", "hyprland-session.target"])
+        .output();
 }
 
 fn record_past_signature(signature: &str) {
     // TODO: match success/failure
     debug!("Recording the value of past signature. It will be {signature}");
-    let _ = Command::new("/run/current-system/sw/bin/systemctl").args([
-        "--user",
-        "set-environment",
-        &(PAST_SIGNATURE_KEY.to_owned() + "=" + signature),
-    ]).output();
+    let _ = Command::new("/run/current-system/sw/bin/systemctl")
+        .args([
+            "--user",
+            "set-environment",
+            &(PAST_SIGNATURE_KEY.to_owned() + "=" + signature),
+        ])
+        .output();
 }
 
 fn get_option_from_systemd(option_name: &str, systemd_output: &str) -> Option<String> {

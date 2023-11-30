@@ -66,6 +66,6 @@ fn main() -> hyprland::Result<()> {
         Err(value) => {
             err_notify(value.to_string());
             Err(value)
-        },
+        }
     }
 }
