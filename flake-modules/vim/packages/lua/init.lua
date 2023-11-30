@@ -149,7 +149,11 @@ end
 
 local wk = require("which-key")
 wk.register({ ["gf"] = { open_file, "Open file under cursor" } })
+wk.register({ ["[q"] = { "<cmd>cprevious<cr>", "Quickfix previous" } })
+wk.register({ ["]q"] = { "<cmd>cnext<cr>", "Quickfix next" } })
+-- wk.register({ ["Tq"] = { "<cmd><cr>", "Quickfix toggle" } }) -- TODO: Implement toggle quickfix
 
+-- TODO: Add shortcuts for deadnix-quickfix and statix-quickfix
 
 -- nvim part follows
 
