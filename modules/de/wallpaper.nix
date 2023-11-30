@@ -2,20 +2,17 @@
 { nixpkgs-unstable, pkgs, ... }:
 let
   pkgs-unstable = nixpkgs-unstable.legacyPackages.${pkgs.system};
+  target = "graphical-session.target";
 in
 {
   systemd.user = {
     services = {
       swww =
-        let
-          target = "graphical-session.target";
-        in
         {
           Unit = {
             Description = "Wallpaper daemon";
             PartOf = [ target ];
             After = [ target ];
-            # BindsTo = [ target ]; # TODO: needed?
             ConditionEnvironment = "WAYLAND_DISPLAY";
           };
           Service = {
@@ -44,6 +41,9 @@ in
               swww img "''${WALLPAPER}"
               '';
             }) + "/bin/set-random-wallpaper";
+        };
+        Install = {
+          WantedBy = [ target ];
         };
       };
     };
