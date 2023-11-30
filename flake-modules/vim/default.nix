@@ -2,6 +2,7 @@
 { withSystem, self }:
 {
   # TODO: wl-clipboard <=> WAYLAND_DISPLAY is set
+  # TODO: Add lua shortcuts for trivial builders?
   perSystem = { system, ... }: {
     packages = withSystem system ({ inputs', ... }:
       let
