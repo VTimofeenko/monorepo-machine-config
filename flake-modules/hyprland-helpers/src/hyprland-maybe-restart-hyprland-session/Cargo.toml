@@ -1,0 +1,12 @@
+[package]
+name = "hyprland-maybe-restart-hyprland-session"
+version = "0.1.0"
+edition = "2021"
+description = "Checks if hyprland-session.target was started with an older instance of Hyprland"
+
+[dependencies]
+env_logger = "0.10.1"
+hyprland = {workspace = true}
+log = "0.4.20"
+notify-rust = {workspace = true}
+regex = "1.10.2"
