@@ -1,14 +1,14 @@
-# home-manager module that adds hyprland as a systemd unit and makes certain services bind to it
-{ config, lib, ... }:
+# home-manager module that makes certain services bind to the hyprland session
+{ pkgs, lib, selfPkgs, ... }:
+let
+  selfPkgs' = selfPkgs.${pkgs.stdenv.system};
+in
 {
-  systemd.user.services.hyprland-run = {
-    Unit = {
-      Description = "My hyprland wrapper that runs it in systemd";
-    };
-    Service = {
-      Type = "simple";
-      ExecStart = "${lib.getExe config.wayland.windowManager.hyprland.package}";
-    };
-    # Install # NOTE: Run manually
-  };
+  /* Constructs a set of services that will restart when hyprland-session is restarted */
+  systemd.user.services =
+    lib.listToAttrs
+      (map
+        (serviceName: { name = serviceName; value = { Unit.BindsTo = [ "hyprland-session.target" ]; }; })
+        [ "swayidle" "swaync" "hyprland-language-switch-notifier" "hyprland-mode-switch-notifier" "hyprland-workspace-notifier" "swww" "set-random-wallpaper" ]);
+  wayland.windowManager.hyprland.extraConfig = "exec-once=${lib.getExe selfPkgs'.hyprland-maybe-restart-hyprland-session}";
 }

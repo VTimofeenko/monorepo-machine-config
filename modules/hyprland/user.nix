@@ -75,6 +75,7 @@ in
     ./lock # (ref:lock-hyprland-import)
     ./theme # (ref:hyprland-theme-import)
     selfHMModules.hyprland-helpers
+    ./systemd.nix
   ];
 
   services.hyprland-helpers.enable = true;
@@ -104,8 +105,6 @@ in
           # Some default env vars.
           env = XCURSOR_SIZE,24
 
-          # TODO: move this to proper systemd service
-          # exec-once = systemd-cat --identifier=swaync ${pkgs.swaynotificationcenter}/bin/swaync
           # Clipboard manager
           # TODO: move this to proper systemd service
           # exec-once = ${pkgs.wl-clipboard}/bin/wl-paste --watch ${cliphist} store
