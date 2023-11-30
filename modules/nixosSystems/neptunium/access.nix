@@ -1,5 +1,6 @@
 # [[file:../../../new_project.org::*Access][Access:1]]
-{ pkgs, config, lib, ... }:
+_:
+# TODO: Reuse this from homelab-data
 {
   services.openssh = {
     enable = true;

@@ -1,5 +1,5 @@
 # [[file:../../../../new_project.org::*Neptunium specific hardware][Neptunium specific hardware:1]]
-{ pkgs, config, lib, ... }:
+{ config, lib, ... }:
 {
   imports = [
     ./nvidia-wayland.nix # (ref:nvidia-wayland-import)

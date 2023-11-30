@@ -129,22 +129,22 @@ end
 
 -- Function to handle default imports in nix
 local function open_file()
-	local word_under_cursor = vim.fn.expand('<cWORD>') -- WORD under cursor
+	local word_under_cursor = vim.fn.expand("<cWORD>") -- WORD under cursor
 
 	-- Remove the trailing ';' if present
-	word_under_cursor = word_under_cursor:gsub(';$', '')
+	word_under_cursor = word_under_cursor:gsub(";$", "")
 
-	local file_path = vim.fn.expand('%:p:h') .. '/' .. word_under_cursor
+	local file_path = vim.fn.expand("%:p:h") .. "/" .. word_under_cursor
 
 	-- Check if it's a directory or a file
 	local is_directory = vim.fn.isdirectory(file_path)
 
 	if is_directory == 1 then
 		-- It's a directory, open the corresponding default.txt file
-		file_path = file_path .. '/default.nix'
+		file_path = file_path .. "/default.nix"
 	end
 
-	vim.cmd('edit ' .. file_path)
+	vim.cmd("edit " .. file_path)
 end
 
 local wk = require("which-key")

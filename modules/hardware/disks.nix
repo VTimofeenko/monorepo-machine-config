@@ -1,5 +1,6 @@
 # [[file:../../new_project.org::*Disks][Disks:1]]
-{ pkgs, ... }: {
+_:
+{
   # Disks:1 ends here
   # [[file:../../new_project.org::*Disks][Disks:2]]
   services.fstrim.enable = true;

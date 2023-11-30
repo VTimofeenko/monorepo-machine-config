@@ -1,5 +1,5 @@
 # [[file:../../../../new_project.org::*Nvidia 2070 with wayland][Nvidia 2070 with wayland:1]]
-{ config, pkgs, lib, ... }:
+{ pkgs, ... }:
 {
   # The settings are applied for both x11 and wayland
   services.xserver.videoDrivers = [ "nvidia" ];

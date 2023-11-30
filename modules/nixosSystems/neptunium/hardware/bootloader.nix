@@ -1,5 +1,5 @@
 # [[file:../../../../new_project.org::*Neptunium bootloader][Neptunium bootloader:1]]
-{ pkgs, config, lib, ... }:
+_:
 {
   boot = {
     loader = {

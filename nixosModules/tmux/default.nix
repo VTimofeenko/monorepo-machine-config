@@ -1,17 +1,17 @@
 # [[file:../../new_project.org::*Tmux][Tmux:1]]
-{ localFlake, inputs }:
-{ pkgs, config, lib, ... }:
+{ inputs }:
+{ pkgs, lib, ... }:
 let
   colorSchemeName = "atlas";
-  rendered_color_scheme = with inputs; (base16.outputs.lib { inherit pkgs; lib = pkgs.lib; }).mkSchemeAttrs "${color_scheme}/${colorSchemeName}.yaml";
+  rendered_color_scheme = with inputs; (base16.outputs.lib { inherit pkgs lib; }).mkSchemeAttrs "${color_scheme}/${colorSchemeName}.yaml";
   mkTmuxConf =
     with builtins; ''
       # Main config
       ${readFile ./tmux.conf}
     '' + (with rendered_color_scheme; (
       let
-        default_background = "#" + base00;
-        default_foreground = "#" + base07;
+        # default_background = "#" + base00;
+        # default_foreground = "#" + base07;
         /* helper functions */
         mkbg = _: "bg=#" + _;
         mkfg = _: "fg=#" + _;
@@ -45,7 +45,7 @@ let
         "window-status-bell-style" = "${mkfg base01},${mkbg base08}";
       }))
     ));
-  plugins = with pkgs.tmuxPlugins; [ ];
+  plugins = [ ]; # with pkgs.tmuxPlugins; [ ];
 in
 {
   programs.tmux = {

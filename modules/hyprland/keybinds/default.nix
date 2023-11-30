@@ -1,5 +1,5 @@
 # [[file:../../../new_project.org::*Hyprland key binds][Hyprland key binds:1]]
-{ pkgs, config, lib, ... }:
+_:
 {
   imports = [
     ./audio.nix

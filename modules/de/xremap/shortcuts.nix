@@ -1,5 +1,5 @@
 # [[file:../../../new_project.org::*Xremap shortcuts][Xremap shortcuts:1]]
-{ pkgs, lib, config, ... }@inputs:
+_:
 let
   consoleLikeApps = [ "kitty" "Emacs" "kitty-dropterm" ];
 in

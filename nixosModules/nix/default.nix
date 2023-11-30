@@ -1,5 +1,5 @@
 # [[file:../../new_project.org::*Nix-the-package-manager config][Nix-the-package-manager config:2]]
-{ pkgs, ... }:
+_:
 {
   # Allow unfree packages across the board
   nixpkgs.config.allowUnfree = true;

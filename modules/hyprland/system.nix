@@ -1,6 +1,6 @@
 # [[file:../../new_project.org::*Hyprland config][Hyprland config:1]]
 # System level configs required for hyprland
-{ config, pkgs, lib, ... }@inputs:
+{ pkgs, ... }@inputs: # TODO: Antipattern, confusing inputs
 {
   imports = [
     inputs.hyprland.nixosModules.default

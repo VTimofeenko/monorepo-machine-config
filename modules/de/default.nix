@@ -1,5 +1,5 @@
 # [[file:../../new_project.org::*Desktop environment][Desktop environment:1]]
-{ pkgs, lib, config, ... }@inputs:
+{ pyprland, selfPkgs, selfHMModules, hyprland, ... }:
 {
   imports = [
     ./greeter.nix # (ref:greeter-import)
@@ -8,9 +8,9 @@
     ./xremap
   ];
   home-manager.extraSpecialArgs = {
-    inherit (inputs) pyprland;
-    inherit (inputs) selfPkgs;
-    inherit (inputs) selfHMModules;
+    inherit pyprland;
+    inherit selfPkgs;
+    inherit selfHMModules;
   };
   home-manager.users.spacecadet = { pkgs, ... }: {
     imports = [
@@ -18,7 +18,7 @@
       ./eww # (ref:eww-import)
       ./notifications.nix # (ref:notifications-de-import)
       ./wallpaper.nix
-      inputs.hyprland.homeManagerModules.default
+      hyprland.homeManagerModules.default
     ];
     home.packages = builtins.attrValues {
       inherit (pkgs) wl-clipboard;

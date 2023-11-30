@@ -5,7 +5,6 @@
 , osConfig
 , selfPkgs
 , selfHMModules
-, config
 , ...
 }:
 let
@@ -30,13 +29,13 @@ let
   shiftLaunchShortcuts = {
     "grave" = "exec, ${lib.getExe utils.scratchpad-terminal}";
   };
-  focusShortcuts =
-    {
-      "H" = "movefocus, l";
-      "L" = "movefocus, r";
-      "K" = "movefocus, u";
-      "J" = "movefocus, d";
-    };
+  # focusShortcuts =
+  #   {
+  #     "H" = "movefocus, l";
+  #     "L" = "movefocus, r";
+  #     "K" = "movefocus, u";
+  #     "J" = "movefocus, d";
+  #   };
   hyperBindings = {
     "E" = "focuswindow, ^(Emacs)$";
   };
@@ -87,7 +86,7 @@ in
       xwayland = {
         enable = true;
       };
-      enableNvidiaPatches = (hostName == "neptunium");
+      enableNvidiaPatches = hostName == "neptunium";
       extraConfig =
         ''
           env = LIBVA_DRIVER_NAME,${if hostName == "neptunium"

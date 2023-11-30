@@ -1,11 +1,8 @@
 # [[file:../new_project.org::*Common system configuration modules][Common system configuration modules:1]]
 # These arguments are passed through specialArgs
 { pkgs
-, config
-, lib
 , agenix
 , home-manager
-, wg-namespace-flake
 , selfModules
 , ...
 }:
@@ -14,7 +11,6 @@
     # Modules from imports
     agenix.nixosModules.default
     home-manager.nixosModules.home-manager
-    # wg-namespace-flake.nixosModules.default # NOTE: imported on a per-host basis
 
     # this flake's nixosModules
     selfModules.zsh

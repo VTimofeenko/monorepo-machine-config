@@ -1,6 +1,6 @@
 # [[file:../../../new_project.org::*Power_ctl][Power_ctl:1]]
 mkModeBinding:
-{ pkgs, config, lib, ... }:
+_:
 mkModeBinding
   "SUPERCTRL,P"
   "Power"

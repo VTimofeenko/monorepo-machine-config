@@ -1,6 +1,5 @@
 # [[file:../../../../new_project.org::*Uranium specific hardware][Uranium specific hardware:1]]
-{ config
-, pkgs
+{ pkgs
 , lib
 , ...
 }:

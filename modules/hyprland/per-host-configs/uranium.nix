@@ -1,5 +1,5 @@
 # [[file:../../../new_project.org::*Uranium hyprland config][Uranium hyprland config:1]]
-{ ... }:
+_:
 {
   wayland.windowManager.hyprland = {
     extraConfig =

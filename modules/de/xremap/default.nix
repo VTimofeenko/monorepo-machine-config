@@ -1,8 +1,8 @@
 # [[file:../../../new_project.org::*Xremap][Xremap:1]]
-{ pkgs, lib, config, ... }@inputs:
+{ xremap-flake, ... }:
 {
   imports = [
-    inputs.xremap-flake.nixosModules.default
+    xremap-flake.nixosModules.default
     ./shortcuts.nix
   ];
 

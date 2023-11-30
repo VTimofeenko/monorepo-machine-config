@@ -4,7 +4,7 @@
 }:
 { pkgs, config, lib, ... }:
 let
-  inherit (lib) mkEnableOption mkIf assertMsg;
+  inherit (lib) mkEnableOption mkIf;
   cfg = config.programs.myNvim;
   localPkgs' = localFlake.packages.${pkgs.stdenv.system};
   # Decide where to add the packages

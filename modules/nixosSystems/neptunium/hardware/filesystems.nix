@@ -1,5 +1,5 @@
 # [[file:../../../../new_project.org::*Neptunium filesystems][Neptunium filesystems:1]]
-{ config, pkgs, lib, ... }:
+_:
 {
   fileSystems = {
     "/" = {

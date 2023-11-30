@@ -1,5 +1,5 @@
 # [[file:../../../new_project.org::*Audio][Audio:1]]
-{ pkgs, config, lib, ... }:
+{ pkgs, lib, ... }:
 {
   wayland.windowManager.hyprland.extraConfig =
     lib.mkAfter

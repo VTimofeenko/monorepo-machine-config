@@ -1,6 +1,6 @@
 # [[file:../../../new_project.org::*Sound_ctl][Sound_ctl:1]]
 mkModeBinding:
-{ pkgs, config, lib, ... }:
+{ pkgs, ... }:
 let
   execWpctl = "exec, ${pkgs.wireplumber}/bin/wpctl";
 in

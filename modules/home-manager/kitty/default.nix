@@ -1,6 +1,5 @@
 # [[file:../../../new_project.org::*Kitty][Kitty:1]]
-{ ... }:
-
+_:
 {
   programs.kitty = {
     enable = true;

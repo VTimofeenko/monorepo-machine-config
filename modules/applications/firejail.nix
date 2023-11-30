@@ -12,7 +12,7 @@
     };
   };
   # Firejail-specific desktop shortcuts
-  home-manager.users.spacecadet = { pkgs, ... }: {
+  home-manager.users.spacecadet = _: {
     xdg.desktopEntries = {
       thunderbird = {
         # Taken from Thunderbird v 91.5.0

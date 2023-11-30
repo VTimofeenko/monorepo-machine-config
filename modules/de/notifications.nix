@@ -2,7 +2,7 @@
 # Home-manager module for swaync
 { pkgs, lib, ... }:
 {
-    /* Removed piece
+  /* Removed piece
         "scripts": {
           "example-script": {
             "exec": "echo 'Do something...'",

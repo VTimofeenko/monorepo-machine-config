@@ -1,5 +1,5 @@
 # [[file:../../../new_project.org::*Hyprland modes][Hyprland modes:1]]
-{ pkgs, config, lib, ... }:
+{ lib, ... }:
 let
   /* Type: mkModeBinding :: (str -> str -> str) -> module */
   mkModeBinding = modeEnterKeyBind: modeName: modeBinds: {

@@ -1,6 +1,7 @@
 # [[file:../../../new_project.org::*Resize_ctl][Resize_ctl:1]]
+# TODO: rewrite this
 mkModeBinding:
-{ pkgs, config, lib, ... }:
+_:
 mkModeBinding
   # Mode enter keybind
   "SUPERCTRL,R"

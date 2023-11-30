@@ -1,5 +1,6 @@
 # [[file:../../new_project.org::*Media config][Media config:1]]
-{ pkgs, ... }: {
+_:
+{
   programs.mpv = {
     enable = true;
     bindings = {

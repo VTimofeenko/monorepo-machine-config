@@ -139,7 +139,7 @@
           # Outputs intro:1 ends here
           # [[file:new_project.org::*Imports][Imports:1]]
           imports =
-            (builtins.concatLists [
+            builtins.concatLists [
               [
                 inputs.devshell.flakeModule
                 inputs.flake-parts.flakeModules.easyOverlay
@@ -148,13 +148,13 @@
               ]
               # Construct imports from this flake's flake modules
               (lib.lists.flatten (map builtins.attrValues [ inputs.my-flake-modules.flake-modules publicFlakeModules ]))
-            ]);
+            ];
           # Imports:1 ends here
           # [[file:new_project.org::*Systems setting][Systems setting:1]]
           systems = [ "x86_64-linux" "aarch64-darwin" "aarch64-linux" ];
           # Systems setting:1 ends here
           # [[file:new_project.org::*"perSystem" output]["perSystem" output:1]]
-          perSystem = { config, self', inputs', pkgs, system, ... }:
+          perSystem = { config, inputs', pkgs, system, ... }:
             let
               pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
             in

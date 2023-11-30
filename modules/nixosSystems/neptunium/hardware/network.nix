@@ -1,5 +1,5 @@
 # [[file:../../../../new_project.org::*Neptunium network][Neptunium network:1]]
-{ config, pkgs, lib, ... }:
+{ lib, ... }:
 {
   networking.hostName = "neptunium";
   networking.wireless.enable = lib.mkForce false;

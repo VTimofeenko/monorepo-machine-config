@@ -1,5 +1,5 @@
 # [[file:../../../new_project.org::*Neptunium specific system][Neptunium specific system:1]]
-{ pkgs, config, lib, ... }@inputs:
+_:
 {
   imports = [
     ./access.nix # (ref:neptunium-access-import)

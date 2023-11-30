@@ -1,6 +1,6 @@
 # [[file:../../../new_project.org::*Pyprland config][Pyprland config:1]]
 # Home-manager module for pyprland
-{ config, pkgs, lib, pyprland, ... }:
+{ pkgs, lib, pyprland, ... }:
 let
   droptermClass = "kitty-dropterm";
 in
