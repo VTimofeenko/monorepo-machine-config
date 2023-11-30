@@ -197,7 +197,7 @@
 
               # My modules config
               format-module = {
-                languages = [ "lua" "shell" ];
+                languages = [ "lua" "shell" "rust" ];
                 addFormattersToDevshell = true;
               };
               devshellCmds.deployment = {
