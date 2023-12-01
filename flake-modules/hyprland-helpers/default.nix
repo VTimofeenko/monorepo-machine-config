@@ -67,6 +67,7 @@
                     inherit src cargoArtifacts version;
                     pname = name;
                     cargoExtraArgs = "-p ${name}";
+                    meta.mainProgram = name;
                   };
                 }
               )
