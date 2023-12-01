@@ -10,6 +10,7 @@ in
   networking.usePredictableInterfaceNames = false;
   # Systemd-networkd enabled
   networking.useNetworkd = true;
+  networking.defaultGateway.interface = "wifi-lan";
 
   systemd.network.networks = {
     "10-wifi-lan" = {
