@@ -4,9 +4,9 @@
   # Flake intro:1 ends here
   # [[file:new_project.org::*Inputs][Inputs:1]]
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-23.05";
+    nixpkgs.url = "nixpkgs/nixos-23.11";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    home-manager.url = "github:rycee/home-manager/release-23.05";
+    home-manager.url = "github:rycee/home-manager/release-23.11";
     agenix.url = "github:ryantm/agenix";
     snowcli.url = "github:sfc-gh-vtimofeenko/snowcli?ref=nix-flake&dir=contrib/nix";
     nur.url = "github:nix-community/NUR";
