@@ -27,6 +27,7 @@ in
       set-random-wallpaper = {
         Unit = {
           Description = "random wallpaper setter";
+          Requires = [ "swww.service" ];
           After = [ "swww.service" ];
           ConditionEnvironment = "WAYLAND_DISPLAY";
         };
