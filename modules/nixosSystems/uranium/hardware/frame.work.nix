@@ -11,6 +11,7 @@
     nixos-hardware.nixosModules.common-cpu-amd
     nixos-hardware.nixosModules.common-pc-laptop
     nixos-hardware.nixosModules.common-pc-laptop-ssd
+    # TODO:use proper amd module from nixos hardware
   ];
   # high-resolution display
   # NOTE: no longer works for 23.05
