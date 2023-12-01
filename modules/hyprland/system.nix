@@ -7,6 +7,9 @@
   ];
   xdg.portal = {
     enable = true;
+    config.common.default = [
+      "gtk"
+    ];
     wlr.enable = true;
     # extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
