@@ -122,7 +122,7 @@
     "devshell_2": {
       "inputs": {
         "nixpkgs": "nixpkgs_9",
-        "systems": "systems_6"
+        "systems": "systems_7"
       },
       "locked": {
         "lastModified": 1700815693,
@@ -443,6 +443,24 @@
         "systems": "systems_5"
       },
       "locked": {
+        "lastModified": 1694529238,
+        "narHash": "sha256-zsNZZGTGnMOf9YpHKJqMSsa0dXbfmxeoJ7xHlrt+xmY=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "ff7b65b44d01cf9ba6a71320833626af21126384",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flake-utils_4": {
+      "inputs": {
+        "systems": "systems_6"
+      },
+      "locked": {
         "lastModified": 1681202837,
         "narHash": "sha256-H+Rh19JDwRtpVPAWp64F+rlEtxUWBAQW28eAi3SRSzg=",
         "owner": "numtide",
@@ -533,10 +551,7 @@
           "private-config",
           "stub-flake"
         ],
-        "flake-utils": [
-          "private-config",
-          "stub-flake"
-        ],
+        "flake-utils": "flake-utils_3",
         "infra-hosts": "infra-hosts",
         "nixos-hardware": [
           "private-config",
@@ -760,7 +775,7 @@
       "inputs": {
         "hyprland-protocols": "hyprland-protocols_2",
         "nixpkgs": "nixpkgs_11",
-        "systems": "systems_7",
+        "systems": "systems_8",
         "wlroots": "wlroots_2",
         "xdph": "xdph_2"
       },
@@ -776,6 +791,22 @@
         "owner": "hyprwm",
         "repo": "Hyprland",
         "type": "github"
+      }
+    },
+    "infra": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1673627050,
+        "narHash": "sha256-fleyUv4KUZpIrPUa4brdB7cUIo1tbfjJmRwsK6tB/QU=",
+        "ref": "refs/heads/master",
+        "rev": "355554884b5ee60be2f8aa28d10a2c26bc817f97",
+        "revCount": 66,
+        "type": "git",
+        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git"
       }
     },
     "infra-hosts": {
@@ -1364,7 +1395,7 @@
     },
     "poetry2nix": {
       "inputs": {
-        "flake-utils": "flake-utils_3",
+        "flake-utils": "flake-utils_4",
         "nixpkgs": "nixpkgs_8"
       },
       "locked": {
@@ -1419,11 +1450,11 @@
         "stub-flake": "stub-flake"
       },
       "locked": {
-        "lastModified": 1701449619,
-        "narHash": "sha256-XOekNR3WMQ09Hr7goKxzAVNkSja9XBOirvstN0ReZO4=",
+        "lastModified": 1701449734,
+        "narHash": "sha256-0fwlct6Bsq2KKA4pjlrEzAHicwST4B+qKx7itXKhBrc=",
         "ref": "refs/heads/master",
-        "rev": "77c6f536f044c7b1b074f44d05744fb58e6f27ce",
-        "revCount": 101,
+        "rev": "799fab256f62f158af62efe9e96f3725bfc6a1c7",
+        "revCount": 102,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-flake.git"
       },
@@ -1487,6 +1518,7 @@
         "homelab-data": "homelab-data",
         "hostsBlockList": "hostsBlockList",
         "hyprland": "hyprland",
+        "infra": "infra",
         "my-doom-config": "my-doom-config",
         "my-flake-modules": "my-flake-modules",
         "nixos-hardware": "nixos-hardware",
@@ -1659,6 +1691,21 @@
       }
     },
     "systems_7": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_8": {
       "locked": {
         "lastModified": 1689347949,
         "narHash": "sha256-12tWmuL2zgBgZkdoB6qXZsgJEH9LR3oUgpaQq2RbI80=",

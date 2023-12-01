@@ -7,14 +7,43 @@
 {
   imports = [
     nixos-hardware.nixosModules.framework-13-7040-amd
-    # nixos-hardware.nixosModules.common-cpu-amd-pstate 
+    # nixos-hardware.nixosModules.common-cpu-amd-pstate
     # nixos-hardware.nixosModules.common-gpu-amd
     # nixos-hardware.nixosModules.common-pc-laptop
     # nixos-hardware.nixosModules.common-pc-laptop-ssd
   ];
-  # high-resolution display
-  # NOTE: required for wifi to work
-  hardware.enableRedistributableFirmware = true;
+  hardware = {
+    enableRedistributableFirmware = true; # NOTE: required for wifi to work
+    opengl.extraPackages = builtins.attrValues { inherit (pkgs) rocm-opencl-icd rocm-opencl-runtime; };
+    opengl = {
+      driSupport = true;
+      driSupport32Bit = true;
+    };
+
+
+    # Custom udev rules
+    # services.udev.extraRules = ''
+    #   # Fix headphone noise when on powersave
+    #   # https://community.frame.work/t/headphone-jack-intermittent-noise/5246/55
+    #   SUBSYSTEM=="pci", ATTR{vendor}=="0x8086", ATTR{device}=="0xa0e0", ATTR{power/control}="on"
+    #   # Ethernet expansion card support
+    #   ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0bda", ATTR{idProduct}=="8156", ATTR{power/autosuspend}="20"
+    # '';
+
+    # Mis-detected by nixos-generate-config
+    # https://github.com/NixOS/nixpkgs/issues/171093
+    # https://wiki.archlinux.org/title/Framework_Laptop#Changing_the_brightness_of_the_monitor_does_not_work
+    acpilight.enable = lib.mkDefault true;
+
+    # Needed for desktop environments to detect/manage display brightness
+    sensor.iio.enable = lib.mkDefault true;
+
+    amdgpu = {
+      loadInInitrd = true;
+      # amdvlk = true; # TODO: check if makes sense
+      opencl = true;
+    };
+  };
   # hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   boot = {
     kernelParams = [
@@ -45,42 +74,6 @@
     enable = true;
     videoDrivers = [ "amdgpu" ];
   };
-
-  hardware.opengl.extraPackages = builtins.attrValues { inherit (pkgs) rocm-opencl-icd rocm-opencl-runtime; };
-  hardware.opengl = {
-    driSupport = true;
-    driSupport32Bit = true;
-  };
-
-  # Custom udev rules
-  # services.udev.extraRules = ''
-  #   # Fix headphone noise when on powersave
-  #   # https://community.frame.work/t/headphone-jack-intermittent-noise/5246/55
-  #   SUBSYSTEM=="pci", ATTR{vendor}=="0x8086", ATTR{device}=="0xa0e0", ATTR{power/control}="on"
-  #   # Ethernet expansion card support
-  #   ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="0bda", ATTR{idProduct}=="8156", ATTR{power/autosuspend}="20"
-  # '';
-
-  # Mis-detected by nixos-generate-config
-  # https://github.com/NixOS/nixpkgs/issues/171093
-  # https://wiki.archlinux.org/title/Framework_Laptop#Changing_the_brightness_of_the_monitor_does_not_work
-  hardware.acpilight.enable = lib.mkDefault true;
-
-  # Needed for desktop environments to detect/manage display brightness
-  hardware.sensor.iio.enable = lib.mkDefault true;
-
-  hardware.amdgpu = {
-    loadInInitrd = true;
-    # amdvlk = true; # TODO: check if makes sense
-    opencl = true;
-  };
-
-  # HiDPI
-  # Leaving here for documentation
-  # hardware.video.hidpi.enable = lib.mkDefault true;
-
-  # Fix font sizes in X
-  # services.xserver.dpi = 200;
 
 }
 # Frame.work specific:1 ends here
