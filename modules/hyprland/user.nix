@@ -24,7 +24,15 @@ let
     "Return" = "exec, ${pkgs.kitty}/bin/kitty";
     "E" = "exec, ${pkgs.libsForQt5.dolphin}/bin/dolphin";
     # Launches wofi with icons
-    "R" = "exec, ${pkgs.wofi}/bin/wofi --show drun -I";
+    "R" =
+      let
+        wofiWrapper = pkgs.writeShellScript "wofi-run-wrapper"
+          ''
+            # For some reason wofi still can't find my flatpak stuff
+            XDG_DATA_DIRS=$XDG_DATA_DIRS:/usr/share:/var/lib/flatpak/exports/share/applications:$HOME/.local/share/flatpak/exports/share ${pkgs.wofi}/bin/wofi --show drun -I
+          '';
+      in
+      "exec, ${wofiWrapper}";
   };
   shiftLaunchShortcuts = {
     "grave" = "exec, ${lib.getExe utils.scratchpad-terminal}";
