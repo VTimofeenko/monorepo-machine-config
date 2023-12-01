@@ -192,7 +192,10 @@
                   # [[file:new_project.org::*homeConfigurations outro][homeConfigurations outro:1]]
                 };
               # homeConfigurations outro:1 ends here
-              changingInputs = [ "private-config" "my-flake-modules" ];
+              bumpInputs = {
+                changingInputs = [ "private-config" "my-flake-modules" ];
+                bumpAllInputs = true;
+              };
               # [[file:new_project.org::*devShells][devShells:1]]
 
               # My modules config
