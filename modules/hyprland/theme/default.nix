@@ -23,8 +23,8 @@ rec {
   gtk = {
     enable = true;
     theme = {
-      name = "Materia";
-      package = pkgs.materia-theme;
+      name = "Fluent";
+      package = pkgs.fluent-gtk-theme;
     };
     iconTheme = {
       name = "Papirus-Dark-Maia";
