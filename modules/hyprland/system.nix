@@ -18,7 +18,6 @@
     xwayland = {
       enable = true;
     };
-    enableNvidiaPatches = false;
   };
 
   # NOTE: needed for swaylock

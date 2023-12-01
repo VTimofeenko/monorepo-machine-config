@@ -86,7 +86,6 @@ in
       xwayland = {
         enable = true;
       };
-      enableNvidiaPatches = hostName == "neptunium";
       extraConfig =
         ''
           env = LIBVA_DRIVER_NAME,${if hostName == "neptunium"
