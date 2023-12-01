@@ -9,6 +9,7 @@
     home-manager.url = "github:rycee/home-manager/release-23.11";
     agenix.url = "github:ryantm/agenix";
     nur.url = "github:nix-community/NUR";
+    nixpkgs-stable.url = "nixpkgs";
 
     nixpkgs-lib.url = "github:NixOS/nixpkgs/nixos-unstable?dir=lib";
 
