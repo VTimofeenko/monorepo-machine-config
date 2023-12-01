@@ -3529,11 +3529,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1700793850,
-        "narHash": "sha256-/OedT/BHbGbW7JY3OVoh38h9Ei4TzWhpBbiI6REPhYs=",
+        "lastModified": 1701398150,
+        "narHash": "sha256-UGRIwoKjFESexWHpRpGL2oaXQkVZwSLFf46e2aOf24k=",
         "owner": "VTimofeenko",
         "repo": "flake-modules",
-        "rev": "af057100fd6e18defeb4f8633004d226668c23a9",
+        "rev": "c794f6cfd6c192eca8b42c715bdfa43732955912",
         "type": "github"
       },
       "original": {
