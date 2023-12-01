@@ -55,11 +55,8 @@ in
       shellGlobalAliases = {
         G = "| rg";
       };
-      enableSyntaxHighlighting = true;
-      # syntaxHighlighting = { # WARN: Needs 23.11
-      #   enable = true;
-      #   styles = { };
-      # };
+      syntaxHighlighting.enable = true;
+
       inherit (commonSettings) shellAliases completionInit;
       initExtra = commonSettings.initExtra
         # set SSH_AUTH_SOCK <=> gpg-agent is enabled in home-manager
