@@ -1,7 +1,8 @@
 # [[file:../new_project.org::*Fonts.nix][Fonts.nix:1]]
 { pkgs, ... }: {
   fonts = {
-    fonts = with pkgs; [
+    packages = with pkgs; [
+      # TODO: remove with pkgs;
       (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
       roboto
       twitter-color-emoji
