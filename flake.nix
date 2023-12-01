@@ -8,7 +8,6 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     home-manager.url = "github:rycee/home-manager/release-23.11";
     agenix.url = "github:ryantm/agenix";
-    snowcli.url = "github:sfc-gh-vtimofeenko/snowcli?ref=nix-flake&dir=contrib/nix";
     nur.url = "github:nix-community/NUR";
 
     nixpkgs-lib.url = "github:NixOS/nixpkgs/nixos-unstable?dir=lib";
@@ -102,16 +101,18 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
-    fenix = {
-      url = "github:nix-community/fenix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-      inputs.rust-analyzer-src.follows = "";
-    };
+    # Unused at the moment. TODO: use this with the local packages
+    # fenix = {
+    #   url = "github:nix-community/fenix";
+    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
+    #   inputs.rust-analyzer-src.follows = "";
+    # };
 
-    advisory-db = {
-      url = "github:rustsec/advisory-db";
-      flake = false;
-    };
+    # advisory-db = {
+    #   url = "github:rustsec/advisory-db";
+    #   flake = false;
+    # };
+
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]

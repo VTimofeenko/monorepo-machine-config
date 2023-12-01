@@ -84,22 +84,6 @@
         "type": "github"
       }
     },
-    "advisory-db": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1701193254,
-        "narHash": "sha256-Hr7efA3GjwqBkGYKmd3XmGckdPQikbcCmOrq7fmTp3A=",
-        "owner": "rustsec",
-        "repo": "advisory-db",
-        "rev": "43af5fef0591531a72ebb86c5f1c623ee95c62fe",
-        "type": "github"
-      },
-      "original": {
-        "owner": "rustsec",
-        "repo": "advisory-db",
-        "type": "github"
-      }
-    },
     "agenix": {
       "inputs": {
         "darwin": "darwin",
@@ -2045,27 +2029,6 @@
       "original": {
         "owner": "lastquestion",
         "repo": "explain-pause-mode",
-        "type": "github"
-      }
-    },
-    "fenix": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs-unstable"
-        ],
-        "rust-analyzer-src": []
-      },
-      "locked": {
-        "lastModified": 1701325357,
-        "narHash": "sha256-+CF74n9/AlLwgdCTM5WuKsa/4C1YxJSpRDCfz1ErOl0=",
-        "owner": "nix-community",
-        "repo": "fenix",
-        "rev": "07a409ce1fe2c6d6e871793394b0cc0e5e262e3b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "fenix",
         "type": "github"
       }
     },
@@ -7195,13 +7158,11 @@
     },
     "root": {
       "inputs": {
-        "advisory-db": "advisory-db",
         "agenix": "agenix",
         "base16": "base16",
         "color_scheme": "color_scheme",
         "crane": "crane",
         "devshell": "devshell",
-        "fenix": "fenix",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager_2",
         "hyprland": "hyprland",
