@@ -7,11 +7,19 @@
     nixpkgs.url = "nixpkgs/nixos-23.11";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     home-manager.url = "github:rycee/home-manager/release-23.11";
-    agenix.url = "github:ryantm/agenix";
+    nixpkgs-lib.url = "github:NixOS/nixpkgs/nixos-unstable?dir=lib";
     nur.url = "github:nix-community/NUR";
     nixpkgs-stable.url = "nixpkgs";
 
-    nixpkgs-lib.url = "github:NixOS/nixpkgs/nixos-unstable?dir=lib";
+    deploy-rs.url = "github:serokell/deploy-rs";
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs-unstable";
+        darwin.follows = "stub-flake";
+      };
+    };
+
 
     # Theming and stuff
     base16 = {
@@ -23,8 +31,8 @@
       flake = false;
     };
     private-config = {
-      url = "git+file:///home/spacecadet/code/private-flake?ref=master";
-      # url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-flake.git";
+      # url = "git+file:///home/spacecadet/code/private-flake?ref=master";
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-flake.git";
       inputs = {
         agenix.follows = "agenix";
         nixpkgs.follows = "nixpkgs";
@@ -41,11 +49,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    infra = {
-      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git";
-      flake = false;
-    };
-
     hyprland.url = "github:hyprwm/Hyprland";
 
     # Service that remaps arbitrary keyboard combinations
@@ -60,10 +63,12 @@
 
     pre-commit-hooks-nix = {
       url = "github:cachix/pre-commit-hooks.nix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-      inputs.nixpkgs-stable.follows = "nixpkgs";
-
+      inputs = {
+        nixpkgs.follows = "nixpkgs-unstable";
+        nixpkgs-stable.follows = "nixpkgs";
+      };
     };
+
     # vim plugins
     vim-scratch-plugin = {
       url = "github:mtth/scratch.vim";
@@ -88,12 +93,13 @@
       inputs = {
         nixpkgs.follows = "nixpkgs-unstable";
         nixpkgs-unstable.follows = "nixpkgs-unstable";
-        nixpkgs-stable.follows = "nixpkgs";
+        nixpkgs-stable.follows = "nixpkgs-stable";
         nixpkgs-lib.follows = "nixpkgs-lib";
         flake-parts.follows = "flake-parts";
         pre-commit-hooks-nix.follows = "pre-commit-hooks-nix";
         devshell.follows = "devshell";
         treefmt-nix.follows = "treefmt-nix";
+        deploy-rs.follows = "deploy-rs";
       };
     };
     # Rust
@@ -114,6 +120,27 @@
     #   flake = false;
     # };
 
+    homelab-data = {
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/homelab-data.git";
+      inputs = {
+        devshell.follows = "devshell";
+        nixpkgs-lib.follows = "nixpkgs-lib";
+        nixpkgs-stable.follows = "nixpkgs-stable";
+        pre-commit-hooks-nix.follows = "pre-commit-hooks-nix";
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs-unstable";
+        agenix.follows = "agenix";
+        my-flake-modules.follows = "my-flake-modules";
+        treefmt-nix.follows = "treefmt-nix";
+      };
+    };
+    # Source for DNS block
+    hostsBlockList = {
+      flake = false;
+      url = "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts";
+    };
+    # Empty flake
+    stub-flake.url = "github:VTimofeenko/stub-flake"; # A completely empty flake
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
