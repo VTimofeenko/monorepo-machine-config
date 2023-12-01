@@ -238,7 +238,7 @@
                       nix-config
                     ];
                   };
-                  tmux = importApply ./nixosModules/tmux { localFlake = self; inherit inputs; }; # (ref:tmux-module-import)
+                  tmux = importApply ./nixosModules/tmux { inherit inputs; }; # (ref:tmux-module-import)
                   nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
                 };
               # "nixosModules" output:1 ends here
