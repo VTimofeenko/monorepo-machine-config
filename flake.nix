@@ -231,7 +231,7 @@
                 };
               # homeConfigurations outro:1 ends here
               bumpInputs = {
-                changingInputs = [ "private-config" "my-flake-modules" ];
+                changingInputs = [ "private-config" "my-flake-modules" "hostsBlockList" ];
                 bumpAllInputs = true;
               };
               # [[file:new_project.org::*devShells][devShells:1]]
