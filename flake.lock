@@ -491,7 +491,7 @@
     "hostsBlockList": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-jFtQTKr/j9WheVWBrwblj8AI//rL3Mm2xKW05gzwzAc=",
+        "narHash": "sha256-c+oYpvRS3V/8VXWitvaosmDo2zODahEuEp4G6QI6oxA=",
         "type": "file",
         "url": "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
       },
