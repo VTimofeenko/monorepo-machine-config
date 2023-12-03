@@ -43,10 +43,10 @@
       };
     };
 
-    my-doom-config = {
-      url = "github:VTimofeenko/doom-config";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # my-doom-config = {
+    #   url = "github:VTimofeenko/doom-config";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     wg-namespace-flake = {
       url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/wireguard-namespace-flake.git";
