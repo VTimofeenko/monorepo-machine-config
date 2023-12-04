@@ -15,15 +15,15 @@ struct Args {
 fn main() -> Result<(), String> {
     let args = Args::parse();
 
-    use notify_rust::{error::MacOSError, get_bundle_identifier_or_default, set_application};
+    use notify_rust::{error::MacOsError, get_bundle_identifier_or_default, set_application};
 
     let app_id = get_bundle_identifier_or_default("Emacs");
     set_application(&app_id).map_err(|f| format!("{}", f))?;
 
     match set_application(&app_id) {
         Ok(_) => {}
-        Err(MacOSError::Application(error)) => println!("{}", error),
-        Err(MacOSError::Notification(error)) => println!("{}", error),
+        Err(MacOsError::Application(error)) => println!("{}", error),
+        Err(MacOsError::Notification(error)) => println!("{}", error),
     }
 
     Notification::new()
