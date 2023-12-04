@@ -320,6 +320,7 @@
               # [[file:new_project.org::*"homeManagerModules" output]["homeManagerModules" output:1]]
               # "homeManagerModules" output:1 ends here
               # [[file:new_project.org::*"Flake" output outro]["Flake" output outro:1]]
+              homeManagerModules.emacs = import ./modules/emacs/default.nix;
             };
           # "Flake" output outro:1 ends here
           # [[file:new_project.org::*Flake outro][Flake outro:1]]

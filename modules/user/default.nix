@@ -1,6 +1,6 @@
 # [[file:../../new_project.org::*NixOS user configs][NixOS user configs:1]]
 { pkgs
-, my-doom-config
+  # , my-doom-config
 , nixpkgs-unstable
 , selfHMModules
 , ...
@@ -23,7 +23,7 @@
     users.spacecadet = { ... }:
       {
         imports = [
-          my-doom-config.nixosModules.default
+          # my-doom-config.nixosModules.default
           ../home-manager # (ref:linux-user-import)
           selfHMModules.vim
           {
@@ -31,6 +31,7 @@
           }
           selfHMModules.zsh
           selfHMModules.git
+          selfHMModules.emacs
         ];
         home.packages = builtins.attrValues {
           inherit (pkgs) pavucontrol blueman libreoffice brave gthumb;
