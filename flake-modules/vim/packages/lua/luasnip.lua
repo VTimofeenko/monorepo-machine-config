@@ -88,6 +88,13 @@ ls.add_snippets("nix", {
 		i(1),
 		t({ "''" }),
 	}),
+	s("inherit", {
+		t({ "inherit (" }),
+		i(1),
+		t({ ")" }),
+		i(2),
+		t({ ";" }),
+	}),
 }, {
 	key = "nix",
 })
