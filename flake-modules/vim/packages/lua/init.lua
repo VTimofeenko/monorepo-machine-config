@@ -145,6 +145,7 @@ local function open_file()
 	end
 
 	vim.cmd("edit " .. file_path)
+	-- TODO: Confirm before creating or fallback to the original gf bind
 end
 
 local wk = require("which-key")
