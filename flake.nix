@@ -171,6 +171,7 @@
             zshModule = importApply ./flake-modules/zsh { inherit self; };
             gitModule = importApply ./flake-modules/git;
             hyprlandHelpersModule = importApply ./flake-modules/hyprland-helpers { inherit withSystem lib self; };
+            emacsModule = importApply ./flake-modules/emacs { inherit withSystem lib self; };
           };
         in
         {
