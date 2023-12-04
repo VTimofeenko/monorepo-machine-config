@@ -65,3 +65,7 @@
 ;; In-window speedbar
 (package! sr-speedbar)
 ;; TODO: org-excalidraw?
+
+;; TODO: telega.el
+
+;; TODO: Org-ai
