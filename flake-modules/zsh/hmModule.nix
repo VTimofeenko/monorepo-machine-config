@@ -10,6 +10,16 @@ let
   commonSettings = import ./common.nix {
     inherit pkgs; pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.system};
   };
+
+  # upstream PR in unstable https://github.com/NixOS/nixpkgs/pull/271088
+  fzf-tab-override = pkgs.zsh-fzf-tab.overrideAttrs {
+    env = pkgs.lib.optionalAttrs pkgs.stdenv.cc.isClang {
+      NIX_CFLAGS_COMPILE = toString [
+        "-Wno-error=implicit-function-declaration"
+        "-Wno-error=implicit-int"
+      ];
+    };
+  };
 in
 {
   home = { inherit (commonSettings) packages; };
@@ -49,7 +59,7 @@ in
       # initExtraFirst # Commands that should be added to top of .zshrc.
       localVariables = commonSettings.variables;
       plugins =
-        [{ name = "fzf-tab"; src = "${pkgs.zsh-fzf-tab}/share/fzf-tab"; }] ++
+        [{ name = "fzf-tab"; src = "${fzf-tab-override}/share/fzf-tab"; }] ++
         (with commonSettings.plugins;
         map (name: { inherit name; file = "${name}.zsh"; src = baseDir; }) list);
       shellGlobalAliases = {
