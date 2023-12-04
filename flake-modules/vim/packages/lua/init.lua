@@ -142,10 +142,14 @@ local function open_file()
 	if is_directory == 1 then
 		-- It's a directory, open the corresponding default.txt file
 		file_path = file_path .. "/default.nix"
+	elseif vim.fn.filereadable(file_path) == 0 then
+		local choice = vim.fn.confirm("File does not exist. Create?", "&Yes\n&Cancel", 1)
+		if choice == 2 or choice == 0 then
+			return -- Do not create the file if the prompt is canceled or "Cancel" is given
+		end
 	end
 
 	vim.cmd("edit " .. file_path)
-	-- TODO: Confirm before creating or fallback to the original gf bind
 end
 
 local wk = require("which-key")
