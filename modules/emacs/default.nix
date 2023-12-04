@@ -4,6 +4,7 @@
 , ...
 }:
 let
+  # TODO: Add arch-agnostic notification package
   /* */
   emacs-with-flags = pkgs.emacs29.override {
     withNativeCompilation = true;
