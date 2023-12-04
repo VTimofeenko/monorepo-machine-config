@@ -2,6 +2,7 @@
 { withSystem # Flake-parts helper
 , lib # To use the common lib
 , self
+, importApply # To explicitly pass self through
 , ...
 }:
 {
@@ -11,6 +12,7 @@
     }:
     let
       craneLib = self.inputs.crane.lib.${system}; # NOTE: not inputs' since it seems to strip non-standard outputs.
+      # TODO: Add kroki-cli
     in
     {
       packages = withSystem system
@@ -39,6 +41,6 @@
     };
   flake =
     {
-      # homeManagerModules.emacs = import ./hm.nix; # TODO: importApply for access to selfpkgs
+      homeManagerModules.emacs = importApply ./hm.nix { selfPkgs = self.packages; };
     };
 }

@@ -1,11 +1,11 @@
 # Home-manager module that configures Doom emacs
+{ selfPkgs, ... }:
 { pkgs
 , lib
 , ...
 }:
 let
-  # TODO: Add arch-agnostic notification package
-  /* */
+  selfPkgs' = selfPkgs.${pkgs.system};
   emacs-with-flags = pkgs.emacs29.override {
     withNativeCompilation = true;
     withSQLite3 = true;
@@ -20,7 +20,7 @@ let
   # doomDir = "$XDG_CONFIG_HOME/doom";
   # gitManageddoomDir = "$HOME/code/literate-machine-config/modules/emacs/doom.dir";
   doomDir = "/home/spacecadet/.config/doom";
-  gitManageddoomDir = "/home/spacecadet/code/literate-machine-config/modules/emacs/doom.dir";
+  gitManageddoomDir = "/home/spacecadet/code/literate-machine-config/flake-modules/emacs/doom.dir";
 in
 {
   programs = {
@@ -48,6 +48,7 @@ in
           ;
         inherit (pkgs.python311Packages) grip; # markdown previews
         inherit (pkgs.nodePackages) bash-language-server; # sh LSP
+        inherit (selfPkgs') emacs-notifier;
       };
     };
     zsh = {
