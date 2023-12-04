@@ -67,6 +67,7 @@ ls.add_snippets("nix", {
 		i(1),
 		t({ "", "in" }),
 	}),
+	-- if .. then .. else template
 	s("if", {
 		t({ "if " }),
 		i(1),
@@ -74,7 +75,12 @@ ls.add_snippets("nix", {
 		i(2),
 		t({ " else " }),
 		i(3),
-		t({ ";" }),
+	}),
+	-- /* */ comment
+	s("/*", {
+		t({ "/*" }),
+		i(1),
+		t({ " */" }),
 	}),
 }, {
 	key = "nix",
