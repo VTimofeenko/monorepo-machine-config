@@ -47,6 +47,8 @@
   # hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
   boot = {
     kernelParams = [
+      # Fixes white flickering after resume/unlock
+      "amdgpu.sg_display=0"
       # For Power consumption
       # https://kvark.github.io/linux/framework/2021/10/17/framework-nixos.html
 
