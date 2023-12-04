@@ -455,3 +455,8 @@
         (run-at-time "24:01" 3600 'org-agenda-to-appt) ;; update appts hourly
         (add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt) ;; update appt list on agenda view
         )
+
+;; org-excalidraw configuration
+(use-package! org-excalidraw
+              :hook (org-mode . org-excalidraw-initialize))
+(after! org (setq org-excalidraw-directory "~/org/org-excalidraw"))

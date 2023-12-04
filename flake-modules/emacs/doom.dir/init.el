@@ -192,6 +192,9 @@
        ;; (rss +org)        ; emacs as an RSS reader ;; TODO: implement
        ;;twitter           ; twitter client https://twitter.com/vnought
 
+       :local
+       org-excalidraw
+
        :config
        ;;literate
        (default +bindings +smartparens))
