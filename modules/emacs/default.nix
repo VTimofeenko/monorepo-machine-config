@@ -26,7 +26,7 @@ in
     emacs = {
       enable = true;
       package = emacs-with-flags;
-      # extraPackages = epkgs: [ epkgs.magit ];
+      extraPackages = epkgs: [ epkgs.vterm ];
     };
     zsh = {
       # Add "doom" alias
