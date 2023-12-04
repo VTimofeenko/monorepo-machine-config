@@ -48,3 +48,20 @@
 ;; (unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;; (unpin! t)
+
+;; Custom config starts here
+;; Change cursor shape properly
+(package! evil-terminal-cursor-changer)
+;; Custom xdg-open shortcuts
+(package! openwith)
+;; To embed screenshots
+(package! org-download)
+;; Auto format nix files on save
+(package! nixpkgs-fmt)
+;; Ability to read logs
+(package! logview)
+;; SQL workbook
+(package! ejc-sql)
+;; In-window speedbar
+(package! sr-speedbar)
+;; TODO: org-excalidraw?
