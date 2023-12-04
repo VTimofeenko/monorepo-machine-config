@@ -69,3 +69,6 @@
 ;; TODO: telega.el
 
 ;; TODO: Org-ai
+
+;; Notifications
+(package! appt)
