@@ -70,5 +70,3 @@
 
 ;; TODO: Org-ai
 
-;; Notifications
-(package! appt)
