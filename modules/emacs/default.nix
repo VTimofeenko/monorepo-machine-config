@@ -27,11 +27,36 @@ in
     emacs = {
       enable = true;
       package = emacs-with-flags;
-      extraPackages = epkgs: [ epkgs.vterm ];
+      extraPackages = epkgs: [
+        epkgs.vterm
+        # For :spell
+        (pkgs.aspellWithDicts (ds: with ds; [ en en-computers en-science ru ]))
+      ]
+      ++
+      /* External dependencies.
+
+      NOTE: According to https://github.com/NixOS/nixpkgs/issues/267548 this sometimes breaks
+
+      */
+      builtins.attrValues {
+        inherit (pkgs)
+          fd# fast find
+          ripgrep# fast grep
+          sqlite# org roam
+          lua-language-server# lua LSP
+          curl# elfeed
+          ;
+        inherit (pkgs.python311Packages) grip; # markdown previews
+        inherit (pkgs.nodePackages) bash-language-server; # sh LSP
+      };
     };
     zsh = {
-      # Add "doom" alias
-      shellAliases.doom = "${doomRepoLocation}/bin/doom";
+      shellAliases = {
+        # Add "doom" alias
+        doom = "${doomRepoLocation}/bin/doom";
+        # Override "emacs" alias with proper init dir
+        emacs = "emacs --init-directory ${doomRepoLocation}";
+      };
       # This allows keeping the doom config in place
       localVariables.DOOMDIR = doomDir;
     };
