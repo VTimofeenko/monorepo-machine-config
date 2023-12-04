@@ -43,9 +43,6 @@ in
               '';
           }) + "/bin/set-random-wallpaper";
         };
-        Install = {
-          WantedBy = [ target ];
-        };
       };
     };
 

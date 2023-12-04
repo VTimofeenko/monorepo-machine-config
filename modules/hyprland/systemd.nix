@@ -9,6 +9,6 @@ in
     lib.listToAttrs
       (map
         (serviceName: { name = serviceName; value = { Unit.BindsTo = [ "hyprland-session.target" ]; }; })
-        [ "swayidle" "swaync" "hyprland-language-switch-notifier" "hyprland-mode-switch-notifier" "hyprland-workspace-notifier" "swww" "set-random-wallpaper" ]);
+        [ "swayidle" "swaync" "hyprland-language-switch-notifier" "hyprland-mode-switch-notifier" "hyprland-workspace-notifier" "swww" ]);
   wayland.windowManager.hyprland.extraConfig = "exec-once=${lib.getExe selfPkgs'.hyprland-maybe-restart-hyprland-session}";
 }
