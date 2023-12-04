@@ -82,6 +82,12 @@ ls.add_snippets("nix", {
 		i(1),
 		t({ " */" }),
 	}),
+	-- Multiline string
+	s("''", {
+		t({ "'' " }),
+		i(1),
+		t({ "\n''" }),
+	}),
 }, {
 	key = "nix",
 })
