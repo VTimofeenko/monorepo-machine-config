@@ -84,9 +84,9 @@ ls.add_snippets("nix", {
 	}),
 	-- Multiline string
 	s("''", {
-		t({ "'' " }),
+		t({ "'' ", "" }), -- This adds a newline. Alternative -- use luasnip's fmt
 		i(1),
-		t({ "\n''" }),
+		t({ "''" }),
 	}),
 }, {
 	key = "nix",
