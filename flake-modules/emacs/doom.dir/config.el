@@ -463,3 +463,6 @@
   (setq org-excalidraw-directory "~/org/org-excalidraw"))
 
 (after! org (org-fancy-priorities-mode))
+
+(map! :leader
+      (:desc "Jump around" "j" #'evil-avy-goto-word-0))
