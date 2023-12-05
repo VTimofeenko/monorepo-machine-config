@@ -3,6 +3,7 @@
 , lib # To use the common lib
 , self
 , importApply # To explicitly pass self through
+, kroki-src
 , ...
 }:
 {
@@ -12,7 +13,6 @@
     }:
     let
       craneLib = self.inputs.crane.lib.${system}; # NOTE: not inputs' since it seems to strip non-standard outputs.
-      # TODO: Add kroki-cli
     in
     {
       packages = withSystem system
@@ -37,6 +37,21 @@
           in
           {
             emacs-notifier = craneLib.buildPackage (commonArgs // { inherit cargoArtifacts; });
+            kroki-cli = pkgs.buildGoModule {
+              pname = "kroki-cli";
+              version = "0.5.0";
+              src = kroki-src;
+              vendorHash = "sha256-HqiNdNpNuFBfwmp2s0gsa2YVf3o0O2ILMQWfKf1Mfaw=";
+              # This might be needed to get the right sha checksum
+              # vendorSha256 = lib.fakeSha256;
+              meta = {
+                description = "A Kroki CLI";
+                homepage = "https://github.com/yuzutech/kroki-cli";
+                license = lib.licenses.mit;
+                mainProgram = "kroki";
+              };
+            };
+
           });
     };
   flake =

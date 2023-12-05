@@ -650,6 +650,22 @@
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git"
       }
     },
+    "kroki-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1675596325,
+        "narHash": "sha256-wh/1pEmlMQNjOlCA25gq5bKEjb60Ei9JUoApsOBgSOc=",
+        "owner": "yuzutech",
+        "repo": "kroki-cli",
+        "rev": "d923cdd8336257d0f19f2993c112853859f68607",
+        "type": "github"
+      },
+      "original": {
+        "owner": "yuzutech",
+        "repo": "kroki-cli",
+        "type": "github"
+      }
+    },
     "my-flake-modules": {
       "inputs": {
         "deploy-rs": [
@@ -1105,6 +1121,7 @@
         "hostsBlockList": "hostsBlockList",
         "hyprland": "hyprland",
         "infra": "infra",
+        "kroki-src": "kroki-src",
         "my-flake-modules": "my-flake-modules",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_4",

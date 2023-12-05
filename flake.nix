@@ -150,6 +150,11 @@
     };
     # Empty flake
     stub-flake.url = "github:VTimofeenko/stub-flake"; # A completely empty flake
+    # Source for org-excalidraw converter for emacs
+    kroki-src = {
+      url = "github:yuzutech/kroki-cli";
+      flake = false;
+    };
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
@@ -171,7 +176,10 @@
             zshModule = importApply ./flake-modules/zsh { inherit self; };
             gitModule = importApply ./flake-modules/git;
             hyprlandHelpersModule = importApply ./flake-modules/hyprland-helpers { inherit withSystem lib self; };
-            emacsModule = importApply ./flake-modules/emacs { inherit withSystem lib self importApply; };
+            emacsModule = importApply ./flake-modules/emacs {
+              inherit withSystem lib self importApply;
+              inherit (inputs) kroki-src;
+            };
           };
         in
         {
