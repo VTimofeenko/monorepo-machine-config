@@ -458,5 +458,6 @@
 
 ;; org-excalidraw configuration
 (use-package! org-excalidraw
-              :hook (org-mode . org-excalidraw-initialize))
-(after! org (setq org-excalidraw-directory "~/org/org-excalidraw"))
+              :hook (org-mode . org-excalidraw-initialize)
+              :config
+              (setq org-excalidraw-directory "~/org/org-excalidraw"))
