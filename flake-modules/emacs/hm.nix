@@ -48,7 +48,7 @@ in
           ;
         inherit (pkgs.python311Packages) grip; # markdown previews
         inherit (pkgs.nodePackages) bash-language-server; # sh LSP
-        inherit (selfPkgs') emacs-notifier;
+        inherit (selfPkgs') emacs-notifier kroki-cli;
       };
     };
     zsh = {
