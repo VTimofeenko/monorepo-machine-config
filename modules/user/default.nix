@@ -3,6 +3,7 @@
   # , my-doom-config
 , nixpkgs-unstable
 , selfHMModules
+, data-flake
 , ...
 }:
 {
@@ -32,6 +33,7 @@
           selfHMModules.zsh
           selfHMModules.git
           selfHMModules.emacs
+          data-flake.homeManagerModules.default
         ];
         home.packages = builtins.attrValues {
           inherit (pkgs) pavucontrol blueman libreoffice brave gthumb;
