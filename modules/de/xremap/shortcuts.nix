@@ -5,14 +5,26 @@ let
 in
 {
   services.xremap.config = {
+    virtual_modifiers = [ "F18" ];
     modmap = [
       {
         # Global remap CapsLock to Esc
         name = "Global";
-        remap = { "CapsLock" = "Esc"; };
+        remap = {
+          "CapsLock" = {
+            held = "F18";
+            alone = "Esc";
+            alone_timeout_millis = 250;
+          };
+        };
       }
     ];
     keymap = [
+      {
+        name = "Remap hyper key";
+        # NOTE: Needs explicit bindings it seems. Maybe accept F18 as modifier in Hyprland?
+        remap = { "F18-e" = "SHIFT-C-M-SUPER-e"; };
+      }
       {
         name = "Bypass remaps";
         remap = { "CTRL_L-SHIFT-ESC" = { escape_next_key = true; }; };
