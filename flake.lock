@@ -99,6 +99,54 @@
         "type": "github"
       }
     },
+    "data-flake": {
+      "inputs": {
+        "agenix": [
+          "agenix"
+        ],
+        "devshell": [
+          "devshell"
+        ],
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "my-flake-modules": [
+          "my-flake-modules"
+        ],
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ],
+        "nixpkgs-lib": [
+          "nixpkgs-lib"
+        ],
+        "nixpkgs-stable": [
+          "nixpkgs-stable"
+        ],
+        "nixpkgs-unstable": "nixpkgs-unstable",
+        "pre-commit-hooks-nix": [
+          "pre-commit-hooks-nix"
+        ],
+        "stub-flake": [
+          "stub-flake"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1701793562,
+        "narHash": "sha256-L68U5JiQ5NG1hWn9p1mI7E+uY3Ygf8iHOmaHvjmEySU=",
+        "ref": "refs/heads/master",
+        "rev": "8295dabfa299e3b807a86bc62c6cc2126871982e",
+        "revCount": 13,
+        "type": "git",
+        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git"
+      }
+    },
     "deploy-rs": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -465,51 +513,6 @@
         "type": "github"
       }
     },
-    "homelab-data": {
-      "inputs": {
-        "agenix": [
-          "agenix"
-        ],
-        "devshell": [
-          "devshell"
-        ],
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "my-flake-modules": [
-          "my-flake-modules"
-        ],
-        "nixpkgs": [
-          "nixpkgs-unstable"
-        ],
-        "nixpkgs-lib": [
-          "nixpkgs-lib"
-        ],
-        "nixpkgs-stable": [
-          "nixpkgs-stable"
-        ],
-        "nixpkgs-unstable": "nixpkgs-unstable",
-        "pre-commit-hooks-nix": [
-          "pre-commit-hooks-nix"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1701314965,
-        "narHash": "sha256-P8xk7YWleMbm1AN592UfDryXLYD5dyEQXXkRNnW8Mxk=",
-        "ref": "refs/heads/master",
-        "rev": "3d0c169797d0cea9bbe8579392703db7caf12709",
-        "revCount": 113,
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/homelab-data.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/homelab-data.git"
-      }
-    },
     "hostsBlockList": {
       "flake": false,
       "locked": {
@@ -794,18 +797,17 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1700612854,
-        "narHash": "sha256-yrQ8osMD+vDLGFX7pcwsY/Qr5PUd6OmDMYJZzZi0+zc=",
+        "lastModified": 1701253981,
+        "narHash": "sha256-ztaDIyZ7HrTAfEEUt9AtTDNoCYxUdSd6NrRHaYOIxtk=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "19cbff58383a4ae384dea4d1d0c823d72b49d614",
+        "rev": "e92039b55bcd58469325ded85d4f58dd5a4eaf58",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
+        "id": "nixpkgs",
         "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
+        "type": "indirect"
       }
     },
     "nixpkgs-unstable_2": {
@@ -1113,11 +1115,11 @@
         "base16": "base16",
         "color_scheme": "color_scheme",
         "crane": "crane",
+        "data-flake": "data-flake",
         "deploy-rs": "deploy-rs",
         "devshell": "devshell",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager_2",
-        "homelab-data": "homelab-data",
         "hostsBlockList": "hostsBlockList",
         "hyprland": "hyprland",
         "infra": "infra",

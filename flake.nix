@@ -129,8 +129,8 @@
     #   flake = false;
     # };
 
-    homelab-data = {
-      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/homelab-data.git";
+    data-flake = {
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git";
       inputs = {
         devshell.follows = "devshell";
         nixpkgs-lib.follows = "nixpkgs-lib";
@@ -141,6 +141,7 @@
         agenix.follows = "agenix";
         my-flake-modules.follows = "my-flake-modules";
         treefmt-nix.follows = "treefmt-nix";
+        stub-flake.follows = "stub-flake";
       };
     };
     # Source for DNS block
