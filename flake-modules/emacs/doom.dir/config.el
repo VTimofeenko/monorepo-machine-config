@@ -461,3 +461,5 @@
               :hook (org-mode . org-excalidraw-initialize)
               :config
               (setq org-excalidraw-directory "~/org/org-excalidraw"))
+
+(after! org (org-fancy-priorities-mode))
