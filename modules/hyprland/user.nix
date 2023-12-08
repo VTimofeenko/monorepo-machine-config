@@ -87,6 +87,28 @@ in
 
   services.hyprland-helpers.enable = true;
 
+  systemd.user.services.wl-clipboard-watcher =
+    let
+      target = "graphical-session.target";
+    in
+    {
+      Unit = {
+        Description = "Wallpaper daemon";
+        PartOf = [ target ];
+        After = [ target ];
+        BindsTo = [ "hyprland-session.target" ];
+        ConditionEnvironment = "WAYLAND_DISPLAY";
+      };
+      Service = {
+        Type = "simple";
+        ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --watch ${cliphist} store";
+        Restart = "always";
+      };
+      Install = {
+        WantedBy = [ target ];
+      };
+    };
+
   wayland.windowManager.hyprland =
     {
       enable = true;
@@ -110,10 +132,6 @@ in
 
           # Some default env vars.
           env = XCURSOR_SIZE,24
-
-          # Clipboard manager
-          # TODO: move this to proper systemd service
-          # exec-once = ${pkgs.wl-clipboard}/bin/wl-paste --watch ${cliphist} store
 
           # For all categories, see https://wiki.hyprland.org/Configuring/Variables/
           input {
