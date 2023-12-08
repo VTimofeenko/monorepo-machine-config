@@ -1,5 +1,5 @@
 # [[file:../../../new_project.org::*Xremap shortcuts][Xremap shortcuts:1]]
-{ lib, ... }:
+_:
 let
   consoleLikeApps = [ "kitty" "Emacs" "kitty-dropterm" ];
 in
@@ -18,22 +18,23 @@ in
           };
         };
       }
-      {
-        # Map alt-shift-super-ctrl to home row if held
-        name = "Add modifier keys to home row";
-        remap =
-          let
-            # NOTE: adds slight lag, maybe increase alone_timeout_millis?
-            mkSameKeyHeld = key: held: { "${key}" = { inherit held; alone = key; alone_timeout_millis = 1000; }; };
-          in
-          lib.attrsets.mergeAttrsList [
-            # NOTE: no _L _R aliases work here
-            (mkSameKeyHeld "a" "ALT_L")
-            (mkSameKeyHeld "s" "SUPER_L")
-            (mkSameKeyHeld "d" "SHIFT_L")
-            (mkSameKeyHeld "f" "CTRL_L")
-          ];
-      }
+      # This is fun but breaks too much :(
+      # {
+      #   # Map alt-shift-super-ctrl to home row if held
+      #   name = "Add modifier keys to home row";
+      #   remap =
+      #     let
+      #       # NOTE: adds slight lag, maybe increase alone_timeout_millis?
+      #       mkSameKeyHeld = key: held: { "${key}" = { inherit held; alone = key; alone_timeout_millis = 1000; }; };
+      #     in
+      #     lib.attrsets.mergeAttrsList [
+      #       # NOTE: no _L _R aliases work here
+      #       (mkSameKeyHeld "a" "ALT_L")
+      #       (mkSameKeyHeld "s" "SUPER_L")
+      #       (mkSameKeyHeld "d" "SHIFT_L")
+      #       (mkSameKeyHeld "f" "CTRL_L")
+      #     ];
+      # }
     ];
     keymap = [
       {
