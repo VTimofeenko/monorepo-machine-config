@@ -64,7 +64,9 @@
 (package! ejc-sql)
 ;; In-window speedbar
 (package! sr-speedbar)
-;; TODO: org-excalidraw?
+
+;; View, capture, and archive Web pages in Org-mode
+(package! org-web-tools)
 
 ;; TODO: telega.el
 

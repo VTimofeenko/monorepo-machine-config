@@ -466,3 +466,5 @@
 
 (map! :leader
       (:desc "Jump around" "j" #'evil-avy-goto-word-0))
+
+(require 'org-web-tools)
