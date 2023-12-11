@@ -131,14 +131,15 @@
         ],
         "treefmt-nix": [
           "treefmt-nix"
-        ]
+        ],
+        "wg-namespace-flake": "wg-namespace-flake"
       },
       "locked": {
-        "lastModified": 1702262549,
-        "narHash": "sha256-+kDTV1iHGJdLzmjcsLZ1zA6lFQKptIaPu2eiOLuUdYY=",
+        "lastModified": 1702262876,
+        "narHash": "sha256-jdsGXrRvKyJLxwZUHzVOZ5MB48hZxalo5qGd8B+LPOE=",
         "ref": "refs/heads/master",
-        "rev": "10c6c0c5693697be6212a3c47fa012b84f99ae2f",
-        "revCount": 69,
+        "rev": "ea87832bd56558692b6b9957b41f7d532383599f",
+        "revCount": 70,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git"
       },
@@ -1138,7 +1139,6 @@
         "stub-flake": "stub-flake_2",
         "treefmt-nix": "treefmt-nix",
         "vim-scratch-plugin": "vim-scratch-plugin",
-        "wg-namespace-flake": "wg-namespace-flake",
         "xremap-flake": "xremap-flake"
       }
     },
@@ -1332,6 +1332,7 @@
     "wg-namespace-flake": {
       "inputs": {
         "nixpkgs": [
+          "data-flake",
           "nixpkgs"
         ]
       },
