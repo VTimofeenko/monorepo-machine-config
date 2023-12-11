@@ -250,6 +250,7 @@
               devshellCmds.deployment = {
                 enable = true;
                 localDeployment = true;
+                useDeployRs = true;
               };
 
               devshells.default = {
@@ -268,6 +269,10 @@
           flake =
             let
               inherit (flake-parts-lib) importApply;
+
+              homelab = import ./lib/homelab.nix {
+                inherit (inputs) nixpkgs self deploy-rs;
+              };
             in
             {
               # Pass this through
@@ -294,7 +299,15 @@
                 let
                   specialArgs = inputs // { selfModules = self.nixosModules; selfPkgs = self.packages; selfHMModules = self.homeManagerModules; };
                 in
+                # Iterates over the attrset of managed nodes, creating the nixosConfigurations per machine
+                (builtins.mapAttrs
+                  (hostName: hostData: homelab.mkSystem {
+                    inherit (hostData) hostName system;
+                  })
+                  inputs.data-flake.data.hosts.managed) //
                 {
+                  # NOTE: For now uranium and neptunium are special
+
                   # "nixosConfigurations" output:1 ends here
                   # [[file:new_project.org::*Uranium][Uranium:1]]
                   uranium = inputs.nixpkgs.lib.nixosSystem {
@@ -325,8 +338,13 @@
                 };
               # "nixosConfigurations" outro:1 ends here
               # [[file:new_project.org::*"homeManagerModules" output]["homeManagerModules" output:1]]
-              # "homeManagerModules" output:1 ends here
-              # [[file:new_project.org::*"Flake" output outro]["Flake" output outro:1]]
+              deploy.nodes = builtins.mapAttrs
+                (hostName: hostData: homelab.mkDeployRsNode
+                  {
+                    nodeName = hostData.hostName; # NOTE: UI will change to hostName once DNS is up
+                    inherit (hostData) system;
+                  })
+                inputs.data-flake.data.hosts.managed;
             };
           # "Flake" output outro:1 ends here
           # [[file:new_project.org::*Flake outro][Flake outro:1]]
