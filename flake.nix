@@ -35,7 +35,7 @@
       flake = false;
     };
     private-config = {
-      # url = "git+file:///home/spacecadet/code/private-flake?ref=master";
+      # url = "path:///home/spacecadet/code/private-flake";
       url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-flake.git";
       inputs = {
         agenix.follows = "agenix";
@@ -126,6 +126,7 @@
 
     data-flake = {
       url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git";
+      # url = "path:///home/spacecadet/code/data-flake";
       inputs = {
         devshell.follows = "devshell";
         nixpkgs-lib.follows = "nixpkgs-lib";
