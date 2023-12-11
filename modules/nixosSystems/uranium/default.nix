@@ -1,12 +1,10 @@
 # [[file:../../../new_project.org::*Uranium specific system][Uranium specific system:1]]
 { lib
-, config
 , ...
-}@inputs:
+}:
 {
   imports = [
     ../../de
-    inputs.wg-namespace-flake.nixosModules.default
     ./hardware # (ref:uranium-hw-import)
     ./network-selector.nix
   ];

@@ -48,11 +48,6 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
 
-    wg-namespace-flake = {
-      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/wireguard-namespace-flake.git";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     hyprland.url = "github:hyprwm/Hyprland";
 
     # Service that remaps arbitrary keyboard combinations
