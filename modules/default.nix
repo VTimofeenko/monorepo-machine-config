@@ -1,15 +1,12 @@
 # [[file:../new_project.org::*Common system configuration modules][Common system configuration modules:1]]
 # These arguments are passed through specialArgs
 { pkgs
-, agenix
 , home-manager
 , selfModules
 , ...
 }:
 {
   imports = [
-    # Modules from imports
-    agenix.nixosModules.default
     home-manager.nixosModules.home-manager
 
     # this flake's nixosModules
