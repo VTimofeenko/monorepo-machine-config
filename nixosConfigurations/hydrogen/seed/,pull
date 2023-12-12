@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Simple script to pull .nix files from specified IP
+scp -r -o StrictHostKeyChecking=no -o UserKnownHOstsFile=/dev/null nixos@192.168.1.216:/mnt/etc/nixos/* .
