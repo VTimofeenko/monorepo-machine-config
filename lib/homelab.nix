@@ -8,7 +8,7 @@
   /*
     Wrapper around pkgs.lib.nixosSystem that adds the common modules
   */
-  mkSystem = hostData:
+  mkSystem = { hostData, specialArgs, data-flake }:
     let
       inherit (hostData) hostName;
     in
@@ -18,36 +18,31 @@
         inherit system;
         config.allowUnfree = true;
         overlays = [
-          self.overlays.default
+          self.overlays.homelab
         ];
       };
       modules = [
-        (./. + "/../hosts/${hostName}/configuration") # every host has "configuration" directory. /. converts it to path
+        (./. + "/../nixosConfigurations/${hostName}/configuration") # every host has "configuration" directory. /. converts it to path
         { networking = { inherit hostName; }; }
         {
           imports = [
-            ../modules/common/dump.nix
-            ../modules/common/nix.nix
-            ../modules/common/time.nix
-            ../modules/common/packages.nix
-            ../modules/common/sshd.nix
-            ../modules/common/firewall.nix
-            ../modules/common/shell.nix
+            ../nixosModules/common/dump.nix
+            ../nixosModules/common/nix.nix
+            ../nixosModules/common/time.nix
+            ../nixosModules/common/packages.nix
+            ../nixosModules/common/sshd.nix
+            ../nixosModules/common/firewall.nix
+            ../nixosModules/common/shell.nix
+
+            data-flake.nixosModules.${hostName}
+
+            specialArgs.selfModules.zsh
           ];
         }
       ]
-        # TODO: add modules from data flake
-        # TODO: Add modules from lib
-
-        # ++
-        # (localLib.getModules hostName); # This retrieves modules for the services running at that host
-        # specialArgs = {
-        #   inherit localLib netConfig srvConfig hostConfig globalSettings my-config-flake;
-        #   inherit serviceSecrets;
-
-        #   # inherit notNftLib;
-        # };
+        # TODO: add modules from the host config
       ;
+      inherit specialArgs; # nixos-hardware is passed this way
     };
   /*
     Returns attrset in format expected by deploy-rs.
@@ -61,7 +56,7 @@
     }
   */
   mkDeployRsNode = { nodeName, system }: {
-    hostname = "192.168.1.1"; # TODO: Replace this after mgmt on 1.1 is up
+    hostname = nodeName + ".mgmt.home.arpa"; # TODO: Make this more generic
     sshUser = "root";
     profiles.system = {
       user = "root";

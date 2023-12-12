@@ -199,7 +199,7 @@
             in
             {
               # [[file:new_project.org::*Overlays][Overlays:1]]
-              overlayAttrs = builtins.attrValues config.packages;
+              overlayAttrs = config.packages;
               # Overlays:1 ends here
               # [[file:new_project.org::*homeConfigurations][homeConfigurations:1]]
               legacyPackages.homeConfigurations =
@@ -270,6 +270,7 @@
 
               homelab = import ./lib/homelab.nix {
                 inherit (inputs) nixpkgs self deploy-rs;
+                inherit (inputs.nixpkgs) lib;
               };
             in
             {
@@ -299,10 +300,9 @@
                 in
                 # Iterates over the attrset of managed nodes, creating the nixosConfigurations per machine
                 (builtins.mapAttrs
-                  (hostName: hostData: homelab.mkSystem {
-                    inherit (hostData) hostName system;
-                  })
-                  inputs.data-flake.data.hosts.managed) //
+                  (_: hostData: homelab.mkSystem { inherit hostData specialArgs; inherit (inputs) data-flake; })
+                  inputs.data-flake.data.hosts.managed)
+                //
                 {
                   # NOTE: For now uranium and neptunium are special
 
@@ -336,13 +336,20 @@
                 };
               # "nixosConfigurations" outro:1 ends here
               # [[file:new_project.org::*"homeManagerModules" output]["homeManagerModules" output:1]]
-              deploy.nodes = builtins.mapAttrs
+              deploy.nodes = (builtins.mapAttrs
                 (hostName: hostData: homelab.mkDeployRsNode
                   {
                     nodeName = hostData.hostName; # NOTE: UI will change to hostName once DNS is up
                     inherit (hostData) system;
                   })
-                inputs.data-flake.data.hosts.managed;
+                inputs.data-flake.data.hosts.managed) // {
+                # FIXME: temporary
+                hydrogen.hostname = "192.168.1.1";
+              }
+              ;
+              overlays.homelab = _: prev: withSystem prev.stdenv.hostPlatform.system ({ config, ... }: {
+                inherit (config.packages) hostsBlockList;
+              });
             };
           # "Flake" output outro:1 ends here
           # [[file:new_project.org::*Flake outro][Flake outro:1]]
