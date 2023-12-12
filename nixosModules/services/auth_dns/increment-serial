@@ -1,0 +1,1 @@
+gawk -i inplace -F',' '{printf("%d\n",$1+1)}' serial
