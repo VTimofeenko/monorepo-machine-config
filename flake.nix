@@ -263,6 +263,9 @@
               };
               # devShells:1 ends here
               # [[file:new_project.org::*perSystem outro][perSystem outro:1]]
+              packages = {
+                hostsBlockList = import ./packages/hostsBlockList { inherit pkgs; src = inputs.hostsBlockList; };
+              };
             };
           # perSystem outro:1 ends here
           # [[file:new_project.org::*"Flake" section]["Flake" section:1]]
