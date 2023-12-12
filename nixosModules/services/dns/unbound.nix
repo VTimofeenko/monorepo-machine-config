@@ -8,7 +8,7 @@
 let
   inherit (config) my-data;
 
-  thisSrvConfig = (my-data.lib.getServiceConfig "dns_1").settings; # FIXME: flaky _1 addressing
+  thisSrvConfig = my-data.lib.getServiceConfig "dns_1"; # FIXME: flaky _1 addressing
   clientNetViewName = "wg_client_network";
 
   inherit (import ./lib.nix) mkARecord;
