@@ -20,11 +20,6 @@
       };
     };
 
-    infra = {
-      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git";
-      flake = false;
-    };
-
     # Theming and stuff
     base16 = {
       url = "github:SenchoPens/base16.nix";

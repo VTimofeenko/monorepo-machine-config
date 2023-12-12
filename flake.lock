@@ -135,11 +135,11 @@
         "wg-namespace-flake": "wg-namespace-flake"
       },
       "locked": {
-        "lastModified": 1702408882,
-        "narHash": "sha256-AWyegZLIvM19OG+xiK/sHlV0Bx3Zbmtcbl9apUTq3DA=",
+        "lastModified": 1702418138,
+        "narHash": "sha256-IE0+cPUqBY3sit1sn6VVktueCSzuRS+ZJjKYPXjOh0M=",
         "ref": "refs/heads/master",
-        "rev": "ff6a2f078aed94178a5af1bbbdd54033e31cd94a",
-        "revCount": 81,
+        "rev": "54cb0248017e399fe57caa008807beca1bc044d4",
+        "revCount": 88,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git"
       },
@@ -620,22 +620,6 @@
         "owner": "hyprwm",
         "repo": "Hyprland",
         "type": "github"
-      }
-    },
-    "infra": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1673627050,
-        "narHash": "sha256-fleyUv4KUZpIrPUa4brdB7cUIo1tbfjJmRwsK6tB/QU=",
-        "ref": "refs/heads/master",
-        "rev": "355554884b5ee60be2f8aa28d10a2c26bc817f97",
-        "revCount": 66,
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git"
       }
     },
     "infra-hosts": {
@@ -1123,7 +1107,6 @@
         "home-manager": "home-manager_2",
         "hostsBlockList": "hostsBlockList",
         "hyprland": "hyprland",
-        "infra": "infra",
         "kroki-src": "kroki-src",
         "my-flake-modules": "my-flake-modules",
         "nixos-hardware": "nixos-hardware",

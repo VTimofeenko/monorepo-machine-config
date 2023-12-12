@@ -1,9 +1,10 @@
 # [[file:../../new_project.org::*LAN WiFi][LAN WiFi:1]]
-{ config, lib, infra, ... }:
+{ config, ... }:
 let
-  infraMetadata = lib.importTOML (infra + "/infra.toml");
-  inherit (infraMetadata.network) lan;
-  local_address = lan.first_octets + "." + lan."${config.networking.hostName}".ip;
+  inherit (config) my-data;
+  lan = my-data.lib.getNetwork "lan";
+
+  ownIP = (my-data.lib.getOwnHostInNetwork "lan").ipAddress;
 in
 {
   networking = {
@@ -18,12 +19,12 @@ in
     "10-wifi-lan" = {
       enable = true;
       name = "wifi-lan";
-      dns = lan.dns_servers;
+      dns = lan.dnsServers;
       # Search domain goes here
       domains = [ lan.domain ];
       networkConfig = {
-        Address = [ "${local_address}/24" ];
-        Gateway = lan.defaultGateway;
+        Address = [ "${ownIP}${lan.settings.netmask}" ];
+        Gateway = lan.settings.defaultGateway;
         DHCP = "no";
         DNSSEC = "yes";
         DNSOverTLS = "no";
