@@ -55,12 +55,24 @@
     };
     }
   */
-  mkDeployRsNode = { nodeName, system }: {
-    hostname = nodeName + ".mgmt.home.arpa"; # TODO: Make this more generic
-    sshUser = "root";
-    profiles.system = {
-      user = "root";
-      path = deploy-rs.lib.${system}.activate.nixos self.nixosConfigurations.${nodeName};
+  mkDeployRsNode = { nodeName, system }:
+    let
+      /* This will reuse NixOS binary cache for deploy-rs building instead of building the package locally */
+      pkgs = import nixpkgs { inherit system; };
+      deployPkgs = import nixpkgs {
+        inherit system;
+        overlays = [
+          deploy-rs.overlay
+          (_: super: { deploy-rs = { inherit (pkgs) deploy-rs; inherit (super.deploy-rs) lib; }; })
+        ];
+      };
+    in
+    {
+      hostname = nodeName + ".mgmt.home.arpa"; # TODO: Make this more generic
+      sshUser = "root";
+      profiles.system = {
+        user = "root";
+        path = deployPkgs.deploy-rs.lib.activate.nixos self.nixosConfigurations.${nodeName};
+      };
     };
-  };
 }
