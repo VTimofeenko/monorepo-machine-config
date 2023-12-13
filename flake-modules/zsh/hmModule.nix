@@ -38,7 +38,7 @@ in
       history = {
         expireDuplicatesFirst = true;
         extended = true;
-        # ignoreAllDups = true; # WARN: needs 23.11
+        ignoreAllDups = true;
         ignoreDups = true;
         ignorePatterns = [
           "rm *"
