@@ -316,6 +316,7 @@
                       ./modules/nixosSystems/uranium # (ref:uranium-import)
                       # private-config.nixosModules.machines.uranium
                       inputs.data-flake.nixosModules.uranium
+                      inputs.base16.nixosModule
                     ];
                     inherit specialArgs;
                   };

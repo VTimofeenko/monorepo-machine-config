@@ -1,5 +1,6 @@
 # [[file:../../new_project.org::*User hyprland config][User hyprland config:1]]
 # Home manaager module to configure hyprland
+# TODO: Cleanup this module
 { pkgs
 , lib
 , osConfig
@@ -10,6 +11,9 @@
 let
   # Example of using system-wide configuration in home-manager module
   inherit (osConfig.networking) hostName;
+
+  inherit (osConfig) rawColorScheme;
+  semantic = osConfig.semanticColorScheme;
 
   selfPkgs' = selfPkgs.${pkgs.stdenv.system};
 
@@ -153,8 +157,8 @@ in
               gaps_in = 5
               gaps_out = 20
               border_size = 2
-              col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
-              col.inactive_border = rgba(595959aa)
+              col.active_border = rgba(${semantic.activeFrameBorder}ff) rgba(${semantic.inactiveFrameBorder}00) 45deg
+              col.inactive_border = rgba(${semantic.inactiveFrameBorder}aa)
 
               layout = ${if hostName == "neptunium"
                 then "master"
@@ -176,7 +180,7 @@ in
               drop_shadow = true
               shadow_range = 4
               shadow_render_power = 3
-              col.shadow = rgba(1a1a1aee)
+              col.shadow = rgba(${rawColorScheme.bg-dim}ee)
           }
 
           windowrulev2 = opacity 0.94 0.94,class:^(kitty)$

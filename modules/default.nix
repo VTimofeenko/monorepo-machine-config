@@ -23,6 +23,7 @@
     ./hardware # (ref:hardware-import)
     ./network # (ref:network-import)
     ./user # (ref:user-import)
+    ./colorScheme
 
 
   ];
