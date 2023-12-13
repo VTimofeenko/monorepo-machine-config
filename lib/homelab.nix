@@ -37,11 +37,12 @@
             data-flake.nixosModules.${hostName}
 
             specialArgs.selfModules.zsh
-          ];
+          ]
+          ++
+          (map (module: ../nixosModules/services + "/${module}") data-flake.data.hosts.all.${hostName}.modulesAt) # NOTE: Needs default.nix in the service directory
+          ;
         }
-      ]
-        # TODO: add modules from the host config
-      ;
+      ];
       inherit specialArgs; # nixos-hardware is passed this way
     };
   /*

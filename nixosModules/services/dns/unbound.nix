@@ -32,8 +32,8 @@ in
             # (localLib.getIPInNetwork "client" (localLib.getOwnHostname config)) # Listen in client network
           ];
         access-control = [
-          "${lan.subnet}.1${lan.netmask} allow"
-          "${client.settings.clientSubNet}.1/24 allow"
+          "${lan.subnet}.1${lan.settings.netmask} allow"
+          "${client.settings.clientSubNet}.1/24 allow" # TODO: move netmask to settings? Or core network schema?
         ];
 
         /* Custom records go here */
