@@ -32,6 +32,9 @@ in
     syntaxHighlighting = {
       enable = true;
     };
+
+    autosuggestions.enable = true;
+
   };
   programs.starship.enable = true;
   environment = { inherit (commonSettings) variables; };
