@@ -1,6 +1,5 @@
 # [[file:../../new_project.org::*NixOS user configs][NixOS user configs:1]]
 { pkgs
-  # , my-doom-config
 , nixpkgs-unstable
 , selfHMModules
 , data-flake
