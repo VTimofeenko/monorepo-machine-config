@@ -54,11 +54,8 @@ vim.api.nvim_set_hl(0, "TreesitterContextBottom", { underline = true })
 -- Escape -> clear search highlight
 vim.api.nvim_set_keymap("n", "<ESC>", ":noh<CR>", { noremap = true, silent = true })
 
-vim.api.nvim_create_autocmd({
-	"BufNewFile",
-	"BufRead",
-}, {
-	pattern = "*.nix",
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "json", "nix" },
 	command = "setlocal tabstop=2 shiftwidth=2",
 })
 
