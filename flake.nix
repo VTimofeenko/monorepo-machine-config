@@ -347,16 +347,19 @@
                 };
               # "nixosConfigurations" outro:1 ends here
               # [[file:new_project.org::*"homeManagerModules" output]["homeManagerModules" output:1]]
-              deploy.nodes = (builtins.mapAttrs
-                (hostName: hostData: homelab.mkDeployRsNode
+              deploy.nodes =
+                lib.recursiveUpdate
+                  (builtins.mapAttrs
+                    (hostName: hostData: homelab.mkDeployRsNode
+                      {
+                        nodeName = hostData.hostName; # NOTE: UI will change to hostName once DNS is up
+                        inherit (hostData) system;
+                      })
+                    inputs.data-flake.data.hosts.managed)
                   {
-                    nodeName = hostData.hostName; # NOTE: UI will change to hostName once DNS is up
-                    inherit (hostData) system;
-                  })
-                inputs.data-flake.data.hosts.managed) // {
-                # FIXME: temporary
-                hydrogen.hostname = "192.168.1.1";
-              }
+                    # FIXME: temporary
+                    hydrogen.hostname = "192.168.1.1";
+                  }
               ;
               overlays.homelab = _: prev: withSystem prev.stdenv.hostPlatform.system ({ config, ... }: {
                 inherit (config.packages) hostsBlockList;
