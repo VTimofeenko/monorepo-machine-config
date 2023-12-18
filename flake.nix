@@ -147,6 +147,8 @@
       url = "github:yuzutech/kroki-cli";
       flake = false;
     };
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs-unstable";
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
@@ -344,6 +346,15 @@
                   };
                   # Neptunium:1 ends here
                   # [[file:new_project.org::*"nixosConfigurations" outro]["nixosConfigurations" outro:1]]
+                  nitrogen-seed = inputs.nixpkgs.lib.nixosSystem {
+                    system = "x86_64-linux";
+                    modules = [
+                      inputs.data-flake.nixosModules.data
+                      inputs.disko.nixosModules.disko
+                      ./nixosConfigurations/nitrogen/seed
+                    ];
+                    inherit specialArgs;
+                  };
                 };
               # "nixosConfigurations" outro:1 ends here
               # [[file:new_project.org::*"homeManagerModules" output]["homeManagerModules" output:1]]

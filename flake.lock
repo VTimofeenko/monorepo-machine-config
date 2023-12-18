@@ -208,6 +208,26 @@
         "type": "github"
       }
     },
+    "disko": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1702862583,
+        "narHash": "sha256-WXsUhQxFBkivItTteAeQ7j7kRdL7zFU4NOmdZ8KLHuc=",
+        "owner": "nix-community",
+        "repo": "disko",
+        "rev": "e74526b33421a52ce06b2ccadbe670d25012eb01",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "disko",
+        "type": "github"
+      }
+    },
     "dns-flake": {
       "inputs": {
         "flake-utils": [
@@ -1103,6 +1123,7 @@
         "data-flake": "data-flake",
         "deploy-rs": "deploy-rs",
         "devshell": "devshell",
+        "disko": "disko",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager_2",
         "hostsBlockList": "hostsBlockList",
