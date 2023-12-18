@@ -368,8 +368,11 @@
                       })
                     inputs.data-flake.data.hosts.managed)
                   {
-                    # FIXME: temporary
+                    /* Temporary overrides can be configured here like so:
+
                     hydrogen.hostname = "192.168.1.1";
+                    */
+
                   }
               ;
               overlays.homelab = _: prev: withSystem prev.stdenv.hostPlatform.system ({ config, ... }: {

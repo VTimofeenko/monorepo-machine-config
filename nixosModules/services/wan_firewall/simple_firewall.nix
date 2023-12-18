@@ -51,10 +51,9 @@ in
           chain incoming_from_lan {
               ip protocol icmp accept
 
-              # TODO: when migrating to WG, disable!
-              tcp dport 22 ct state new log prefix "New SSH connection: " group ${thisSrvConfig.logging.journaldAndPCAP.group} accept comment "SSH traffic"
               udp dport 67 accept comment "DHCP traffic"
               udp dport { 53, 853 } accept comment "DNS traffic"
+              udp dport ${toString my-data.networks.mgmt.port} accept comment "WG management"
           }
 
           chain prerouting {
@@ -63,19 +62,23 @@ in
 
           }
 
+          chain wg-mgmt {
+              ip protocol icmp accept
+              tcp dport 22 ct state new log prefix "New SSH connection: " group ${thisSrvConfig.logging.journaldAndPCAP.group} accept comment "SSH traffic"
+          }
+
           chain input {
             type filter hook input priority 0; policy accept;
 
             jump common_chain
 
             iifname "${lan-bridge}" ip saddr ${lanNet.subnet}.0/16 jump incoming_from_lan comment "LAN connection"
+            iifname "mgmt" jump wg-mgmt comment "WG management packet"
             # From archwiki, prevent icmp flood
             meta l4proto icmp icmp type echo-request limit rate over 10/second burst 4 packets drop comment "No ping floods"
             meta l4proto ipv6-icmp icmpv6 type echo-request limit rate over 10/second burst 4 packets drop comment "No ping floods"
             meta l4proto ipv6-icmp icmpv6 type { destination-unreachable, packet-too-big, time-exceeded, echo-reply, parameter-problem, mld-listener-query, mld-listener-report, mld-listener-reduction, nd-router-solicit, nd-router-advert, nd-neighbor-solicit, nd-neighbor-advert, ind-neighbor-solicit, ind-neighbor-advert, mld2-listener-report } accept comment "Accept ICMPv6"
             meta l4proto icmp icmp type { destination-unreachable, router-solicitation, router-advertisement, time-exceeded, parameter-problem } accept comment "Accept ICMP"
-
-            # TODO: wireguard meshes
 
             drop
           }
