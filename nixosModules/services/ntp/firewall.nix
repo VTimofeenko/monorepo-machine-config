@@ -7,12 +7,11 @@ let
   srvName = "ntp";
   fwSrvName = "wan_firewall";
 
-  # thisSrvConfig = localLib.getSrvConfig srvName;
-  fwConfig = my-data.lib.getSrvConfig fwSrvName;
+  fwConfig = my-data.lib.getServiceConfig fwSrvName;
 in
 {
   networking.nftables.ruleset =
-    assert (my-data.services.all.${srvName}.hostedAt == my-data.services.all.${fwSrvName}.hostedAt); # relies on the fact that this is running on router
+    assert (my-data.services.all.${srvName}.onHost == my-data.services.all.${fwSrvName}.onHost); # relies on the fact that this is running on router
     with fwConfig; ''
       table inet ${mainTable} {
         chain ${lanChain} {

@@ -4,7 +4,7 @@
 let
   inherit (config) my-data;
 
-  srvConfig = my-data.lib.getSrvConfig "ntp";
+  srvConfig = my-data.lib.getServiceConfig "ntp";
 in
 {
   services.openntpd = {
