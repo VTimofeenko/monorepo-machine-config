@@ -7,7 +7,7 @@ let
   # thisSrvConfig = localLib.getSrvConfig "dhcp"; # TODO: add to the main data
   lan = my-data.lib.getNetwork "lan";
 
-  hostConfig = my-data.lib.getOwnHostConfig.settings;
+  hostConfig = my-data.lib.getOwnHostConfig;
 
   inherit (hostConfig) netInterfaces;
   inherit (netInterfaces) lan-bridge;
