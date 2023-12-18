@@ -5,7 +5,7 @@
 let
   inherit (config) my-data;
   inherit (my-data.networks) lan;
-  inherit (my-data.lib.getOwnHostConfig.settings) netInterfaces;
+  inherit (my-data.lib.getOwnHostConfig) netInterfaces;
 
   inherit (netInterfaces) wan lan-1 lan-2 lan-3 lan-bridge;
 
@@ -49,7 +49,7 @@ in
         inherit (lan-bridge) name;
         matchConfig.Name = lan-bridge.name;
         networkConfig = {
-          Address = [ (lanIP + lan.netmask) ];
+          Address = [ (lanIP + lan.settings.netmask) ];
           DNS = [ lan.dnsServers ];
           DHCP = "no";
           # DNSSEC = "yes";
