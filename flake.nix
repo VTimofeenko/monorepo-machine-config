@@ -304,6 +304,16 @@
                   inputs.data-flake.data.hosts.managed)
                 //
                 {
+                  neutronium-x86_64 =
+                    # TODO: aarch
+                    inputs.nixpkgs.lib.nixosSystem {
+                      system = "x86_64-linux";
+                      modules = [
+                        "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+                        inputs.data-flake.nixosModules.data
+                        ./nixosConfigurations/neutronium
+                      ];
+                    };
                   # NOTE: For now uranium and neptunium are special
 
                   # "nixosConfigurations" output:1 ends here
