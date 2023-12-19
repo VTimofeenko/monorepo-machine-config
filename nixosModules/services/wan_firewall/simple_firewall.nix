@@ -58,7 +58,7 @@ in
 
           chain prerouting {
             type nat hook prerouting priority -100;
-            iifname "${lan-bridge}" ip daddr != @lan_dns udp dport 53 counter log prefix "RUNAWAY DNS " dnat to numgen inc mod 2 map { ${builtins.concatStringsSep ", " (lib.lists.imap0 (index: value: "${toString index} : ${value}") lanNet.dnsServers)} } comment "Force all DNS traffic to go through local DNS servers"
+            iifname "${lan-bridge}" ip saddr != @lan_dns ip daddr != @lan_dns udp dport 53 counter log prefix "RUNAWAY DNS " dnat to numgen inc mod 2 map { ${builtins.concatStringsSep ", " (lib.lists.imap0 (index: value: "${toString index} : ${value}") lanNet.dnsServers)} } comment "Force all DNS traffic to go through local DNS servers" # This makes sure that no nodes except DNS servers are allowed to go to random upstream DNS servers
 
           }
 
