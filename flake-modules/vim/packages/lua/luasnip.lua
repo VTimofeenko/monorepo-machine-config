@@ -82,6 +82,12 @@ ls.add_snippets("nix", {
 		i(1),
 		t({ " */" }),
 	}),
+	-- /** */ Docstring
+	s("/**", {
+		t({ "/** " }),
+		i(1),
+		t({ " */" }),
+	}),
 	-- Multiline string
 	s("''", {
 		t({ "'' ", "" }), -- This adds a newline. Alternative -- use luasnip's fmt
