@@ -63,6 +63,8 @@ in
       };
       homeassistant = {
         media_dirs.recordings = "/var/lib/hass/media/recordings";
+        time_zone = config.time.timeZone;
+        name = "Home";
       };
       script = {
         night_nix = {
