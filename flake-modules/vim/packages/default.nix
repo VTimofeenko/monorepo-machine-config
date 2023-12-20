@@ -94,16 +94,7 @@ let
     }
     {
       pkg = pkgs.vimPlugins.telescope-file-browser-nvim;
-      config =
-        # lua
-        ''
-          require("telescope").load_extension "file_browser"
-          require("which-key").register({
-            f = {
-              f = { require'telescope'.extensions.file_browser.file_browser, "Find files on filesystem" }
-            },
-          }, { prefix = "<leader>" })
-        '';
+      config = builtins.readFile ./lua/telescope-file-browser.lua;
     }
   ];
 
