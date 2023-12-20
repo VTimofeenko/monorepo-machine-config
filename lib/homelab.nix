@@ -38,6 +38,7 @@
 
             specialArgs.selfModules.zsh
             specialArgs.selfModules.zshHMCompanionModule
+            specialArgs.selfModules.tmux
           ]
           ++
           (map (module: ../nixosModules/services + "/${module}") data-flake.data.hosts.all.${hostName}.modulesAt) # NOTE: Needs default.nix in the service directory
