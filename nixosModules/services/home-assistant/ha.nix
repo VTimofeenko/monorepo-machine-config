@@ -1,10 +1,51 @@
-{ config, ... }:
+{ nixpkgs-unstable, config, pkgs, ... }:
 let
   inherit (config) my-data;
   srvConfig = my-data.lib.getServiceConfig "home-assistant";
+  homeassistantUser = config.systemd.services.home-assistant.serviceConfig.User;
+
+  /* This approach makes openssl permitted only in this module */
+  pkgs-unstable = import nixpkgs-unstable {
+    inherit (pkgs) system;
+    config.permittedInsecurePackages = [
+      # Needed by home assistant
+      "openssl-1.1.1w"
+    ];
+  };
 in
 {
+  age.secrets.ha-secret = {
+    file = my-data.lib.getSrvSecret "home-assistant" "ha-secrets";
+    owner = homeassistantUser;
+    path = "${config.services.home-assistant.configDir}/secrets.yaml";
+  };
+
   services.home-assistant = {
+    /* Using the latest version from unstable */
+    package = (pkgs-unstable.home-assistant.overrideAttrs (_: {
+      doInstallCheck = false;
+    })).override {
+      packageOverrides = _: super: {
+        python-telegram-bot = super.python-telegram-bot.overridePythonAttrs (oldAttrs: {
+          version = "13.1";
+          src = pkgs.fetchPypi {
+            inherit (oldAttrs) pname;
+            version = "13.1";
+            hash = "sha256-X+67CO0I17cc60wFNyufaiHYOZS1AY2xEVCXZYgcgoI=";
+          };
+          doCheck = false;
+          propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ [
+            super.certifi
+            super.future
+            super.urllib3
+            super.tornado
+            super.decorator
+            super.APScheduler
+          ];
+        });
+      };
+    };
+
     enable = true;
     extraComponents = [
       # Components required to complete the onboarding
@@ -55,14 +96,12 @@ in
           mode = "single";
           trigger = [{ device_id = "7032626a1882aa058befd41a7651d112"; domain = "binary_sensor"; entity_id = "733390b58710bba2b4a18503f0f68936"; platform = "device"; type = "motion"; }];
         }
-      ];
+      ] ++ srvConfig.automations;
       "automation ui" = "!include automations.yaml";
+      inherit (srvConfig) telegram_bot notify;
     };
   };
   systemd.tmpfiles.rules =
-    let
-      homeassistantUser = config.systemd.services.home-assistant.serviceConfig.User;
-    in
     [
       "f ${config.services.home-assistant.configDir}/automations.yaml 0755 ${homeassistantUser} ${homeassistantUser}"
       "d ${config.services.home-assistant.config.homeassistant.media_dirs.recordings} 0755 ${homeassistantUser} ${homeassistantUser}"
