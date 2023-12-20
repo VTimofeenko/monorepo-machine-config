@@ -37,6 +37,7 @@
             data-flake.nixosModules.${hostName}
 
             specialArgs.selfModules.zsh
+            specialArgs.selfModules.zshHMCompanionModule
           ]
           ++
           (map (module: ../nixosModules/services + "/${module}") data-flake.data.hosts.all.${hostName}.modulesAt) # NOTE: Needs default.nix in the service directory
