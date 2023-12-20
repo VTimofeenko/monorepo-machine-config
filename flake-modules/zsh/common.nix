@@ -35,9 +35,7 @@ rec {
     # Neat display of all relevant things in lsblk
     lsblk = "lsblk --topology --fs -o NAME,SIZE,TYPE,LABEL,UUID,FSAVAIL,FSUSE%,MOUNTPOINTS";
     # Quick nix repl with nixpkgs imported
-    # NOTE: Uses channels-based nixpkgs
-    # TODO: Make alias use this flake's nixpkgs
-    nrn = "nix repl --expr 'import <nixpkgs>{}'";
+    nrn = "nix repl -f flake:nixpkgs";
   };
   # InteractiveShellInit?
   # List of shell-only packages
