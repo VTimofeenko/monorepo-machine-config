@@ -2,6 +2,7 @@
 { lib
 , pkgs
 , config
+, localLib
 , ...
 }:
 let
@@ -33,6 +34,10 @@ in
     firewall.enable = lib.mkForce false; # Conflicts with nftables
     nftables.ruleset =
       ''
+        define forbid_outside = { ${builtins.concatStringsSep ", " (localLib.pluck "ipAddress" lanNet.settings.forbidOutside )} }
+        define time_nist_ips = { 129.6.15.28, 129.6.15.29, 129.6.15.30, 129.6.15.27, 129.6.15.26, 132.163.97.1, 132.163.97.2, 132.163.97.3, 132.163.97.4, 132.163.97.6, 132.163.96.1, 132.163.96.2, 132.163.96.3, 132.163.96.4, 132.163.96.6, 128.138.140.44, 128.138.141.172, 128.138.140.211, 132.163.96.5, 132.163.97.5, 128.138.141.177, 129.6.15.32 }
+        define multicast = { 224.0.0.0/24, 239.0.0.0/8 }
+
         table inet my_filter {
           set lan_dns {
             type ipv4_addr
@@ -58,8 +63,15 @@ in
 
           chain prerouting {
             type nat hook prerouting priority -100;
+
             iifname "${lan-bridge}" ip saddr != @lan_dns ip daddr != @lan_dns udp dport 53 counter log prefix "RUNAWAY DNS " dnat to numgen inc mod 2 map { ${builtins.concatStringsSep ", " (lib.lists.imap0 (index: value: "${toString index} : ${value}") lanNet.dnsServers)} } comment "Force all DNS traffic to go through local DNS servers" # This makes sure that no nodes except DNS servers are allowed to go to random upstream DNS servers
 
+            # TODO: Pinning the IP in this rule is bad.
+            iifname "${lan-bridge}" ip saddr $forbid_outside ip daddr $time_nist_ips udp dport 123 counter log prefix "NTP sync allowed " accept comment "Allow time.nist.gov traffic"
+            iifname "${lan-bridge}" ip saddr $forbid_outside ip daddr $multicast counter log prefix "[FORBIDDEN] multicast allowed " accept
+
+            # Should be last
+            iifname "${lan-bridge}" ip saddr $forbid_outside ip daddr != $internal_net counter log prefix "[FORBIDDEN] FORBID OUTSIDE TRAFFIC " group ${thisSrvConfig.logging.journaldAndPCAP.group} drop comment "Dropping traffic from hosts forbidded to go outside"
           }
 
           chain wg-mgmt {
