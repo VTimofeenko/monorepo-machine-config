@@ -94,6 +94,9 @@ in
 
               # Drop all other forwarded traffic by default
               log prefix "BAD FORWARD " drop
+
+              iifname ${lan-bridge} ip daddr != $internal_net oifname $sbr_if ip  saddr $sbr_net4 counter accept
+              iifname $sbr_if oifname "${lan-bridge}" ip daddr $sbr_net4 counter accept
           }
 
           chain output {
@@ -109,6 +112,7 @@ in
           chain postrouting {
               type nat hook postrouting priority filter; policy accept;
               iifname "${lan-bridge}" oifname "${wan}" masquerade
+              iifname ${lan-bridge} ip daddr != $internal_net oifname $sbr_if ip saddr $sbr_net4 counter masquerade
           }
         }
 
