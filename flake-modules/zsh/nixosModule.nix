@@ -12,7 +12,7 @@ in
   programs.zsh = {
     enable = true;
     enableCompletion = lib.mkForce false;
-    histFile = "~/.local/share/zsh/zsh_history";
+    histFile = "$XDG_CACHE_HOME/zsh_history";
     histSize = 10000;
     interactiveShellInit = commonSettings.initExtra
       + commonSettings.completionInit
