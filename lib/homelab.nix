@@ -12,10 +12,10 @@
     let
       inherit (hostData) hostName;
     in
-    lib.nixosSystem rec {
+    lib.nixosSystem {
       inherit (hostData) system;
       pkgs = import nixpkgs {
-        inherit system;
+        inherit (hostData) system;
         config.allowUnfree = true;
         overlays = [
           self.overlays.homelab
@@ -45,7 +45,7 @@
           ;
         }
       ];
-      inherit specialArgs; # nixos-hardware is passed this way
+      specialArgs = specialArgs // { localLib = import ../nixosModules/localLib { inherit lib; }; }; # nixos-hardware is passed this way
     };
   /*
     Returns attrset in format expected by deploy-rs.
