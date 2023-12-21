@@ -104,11 +104,11 @@ in
               # Allow outgoing traffic from your LAN
               iifname "${lan-bridge}" accept
 
-              # Drop all other forwarded traffic by default
-              log prefix "BAD FORWARD " drop
-
               iifname ${lan-bridge} ip daddr != $internal_net oifname $sbr_if ip  saddr $sbr_net4 counter accept
               iifname $sbr_if oifname "${lan-bridge}" ip daddr $sbr_net4 counter accept
+
+              # Drop all other forwarded traffic by default
+              log prefix "BAD FORWARD " drop
           }
 
           chain output {
