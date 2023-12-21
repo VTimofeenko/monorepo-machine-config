@@ -50,6 +50,7 @@
     cpu.intel.updateMicrocode = lib.mkForce true;
     enableRedistributableFirmware = true;
   };
+  services.logind.lidSwitch = "ignore";
   /* Imports */
   imports = [ ];
 }
