@@ -128,19 +128,27 @@ end
 local function open_file()
 	local word_under_cursor = vim.fn.expand("<cWORD>") -- WORD under cursor
 
-	-- Remove the trailing ';' if present
-	word_under_cursor = word_under_cursor:gsub(";$", "")
+	local file_path = word_under_cursor
 
-	local file_path = vim.fn.expand("%:p:h") .. "/" .. word_under_cursor
+	if vim.bo.filetype == "nix" then
+		-- Remove the trailing ';' if present
+		word_under_cursor = word_under_cursor:gsub(";$", "")
+		file_path = vim.fn.expand("%:p:h") .. "/" .. word_under_cursor
+	end
 
 	-- Check if it's a directory or a file
 	local is_directory = vim.fn.isdirectory(file_path)
 
 	if is_directory == 1 then
-		-- It's a directory, open the corresponding default.txt file
-		file_path = file_path .. "/default.nix"
-	elseif vim.fn.filereadable(file_path) == 0 then
-		local choice = vim.fn.confirm("File does not exist. Create?", "&Yes\n&Cancel", 1)
+		-- It's a directory, open the corresponding default.nix file
+		if vim.bo.filetype == "nix" then
+			file_path = file_path .. "/default.nix"
+		end
+		-- Else -- just open netrw buffer there
+	end
+
+	if vim.fn.filereadable(file_path) == 0 then
+		local choice = vim.fn.confirm("File " .. file_path .. " does not exist. Create?", "&Yes\n&Cancel", 1)
 		if choice == 2 or choice == 0 then
 			return -- Do not create the file if the prompt is canceled or "Cancel" is given
 		end
