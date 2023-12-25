@@ -197,6 +197,19 @@
                                  ":END:"
                                  "/Context:/ %a")
                                "\n")))
+  ;; https://www.reddit.com/r/orgmode/comments/gc76l3/org_capture_inside_notmuch/
+  (add-to-list 'org-capture-templates
+               `("e" "Email" entry (file "inbox.org")
+                 ,(string-join '("* TODO %:subject"
+                                 ":PROPERTIES:"
+                                 ":CREATED: %U"
+                                 ":END:"
+                                 "File: %a"
+                                 "#+BEGIN_QUOTE" ;; TODO: this <=> %i is not empty
+                                 "%i"
+                                 "#+END_QUOTE"
+                                 "%?")
+                               "\n")))
   (setq org-refile-contexts
         '((((("inbox.org") . (:regexp . "Projects"))) ;; example
            ((lambda () (string= (org-find-top-headline) "Inbox")))

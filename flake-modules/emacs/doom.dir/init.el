@@ -181,7 +181,7 @@
        ;; TODO: implement
        :email
        ;;(mu4e +org +gmail)
-       ;;notmuch
+       (notmuch +org)
        ;;(wanderlust +gmail)
 
        :app
