@@ -1,5 +1,5 @@
 # Nix the package manager config
-{ pkgs, ... }:
+{ pkgs, self, ... }:
 {
   nix = {
     package = pkgs.nixFlakes;
@@ -10,4 +10,5 @@
       options = "--delete-older-than 7d";
     };
   };
+  system.nixos.label = toString (self.shortRev or self.dirtyShortRev or self.lastModified or "unknown");
 }
