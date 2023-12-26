@@ -17,7 +17,7 @@ fn show_mode_notification(notification_handle: &mut NotificationHandle, mode_nam
     notification_handle
         .summary(&summary)
         .urgency(Urgency::Critical)
-        .timeout(Timeout::Milliseconds(60000)); // looks like swaync does not like ::Never
+        .timeout(Timeout::Milliseconds(2000)); // looks like swaync does not like ::Never
 
     notification_handle.update();
 }
