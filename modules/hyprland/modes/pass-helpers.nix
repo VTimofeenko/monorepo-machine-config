@@ -51,7 +51,7 @@ let
             --width-factor 0.2 \
             --prompt "otp ❯")
 
-        pass otp -c "$PASSWORD"
+        pass otp -c "otp/$PASSWORD"
 
         notify-send --icon password "Copied OTP $PASSWORD"
       '';
