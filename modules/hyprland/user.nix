@@ -79,7 +79,6 @@ in
 {
   imports = [
     ./pyprland # (ref:pyprland-import)
-    # ./hyprland-workspace-notifier # (ref:use-workspace-import)
     ./keybinds # (ref:hyprland-bindings-import)
     ./modes # (ref:hyprland-modes-import)
     (./per-host-configs + "/${hostName}.nix") # (ref:per-machine-hyprland-config)
