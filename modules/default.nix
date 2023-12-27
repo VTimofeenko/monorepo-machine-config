@@ -39,5 +39,7 @@
 
   # Cross-compilation setup
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  /* Fixes some annoying services that won't quit */
+  services.logind.killUserProcesses = true;
 }
 # Common system configuration modules:1 ends here
