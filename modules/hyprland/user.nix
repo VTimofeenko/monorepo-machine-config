@@ -300,6 +300,8 @@ in
           $pinentry = ^(pinentry-qt)$
           windowrule = float,$pinentry
           windowrule = size 25% 20%,$pinentry
+          windowrule = stayfocused,$pinentry
+          windowrule = dimaround,$pinentry
           bind = $mainMod SHIFT, Space, focuscurrentorlast
           bind = $mainMod, Space, exec, ${lib.getExe selfPkgs'.hyprland-switch-lang-on-xremap}
         '' + mergedConfig;
