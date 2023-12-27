@@ -223,7 +223,7 @@ rec {
     XDG_DATA_HOME = "$HOME/.local/share";
     XDG_STATE_HOME = "$HOME/.local/state";
     # May be obsoleted by https://github.com/nix-community/home-manager/pull/4713
-    BEMENU_OPTIONS = concatStringsSep " " [
+    BEMENU_OPTS = concatStringsSep " " [
       "--tb  '#${rawColorScheme.color0}'" #Title background
       "--tf  '#${rawColorScheme.indigo}'" #Title foreground
       "--fb  '#${rawColorScheme.color0}'" #Filter background
@@ -242,6 +242,7 @@ rec {
       "--af  '#${rawColorScheme.fg-main}'" #Alternating foreground color
       "--scb '#${rawColorScheme.color0}'" #Scrollbar background
       "--scf '#${rawColorScheme.fg-main}'" #Scrollbar foreground
+      "--width-factor 0.2"
     ];
   };
 }
