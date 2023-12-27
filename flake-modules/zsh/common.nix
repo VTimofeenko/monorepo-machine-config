@@ -1,7 +1,9 @@
 # A set of settings that are common for both modules
-{ pkgs, pkgs-unstable }:
+{ pkgs, pkgs-unstable, config, ... }:
 let
   inherit (pkgs.lib) getExe concatMapStringsSep concatStringsSep;
+  inherit (config) rawColorScheme;
+  semantic = config.semanticColorScheme;
 in
 rec {
   # TODO: style fzf (needs semantic styles)
@@ -220,5 +222,26 @@ rec {
     XDG_CONFIG_HOME = "$HOME/.config";
     XDG_DATA_HOME = "$HOME/.local/share";
     XDG_STATE_HOME = "$HOME/.local/state";
+    # May be obsoleted by https://github.com/nix-community/home-manager/pull/4713
+    BEMENU_OPTIONS = concatStringsSep " " [
+      "--tb  '#${rawColorScheme.color0}'" #Title background
+      "--tf  '#${rawColorScheme.indigo}'" #Title foreground
+      "--fb  '#${rawColorScheme.color0}'" #Filter background
+      "--ff  '#${rawColorScheme.fg-main}'" #Filter foregroun
+      "--cb  '#${rawColorScheme.color0}'" #Cursor background
+      "--cf  '#${rawColorScheme.fg-main}'" #Cursor foregroun
+      "--nb  '#${rawColorScheme.color0}'" #Normal background
+      "--nf  '#${rawColorScheme.fg-main}'" #Normal foreground
+      "--hb  '#${rawColorScheme.color0}'" #Highlighted background
+      "--hf  '#${semantic.activeFrameBorder}'" #Highlighted foreground
+      "--fbb '#${rawColorScheme.color0}'" #Feedback background
+      "--fbf '#${rawColorScheme.fg-main}'" #Feedback foreground
+      "--sb  '#${rawColorScheme.color0}'" #Selected background
+      "--sf  '#${rawColorScheme.fg-main}'" #Selected foreground
+      "--ab  '#${rawColorScheme.color0}'" #Alternating background color
+      "--af  '#${rawColorScheme.fg-main}'" #Alternating foreground color
+      "--scb '#${rawColorScheme.color0}'" #Scrollbar background
+      "--scf '#${rawColorScheme.fg-main}'" #Scrollbar foreground
+    ];
   };
 }

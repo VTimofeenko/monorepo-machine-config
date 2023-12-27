@@ -27,6 +27,7 @@ in
       ./resize_ctl.nix
       # ./workspace_edit.nix # TODO
       ./power_ctl.nix
+      ./pass-helpers.nix
     ];
 }
 # Hyprland modes:1 ends here

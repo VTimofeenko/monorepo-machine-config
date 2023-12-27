@@ -2,13 +2,16 @@
 { self }:
 { pkgs
 , config
+, osConfig
   # , lib
 , ...
 }:
 let
   inherit (self) inputs;
   commonSettings = import ./common.nix {
-    inherit pkgs; pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.system};
+    inherit pkgs;
+    pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.system};
+    config = osConfig;
   };
 
   # upstream PR in unstable https://github.com/NixOS/nixpkgs/pull/271088
