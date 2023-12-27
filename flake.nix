@@ -149,6 +149,10 @@
     };
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    nitrocli = {
+      url = "github:d-e-s-o/nitrocli?dir=contrib/nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
@@ -262,6 +266,9 @@
               # [[file:new_project.org::*perSystem outro][perSystem outro:1]]
               packages = {
                 hostsBlockList = import ./packages/hostsBlockList { inherit pkgs; src = inputs.hostsBlockList; };
+                /* Nitrocli pinned to more current nixpkgs to save on rebuilding.
+                   Needed occasionally so not part of the world. */
+                nitrocli = inputs'.nitrocli.packages.default;
               };
             };
           # perSystem outro:1 ends here
