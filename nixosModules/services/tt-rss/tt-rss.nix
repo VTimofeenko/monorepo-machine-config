@@ -25,6 +25,7 @@ in
       type = "pgsql";
       name = "tt_rss";
       host = dbService.fqdn;
+      # NOTE: For some reason a newline is needed in psql. Use ALTER ROLE with $$PASSWORD\n$$.
       passwordFile = config.age.secrets.tt-rss-db-password.path;
       createLocally = false;
     };
