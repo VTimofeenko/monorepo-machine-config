@@ -1,10 +1,10 @@
 # NixOS module that configures zsh
 { self }:
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, ... }:
 let
   inherit (self) inputs;
   commonSettings = import ./common.nix {
-    inherit pkgs config;
+    inherit pkgs;
     pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.system};
   };
   inherit (lib) concatMapStringsSep;

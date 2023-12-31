@@ -3,7 +3,6 @@
 { pkgs
 , config
 , osConfig
-  # , lib
 , ...
 }:
 let
@@ -13,6 +12,9 @@ let
     pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.system};
     config = osConfig;
   };
+
+  inherit (osConfig) rawColorScheme;
+  semantic = config.semanticColorScheme;
 
   # upstream PR in unstable https://github.com/NixOS/nixpkgs/pull/271088
   fzf-tab-override = pkgs.zsh-fzf-tab.overrideAttrs {
@@ -60,7 +62,32 @@ in
           fpath+=("${profileDir}"/share/zsh/site-functions "${profileDir}"/share/zsh/$ZSH_VERSION/functions "${profileDir}"/share/zsh/vendor-completions)
         '';
       # initExtraFirst # Commands that should be added to top of .zshrc.
-      localVariables = commonSettings.variables;
+      localVariables = commonSettings.variables
+        //
+        {
+          BEMENU_OPTS = concatStringsSep " " [
+            "--tb  '#${rawColorScheme.color0}'" #Title background
+            "--tf  '#${rawColorScheme.indigo}'" #Title foreground
+            "--fb  '#${rawColorScheme.color0}'" #Filter background
+            "--ff  '#${rawColorScheme.fg-main}'" #Filter foregroun
+            "--cb  '#${rawColorScheme.color0}'" #Cursor background
+            "--cf  '#${rawColorScheme.fg-main}'" #Cursor foregroun
+            "--nb  '#${rawColorScheme.color0}'" #Normal background
+            "--nf  '#${rawColorScheme.fg-main}'" #Normal foreground
+            "--hb  '#${rawColorScheme.color0}'" #Highlighted background
+            "--hf  '#${semantic.activeFrameBorder}'" #Highlighted foreground
+            "--fbb '#${rawColorScheme.color0}'" #Feedback background
+            "--fbf '#${rawColorScheme.fg-main}'" #Feedback foreground
+            "--sb  '#${rawColorScheme.color0}'" #Selected background
+            "--sf  '#${rawColorScheme.fg-main}'" #Selected foreground
+            "--ab  '#${rawColorScheme.color0}'" #Alternating background color
+            "--af  '#${rawColorScheme.fg-main}'" #Alternating foreground color
+            "--scb '#${rawColorScheme.color0}'" #Scrollbar background
+            "--scf '#${rawColorScheme.fg-main}'" #Scrollbar foreground
+            "--width-factor 0.2"
+          ];
+        };
+
       plugins =
         [{ name = "fzf-tab"; src = "${fzf-tab-override}/share/fzf-tab"; }] ++
         (with commonSettings.plugins;
