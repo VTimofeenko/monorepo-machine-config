@@ -13,7 +13,6 @@
       "8250.nr_uarts=1"
       "console=ttyAMA0,115200"
       "console=tty1"
-      "fbcon=rotate:1"
       "boot.shell_on_fail"
     ];
     consoleLogLevel = 7;
