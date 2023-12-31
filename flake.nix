@@ -153,6 +153,11 @@
       url = "github:d-e-s-o/nitrocli?dir=contrib/nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+
+    arcticons = {
+      url = "git+https://github.com/Donnnno/Arcticons?submodules=1"; # NOTE: needs git+https to fetch submodules
+      flake = false;
+    };
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
@@ -269,6 +274,7 @@
                 /* Nitrocli pinned to more current nixpkgs to save on rebuilding.
                    Needed occasionally so not part of the world. */
                 nitrocli = inputs'.nitrocli.packages.default;
+                arcticons = import ./packages/arcticons { inherit pkgs; src = inputs.arcticons; };
               };
             };
           # perSystem outro:1 ends here
