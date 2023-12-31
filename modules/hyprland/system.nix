@@ -8,10 +8,10 @@
   xdg.portal = {
     enable = true;
     config.common.default = [
-      "gtk"
+      "hyprland"
     ];
     wlr.enable = true;
-    # extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
   programs.hyprland = {
     enable = true;
@@ -42,5 +42,7 @@
       # needed because the user config references /etc stuff
       swaynotificationcenter
     ];
+  services.xserver.gdk-pixbuf.modulePackages = [ pkgs.librsvg ];
+
 }
 # Hyprland config:1 ends here
