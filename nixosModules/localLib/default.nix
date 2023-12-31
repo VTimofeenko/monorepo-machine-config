@@ -24,7 +24,7 @@ in
     { device_name, target }:
     {
       what = "/dev/mapper/${device_name}";
-      where = "/var/lib/${target}";
+      where = target;
       requires = [ "systemd-cryptsetup@${device_name}.service" ];
       options = luksOpts;
     };
