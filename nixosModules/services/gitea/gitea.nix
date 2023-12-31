@@ -59,7 +59,7 @@ in
     [
       (localLib.mkLuksMount {
         inherit (luks) device_name;
-        target = config.service.gitea.stateDir;
+        target = config.services.gitea.stateDir;
       })
     ];
 }
