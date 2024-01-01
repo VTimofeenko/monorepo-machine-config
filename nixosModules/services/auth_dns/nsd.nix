@@ -13,16 +13,9 @@ in
     inherit (thisSrvConfig) port;
     interfaces = [ "127.0.0.1" ];
     zones =
-      lib.attrsets.mergeAttrsList
-        (
-          map
-            (args: {
-              ${args.domain}.data = srvLib.mkZoneData { inherit my-data lib; inherit (args) domain networkName services; };
-            })
-            thisSrvConfig.zones
-        )
-      //
-      thisSrvConfig.dbZone
+      lib.mapAttrs
+        (domain: recordsData: { data = srvLib.mkZoneData { inherit domain recordsData lib; }; })
+        thisSrvConfig.zoneRecords
     ;
   };
 }

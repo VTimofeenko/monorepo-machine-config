@@ -104,7 +104,7 @@ in
           # $SRV_NAME > CNAME $HOST_NAME
           # $HOST_NAME gets resolved to 192.168 for LAN, $CLIENT_IP for client
           # Unfortunately it does not work, see https://github.com/NLnetLabs/unbound/issues/747
-          local-data = lib.attrsets.mapAttrsToList (_: v: ''"${mkARecord v.fqdn v.IP}"'') my-data.services.DNSRecords.client;
+          local-data = lib.attrsets.mapAttrsToList (k: v: ''"${mkARecord k v}"'') thisSrvConfig.clientView;
           view-first = "yes";
         }
       ];
