@@ -21,13 +21,15 @@ let
 in
 {
   /* Secrets */ # TODO: not reuse the ssl-terminator secret here?
-  age.secrets."ssl-cert" = {
+  age.secrets.psql-ssl-cert = {
     file = my-data.lib.getSrvSecret "ssl-terminator" "cert";
-    owner = "postgres";
+    owner = config.systemd.services.postgresql.serviceConfig.User;
+    group = config.systemd.services.postgresql.serviceConfig.Group;
   };
-  age.secrets."ssl-key" = {
+  age.secrets.psql-ssl-key = {
     file = my-data.lib.getSrvSecret "ssl-terminator" "private-key";
-    owner = "postgres";
+    owner = config.systemd.services.postgresql.serviceConfig.User;
+    group = config.systemd.services.postgresql.serviceConfig.Group;
   };
 
   /* Service configuration */
@@ -41,8 +43,8 @@ in
     }];
     settings = {
       ssl = "on";
-      ssl_cert_file = config.age.secrets.ssl-cert.path;
-      ssl_key_file = config.age.secrets.ssl-key.path;
+      ssl_cert_file = config.age.secrets.psql-ssl-cert.path;
+      ssl_key_file = config.age.secrets.psql-ssl-key.path;
       /* Listen only on these addresses */
       listen_addresses = lib.mkForce
         (lib.concatStringsSep
