@@ -15,7 +15,7 @@ let
   };
 
   inherit (osConfig) rawColorScheme;
-  semantic = config.semanticColorScheme;
+  semantic = osConfig.semanticColorScheme;
 
   # upstream PR in unstable https://github.com/NixOS/nixpkgs/pull/271088
   fzf-tab-override = pkgs.zsh-fzf-tab.overrideAttrs {
