@@ -3,6 +3,7 @@
 { pkgs
 , config
 , osConfig
+, lib
 , ...
 }:
 let
@@ -65,7 +66,7 @@ in
       localVariables = commonSettings.variables
         //
         {
-          BEMENU_OPTS = concatStringsSep " " [
+          BEMENU_OPTS = lib.concatStringsSep " " [
             "--tb  '#${rawColorScheme.color0}'" #Title background
             "--tf  '#${rawColorScheme.indigo}'" #Title foreground
             "--fb  '#${rawColorScheme.color0}'" #Filter background
