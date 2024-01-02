@@ -14,7 +14,7 @@
     selfModules.zshHMCompanionModule
     selfModules.nix-config
     selfModules.tmux
-
+    selfModules.my-theme
 
     # local modules
     ./fonts.nix
@@ -23,8 +23,6 @@
     ./hardware # (ref:hardware-import)
     ./network # (ref:network-import)
     ./user # (ref:user-import)
-    ./colorScheme
-
 
   ];
   time.timeZone = "America/Los_Angeles";

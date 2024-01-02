@@ -174,6 +174,9 @@
         let
           inherit (inputs.nixpkgs-lib) lib;# A faster way to propagate lib to certain modules
           inherit (flake-parts-lib) importApply;
+          /* Import the public flake modules.
+
+          The attribute names don't matter */
           publicFlakeModules = {
             nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
             zshModule = importApply ./flake-modules/zsh { inherit self; };
@@ -183,6 +186,7 @@
               inherit withSystem lib self importApply;
               inherit (inputs) kroki-src;
             };
+            themeModule = importApply ./flake-modules/theme { inherit lib self; };
           };
         in
         {
@@ -341,7 +345,6 @@
                       ./modules/nixosSystems/uranium # (ref:uranium-import)
                       # private-config.nixosModules.machines.uranium
                       inputs.data-flake.nixosModules.uranium
-                      inputs.base16.nixosModule
                     ];
                     inherit specialArgs;
                   };

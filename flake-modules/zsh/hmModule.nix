@@ -2,7 +2,6 @@
 { self }:
 { pkgs
 , config
-, osConfig
 , lib
 , ...
 }:
@@ -11,11 +10,12 @@ let
   commonSettings = import ./common.nix {
     inherit pkgs;
     pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.system};
-    config = osConfig;
   };
 
-  inherit (osConfig) rawColorScheme;
-  semantic = osConfig.semanticColorScheme;
+  inherit (config) rawColorScheme;
+  semantic = config.semanticColorScheme;
+
+  # TODO: bump nixpkgs and remove this
 
   # upstream PR in unstable https://github.com/NixOS/nixpkgs/pull/271088
   fzf-tab-override = pkgs.zsh-fzf-tab.overrideAttrs {

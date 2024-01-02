@@ -32,6 +32,7 @@
           selfHMModules.zsh
           selfHMModules.git
           selfHMModules.emacs
+          selfHMModules.my-theme
           data-flake.homeManagerModules.default
         ];
         home.packages = builtins.attrValues {

@@ -1,4 +1,3 @@
-# NixOS module that configures base16 + my custom color scheme
 { lib, ... }:
 let
   inherit (lib.types) attrsOf str;
