@@ -27,7 +27,7 @@ in
   systemd.services.pgadmin = {
     serviceConfig = {
       IPAddressDeny = "any";
-      IPAddressAllow = "localhost";
+      IPAddressAllow = [ (my-data.lib.getHostInNetwork (my-data.lib.getService "db").onHost "db").ipAddress "localhost" ];
     };
   };
 

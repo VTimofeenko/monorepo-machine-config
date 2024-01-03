@@ -55,17 +55,13 @@ in
       listen_addresses = lib.mkForce
         (lib.concatStringsSep
           ", "
-          (map (netName: (my-data.lib.getOwnHostInNetwork netName).ipAddress) [ "mgmt" "db" ]));
+          ((map (netName: (my-data.lib.getOwnHostInNetwork netName).ipAddress) [ "mgmt" "db" ]) ++ [ "127.0.0.1" ]));
     };
     authentication = ''
       # TYPE  DATABASE        USER            ADDRESS                 METHOD
       # Secure sysop login
       hostssl    all             sysop           ${mgmtNet.settings.managementNodesSubNet}.0/24             scram-sha-256
       hostssl    all             sysop           all                     reject
-
-      # Secure pgadmin login
-      hostssl    all             pgadmin         127.0.0.1/32            scram-sha-256
-      hostssl    all             pgadmin         all                     reject
 
       # DB network
       host    all             all             ${dbNet.subnet}.0/24          scram-sha-256
