@@ -185,7 +185,6 @@ let
               vim.api.nvim_set_keymap("x", "ga", "<Plug>(EasyAlign)", {})'';
         }
         {
-          # TODO: hop in visual mode
           pkg = pkgs.vimPlugins.hop-nvim;
           config = builtins.readFile ./lua/hop.lua;
         }
