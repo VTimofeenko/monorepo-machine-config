@@ -209,8 +209,8 @@
     },
     "devshell_2": {
       "inputs": {
-        "nixpkgs": "nixpkgs_9",
-        "systems": "systems_6"
+        "nixpkgs": "nixpkgs_8",
+        "systems": "systems_5"
       },
       "locked": {
         "lastModified": 1700815693,
@@ -244,38 +244,6 @@
         "owner": "nix-community",
         "repo": "disko",
         "type": "github"
-      }
-    },
-    "dns-flake": {
-      "inputs": {
-        "flake-utils": [
-          "private-config",
-          "home-infrastructure",
-          "flake-utils"
-        ],
-        "infra-hosts": [
-          "private-config",
-          "home-infrastructure",
-          "infra-hosts"
-        ],
-        "nixpkgs": [
-          "private-config",
-          "home-infrastructure",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1673627071,
-        "narHash": "sha256-1apD32/46axZAaAwl7tZFbIq3YPzTYjjLBKDI4y1PWU=",
-        "ref": "refs/heads/master",
-        "rev": "c1e08fbffc761bb6a6d08ca63a021f05b1ddcb85",
-        "revCount": 86,
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/dns-flake.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/dns-flake.git"
       }
     },
     "flake-compat": {
@@ -371,24 +339,6 @@
         "systems": "systems_4"
       },
       "locked": {
-        "lastModified": 1687171271,
-        "narHash": "sha256-BJlq+ozK2B1sJDQXS3tzJM5a+oVZmi1q0FlBK/Xqv7M=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "abfb11bd1aec8ced1c9bb9adfe68018230f4fb3c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "flake-utils_3": {
-      "inputs": {
-        "systems": "systems_5"
-      },
-      "locked": {
         "lastModified": 1681202837,
         "narHash": "sha256-H+Rh19JDwRtpVPAWp64F+rlEtxUWBAQW28eAi3SRSzg=",
         "owner": "numtide",
@@ -439,61 +389,6 @@
         "type": "github"
       }
     },
-    "home-infrastructure": {
-      "inputs": {
-        "agenix": [
-          "private-config",
-          "agenix"
-        ],
-        "deploy-rs": [
-          "private-config",
-          "stub-flake"
-        ],
-        "desktop-monorepo": [
-          "private-config",
-          "stub-flake"
-        ],
-        "dns-flake": "dns-flake",
-        "docspell-flake": [
-          "private-config",
-          "stub-flake"
-        ],
-        "dsc": [
-          "private-config",
-          "stub-flake"
-        ],
-        "flake-utils": "flake-utils_2",
-        "infra-hosts": "infra-hosts",
-        "nixos-hardware": [
-          "private-config",
-          "stub-flake"
-        ],
-        "nixpkgs": "nixpkgs_6",
-        "nixpkgs-terraform-providers-bin": [
-          "private-config",
-          "stub-flake"
-        ],
-        "terranix": [
-          "private-config",
-          "stub-flake"
-        ],
-        "wireguard-namespace": "wireguard-namespace"
-      },
-      "locked": {
-        "lastModified": 1687200806,
-        "narHash": "sha256-pNhZeYEhY11F9odGoKa2Y9vKV7IPJ+FmWu2FzeZPoJc=",
-        "ref": "refs/heads/master",
-        "rev": "41e99520068f8d40afb51e21404031e767f90b77",
-        "revCount": 261,
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/home-infrastructure.git"
-      },
-      "original": {
-        "rev": "41e99520068f8d40afb51e21404031e767f90b77",
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/home-infrastructure.git"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -536,7 +431,7 @@
     },
     "home-manager_3": {
       "inputs": {
-        "nixpkgs": "nixpkgs_10"
+        "nixpkgs": "nixpkgs_9"
       },
       "locked": {
         "lastModified": 1701071203,
@@ -641,8 +536,8 @@
     "hyprland_2": {
       "inputs": {
         "hyprland-protocols": "hyprland-protocols_2",
-        "nixpkgs": "nixpkgs_11",
-        "systems": "systems_7",
+        "nixpkgs": "nixpkgs_10",
+        "systems": "systems_6",
         "wlroots": "wlroots_2",
         "xdph": "xdph_2"
       },
@@ -658,22 +553,6 @@
         "owner": "hyprwm",
         "repo": "Hyprland",
         "type": "github"
-      }
-    },
-    "infra-hosts": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1673627050,
-        "narHash": "sha256-fleyUv4KUZpIrPUa4brdB7cUIo1tbfjJmRwsK6tB/QU=",
-        "ref": "refs/heads/master",
-        "rev": "355554884b5ee60be2f8aa28d10a2c26bc817f97",
-        "revCount": 66,
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/infra-hosts.git"
       }
     },
     "kroki-src": {
@@ -893,22 +772,6 @@
     },
     "nixpkgs_10": {
       "locked": {
-        "lastModified": 1700794826,
-        "narHash": "sha256-RyJTnTNKhO0yqRpDISk03I/4A67/dp96YRxc86YOPgU=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "5a09cb4b393d58f9ed0d9ca1555016a8543c2ac8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_11": {
-      "locked": {
         "lastModified": 1700612854,
         "narHash": "sha256-yrQ8osMD+vDLGFX7pcwsY/Qr5PUd6OmDMYJZzZi0+zc=",
         "owner": "NixOS",
@@ -923,7 +786,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_12": {
+    "nixpkgs_11": {
       "locked": {
         "lastModified": 1701336116,
         "narHash": "sha256-kEmpezCR/FpITc6yMbAh4WrOCiT2zg5pSjnKrq51h5Y=",
@@ -1002,21 +865,6 @@
     },
     "nixpkgs_6": {
       "locked": {
-        "lastModified": 1688392541,
-        "narHash": "sha256-lHrKvEkCPTUO+7tPfjIcb7Trk6k31rz18vkyqmkeJfY=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b",
-        "type": "github"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "ref": "nixos-22.11",
-        "type": "indirect"
-      }
-    },
-    "nixpkgs_7": {
-      "locked": {
         "lastModified": 1685290091,
         "narHash": "sha256-GGQYNZ7POoqPTtXgPOLUuSiHkOKFRWYpCoWUOSeSRoU=",
         "owner": "NixOS",
@@ -1031,7 +879,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_8": {
+    "nixpkgs_7": {
       "locked": {
         "lastModified": 1685377167,
         "narHash": "sha256-JK0lCFldX/1LaIFjoGtvDjJJDykqyFd+dHVUoDsgr4c=",
@@ -1046,7 +894,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_9": {
+    "nixpkgs_8": {
       "locked": {
         "lastModified": 1677383253,
         "narHash": "sha256-UfpzWfSxkfXHnb4boXZNaKsAcUrZT9Hw+tao1oZxd08=",
@@ -1058,6 +906,22 @@
       "original": {
         "owner": "NixOS",
         "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_9": {
+      "locked": {
+        "lastModified": 1700794826,
+        "narHash": "sha256-RyJTnTNKhO0yqRpDISk03I/4A67/dp96YRxc86YOPgU=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "5a09cb4b393d58f9ed0d9ca1555016a8543c2ac8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -1095,8 +959,8 @@
     },
     "poetry2nix": {
       "inputs": {
-        "flake-utils": "flake-utils_3",
-        "nixpkgs": "nixpkgs_8"
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": "nixpkgs_7"
       },
       "locked": {
         "lastModified": 1685057602,
@@ -1138,31 +1002,6 @@
         "type": "github"
       }
     },
-    "private-config": {
-      "inputs": {
-        "agenix": [
-          "agenix"
-        ],
-        "home-infrastructure": "home-infrastructure",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "stub-flake": "stub-flake"
-      },
-      "locked": {
-        "lastModified": 1702260947,
-        "narHash": "sha256-cvCYHWBRHoWbiigIShDo2YHvyAfSJY3CcKj1QUVAjbI=",
-        "ref": "refs/heads/master",
-        "rev": "a83c8e3b3e2559925c4a069ad95b07726c8e1228",
-        "revCount": 110,
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-flake.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-flake.git"
-      }
-    },
     "pyprland": {
       "inputs": {
         "devshell": [
@@ -1171,7 +1010,7 @@
         "flake-parts": [
           "flake-parts"
         ],
-        "nixpkgs": "nixpkgs_7",
+        "nixpkgs": "nixpkgs_6",
         "poetry2nix": "poetry2nix"
       },
       "locked": {
@@ -1215,30 +1054,14 @@
         "nur": "nur",
         "nvim-devdocs": "nvim-devdocs",
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
-        "private-config": "private-config",
         "pyprland": "pyprland",
-        "stub-flake": "stub-flake_2",
+        "stub-flake": "stub-flake",
         "treefmt-nix": "treefmt-nix",
         "vim-scratch-plugin": "vim-scratch-plugin",
         "xremap-flake": "xremap-flake"
       }
     },
     "stub-flake": {
-      "locked": {
-        "lastModified": 1677781423,
-        "narHash": "sha256-5hb6uwA0qAVX1eecvREfcNE/2GYOLX46DESkdDGTQ5M=",
-        "owner": "VTimofeenko",
-        "repo": "stub-flake",
-        "rev": "3e1fa12a63d4732caf8d6a5b7d25a2b8230bdcc6",
-        "type": "github"
-      },
-      "original": {
-        "owner": "VTimofeenko",
-        "repo": "stub-flake",
-        "type": "github"
-      }
-    },
-    "stub-flake_2": {
       "locked": {
         "lastModified": 1677781423,
         "narHash": "sha256-5hb6uwA0qAVX1eecvREfcNE/2GYOLX46DESkdDGTQ5M=",
@@ -1330,21 +1153,6 @@
     },
     "systems_6": {
       "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
-    "systems_7": {
-      "locked": {
         "lastModified": 1689347949,
         "narHash": "sha256-12tWmuL2zgBgZkdoB6qXZsgJEH9LR3oUgpaQq2RbI80=",
         "owner": "nix-systems",
@@ -1429,28 +1237,6 @@
       "inputs": {
         "nixpkgs": [
           "data-flake",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1668060489,
-        "narHash": "sha256-8GLPHJV0iMS8d4lEUP+v4p2IqRKGWDJwsP96+mm0fHw=",
-        "ref": "refs/heads/master",
-        "rev": "956d80aae5f7871bdcfa3946c175985c211d8498",
-        "revCount": 12,
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/wireguard-namespace-flake.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/wireguard-namespace-flake.git"
-      }
-    },
-    "wireguard-namespace": {
-      "inputs": {
-        "nixpkgs": [
-          "private-config",
-          "home-infrastructure",
           "nixpkgs"
         ]
       },
@@ -1591,7 +1377,7 @@
         "flake-parts": "flake-parts_2",
         "home-manager": "home-manager_3",
         "hyprland": "hyprland_2",
-        "nixpkgs": "nixpkgs_12",
+        "nixpkgs": "nixpkgs_11",
         "xremap": "xremap"
       },
       "locked": {

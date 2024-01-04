@@ -29,19 +29,6 @@
       url = "github:ajlende/base16-atlas-scheme";
       flake = false;
     };
-    private-config = {
-      # url = "path:///home/spacecadet/code/private-flake";
-      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-flake.git";
-      inputs = {
-        agenix.follows = "agenix";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-
-    # my-doom-config = {
-    #   url = "github:VTimofeenko/doom-config";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
 
     hyprland.url = "github:hyprwm/Hyprland";
 
@@ -163,7 +150,6 @@
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
   outputs =
     inputs@{ flake-parts
-    , private-config
     , self
     , ...
     }:
@@ -346,18 +332,17 @@
                     ];
                     inherit specialArgs;
                   };
-                  # Uranium:1 ends here
-                  # [[file:new_project.org::*Neptunium][Neptunium:1]]
-                  neptunium = inputs.nixpkgs.lib.nixosSystem {
-                    system = "x86_64-linux";
-                    modules = [
-                      inputs.nur.nixosModules.nur
-                      ./modules
-                      ./modules/nixosSystems/neptunium
-                      private-config.nixosModules.machines.neptunium
-                    ];
-                    inherit specialArgs;
-                  };
+                  # FIXME: not implemented
+
+                  # neptunium = inputs.nixpkgs.lib.nixosSystem {
+                  #   system = "x86_64-linux";
+                  #   modules = [
+                  #     inputs.nur.nixosModules.nur
+                  #     ./modules
+                  #     ./modules/nixosSystems/neptunium
+                  #   ];
+                  #   inherit specialArgs;
+                  # };
                   # Neptunium:1 ends here
                   # [[file:new_project.org::*"nixosConfigurations" outro]["nixosConfigurations" outro:1]]
                   nitrogen-seed = inputs.nixpkgs.lib.nixosSystem {
