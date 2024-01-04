@@ -280,20 +280,16 @@
             {
               # Pass this through
               inherit (inputs.my-flake-modules) flake-modules;
-              # The usual flake attributes can be defined here, including system-
-              # agnostic ones like nixosModule and system-enumerating ones, although
-              # those are more easily expressed in perSystem.
-              # "Flake" section:1 ends here
-              # [[file:new_project.org::*"nixosModules" output]["nixosModules" output:1]]
               nixosModules =
-                rec {
+                let nix-config = import ./nixosModules/nix; in
+                {
                   default = { ... }: {
                     imports = [
                       self.nixosModules.zsh
                       nix-config
                     ];
                   };
-                  nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
+                  inherit nix-config;
                 };
               # "nixosModules" output:1 ends here
               # [[file:new_project.org::*"nixosConfigurations" output]["nixosConfigurations" output:1]]
