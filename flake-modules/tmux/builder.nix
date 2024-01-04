@@ -1,17 +1,18 @@
-# [[file:../../new_project.org::*Tmux][Tmux:1]]
+/* Produces my tmux configuration */
 { inputs }:
-{ pkgs, lib, ... }:
+{ pkgs, lib }:
 let
   colorSchemeName = "atlas";
   rendered_color_scheme = with inputs; (base16.outputs.lib { inherit pkgs lib; }).mkSchemeAttrs "${color_scheme}/${colorSchemeName}.yaml";
-  mkTmuxConf =
-    with builtins; ''
-      # Main config
-      ${readFile ./tmux.conf}
-    '' + (with rendered_color_scheme; (
+  plugins = [ ]; # with pkgs.tmuxPlugins; [ ];
+in
+{
+  tmuxConf = builtins.concatStringsSep "\n" [
+    "# Main config"
+    (builtins.readFile ./tmux.conf)
+    "# Color scheme"
+    (with rendered_color_scheme; (
       let
-        # default_background = "#" + base00;
-        # default_foreground = "#" + base07;
         /* helper functions */
         mkbg = _: "bg=#" + _;
         mkfg = _: "fg=#" + _;
@@ -44,23 +45,9 @@ let
         /* bell */
         "window-status-bell-style" = "${mkfg base01},${mkbg base08}";
       }))
-    ));
-  plugins = [ ]; # with pkgs.tmuxPlugins; [ ];
-in
-{
-  programs.tmux = {
-    enable = true;
-    /* Commented out, since set in the mkTmuxConf function */
-    # terminal = "tmux-256color";
-    keyMode = "vi";
-    baseIndex = 1;
-    escapeTime = 1;
-    extraConfig = ''
-      ${mkTmuxConf}
+    ))
 
-      # Plugins
-      ${lib.concatStrings (map (x: "run-shell ${x.rtp}\n") plugins)}
-    '';
-  };
+    "# Plugins"
+    (lib.concatStrings (map (x: "run-shell ${x.rtp}\n") plugins))
+  ];
 }
-# Tmux:1 ends here

@@ -179,6 +179,7 @@
           The attribute names don't matter */
           publicFlakeModules = {
             nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
+            tmuxModule = importApply ./flake-modules/tmux { inherit withSystem self; };
             zshModule = importApply ./flake-modules/zsh { inherit self; };
             gitModule = importApply ./flake-modules/git;
             hyprlandHelpersModule = importApply ./flake-modules/hyprland-helpers { inherit withSystem lib self; };
@@ -285,8 +286,6 @@
           # [[file:new_project.org::*"Flake" section]["Flake" section:1]]
           flake =
             let
-              inherit (flake-parts-lib) importApply;
-
               homelab = import ./lib/homelab.nix {
                 inherit (inputs) nixpkgs self deploy-rs;
                 inherit (inputs.nixpkgs) lib;
@@ -308,7 +307,6 @@
                       nix-config
                     ];
                   };
-                  tmux = importApply ./nixosModules/tmux { inherit inputs; }; # (ref:tmux-module-import)
                   nix-config = import ./nixosModules/nix; # (ref:nix-module-import)
                 };
               # "nixosModules" output:1 ends here
