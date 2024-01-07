@@ -145,6 +145,12 @@
       url = "git+https://github.com/Donnnno/Arcticons?submodules=1"; # NOTE: needs git+https to fetch submodules
       flake = false;
     };
+
+    docspell-flake = {
+      url = "github:eikek/docspell?dir=nix";
+      inputs.nixpkgs.follows = "nixpkgs-stable";
+    };
+
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
