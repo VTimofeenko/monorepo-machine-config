@@ -47,6 +47,17 @@ in
 
         mode = "single";
       }
+      {
+        id = "night-routine";
+        alias = "Night routine";
+        description = "Actions to be processed at night";
+
+        trigger = [{ platform = "time"; at = "23:00:00"; }];
+        action = [{ service = "script.night_nix"; data = { }; }];
+
+        mode = "single";
+
+      }
     ] ++ srvConfig.automations;
     /* This allows automations to be provisioned from Nix and to be defined from UI */
     "automation ui" = "!include automations.yaml";
