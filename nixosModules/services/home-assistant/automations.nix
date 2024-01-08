@@ -34,7 +34,7 @@ in
         description = "Set target temperature to 71 at 7 AM";
 
         trigger = [{ platform = "time"; at = "07:00"; }];
-        action = [{ data.temperature = 71; service = "climate.set_temperature"; target.entity_id = "climate.t6_pro_z_wave_programmable_thermostat"; }];
+        action = [{ data.temperature = 73; service = "climate.set_temperature"; target.entity_id = "climate.t6_pro_z_wave_programmable_thermostat"; }];
         mode = "single";
       }
       {
