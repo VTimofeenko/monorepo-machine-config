@@ -53,7 +53,10 @@ in
         description = "Actions to be processed at night";
 
         trigger = [{ platform = "time"; at = "23:00:00"; }];
-        action = [{ service = "script.night_nix"; data = { }; }];
+        action = [
+          { service = "script.night_nix"; data = { }; }
+          { service = "script.send_night_notification"; data = { }; }
+        ];
 
         mode = "single";
 
