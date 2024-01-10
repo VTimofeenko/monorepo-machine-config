@@ -256,9 +256,9 @@
                 useDeployRs = true;
               };
 
-              devshells.default = {
+              devshells.default = let devShellCmds = import ./lib/devshellCmds.nix { inherit pkgs; }; in {
                 env = [ ];
-                commands = [ ];
+                commands = devShellCmds;
                 packages = builtins.attrValues {
                   inherit (pkgs-unstable) gcc pkg-config;
                 };
