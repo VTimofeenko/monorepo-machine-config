@@ -29,7 +29,7 @@ in
         interface = # Where to listen on
           [
             (my-data.lib.getOwnHostInNetwork "lan").ipAddress # Listen in LAN
-            # (localLib.getIPInNetwork "client" (localLib.getOwnHostname config)) # Listen in client network
+            (my-data.lib.getOwnHostInNetwork "client").ipAddress # Listen in client network
           ];
         access-control = [
           "${lan.subnet}.1${lan.settings.netmask} allow"
