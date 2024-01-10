@@ -18,6 +18,9 @@ let
   lan-bridge = extractName "lan-bridge";
 
   lanNet = my-data.lib.getNetwork "lan";
+  clientNet = my-data.lib.getNetwork "client";
+
+  srvLib = import ./lib.nix {inherit localLib;};
 in
 {
   # Enabled by hand and without mangling the chains
@@ -79,13 +82,30 @@ in
               tcp dport 22 ct state new log prefix "New SSH connection: " group ${thisSrvConfig.logging.journaldAndPCAP.group} accept comment "SSH traffic"
           }
 
+          chain wg-client {
+              ip protocol icmp accept
+              ip daddr { ${builtins.concatStringsSep ", " clientNet.dnsServers } } udp dport 53 counter accept comment "WG client DNS traffic"
+
+              ip daddr { ${srvLib.pluckConcat "ipAddress" clientNet.settings.serverNodes} } tcp dport { 80, 443 } counter accept comment "HTTP(S) traffic in network"
+
+              ct state established,related counter accept
+
+              counter log prefix "[CLIENT] unexpected traffic:"
+          }
+
           chain input {
             type filter hook input priority 0; policy accept;
 
             jump common_chain
 
             iifname "${lan-bridge}" ip saddr ${lanNet.subnet}.0/16 jump incoming_from_lan comment "LAN connection"
+
+            iifname "client" udp dport 53 accept comment "WG client dns"
+
+            udp dport ${toString clientNet.port} counter accept comment "Client network connection"
+
             iifname "mgmt" jump wg-mgmt comment "WG management packet"
+
             # From archwiki, prevent icmp flood
             meta l4proto icmp icmp type echo-request limit rate over 10/second burst 4 packets drop comment "No ping floods"
             meta l4proto ipv6-icmp icmpv6 type echo-request limit rate over 10/second burst 4 packets drop comment "No ping floods"
@@ -98,6 +118,9 @@ in
 
           chain forward {
               type filter hook forward priority 0; policy drop
+
+              iifname "client" oifname "client" counter jump wg-client
+              iifname "client"
 
               jump common_chain
 
