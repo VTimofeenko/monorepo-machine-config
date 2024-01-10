@@ -19,8 +19,9 @@ let
 
   lanNet = my-data.lib.getNetwork "lan";
   clientNet = my-data.lib.getNetwork "client";
+  mgmtNet = my-data.lib.getNetwork "mgmt";
 
-  srvLib = import ./lib.nix {inherit localLib;};
+  srvLib = import ./lib.nix { inherit localLib; };
 in
 {
   # Enabled by hand and without mangling the chains
@@ -61,7 +62,7 @@ in
 
               udp dport 67 accept comment "DHCP traffic"
               udp dport { 53, 853 } accept comment "DNS traffic"
-              udp dport ${toString my-data.networks.mgmt.port} accept comment "WG management"
+              udp dport ${toString mgmtNet.port} accept comment "WG management"
           }
 
           chain prerouting {
