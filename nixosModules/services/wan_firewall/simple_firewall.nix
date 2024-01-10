@@ -38,7 +38,7 @@ in
     firewall.enable = lib.mkForce false; # Conflicts with nftables
     nftables.ruleset =
       ''
-        define forbid_outside = { ${builtins.concatStringsSep ", " (localLib.pluck "ipAddress" lanNet.settings.forbidOutside )} }
+        define forbid_outside = { ${srvLib.pluckConcat "ipAddress" lanNet.settings.forbidOutside } }
         define time_nist_ips = { 129.6.15.28, 129.6.15.29, 129.6.15.30, 129.6.15.27, 129.6.15.26, 132.163.97.1, 132.163.97.2, 132.163.97.3, 132.163.97.4, 132.163.97.6, 132.163.96.1, 132.163.96.2, 132.163.96.3, 132.163.96.4, 132.163.96.6, 128.138.140.44, 128.138.141.172, 128.138.140.211, 132.163.96.5, 132.163.97.5, 128.138.141.177, 129.6.15.32 }
         define multicast = { 224.0.0.0/24, 239.0.0.0/8 }
 
