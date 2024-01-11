@@ -68,6 +68,8 @@
 ;; View, capture, and archive Web pages in Org-mode
 (package! org-web-tools)
 
+(package! org-super-agenda)
+
 ;; TODO: telega.el
 
 ;; TODO: Org-ai

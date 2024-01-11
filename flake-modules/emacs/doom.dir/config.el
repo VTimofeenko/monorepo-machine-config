@@ -412,6 +412,7 @@
   ;; Reset the child checkboxes when a todo task is repeated
   (add-hook 'org-todo-repeat-hook #'org-reset-checkbox-state-subtree)
   ;; TODO: Auto-generate this
+  (org-super-agenda-mode)
   (add-to-list 'org-agenda-custom-commands
                '("h" "home maintenance"
                  ((agenda ""
@@ -428,7 +429,11 @@
                                                           (search category-keep)))
 
                            (org-agenda-todo-keyword-format "") ;; [3]
-                           (org-agenda-tag-filter-preset '("+home_maintenance")) ;; [1]
+                           ; (org-agenda-tag-filter-preset '("-foo")) ;; [1]
+                           (org-super-agenda-groups '((:discard (:not (:tag ("home_maintenance"))))))
+                           (org-super-agenda-groups
+                             '((:tag "home_maintenance" :name "")
+                              (:discard (:not (:tag ("home_maintenance")))) ))
                            )))
                  nil
                  ("~/code/infra/services/dashy/home_maint.html"))))
