@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "Dashboard-Icons": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1704590510,
+        "narHash": "sha256-ATACFCJln2UJrUpibYrQXSbXuCIwuYdnbjKMvNN71no=",
+        "owner": "walkxcode",
+        "repo": "Dashboard-Icons",
+        "rev": "3249c1d5a15bfd81b401a73d97443c3edcf31d59",
+        "type": "github"
+      },
+      "original": {
+        "owner": "walkxcode",
+        "repo": "Dashboard-Icons",
+        "type": "github"
+      }
+    },
     "agenix": {
       "inputs": {
         "darwin": [
@@ -577,6 +593,30 @@
         "type": "github"
       }
     },
+    "icons": {
+      "inputs": {
+        "Dashboard-Icons": "Dashboard-Icons",
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs-stable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1704931446,
+        "narHash": "sha256-WWmJx5taq25h79eg/M4hyiRz8fD5W30bz8xPDfcCTJA=",
+        "owner": "VTimofeenko",
+        "repo": "icons-flake",
+        "rev": "7ceaa4940b5c2836543e01f8e7653268e8facb17",
+        "type": "github"
+      },
+      "original": {
+        "owner": "VTimofeenko",
+        "repo": "icons-flake",
+        "type": "github"
+      }
+    },
     "kroki-src": {
       "flake": false,
       "locked": {
@@ -1066,6 +1106,7 @@
         "home-manager": "home-manager_2",
         "hostsBlockList": "hostsBlockList",
         "hyprland": "hyprland",
+        "icons": "icons",
         "kroki-src": "kroki-src",
         "my-flake-modules": "my-flake-modules",
         "nitrocli": "nitrocli",

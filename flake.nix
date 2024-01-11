@@ -151,6 +151,14 @@
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
+    icons = {
+      url = "github:VTimofeenko/icons-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs-stable";
+        flake-parts.follows = "flake-parts";
+      };
+    };
+
   };
   # Inputs:1 ends here
   # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
