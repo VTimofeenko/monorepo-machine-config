@@ -29,4 +29,10 @@
       in
       pkgs.lib.getExe checkScript;
   }
+  {
+    help = "Deploy dashboard";
+    name = "deploy-dashboard";
+    # TODO: depend on emacs, scp and config somehow
+    command = "emacsclient -eval '(org-batch-store-agenda-views)' && scp ~-infra/services/dashy/home_maint.html root@nitrogen.mgmt.home.arpa:/var/lib/filedump";
+  }
 ]
