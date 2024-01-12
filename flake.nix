@@ -141,22 +141,9 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
-    arcticons = {
-      url = "git+https://github.com/Donnnno/Arcticons?submodules=1"; # NOTE: needs git+https to fetch submodules
-      flake = false;
-    };
-
     docspell-flake = {
       url = "github:eikek/docspell?dir=nix";
       inputs.nixpkgs.follows = "nixpkgs-stable";
-    };
-
-    icons = {
-      url = "github:VTimofeenko/icons-flake";
-      inputs = {
-        nixpkgs.follows = "nixpkgs-stable";
-        flake-parts.follows = "flake-parts";
-      };
     };
 
   };
@@ -279,7 +266,11 @@
                 /* Nitrocli pinned to more current nixpkgs to save on rebuilding.
                    Needed occasionally so not part of the world. */
                 nitrocli = inputs'.nitrocli.packages.default;
-                arcticons = import ./packages/arcticons { inherit pkgs; src = inputs.arcticons; };
+                /* Package with some services icons */
+                dashboard-icons = import ./packages/dashboard-icons/package.nix { inherit (pkgs) stdenv fetchFromGitHub; };
+                /* Desktop icons */
+                arcticons = import ./packages/arcticons/package.nix { inherit (pkgs) stdenv fetchFromGitHub inkscape scour xmlstarlet yq jq; };
+
               };
             };
           # perSystem outro:1 ends here
@@ -385,7 +376,7 @@
                   }
               ;
               overlays.homelab = _: prev: withSystem prev.stdenv.hostPlatform.system ({ config, ... }: {
-                inherit (config.packages) hostsBlockList;
+                inherit (config.packages) hostsBlockList dashboard-icons;
               });
             };
           # "Flake" output outro:1 ends here

@@ -19,7 +19,6 @@
         config.allowUnfree = true;
         overlays = [
           self.overlays.homelab
-          self.inputs.icons.overlays.default
         ];
       };
       modules = [
