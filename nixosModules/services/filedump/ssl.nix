@@ -26,7 +26,15 @@ in
         proxy_buffering off;
       '';
       locations."/" = {
-        extraConfig = "autoindex on;";
+        extraConfig = ''
+          autoindex on;
+        '';
+        root = config.services.myFiledump.dir;
+      };
+      locations."~ /${config.services.myFiledump.dashboard-icons}/png" = {
+        extraConfig = ''
+          error_page 404 /${config.services.myFiledump.dashboard-icons}/png/nginx.png;
+        '';
         root = config.services.myFiledump.dir;
       };
     };

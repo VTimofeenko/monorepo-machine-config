@@ -20,10 +20,14 @@ let
   };
 in
 {
-  options.services.myFiledump.dir = lib.mkOption { type = lib.types.path; default = "/var/lib/filedump"; };
+  options.services.myFiledump = {
+    dir = lib.mkOption { type = lib.types.path; default = "/var/lib/filedump"; };
+    dashboard-icons = lib.mkOption { type = lib.types.str; default = "dashboard-icons"; };
+  };
+
   config.systemd.tmpfiles.rules = [
     "d ${cfg.dir} 0755 root root"
-    "L ${cfg.dir}/dashboard-icons - - - - ${pkgs.dashboard-icons}"
+    "L ${cfg.dir}/${cfg.dashboard-icons} - - - - ${pkgs.dashboard-icons}"
     "L ${cfg.dir}/misc-icons - - - - ${misc-icons}/share/icons"
   ];
 }
