@@ -1,8 +1,7 @@
 _:
 {
   imports = [
-    # ./homepage-dashboard.nix
-    ./dashboard-config.nix
+    ./homepage-dashboard.nix
     ./ssl.nix
   ];
 }
