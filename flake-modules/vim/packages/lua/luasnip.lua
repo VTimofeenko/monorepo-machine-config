@@ -101,6 +101,7 @@ ls.add_snippets("nix", {
 		i(2),
 		t({ ";" }),
 	}),
+	-- TODO: mkderivation and other trivial builders templates
 }, {
 	key = "nix",
 })
