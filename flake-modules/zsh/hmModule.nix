@@ -1,15 +1,12 @@
 # Home manager module that configures zsh
-{ self }:
 { pkgs
 , config
 , lib
 , ...
 }:
 let
-  inherit (self) inputs;
   commonSettings = import ./common.nix {
     inherit pkgs;
-    pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.system};
   };
 
   inherit (config) rawColorScheme;
