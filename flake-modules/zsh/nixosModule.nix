@@ -34,4 +34,7 @@ in
   programs.starship.enable = true;
   environment = { inherit (commonSettings) variables; };
   environment.systemPackages = commonSettings.packages;
+
+  /* Add completions */
+  environment.pathsToLink = [ "/share/zsh" ];
 }
