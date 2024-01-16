@@ -11,18 +11,6 @@ let
 
   inherit (config) rawColorScheme;
   semantic = config.semanticColorScheme;
-
-  # TODO: bump nixpkgs and remove this
-
-  # upstream PR in unstable https://github.com/NixOS/nixpkgs/pull/271088
-  fzf-tab-override = pkgs.zsh-fzf-tab.overrideAttrs {
-    env = pkgs.lib.optionalAttrs pkgs.stdenv.cc.isClang {
-      NIX_CFLAGS_COMPILE = toString [
-        "-Wno-error=implicit-function-declaration"
-        "-Wno-error=implicit-int"
-      ];
-    };
-  };
 in
 {
   home = { inherit (commonSettings) packages; };
@@ -86,10 +74,12 @@ in
           ];
         };
 
+      /* Plugin configuration */
       plugins =
-        [{ name = "fzf-tab"; src = "${fzf-tab-override}/share/fzf-tab"; }] ++
-        (with commonSettings.plugins;
-        map (name: { inherit name; file = "${name}.zsh"; src = baseDir; }) list);
+        commonSettings.packagePlugins
+        ++
+        (with commonSettings.myPlugins; map (name: { inherit name; file = "${name}.zsh"; src = baseDir; }) list);
+
       shellGlobalAliases = {
         G = "| rg";
       };

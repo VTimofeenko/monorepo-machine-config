@@ -14,17 +14,14 @@ in
     histSize = 10000;
     interactiveShellInit = commonSettings.initExtra
       + commonSettings.completionInit
-      + (with commonSettings.plugins;
+      + (with commonSettings.myPlugins;
       ''
         fpath=(${baseDir} $fpath)
       ''
       + concatMapStringsSep "\n" (plugin: "autoload -Uz ${plugin}.zsh && ${plugin}.zsh") list)
       + "\n"
       +
-      # Allows searching for completion
-      ''
-        zstyle ':completion:*:*:*:default' menu yes select search
-      ''
+      (concatMapStringsSep "\n" (plugin: "source ${plugin.src}/${plugin.file}") commonSettings.packagePlugins)
     ;
     inherit (commonSettings) shellAliases;
     syntaxHighlighting = {

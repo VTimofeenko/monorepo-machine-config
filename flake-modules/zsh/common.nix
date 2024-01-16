@@ -207,10 +207,17 @@ rec {
   completionInit = ''
     autoload -U compinit && compinit -C -i
   '';
-  plugins = {
+  myPlugins = {
     baseDir = ./myPlugins;
     list = [ "vim-edit" "cd-stack" "bookmarks" "cursor_mode" ];
   };
+  packagePlugins = [
+    rec {
+      name = "fzf-tab";
+      src = "${pkgs.zsh-fzf-tab}/share/fzf-tab";
+      file = "${name}.plugin.zsh";
+    }
+  ];
   variables = {
     EDITOR = "nvim";
     FZF_CTRL_T_COMMAND = "${getExe pkgs.fd} .";
