@@ -1,5 +1,5 @@
 # A set of settings that are common for both modules
-{ pkgs, pkgs-unstable, ... }:
+{ pkgs, ... }:
 let
   inherit (pkgs.lib) getExe concatMapStringsSep concatStringsSep;
 in
@@ -13,7 +13,7 @@ rec {
     man = "man -P 'nvim +Man!'";
     nvim = "$EDITOR";
     vim = "$EDITOR";
-    ls = "${getExe pkgs-unstable.eza} -h --group-directories-first --icons=auto";
+    ls = "${getExe pkgs.eza} -h --group-directories-first --icons=auto";
     l = "ls";
     ll = "ls -l";
     la = "ls -al";
@@ -56,10 +56,8 @@ rec {
       dig# quick DNS tester
       unzip# unpacks archives
       htop# system monitoring
-      ;
-    inherit (pkgs-unstable)
-      spacer# Useful for tailing logs
-      # eza# ls replacement. Installed for completions
+      eza# for completions
+      spacer
       ;
   };
   additionalOptions = [
@@ -163,7 +161,7 @@ rec {
       (
         let
           previewers = rec {
-            dir = "${getExe pkgs-unstable.eza} -1 --color=always $realpath";
+            dir = "${getExe pkgs.eza} -1 --color=always $realpath";
             file = "${getExe pkgs.bat} --plain --color=always $realpath";
             dispatcher =
               # bash
