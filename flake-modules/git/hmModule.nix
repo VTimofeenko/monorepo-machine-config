@@ -1,7 +1,10 @@
 # Home manager module that configures git
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 let
   inherit (lib) getExe;
+  inherit (config) semanticColorScheme scheme;
+
+  inherit (semanticColorScheme) activeFrameBorder inactiveFrameBorder;
 in
 {
   home.packages = builtins.attrValues {
@@ -52,11 +55,15 @@ in
       # TODO: Lazygit color scheme to match the rest. Needs semantic colors?
       enable = true;
       settings = {
-        gui.theme = rec {
-          selectedLineBgColor = [
-            "#595959" #gray35
+        gui.theme = {
+          selectedLineBgColor = [ inactiveFrameBorder ];
+          selectedRangeBgColor = [ inactiveFrameBorder ];
+          activeBorderColor = [
+            activeFrameBorder
+            "bold" # Otherwise strikethrough creeps in for some reason
           ];
-          selectedRangeBgColor = selectedLineBgColor;
+          inactiveBorderColor = [ inactiveFrameBorder ];
+          optionsTextColor = [ scheme.fg-main ];
         };
         git.paging.pager = "${getExe pkgs.diff-so-fancy}";
       };
