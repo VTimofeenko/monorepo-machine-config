@@ -37,7 +37,6 @@
             data-flake.nixosModules.${hostName}
 
             specialArgs.selfModules.zsh
-            specialArgs.selfModules.zshHMCompanionModule
             specialArgs.selfModules.tmux
           ]
           ++

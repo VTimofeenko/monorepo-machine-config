@@ -11,7 +11,6 @@
 
     # this flake's nixosModules
     selfModules.zsh
-    selfModules.zshHMCompanionModule
     selfModules.nix-config
     selfModules.tmux
     selfModules.my-theme
