@@ -4,6 +4,7 @@ let
   module = import ./module.nix { inherit lib; };
 in
 {
+  # TODO: add an attribute that prepends the "#" sign
   flake = {
     nixosModules.my-theme = module // { imports = [ self.inputs.base16.nixosModule ]; };
     homeManagerModules.my-theme = module // { imports = [ self.inputs.base16.homeManagerModule ]; };
