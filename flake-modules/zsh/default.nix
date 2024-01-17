@@ -3,7 +3,7 @@ _:
 {
   # TODO: fzf ignore lock files for completion unless it's the only option
   flake = {
-    nixosModules.zsh = import ./nixosModule.nix;
-    homeManagerModules.zsh = import ./hmModule.nix;
+    nixosModules.zsh = import ./modules/nixOS;
+    homeManagerModules.zsh = import ./modules/homeManager;
   };
 }

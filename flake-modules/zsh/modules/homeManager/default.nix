@@ -5,7 +5,7 @@
 , ...
 }:
 let
-  commonSettings = import ./common.nix {
+  commonSettings = import ../common {
     inherit pkgs;
   };
 
