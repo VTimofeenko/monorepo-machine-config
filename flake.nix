@@ -377,6 +377,10 @@
               overlays.homelab = _: prev: withSystem prev.stdenv.hostPlatform.system ({ config, ... }: {
                 inherit (config.packages) hostsBlockList dashboard-icons;
               });
+
+              homeManagerModules = {
+                kitty = import ./modules/homeManager/kitty;
+              };
             };
           # "Flake" output outro:1 ends here
           # [[file:new_project.org::*Flake outro][Flake outro:1]]

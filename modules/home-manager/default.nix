@@ -3,10 +3,11 @@
 {
   imports = [
     ./home.nix
-    ./kitty # (ref:kitty-hm-import)
     ./zathura # (ref:zathura-hm-import)
     ./packages.nix # (ref:packages-hm-import)
     ./media.nix # (ref:media-hm-import)
+
+    ../homeManager
   ];
 }
 # homeConfigurations default.nix:1 ends here
