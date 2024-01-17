@@ -40,7 +40,7 @@
             specialArgs.selfModules.tmux
           ]
           ++
-          (map (module: ../nixosModules/services + "/${module}") data-flake.data.hosts.all.${hostName}.modulesAt) # NOTE: Needs default.nix in the service directory
+          (map (module: ../nixosModules/services + "/${module}") data-flake.data.hosts.all.${hostName}.modulesAt.public) # NOTE: Needs default.nix in the service directory
           ;
         }
       ];
