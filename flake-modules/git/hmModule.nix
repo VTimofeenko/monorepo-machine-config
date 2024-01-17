@@ -2,7 +2,7 @@
 { pkgs, lib, config, ... }:
 let
   inherit (lib) getExe;
-  inherit (config) semanticColorScheme scheme;
+  inherit (config) semanticColorScheme rawColorScheme;
 
   inherit (semanticColorScheme) activeFrameBorder inactiveFrameBorder;
 in
@@ -56,14 +56,14 @@ in
       enable = true;
       settings = {
         gui.theme = {
-          selectedLineBgColor = [ inactiveFrameBorder ];
-          selectedRangeBgColor = [ inactiveFrameBorder ];
+          selectedLineBgColor = [ "#${inactiveFrameBorder}" ];
+          selectedRangeBgColor = [ "#${inactiveFrameBorder}" ];
           activeBorderColor = [
-            activeFrameBorder
+            "#${activeFrameBorder}"
             "bold" # Otherwise strikethrough creeps in for some reason
           ];
-          inactiveBorderColor = [ inactiveFrameBorder ];
-          optionsTextColor = [ scheme.fg-main ];
+          inactiveBorderColor = [ "#${inactiveFrameBorder}" ];
+          optionsTextColor = [ "#${rawColorScheme.fg-main}" ];
         };
         git.paging.pager = "${getExe pkgs.diff-so-fancy}";
       };
