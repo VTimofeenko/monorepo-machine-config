@@ -309,7 +309,6 @@
                 //
                 {
                   neutronium-x86_64 =
-                    # TODO: aarch
                     inputs.nixpkgs.lib.nixosSystem {
                       system = "x86_64-linux";
                       modules = [
@@ -363,7 +362,7 @@
                   (builtins.mapAttrs
                     (hostName: hostData: homelab.mkDeployRsNode
                       {
-                        nodeName = hostData.hostName; # NOTE: UI will change to hostName once DNS is up
+                        nodeName = hostData.hostName;
                         inherit (hostData) system;
                       })
                     inputs.data-flake.data.hosts.managed)
