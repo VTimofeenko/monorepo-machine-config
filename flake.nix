@@ -1,8 +1,5 @@
-# [[file:new_project.org::*Flake intro][Flake intro:1]]
 {
-  description = "NixOS configuration by Vladimir Timofeenko";
-  # Flake intro:1 ends here
-  # [[file:new_project.org::*Inputs][Inputs:1]]
+  description = "NixOS and Home Manager configurations for my machines";
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-23.11";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -70,9 +67,10 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs-lib";
     };
-    # TODO: move to upstream url once pull/133 is merged
-    treefmt-nix.url = "github:VTimofeenko/treefmt-nix?ref=nickel-syntax-fix";
-    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     my-flake-modules = {
       url = "github:VTimofeenko/flake-modules";
@@ -134,8 +132,10 @@
       url = "github:yuzutech/kroki-cli";
       flake = false;
     };
-    disko.url = "github:nix-community/disko";
-    disko.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     nitrocli = {
       url = "github:d-e-s-o/nitrocli?dir=contrib/nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -147,8 +147,6 @@
     };
 
   };
-  # Inputs:1 ends here
-  # [[file:new_project.org::*Outputs intro][Outputs intro:1]]
   outputs =
     inputs@{ flake-parts
     , self
@@ -178,8 +176,6 @@
           };
         in
         {
-          # Outputs intro:1 ends here
-          # [[file:new_project.org::*Imports][Imports:1]]
           imports =
             builtins.concatLists [
               [
@@ -191,90 +187,66 @@
               # Construct imports from this flake's flake modules
               (lib.lists.flatten (map builtins.attrValues [ inputs.my-flake-modules.flake-modules publicFlakeModules ]))
             ];
-          # Imports:1 ends here
-          # [[file:new_project.org::*Systems setting][Systems setting:1]]
           systems = [ "x86_64-linux" "aarch64-darwin" "aarch64-linux" ];
-          # Systems setting:1 ends here
-          # [[file:new_project.org::*"perSystem" output]["perSystem" output:1]]
-          perSystem = { config, inputs', pkgs, system, ... }:
-            let
-              pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
-            in
-            {
-              # [[file:new_project.org::*Overlays][Overlays:1]]
-              overlayAttrs = config.packages;
-              # Overlays:1 ends here
-              # [[file:new_project.org::*homeConfigurations][homeConfigurations:1]]
-              legacyPackages.homeConfigurations =
-                let
-                  /* Create the default homeManagerConfiguration with inherited pkgs.
+          perSystem = { config, inputs', pkgs, ... }: {
+            overlayAttrs = config.packages;
+            legacyPackages.homeConfigurations =
+              let
+                /* Create the default homeManagerConfiguration with inherited pkgs.
 
                   The provided attrset will be merged into the homeManagerConfiguration.
 
                    Type: mkHmc :: attrset -> home-manger.lib.homeManagerConfiguration
 
                   */
-                  mkHmc = attrset: inputs.home-manager.lib.homeManagerConfiguration ({
-                    inherit pkgs;
-                    extraSpecialArgs = { inherit inputs' inputs; selfModules = self.nixosModule; selfPkgs = self.packages; };
-                  } // attrset);
-                in
-                {
-                  # homeConfigurations:1 ends here
-                  # [[file:new_project.org::*Deck][Deck:1]]
-                  deck = mkHmc {
-                    modules = [
-                      ./modules/home-manager # (ref:deck-hm-import)
-                      ./modules/home-manager/_perUser/deck.nix
-                      inputs.xremap-flake.homeManagerModules.default # Enables xmreap without any features
-                      ./modules/de/xremap/shortcuts.nix # Reuses xremap bindings from mainconfigs
-                    ];
-                  };
-                  # Deck:1 ends here
-                  # [[file:new_project.org::*homeConfigurations outro][homeConfigurations outro:1]]
+                mkHmc = attrset: inputs.home-manager.lib.homeManagerConfiguration ({
+                  inherit pkgs;
+                  extraSpecialArgs = { inherit inputs' inputs; selfModules = self.nixosModule; selfPkgs = self.packages; };
+                } // attrset);
+              in
+              {
+                deck = mkHmc {
+                  modules = [
+                    ./modules/home-manager
+                    ./modules/home-manager/_perUser/deck.nix
+                    inputs.xremap-flake.homeManagerModules.default
+                    ./modules/de/xremap/shortcuts.nix
+                  ];
                 };
-              # homeConfigurations outro:1 ends here
-              bumpInputs = {
-                changingInputs = [ "private-config" "my-flake-modules" "hostsBlockList" "data-flake" ];
-                bumpAllInputs = true;
               };
-              # [[file:new_project.org::*devShells][devShells:1]]
-
-              # My modules config
-              format-module = {
-                languages = [ "lua" "shell" "rust" ];
-                addFormattersToDevshell = true;
-              };
-              devshellCmds.deployment = {
-                enable = true;
-                localDeployment = true;
-                useDeployRs = true;
-              };
-
-              devshells.default = let devShellCmds = import ./lib/devshellCmds.nix { inherit pkgs; }; in {
-                env = [ ];
-                commands = devShellCmds;
-                packages = builtins.attrValues {
-                  inherit (pkgs-unstable) gcc pkg-config;
-                };
-
-              };
-              # devShells:1 ends here
-              # [[file:new_project.org::*perSystem outro][perSystem outro:1]]
-              packages = {
-                hostsBlockList = import ./packages/hostsBlockList { inherit pkgs; src = inputs.hostsBlockList; };
-                /* Nitrocli pinned to more current nixpkgs to save on rebuilding.
-                   Needed occasionally so not part of the world. */
-                nitrocli = inputs'.nitrocli.packages.default;
-                /* Package with some services icons */
-                dashboard-icons = import ./packages/dashboard-icons/package.nix { inherit (pkgs) stdenv fetchFromGitHub; };
-                /* Desktop icons */
-                arcticons = import ./packages/arcticons/package.nix { inherit (pkgs) stdenv fetchFromGitHub inkscape scour xmlstarlet yq jq; };
-
-              };
+            bumpInputs = {
+              changingInputs = [ "private-config" "my-flake-modules" "hostsBlockList" "data-flake" ];
+              bumpAllInputs = true;
             };
-          # perSystem outro:1 ends here
-          # [[file:new_project.org::*"Flake" section]["Flake" section:1]]
+            # My modules config
+            format-module = {
+              languages = [ "lua" "shell" "rust" ];
+              addFormattersToDevshell = true;
+            };
+            devshellCmds.deployment = {
+              enable = true;
+              localDeployment = true;
+              useDeployRs = true;
+            };
+
+            devshells.default = let devShellCmds = import ./lib/devshellCmds.nix { inherit pkgs; }; in {
+              env = [ ];
+              commands = devShellCmds;
+              packages = [ ];
+            };
+
+            packages = {
+              hostsBlockList = import ./packages/hostsBlockList { inherit pkgs; src = inputs.hostsBlockList; };
+              /* Nitrocli pinned to more current nixpkgs to save on rebuilding.
+                   Needed occasionally so not part of the world. */
+              nitrocli = inputs'.nitrocli.packages.default;
+              /* Package with some services icons */
+              dashboard-icons = import ./packages/dashboard-icons/package.nix { inherit (pkgs) stdenv fetchFromGitHub; };
+              /* Desktop icons */
+              arcticons = import ./packages/arcticons/package.nix { inherit (pkgs) stdenv fetchFromGitHub inkscape scour xmlstarlet yq jq; };
+
+            };
+          };
           flake =
             let
               homelab = import ./lib/homelab.nix {
@@ -283,7 +255,7 @@
               };
             in
             {
-              # Pass this through
+              /* flake-modules are passed through to the output of this flake */
               inherit (inputs.my-flake-modules) flake-modules;
               nixosModules =
                 let nix-config = import ./nixosModules/nix; in
@@ -296,13 +268,11 @@
                   };
                   inherit nix-config;
                 };
-              # "nixosModules" output:1 ends here
-              # [[file:new_project.org::*"nixosConfigurations" output]["nixosConfigurations" output:1]]
               nixosConfigurations =
                 let
                   specialArgs = inputs // { selfModules = self.nixosModules; selfPkgs = self.packages; selfHMModules = self.homeManagerModules; };
                 in
-                # Iterates over the attrset of managed nodes, creating the nixosConfigurations per machine
+                  /* Iterates over the attrset of managed nodes, creating the nixosConfigurations per machine */
                 (builtins.mapAttrs
                   (_: hostData: homelab.mkSystem { inherit hostData specialArgs; inherit (inputs) data-flake; })
                   inputs.data-flake.data.hosts.managed)
@@ -317,10 +287,6 @@
                         ./nixosConfigurations/neutronium
                       ];
                     };
-                  # NOTE: For now uranium and neptunium are special
-
-                  # "nixosConfigurations" output:1 ends here
-                  # [[file:new_project.org::*Uranium][Uranium:1]]
                   uranium = inputs.nixpkgs.lib.nixosSystem {
                     system = "x86_64-linux";
                     modules = [
@@ -343,8 +309,6 @@
                   #   ];
                   #   inherit specialArgs;
                   # };
-                  # Neptunium:1 ends here
-                  # [[file:new_project.org::*"nixosConfigurations" outro]["nixosConfigurations" outro:1]]
                   nitrogen-seed = inputs.nixpkgs.lib.nixosSystem {
                     system = "x86_64-linux";
                     modules = [
@@ -355,8 +319,6 @@
                     inherit specialArgs;
                   };
                 };
-              # "nixosConfigurations" outro:1 ends here
-              # [[file:new_project.org::*"homeManagerModules" output]["homeManagerModules" output:1]]
               deploy.nodes =
                 lib.recursiveUpdate
                   (builtins.mapAttrs
@@ -371,7 +333,6 @@
 
                     hydrogen.hostname = "192.168.1.1";
                     */
-
                   }
               ;
               overlays.homelab = _: prev: withSystem prev.stdenv.hostPlatform.system ({ config, ... }: {
@@ -382,9 +343,6 @@
                 kitty = import ./modules/homeManager/kitty;
               };
             };
-          # "Flake" output outro:1 ends here
-          # [[file:new_project.org::*Flake outro][Flake outro:1]]
         }
       );
 }
-# Flake outro:1 ends here
