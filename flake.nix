@@ -342,6 +342,11 @@
               homeManagerModules = {
                 kitty = import ./modules/homeManager/kitty;
               };
+
+              templates.default = {
+                path = ./templates/base;
+                description = "Base template for my projects";
+              };
             };
         }
       );
