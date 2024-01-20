@@ -121,6 +121,7 @@ in
       };
       extraConfig =
         ''
+          exec-once = systemdctl --user start set-random-wallpaper.service
           env = LIBVA_DRIVER_NAME,${if hostName == "neptunium"
                 then "nvidia"
                 else "radeonsi"
