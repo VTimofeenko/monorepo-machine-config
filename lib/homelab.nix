@@ -26,13 +26,7 @@
         { networking = { inherit hostName; }; }
         {
           imports = [
-            ../nixosModules/common/dump.nix
-            ../nixosModules/common/nix.nix
-            ../nixosModules/common/time.nix
-            ../nixosModules/common/packages.nix
-            ../nixosModules/common/sshd.nix
-            ../nixosModules/common/firewall.nix
-            ../nixosModules/common/shell.nix
+            ../modules/nixosModules/homelab
 
             data-flake.nixosModules.${hostName}
 
