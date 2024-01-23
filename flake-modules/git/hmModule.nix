@@ -52,7 +52,6 @@ in
       settings.aliases.prco = "pr checkout";
     };
     lazygit = {
-      # TODO: Lazygit color scheme to match the rest. Needs semantic colors?
       enable = true;
       settings = {
         gui.theme = {
