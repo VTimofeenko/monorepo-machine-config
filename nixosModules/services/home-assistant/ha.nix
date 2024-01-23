@@ -35,13 +35,13 @@ in
             hash = "sha256-X+67CO0I17cc60wFNyufaiHYOZS1AY2xEVCXZYgcgoI=";
           };
           doCheck = false;
+          dontCheckRuntimeDeps = true; /* I only need Telegram for outbound notifications. This will probably break polling code. */
           propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ [
             super.certifi
             super.future
             super.urllib3
             super.tornado
             super.decorator
-            super.APScheduler
           ];
         });
       };
