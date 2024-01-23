@@ -215,7 +215,7 @@
                 };
               };
             bumpInputs = {
-              changingInputs = [ "private-config" "my-flake-modules" "hostsBlockList" "data-flake" ];
+              changingInputs = [ "my-flake-modules" "hostsBlockList" "data-flake" ];
               bumpAllInputs = true;
             };
             # My modules config
