@@ -12,8 +12,7 @@ let
   # Example of using system-wide configuration in home-manager module
   inherit (osConfig.networking) hostName;
 
-  inherit (osConfig) rawColorScheme;
-  semantic = osConfig.semanticColorScheme;
+  inherit (osConfig.my-colortheme) raw semantic;
 
   selfPkgs' = selfPkgs.${pkgs.stdenv.system};
 
@@ -180,7 +179,7 @@ in
               drop_shadow = true
               shadow_range = 4
               shadow_render_power = 3
-              col.shadow = rgba(${rawColorScheme.bg-dim}ee)
+              col.shadow = rgba(${raw.bg-dim}ee)
           }
 
           windowrulev2 = opacity 0.94 0.94,class:^(kitty)$
