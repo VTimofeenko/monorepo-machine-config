@@ -220,7 +220,7 @@
             };
             # My modules config
             format-module = {
-              languages = [ "lua" "shell" "rust" ];
+              languages = [ "lua" "shell" "rust" "nickel" ];
               addFormattersToDevshell = true;
             };
             devshellCmds.deployment = {

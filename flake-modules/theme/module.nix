@@ -1,30 +1,26 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 let
   inherit (lib.types) attrsOf str;
   inherit (lib.options) mkOption;
+
+  /* A derivation is needed for using nickel to build the needed values */
+  themePackage = pkgs.callPackage ./packages/theme/package.nix { inherit (pkgs) stdenv nickel lib; };
+
+  data = lib.pipe (themePackage + "/data.json") [ builtins.readFile builtins.fromJSON ];
 in
 {
   options = {
-    rawColorScheme = mkOption {
-      description = "Raw color scheme with additional attributes";
-      type = attrsOf str;
-    };
-    semanticColorScheme = mkOption {
-      description = "Semantic colors with some meaning attached to them";
-      type = attrsOf str;
-    };
-  };
-  config = rec {
-    # Needs base16 module imported
-    scheme = import ./assets/modus_custom.nix;
-    rawColorScheme = import ./assets/modus_custom.nix;
-    semanticColorScheme = with rawColorScheme; {
-      activeFrameBorder = cyan-intense;
-      inactiveFrameBorder = border-mode-line-inactive;
-      levelInfo = color4;
-      levelWarn = color3;
-      levelErr = color1;
-      comment = color7;
+    my-colortheme = {
+      raw = mkOption {
+        description = "Raw color scheme with additional attributes";
+        type = attrsOf str;
+        default = data.scheme;
+      };
+      semantic = mkOption {
+        description = "Semantic colors with some meaning attached to them";
+        type = attrsOf str;
+        default = data.semantic;
+      };
     };
   };
 }

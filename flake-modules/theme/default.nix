@@ -1,12 +1,12 @@
 /* Flake module that produces NixOS and Home-manager modules with my theme */
-{ self, lib, ... }:
+{ self, ... }:
 let
-  module = import ./module.nix { inherit lib; };
+  module = import ./module.nix;
 in
 {
   # TODO: add an attribute that prepends the "#" sign
   flake = {
-    nixosModules.my-theme = module // { imports = [ self.inputs.base16.nixosModule ]; };
-    homeManagerModules.my-theme = module // { imports = [ self.inputs.base16.homeManagerModule ]; };
+    nixosModules.my-theme = { imports = [ self.inputs.base16.nixosModule module ]; };
+    homeManagerModules.my-theme = { imports = [ self.inputs.base16.homeManagerModule module ]; };
   };
 }
