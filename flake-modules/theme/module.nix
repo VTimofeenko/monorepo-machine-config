@@ -13,12 +13,12 @@ in
     my-colortheme = {
       raw = mkOption {
         description = "Raw color scheme with additional attributes";
-        type = attrsOf str;
+        type = attrsOf (attrsOf str);
         default = theme.scheme;
       };
       semantic = mkOption {
         description = "Semantic colors with some meaning attached to them";
-        type = attrsOf str;
+        type = attrsOf (attrsOf str);
         default = theme.semantic;
       };
     };
