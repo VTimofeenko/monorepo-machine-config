@@ -2,9 +2,9 @@
 { pkgs, lib, config, ... }:
 let
   inherit (lib) getExe;
-  inherit (config) semanticColorScheme rawColorScheme;
+  inherit (config.my-colortheme) semantic raw;
 
-  inherit (semanticColorScheme) activeFrameBorder inactiveFrameBorder;
+  inherit (semantic) activeFrameBorder inactiveFrameBorder;
 in
 {
   home.packages = builtins.attrValues {
@@ -62,7 +62,7 @@ in
             "bold" # Otherwise strikethrough creeps in for some reason
           ];
           inactiveBorderColor = [ "#${inactiveFrameBorder}" ];
-          optionsTextColor = [ "#${rawColorScheme.fg-main}" ];
+          optionsTextColor = [ "#${raw.fg-main}" ];
         };
         git.paging.pager = "${getExe pkgs.diff-so-fancy}";
       };
