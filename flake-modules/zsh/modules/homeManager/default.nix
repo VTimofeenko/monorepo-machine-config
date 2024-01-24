@@ -9,8 +9,7 @@ let
     inherit pkgs;
   };
 
-  inherit (config) rawColorScheme;
-  semantic = config.semanticColorScheme;
+  inherit (config.my-colortheme) raw semantic;
 in
 {
   home = { inherit (commonSettings) packages; };
@@ -50,26 +49,27 @@ in
       # initExtraFirst # Commands that should be added to top of .zshrc.
       localVariables = commonSettings.variables
         //
+        # TODO: move this ot DE configuration, doesn't really belong here?
         {
           BEMENU_OPTS = lib.concatStringsSep " " [
-            "--tb  '#${rawColorScheme.color0}'" #Title background
-            "--tf  '#${rawColorScheme.indigo}'" #Title foreground
-            "--fb  '#${rawColorScheme.color0}'" #Filter background
-            "--ff  '#${rawColorScheme.fg-main}'" #Filter foregroun
-            "--cb  '#${rawColorScheme.color0}'" #Cursor background
-            "--cf  '#${rawColorScheme.fg-main}'" #Cursor foregroun
-            "--nb  '#${rawColorScheme.color0}'" #Normal background
-            "--nf  '#${rawColorScheme.fg-main}'" #Normal foreground
-            "--hb  '#${rawColorScheme.color0}'" #Highlighted background
-            "--hf  '#${semantic.activeFrameBorder}'" #Highlighted foreground
-            "--fbb '#${rawColorScheme.color0}'" #Feedback background
-            "--fbf '#${rawColorScheme.fg-main}'" #Feedback foreground
-            "--sb  '#${rawColorScheme.color0}'" #Selected background
-            "--sf  '#${rawColorScheme.fg-main}'" #Selected foreground
-            "--ab  '#${rawColorScheme.color0}'" #Alternating background color
-            "--af  '#${rawColorScheme.fg-main}'" #Alternating foreground color
-            "--scb '#${rawColorScheme.color0}'" #Scrollbar background
-            "--scf '#${rawColorScheme.fg-main}'" #Scrollbar foreground
+            "--tb  '${raw.color0."#hex"}'" #Title background
+            "--tf  '#${raw.indigo."#hex"}'" #Title foreground
+            "--fb  '#${raw.color0."#hex"}'" #Filter background
+            "--ff  '#${raw.fg-main."#hex"}'" #Filter foregroun
+            "--cb  '#${raw.color0."#hex"}'" #Cursor background
+            "--cf  '#${raw.fg-main."#hex"}'" #Cursor foregroun
+            "--nb  '#${raw.color0."#hex"}'" #Normal background
+            "--nf  '#${raw.fg-main."#hex"}'" #Normal foreground
+            "--hb  '#${raw.color0."#hex"}'" #Highlighted background
+            "--hf  '#${semantic.activeFrameBorder."#hex"}'" #Highlighted foreground
+            "--fbb '#${raw.color0."#hex"}'" #Feedback background
+            "--fbf '#${raw.fg-main."#hex"}'" #Feedback foreground
+            "--sb  '#${raw.color0."#hex"}'" #Selected background
+            "--sf  '#${raw.fg-main."#hex"}'" #Selected foreground
+            "--ab  '#${raw.color0."#hex"}'" #Alternating background color
+            "--af  '#${raw.fg-main."#hex"}'" #Alternating foreground color
+            "--scb '#${raw.color0."#hex"}'" #Scrollbar background
+            "--scf '#${raw.fg-main."#hex"}'" #Scrollbar foreground
             "--width-factor 0.2"
           ];
         };
