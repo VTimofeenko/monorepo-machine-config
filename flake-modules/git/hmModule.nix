@@ -55,14 +55,14 @@ in
       enable = true;
       settings = {
         gui.theme = {
-          selectedLineBgColor = [ "#${inactiveFrameBorder}" ];
-          selectedRangeBgColor = [ "#${inactiveFrameBorder}" ];
+          selectedLineBgColor = [ "#${inactiveFrameBorder.hex}" ];
+          selectedRangeBgColor = [ "#${inactiveFrameBorder.hex}" ];
           activeBorderColor = [
-            "#${activeFrameBorder}"
+            "#${activeFrameBorder.hex}"
             "bold" # Otherwise strikethrough creeps in for some reason
           ];
-          inactiveBorderColor = [ "#${inactiveFrameBorder}" ];
-          optionsTextColor = [ "#${raw.fg-main}" ];
+          inactiveBorderColor = [ "#${inactiveFrameBorder.hex}" ];
+          optionsTextColor = [ "#${raw.fg-main.hex}" ];
         };
         git.paging.pager = "${getExe pkgs.diff-so-fancy}";
       };
