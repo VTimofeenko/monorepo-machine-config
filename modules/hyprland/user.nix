@@ -156,8 +156,8 @@ in
               gaps_in = 5
               gaps_out = 20
               border_size = 2
-              col.active_border = rgba(${semantic.activeFrameBorder}ff) rgba(${semantic.inactiveFrameBorder}00) 45deg
-              col.inactive_border = rgba(${semantic.inactiveFrameBorder}aa)
+              col.active_border = rgba(${semantic.activeFrameBorder.hex}ff) rgba(${semantic.inactiveFrameBorder.hex}00) 45deg
+              col.inactive_border = rgba(${semantic.inactiveFrameBorder.hex}aa)
 
               layout = ${if hostName == "neptunium"
                 then "master"
@@ -179,7 +179,7 @@ in
               drop_shadow = true
               shadow_range = 4
               shadow_render_power = 3
-              col.shadow = rgba(${raw.bg-dim}ee)
+              col.shadow = rgba(${raw.bg-dim.hex}ee)
           }
 
           windowrulev2 = opacity 0.94 0.94,class:^(kitty)$
