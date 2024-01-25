@@ -6,7 +6,7 @@
 }:
 let
   commonSettings = import ../common {
-    inherit pkgs;
+    inherit pkgs config;
   };
 
   inherit (config.my-colortheme) raw semantic;

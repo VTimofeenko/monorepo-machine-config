@@ -1,8 +1,8 @@
 # NixOS module that configures zsh
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 let
   commonSettings = import ../common {
-    inherit pkgs;
+    inherit pkgs config;
   };
   inherit (lib) concatMapStringsSep;
 in

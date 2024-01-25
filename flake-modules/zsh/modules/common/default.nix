@@ -1,7 +1,8 @@
 # A set of settings that are common for both modules
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 let
   inherit (pkgs.lib) getExe concatMapStringsSep concatStringsSep;
+  inherit (config.my-colortheme) semantic;
 in
 rec {
   # TODO: style fzf (needs semantic styles)
@@ -146,13 +147,11 @@ rec {
         zstyle :bracketed-paste-magic paste-init pasteinit
         zstyle :bracketed-paste-magic paste-finish pastefinish
       ''
-      # NOTE: 23.11 -- move this to zsh syntaxHighlighting styles
-      # TODO: make this mimick vim? Needs semantic colors
       ''
         # Source
         # https://github.com/zsh-users/zsh-syntax-highlighting/issues/359
         typeset -gA ZSH_HIGHLIGHT_STYLES
-        ZSH_HIGHLIGHT_STYLES[comment]='fg=7'
+        ZSH_HIGHLIGHT_STYLES[comment]='fg=${semantic.comment.number}'
       ''
       # Allows searching for completion
       # ''

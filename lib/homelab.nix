@@ -30,6 +30,7 @@
 
             data-flake.nixosModules.${hostName}
 
+            specialArgs.selfModules.my-theme
             specialArgs.selfModules.zsh
             specialArgs.selfModules.tmux
           ]
