@@ -221,7 +221,8 @@
            )
           ))
   (setq org-agenda-files (list "inbox.org" "agenda.org"
-                               "notes.org" "projects.org"))
+                               "notes.org" "projects.org"
+                               "~/.local/state/ical-org-export.org")) ;; NOTE: looks like emacs gracefully handles absence of a file
   (setq org-agenda-custom-commands
         '(("g" "Get Things Done (GTD)"
            ;; Only show entries with the tag "inbox" -- just in case some entry outside inbox.org still has that file
