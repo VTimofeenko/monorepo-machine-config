@@ -487,3 +487,6 @@
       (:desc "Jump around" "j" #'evil-avy-goto-word-0))
 
 (require 'org-web-tools)
+
+(after! vdirel
+        (setq vdirel-repository "~/.local/state/vdirs/contacts/nextcloud/"))
