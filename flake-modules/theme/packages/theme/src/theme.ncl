@@ -42,6 +42,8 @@ in
       levelWarn = scheme.color3,
       levelErr = scheme.color1,
       comment = scheme.color7,
+      foundTextBg = scheme.color11,
+      foundTextFg = scheme.color0,
     }
     |> std.record.map (fun colorName colorValue => colorValue |> std.record.update "origName" colorValue.name |> std.record.update "name" colorName),
 }
