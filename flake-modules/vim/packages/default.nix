@@ -235,13 +235,13 @@ let
             nil# Nix lang server
             rnix-lsp# TODO: check if needed?
             rust-analyzer# Rust lang server
-            nixpkgs-fmt# My default formatter
             nls# Nickel language server
             shellcheck# For shell files
             lua-language-server# For lua
             glow# for markdown previews
             stylua# for lua static checks
             ;
+          inherit (inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}) nixfmt-rfc-style;
           inherit (pkgs.nodePackages)
             bash-language-server# Bash language server
             ;
