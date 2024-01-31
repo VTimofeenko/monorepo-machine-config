@@ -3,3 +3,4 @@ result
 # Rust output goes here
 target/
 flake-modules/vim/packages/lua/lua/.luarc.json
+.pre-commit-config.yaml
