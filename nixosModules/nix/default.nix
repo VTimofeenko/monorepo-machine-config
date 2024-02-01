@@ -1,6 +1,5 @@
-# [[file:../../new_project.org::*Nix-the-package-manager config][Nix-the-package-manager config:2]]
-_:
-{
+{ nixpkgs-stable, nixpkgs-unstable }:
+_: {
   # Allow unfree packages across the board
   nixpkgs.config.allowUnfree = true;
   nix = {
@@ -14,6 +13,9 @@ _:
       # Automatically optimize store
       auto-optimise-store = true
     '';
+    registry = {
+      ns.flake = nixpkgs-stable;
+      nu.flake = nixpkgs-unstable;
+    };
   };
 }
-# Nix-the-package-manager config:2 ends here

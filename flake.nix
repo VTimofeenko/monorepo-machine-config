@@ -258,7 +258,7 @@
               /* flake-modules are passed through to the output of this flake */
               inherit (inputs.my-flake-modules) flake-modules;
               nixosModules =
-                let nix-config = import ./nixosModules/nix; in
+                let nix-config = importApply ./nixosModules/nix { inherit (inputs) nixpkgs-stable nixpkgs-unstable; }; in
                 {
                   default = { ... }: {
                     imports = [
