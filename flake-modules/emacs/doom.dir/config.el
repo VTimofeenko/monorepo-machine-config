@@ -489,4 +489,4 @@
 (require 'org-web-tools)
 
 (after! vdirel
-        (setq vdirel-repository "~/.local/state/vdirs/contacts/nextcloud/"))
+        (setq vdirel-repository "~/.local/state/vdirs/contacts/nextcloud/contacts"))
