@@ -7,6 +7,7 @@
 , plugins # List of plugins to turn into packages and config
 , baseInit # Base init.lua file
 , additionalPkgs # Additional packages (language servers, etc.) to bring into vim PATH
+, inputs
 , ...
 }:
 let
@@ -38,7 +39,8 @@ let
     (lib.makeBinPath additionalPkgs)
   ];
   wrappedNvim = pkgs.wrapNeovimUnstable
-    pkgs.neovim-unwrapped
+    # pkgs.neovim-unwrapped
+    inputs.nvim-nightly.packages.${pkgs.system}.default
     (nvimConfig // { inherit wrapperArgs; });
 in
 pkgs.symlinkJoin {

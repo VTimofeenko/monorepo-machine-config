@@ -29,6 +29,10 @@
 
     hyprland.url = "github:hyprwm/Hyprland";
 
+    nvim-nightly = {
+      url = "github:nix-community/neovim-nightly-overlay";
+    };
+
     # Service that remaps arbitrary keyboard combinations
     xremap-flake.url = "github:xremap/nix-flake";
 

@@ -248,7 +248,7 @@ let
         }
       else { });
   commonArgs = {
-    inherit pkgs lib plugins baseInit additionalPkgs;
+    inherit pkgs lib plugins baseInit additionalPkgs inputs;
   };
 in
 import ./package-builder.nix commonArgs
