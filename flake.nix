@@ -169,6 +169,7 @@
           publicFlakeModules = {
             nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
             tmuxModule = importApply ./flake-modules/tmux { inherit withSystem self; };
+            newNvimModule = importApply ./flake-modules/new-nvim { inherit withSystem self; };
             zshModule = importApply ./flake-modules/zsh { inherit self; };
             gitModule = importApply ./flake-modules/git;
             hyprlandHelpersModule = importApply ./flake-modules/hyprland-helpers { inherit withSystem lib self; };
