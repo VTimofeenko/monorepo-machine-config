@@ -1,5 +1,4 @@
-_:
-{
+_: {
   imports = [
     ./ha.nix
     ./zwave.nix

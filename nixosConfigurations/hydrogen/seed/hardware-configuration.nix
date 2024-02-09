@@ -1,13 +1,17 @@
 { lib, modulesPath, ... }:
 
 {
-  imports = [
-    (modulesPath + "/installer/scan/not-detected.nix")
-  ];
+  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
   boot = {
     initrd = {
 
-      availableKernelModules = [ "ahci" "xhci_pci" "usbhid" "usb_storage" "sd_mod" ];
+      availableKernelModules = [
+        "ahci"
+        "xhci_pci"
+        "usbhid"
+        "usb_storage"
+        "sd_mod"
+      ];
       kernelModules = [ ];
     };
     kernelModules = [ "kvm-intel" ];
@@ -24,7 +28,7 @@
     fsType = "vfat";
   };
 
-  swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
+  swapDevices = [ { device = "/dev/disk/by-label/swap"; } ];
 
   networking.useDHCP = lib.mkDefault true;
 

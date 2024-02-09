@@ -1,9 +1,10 @@
 # Module that configures Unbound for recursive DNS, DNSSEC and caching
-{ config
-, selfPkgs
-, lib
-, pkgs
-, ...
+{
+  config,
+  selfPkgs,
+  lib,
+  pkgs,
+  ...
 }:
 let
   inherit (config) my-data;
@@ -25,7 +26,7 @@ in
     localControlSocketPath = "/run/unbound/unbound.socket";
     settings = {
       server = {
-        /* IP-based access control section */
+        # IP-based access control section
         interface = # Where to listen on
           [
             (my-data.lib.getOwnHostInNetwork "lan").ipAddress # Listen in LAN
@@ -36,18 +37,17 @@ in
           "${client.settings.clientSubNet}.1/24 allow" # TODO: move netmask to settings? Or core network schema?
         ];
 
-        /* Custom records go here */
+        # Custom records go here
         local-zone =
-          (map (zone: ''"${zone}" nodefault'') zones)  # forces unbound not to proxy DNS requests for these hosts
-          ++
-          (map (zone: ''"${zone}" always_null'') thisSrvConfig.customBlocklist); # Reply 0.0.0.0 for these hosts
+          (map (zone: ''"${zone}" nodefault'') zones) # forces unbound not to proxy DNS requests for these hosts
+          ++ (map (zone: ''"${zone}" always_null'') thisSrvConfig.customBlocklist); # Reply 0.0.0.0 for these hosts
         domain-insecure = zones;
         include = "${selfPkgs'.hostsBlockList}";
 
-        /* Serve specific records to client network */
+        # Serve specific records to client network
         access-control-view = [ "${client.settings.clientSubNet}.1/24 ${clientNetViewName}" ];
 
-        /* Other settings */
+        # Other settings
         cache-max-ttl = 86400;
         # Security
         # Harden against algorithm downgrade when multiple algorithms are
@@ -108,10 +108,16 @@ in
           view-first = "yes";
         }
       ];
-      /* Ask NSD for data on entries in the custom zones */
-      stub-zone = map (zone: { name = zone; stub-addr = [ "127.0.0.1@${toString config.services.nsd.port}" ]; }) zones;
+      # Ask NSD for data on entries in the custom zones
+      stub-zone =
+        map
+          (zone: {
+            name = zone;
+            stub-addr = [ "127.0.0.1@${toString config.services.nsd.port}" ];
+          })
+          zones;
 
-      /* Designated upstream */
+      # Designated upstream
       forward-zone = [
         # To test DoT: https://www.jwillikers.com/dns-over-tls-with-unbound
         {

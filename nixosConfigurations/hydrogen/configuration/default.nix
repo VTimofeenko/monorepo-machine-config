@@ -6,7 +6,13 @@
     loader.efi.canTouchEfiVariables = true;
     initrd = {
 
-      availableKernelModules = [ "ahci" "xhci_pci" "usbhid" "usb_storage" "sd_mod" ];
+      availableKernelModules = [
+        "ahci"
+        "xhci_pci"
+        "usbhid"
+        "usb_storage"
+        "sd_mod"
+      ];
       kernelModules = [ ];
     };
     kernelModules = [ "kvm-intel" ];
@@ -27,12 +33,9 @@
     };
   };
 
-  swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
+  swapDevices = [ { device = "/dev/disk/by-label/swap"; } ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkForce true;
-  imports = [
-    ./network.nix
-  ];
+  imports = [ ./network.nix ];
 }
-

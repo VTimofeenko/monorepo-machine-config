@@ -1,7 +1,6 @@
 # [[file:../../../new_project.org::*Zathura][Zathura:1]]
 # Home-manager module for Zathura
-_:
-{
+_: {
   programs.zathura = {
     enable = true;
     options = {

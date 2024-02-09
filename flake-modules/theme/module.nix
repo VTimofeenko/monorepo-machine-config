@@ -3,10 +3,13 @@ let
   inherit (lib.types) attrsOf str;
   inherit (lib.options) mkOption;
 
-  /* A derivation is needed for using nickel to build the needed values */
+  # A derivation is needed for using nickel to build the needed values
   themePackage = pkgs.callPackage ./packages/theme/package.nix { inherit (pkgs) stdenv nickel lib; };
 
-  theme = lib.pipe (themePackage + "/theme.json") [ builtins.readFile builtins.fromJSON ];
+  theme = lib.pipe (themePackage + "/theme.json") [
+    builtins.readFile
+    builtins.fromJSON
+  ];
 in
 {
   options = {

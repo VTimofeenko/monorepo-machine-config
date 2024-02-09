@@ -1,6 +1,4 @@
-{ config
-, ...
-}:
+{ config, ... }:
 let
   inherit (config) my-data;
 
@@ -12,7 +10,8 @@ in
 {
   networking.nftables.ruleset =
     assert (my-data.services.all.${srvName}.onHost == my-data.services.all.${fwSrvName}.onHost); # relies on the fact that this is running on router
-    with fwConfig; ''
+    with fwConfig;
+    ''
       table inet ${mainTable} {
         chain ${lanChain} {
           udp dport 123 accept comment "NTP traffic"

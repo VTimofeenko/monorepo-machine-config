@@ -1,11 +1,9 @@
-{ config
-, ...
-}:
+{ config, ... }:
 let
   srvName = "home-assistant";
   inherit (config) my-data;
-  # srvConfig = my-data.lib.getServiceConfig srvName;
 in
+# srvConfig = my-data.lib.getServiceConfig srvName;
 {
   age.secrets.zwaveSecrets = {
     file = my-data.lib.getSrvSecret srvName "zwave-secrets";

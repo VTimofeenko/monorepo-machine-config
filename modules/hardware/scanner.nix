@@ -1,5 +1,6 @@
 # [[file:../../new_project.org::*Scanner][Scanner:1]]
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   hardware.sane = {
     enable = true;
     extraBackends = [ pkgs.hplipWithPlugin ];

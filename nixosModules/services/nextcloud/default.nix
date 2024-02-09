@@ -1,5 +1,4 @@
-_:
-{
+_: {
   imports = [
     ./nextcloud.nix
     ./ssl.nix

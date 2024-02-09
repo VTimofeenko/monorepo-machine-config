@@ -1,4 +1,9 @@
-{ pkgs, lib, nixos-hardware, ... }:
+{
+  pkgs,
+  lib,
+  nixos-hardware,
+  ...
+}:
 
 {
   fileSystems = {
@@ -20,10 +25,30 @@
   imports = [ nixos-hardware.nixosModules.raspberry-pi-4 ];
   boot = {
     initrd = {
-      availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" "hid_logitech_hidpp" "xhci_pci_renesas" ];
-      kernelModules = [ "xhci_pci" "usbhid" "usb_storage" "hid_logitech_hidpp" "xhci_pci_renesas" ];
+      availableKernelModules = [
+        "xhci_pci"
+        "usbhid"
+        "usb_storage"
+        "hid_logitech_hidpp"
+        "xhci_pci_renesas"
+      ];
+      kernelModules = [
+        "xhci_pci"
+        "usbhid"
+        "usb_storage"
+        "hid_logitech_hidpp"
+        "xhci_pci_renesas"
+      ];
     };
-    supportedFilesystems = lib.mkForce [ "btrfs" "vfat" "f2fs" "xfs" "ntfs" "cifs" "ext4" ];
+    supportedFilesystems = lib.mkForce [
+      "btrfs"
+      "vfat"
+      "f2fs"
+      "xfs"
+      "ntfs"
+      "cifs"
+      "ext4"
+    ];
     kernelPackages = pkgs.linuxPackages_latest;
     tmp = {
       useTmpfs = true;

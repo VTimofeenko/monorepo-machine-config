@@ -2,9 +2,13 @@ let
   inherit (import ../dns/lib.nix) mkARecord mkCNAMERecord;
 in
 {
-  /* Produces the header for the zone file. All whitespace seems to be significant */
+  # Produces the header for the zone file. All whitespace seems to be significant
   mkZoneData =
-    { domain, recordsData, lib }:
+    {
+      domain,
+      recordsData,
+      lib,
+    }:
     ''
       $ORIGIN ${domain}.
       $TTL 1800
@@ -22,23 +26,25 @@ in
 
     ''
     +
-    # DNS records for ns1 & ns 2
-    lib.concatStringsSep
-      "\n"
-      (lib.lists.imap1 (index: value: (mkARecord "ns${toString index}" value)) recordsData.dns) # -> "ns1 IN A 192.168.1.1"
-    + "\n" + # WARN: LEAVE IN PLACE
-
-    lib.concatStringsSep
-      "\n"
-      (lib.mapAttrsToList
-        (domainName: recordValue:
-        if recordsData.recordType == "CNAME" then
-          mkCNAMERecord domainName recordValue
-        else
-          mkARecord domainName recordValue)
-        recordsData.data
-      )
+      # DNS records for ns1 & ns 2
+      lib.concatStringsSep "\n" (
+        lib.lists.imap1 (index: value: (mkARecord "ns${toString index}" value)) recordsData.dns
+      ) # -> "ns1 IN A 192.168.1.1"
+    + "\n"
+    # WARN: LEAVE IN PLACE
     +
-    "\n\n" # WARN: LEAVE IN PLACE
+
+      lib.concatStringsSep "\n" (
+        lib.mapAttrsToList
+          (
+            domainName: recordValue:
+            if recordsData.recordType == "CNAME" then
+              mkCNAMERecord domainName recordValue
+            else
+              mkARecord domainName recordValue
+          )
+          recordsData.data
+      )
+    + "\n\n" # WARN: LEAVE IN PLACE
   ;
 }

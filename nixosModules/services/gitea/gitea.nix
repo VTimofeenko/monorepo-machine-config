@@ -1,4 +1,9 @@
-{ config, lib, localLib, ... }:
+{
+  config,
+  lib,
+  localLib,
+  ...
+}:
 let
   inherit (config) my-data;
   srvName = "gitea";
@@ -11,7 +16,7 @@ let
   };
 in
 {
-  /* Service configuration */
+  # Service configuration
   services.gitea = {
     enable = true;
     settings = {
@@ -24,7 +29,7 @@ in
       };
       session.COOKIE_SECURE = true;
 
-      /* Allows users to create repos by simply pushing it */
+      # Allows users to create repos by simply pushing it
       repository.ENABLE_PUSH_CREATE_USER = true;
 
       service = {
@@ -33,13 +38,12 @@ in
 
       # TODO: Review
       webhook.ALLOWED_HOST_LIST = "external,${ownIP}";
-
     };
-    /* Needed for backups */
+    # Needed for backups
     dump.enable = true;
   };
 
-  /* Setup binds to port 22 */
+  # Setup binds to port 22
   systemd.services.gitea = {
     serviceConfig = {
       # These settings enable gitea built-in server to bind to port 22
@@ -49,17 +53,16 @@ in
       PrivateUsers = lib.mkForce false;
     };
 
-    /* Needed for LUKS mount */
+    # Needed for LUKS mount
     unitConfig.RequiresMountsFor = lib.mkOptionDefault [ config.services.gitea.stateDir ];
   };
 
-  /* LUKS setup */
+  # LUKS setup
   environment.etc."crypttab".text = localLib.mkCryptTab { inherit (luks) device_name UUID; };
-  systemd.mounts =
-    [
-      (localLib.mkLuksMount {
-        inherit (luks) device_name;
-        target = config.services.gitea.stateDir;
-      })
-    ];
+  systemd.mounts = [
+    (localLib.mkLuksMount {
+      inherit (luks) device_name;
+      target = config.services.gitea.stateDir;
+    })
+  ];
 }

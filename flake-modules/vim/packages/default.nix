@@ -1,8 +1,9 @@
 # Kinda modeled after home-manager's neovim module
-{ pkgs
-, inputs
-, enableLangServers ? false
-, ...
+{
+  pkgs,
+  inputs,
+  enableLangServers ? false,
+  ...
 }:
 let
   # TODO: add 1. enter -> 2. for markdown
@@ -11,41 +12,44 @@ let
   # Common plugins with no upfront configuration required.
   commonPlugins = builtins.attrValues {
     inherit (pkgs.vimPlugins)
-      vim-surround# helps managing surrounding brackets/html tags/etc.
-      vim-commentary# file syntax-aware comments toggling
-      delimitMate# auto-close brackets in insert mode
-      vim-strip-trailing-whitespace# trims whitespace
-      nvim-web-devicons# icons, auto detected by telescope
-      vim-nftables# nftables language support. Needed outside language support for stripped down nvim on some machines
-      cmp-buffer# Buffer completions
-      cmp-cmdline# Completions for cmdline
-      cmp-path# Path completion
-      cmp_luasnip# Completions for snippets
+      vim-surround # helps managing surrounding brackets/html tags/etc.
+      vim-commentary # file syntax-aware comments toggling
+      delimitMate # auto-close brackets in insert mode
+      vim-strip-trailing-whitespace # trims whitespace
+      nvim-web-devicons # icons, auto detected by telescope
+      vim-nftables # nftables language support. Needed outside language support for stripped down nvim on some machines
+      cmp-buffer # Buffer completions
+      cmp-cmdline # Completions for cmdline
+      cmp-path # Path completion
+      cmp_luasnip # Completions for snippets
       ;
   };
 
   languageSpecificPlugins = {
     langCommonPlugins = builtins.attrValues {
       inherit (pkgs.vimPlugins)
-        cmp-nvim-lsp# completions from LSP
-        hmts-nvim# highlights inside strings in Nix
+        cmp-nvim-lsp # completions from LSP
+        hmts-nvim # highlights inside strings in Nix
         vim-nickel
-        vim-nix# Needed at least for builtins. completions
+        vim-nix # Needed at least for builtins. completions
         ;
       inherit (pkgs.vimPlugins.nvim-treesitter) withAllGrammars;
     };
     langPlugins = [
       {
         pkg = pkgs.vimPlugins.nvim-treesitter; # Treesitter itself
-        config = /* lua */ "require('nvim-treesitter.configs').setup { highlight = { enable = true }, }";
+        config = # lua
+          "require('nvim-treesitter.configs').setup { highlight = { enable = true }, }";
       }
       {
         pkg = pkgs.vimPlugins.fidget-nvim; # UI for LSP
-        config = /* lua */ "require('fidget').setup {}";
+        config = # lua
+          "require('fidget').setup {}";
       }
       {
         pkg = pkgs.vimPlugins.neodev-nvim;
-        config = /* lua */ "require('neodev').setup({})"; # TODO: there was something more
+        config = # lua
+          "require('neodev').setup({})"; # TODO: there was something more
       }
       {
         pkg = pkgs.vimPlugins.nvim-lspconfig; # Helper for configuring LSP connections
@@ -132,13 +136,14 @@ let
                  }),
             },
             sources = cmp.config.sources({
-              ${if enableLangServers
-                then
+              ${
+                if enableLangServers then
                   ''
                     { name = 'luasnip' },
                     { name = 'nvim_lsp' },
                   ''
-                else ""
+                else
+                  ""
               }
               { name = 'path' },
               { name = 'buffer' },
@@ -168,87 +173,98 @@ let
     }
   ];
 
-  mkPluginFromInput = inputPlugin: pkgs.vimUtils.buildVimPlugin { name = inputPlugin; src = inputs.${inputPlugin}; };
-  plugins =
-    builtins.concatLists [
-      commonPlugins
-      [
-        {
-          pkg = pkgs.vimPlugins.which-key-nvim;
-          config = builtins.readFile ./lua/which-key.lua;
-        }
-        {
-          pkg = pkgs.vimPlugins.vim-easy-align; # Aligns text by pattern
-          config =
-            # lua
-            ''
-              vim.api.nvim_set_keymap("x", "ga", "<Plug>(EasyAlign)", {})'';
-        }
-        {
-          pkg = pkgs.vimPlugins.hop-nvim;
-          config = builtins.readFile ./lua/hop.lua;
-        }
-        {
-          pkg = mkPluginFromInput "vim-scratch-plugin"; # Toggleable scratch window
-          config = builtins.readFile ./lua/scratch.lua;
-        }
-        {
-          pkg = pkgs.vimPlugins.todo-comments-nvim; # Provides nice parsed TODO badges inline
-          config = builtins.readFile ./lua/todo-comments.lua;
-        }
-        {
-          pkg = pkgs.vimPlugins.luasnip; # My snippets plugin
-          config = builtins.readFile ./lua/luasnip.lua;
-        }
-      ]
-      telescopePlugins
-      completionPlugins
-      (
-        # If enabled -- add language specific packages
-        if
-          enableLangServers
-        then
-          (lib.lists.flatten (builtins.attrValues languageSpecificPlugins))
-        else [ ]
-      )
-    ];
+  mkPluginFromInput =
+    inputPlugin:
+    pkgs.vimUtils.buildVimPlugin {
+      name = inputPlugin;
+      src = inputs.${inputPlugin};
+    };
+  plugins = builtins.concatLists [
+    commonPlugins
+    [
+      {
+        pkg = pkgs.vimPlugins.which-key-nvim;
+        config = builtins.readFile ./lua/which-key.lua;
+      }
+      {
+        pkg = pkgs.vimPlugins.vim-easy-align; # Aligns text by pattern
+        config =
+          # lua
+          ''vim.api.nvim_set_keymap("x", "ga", "<Plug>(EasyAlign)", {})'';
+      }
+      {
+        pkg = pkgs.vimPlugins.hop-nvim;
+        config = builtins.readFile ./lua/hop.lua;
+      }
+      {
+        pkg = mkPluginFromInput "vim-scratch-plugin"; # Toggleable scratch window
+        config = builtins.readFile ./lua/scratch.lua;
+      }
+      {
+        pkg = pkgs.vimPlugins.todo-comments-nvim; # Provides nice parsed TODO badges inline
+        config = builtins.readFile ./lua/todo-comments.lua;
+      }
+      {
+        pkg = pkgs.vimPlugins.luasnip; # My snippets plugin
+        config = builtins.readFile ./lua/luasnip.lua;
+      }
+    ]
+    telescopePlugins
+    completionPlugins
+    (
+      # If enabled -- add language specific packages
+      if enableLangServers then (lib.lists.flatten (builtins.attrValues languageSpecificPlugins)) else [ ]
+    )
+  ];
 
   inherit (inputs.nixpkgs-lib) lib;
-  baseInit = builtins.readFile ./lua/init.lua +
-    /* lua */ "vim.opt.clipboard = 'unnamed${if pkgs.stdenv.isLinux then "plus" else ""}'\n";
+  baseInit =
+    builtins.readFile ./lua/init.lua
+    +
+      # lua
+      ''
+        vim.opt.clipboard = 'unnamed${if pkgs.stdenv.isLinux then "plus" else ""}'
+      '';
 
   additionalPkgs =
     # Common extra packages
-    builtins.attrValues
-      {
-        inherit (pkgs)
-          fd# Quick find replacement
-          ripgrep# Quick grep replacement
-          ;
-      }
-    ++
+    builtins.attrValues {
+      inherit (pkgs)
+        fd # Quick find replacement
+        ripgrep # Quick grep replacement
+        ;
+    }
     # Language-dependant packages
-    builtins.attrValues
-      (if enableLangServers then
+    ++ builtins.attrValues (
+      if enableLangServers then
         {
           inherit (pkgs)
-            nil# Nix lang server
-            rnix-lsp# TODO: check if needed?
-            rust-analyzer# Rust lang server
-            nls# Nickel language server
-            shellcheck# For shell files
-            lua-language-server# For lua
-            glow# for markdown previews
-            stylua# for lua static checks
+            nil # Nix lang server
+            rnix-lsp # TODO: check if needed?
+            rust-analyzer # Rust lang server
+            nls # Nickel language server
+            shellcheck # For shell files
+            lua-language-server # For lua
+            glow # for markdown previews
+            stylua # for lua static checks
             ;
           inherit (inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}) nixfmt-rfc-style;
           inherit (pkgs.nodePackages)
-            bash-language-server# Bash language server
+            bash-language-server # Bash language server
             ;
         }
-      else { });
+      else
+        { }
+    );
   commonArgs = {
-    inherit pkgs lib plugins baseInit additionalPkgs inputs;
+    inherit
+      pkgs
+      lib
+      plugins
+      baseInit
+      additionalPkgs
+      inputs
+      ;
   };
 in
 import ./package-builder.nix commonArgs

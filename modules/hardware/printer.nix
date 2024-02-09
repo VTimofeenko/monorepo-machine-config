@@ -1,5 +1,6 @@
 # [[file:../../new_project.org::*Printer][Printer:1]]
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   services.printing = {
     enable = true;
     drivers = [ pkgs.hplipWithPlugin ];

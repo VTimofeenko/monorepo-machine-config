@@ -1,9 +1,6 @@
 # Home-manager module that configures Doom emacs
 { selfPkgs, ... }:
-{ pkgs
-, lib
-, ...
-}:
+{ pkgs, lib, ... }:
 let
   selfPkgs' = selfPkgs.${pkgs.system};
   emacs-with-flags = pkgs.emacs29.override {
@@ -27,29 +24,37 @@ in
     emacs = {
       enable = true;
       package = emacs-with-flags;
-      extraPackages = epkgs: [
-        epkgs.vterm
-        # For :spell
-        (pkgs.aspellWithDicts (ds: with ds; [ en en-computers en-science ru ]))
-      ]
-      ++
-      /* External dependencies.
+      extraPackages =
+        epkgs:
+        [
+          epkgs.vterm
+          # For :spell
+          (pkgs.aspellWithDicts (
+            ds: with ds; [
+              en
+              en-computers
+              en-science
+              ru
+            ]
+          ))
+        ]
+        ++
+          /* External dependencies.
 
-      NOTE: According to https://github.com/NixOS/nixpkgs/issues/267548 this sometimes breaks
-
-      */
-      builtins.attrValues {
-        inherit (pkgs)
-          fd# fast find
-          ripgrep# fast grep
-          sqlite# org roam
-          lua-language-server# lua LSP
-          curl# elfeed
-          ;
-        inherit (pkgs.python311Packages) grip; # markdown previews
-        inherit (pkgs.nodePackages) bash-language-server; # sh LSP
-        inherit (selfPkgs') emacs-notifier kroki-cli;
-      };
+             NOTE: According to https://github.com/NixOS/nixpkgs/issues/267548 this sometimes breaks
+          */
+          builtins.attrValues {
+            inherit (pkgs)
+              fd # fast find
+              ripgrep # fast grep
+              sqlite # org roam
+              lua-language-server # lua LSP
+              curl # elfeed
+              ;
+            inherit (pkgs.python311Packages) grip; # markdown previews
+            inherit (pkgs.nodePackages) bash-language-server; # sh LSP
+            inherit (selfPkgs') emacs-notifier kroki-cli;
+          };
     };
     zsh = {
       shellAliases = {
@@ -94,7 +99,7 @@ in
 
   /* This activation script will check out doom-emacs into a pre-defined directory
 
-    It should check if the directory exist and become a no-op if it does ('true' part)
+     It should check if the directory exist and become a no-op if it does ('true' part)
   */
   # TODO: only if Linux
   home.activation.gitCheckoutDoom = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
@@ -104,7 +109,5 @@ in
   # Doom really wants its dir in .config. I want to manage everything in this repo.
   # xdg.configFile."doom".source = config.lib.file.mkOutOfStoreSymlink gitManageddoomDir;
   # TODO: only if Linux?
-  systemd.user.tmpfiles.rules = [
-    "L ${doomDir} - - - - ${gitManageddoomDir} "
-  ];
+  systemd.user.tmpfiles.rules = [ "L ${doomDir} - - - - ${gitManageddoomDir} " ];
 }

@@ -1,14 +1,18 @@
 # [[file:../../new_project.org::*NixOS user configs][NixOS user configs:1]]
-{ pkgs
-, nixpkgs-unstable
-, selfHMModules
-, data-flake
-, ...
+{
+  pkgs,
+  nixpkgs-unstable,
+  selfHMModules,
+  data-flake,
+  ...
 }:
 {
   users.users.spacecadet = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "lp" ];
+    extraGroups = [
+      "wheel"
+      "lp"
+    ];
     shell = pkgs.zsh;
   };
   home-manager = {
@@ -20,14 +24,18 @@
     extraSpecialArgs = {
       inherit nixpkgs-unstable;
     };
-    users.spacecadet = { ... }:
+    users.spacecadet =
+      { ... }:
       {
         imports = [
           # my-doom-config.nixosModules.default
           ../home-manager # (ref:linux-user-import)
           selfHMModules.vim
           {
-            programs.myNvim = { enable = true; withLangServers = true; };
+            programs.myNvim = {
+              enable = true;
+              withLangServers = true;
+            };
           }
           selfHMModules.zsh
           selfHMModules.git
@@ -36,7 +44,13 @@
           data-flake.homeManagerModules.default
         ];
         home.packages = builtins.attrValues {
-          inherit (pkgs) pavucontrol blueman libreoffice brave gthumb;
+          inherit (pkgs)
+            pavucontrol
+            blueman
+            libreoffice
+            brave
+            gthumb
+            ;
         };
 
         programs.browserpass.enable = true;

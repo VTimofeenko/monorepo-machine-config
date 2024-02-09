@@ -1,14 +1,18 @@
-{ lib
-, self
-, deploy-rs
-, nixpkgs
-, ...
+{
+  lib,
+  self,
+  deploy-rs,
+  nixpkgs,
+  ...
 }:
 {
-  /*
-    Wrapper around pkgs.lib.nixosSystem that adds the common modules
-  */
-  mkSystem = { hostData, specialArgs, data-flake }:
+  # Wrapper around pkgs.lib.nixosSystem that adds the common modules
+  mkSystem =
+    {
+      hostData,
+      specialArgs,
+      data-flake,
+    }:
     let
       inherit (hostData) hostName;
     in
@@ -17,50 +21,61 @@
       pkgs = import nixpkgs {
         inherit (hostData) system;
         config.allowUnfree = true;
-        overlays = [
-          self.overlays.homelab
-        ];
+        overlays = [ self.overlays.homelab ];
       };
       modules = [
         (./. + "/../nixosConfigurations/${hostName}/configuration") # every host has "configuration" directory. /. converts it to path
-        { networking = { inherit hostName; }; }
         {
-          imports = [
-            ../modules/nixOS/homelab/common
+          networking = {
+            inherit hostName;
+          };
+        }
+        {
+          imports =
+            [
+              ../modules/nixOS/homelab/common
 
-            data-flake.nixosModules.${hostName}
+              data-flake.nixosModules.${hostName}
 
-            specialArgs.selfModules.my-theme
-            specialArgs.selfModules.zsh
-            specialArgs.selfModules.tmux
-          ]
-          ++
-          (map (module: ../nixosModules/services + "/${module}") data-flake.data.hosts.all.${hostName}.modulesAt.public) # NOTE: Needs default.nix in the service directory
+              specialArgs.selfModules.my-theme
+              specialArgs.selfModules.zsh
+              specialArgs.selfModules.tmux
+            ]
+            ++ (map (module: ../nixosModules/services + "/${module}")
+              data-flake.data.hosts.all.${hostName}.modulesAt.public
+            ) # NOTE: Needs default.nix in the service directory
           ;
         }
       ];
-      specialArgs = specialArgs // { localLib = import ../nixosModules/localLib { inherit lib; }; }; # nixos-hardware is passed this way
+      specialArgs = specialArgs // {
+        localLib = import ../nixosModules/localLib { inherit lib; };
+      }; # nixos-hardware is passed this way
     };
-  /*
-    Returns attrset in format expected by deploy-rs.
+  /* Returns attrset in format expected by deploy-rs.
 
-    Example:
-    mkDeployRsNode {nodeName = "foo-node"; system = "x86_64-linux"; }: {
-    profiles.system = {
-      user = "root";
-      path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.foo-node;
-    };
-    }
+     Example:
+     mkDeployRsNode {nodeName = "foo-node"; system = "x86_64-linux"; }: {
+     profiles.system = {
+       user = "root";
+       path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.foo-node;
+     };
+     }
   */
-  mkDeployRsNode = { nodeName, system }:
+  mkDeployRsNode =
+    { nodeName, system }:
     let
-      /* This will reuse NixOS binary cache for deploy-rs building instead of building the package locally */
+      # This will reuse NixOS binary cache for deploy-rs building instead of building the package locally
       pkgs = import nixpkgs { inherit system; };
       deployPkgs = import nixpkgs {
         inherit system;
         overlays = [
           deploy-rs.overlay
-          (_: super: { deploy-rs = { inherit (pkgs) deploy-rs; inherit (super.deploy-rs) lib; }; })
+          (_: super: {
+            deploy-rs = {
+              inherit (pkgs) deploy-rs;
+              inherit (super.deploy-rs) lib;
+            };
+          })
         ];
       };
     in

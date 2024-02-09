@@ -1,5 +1,4 @@
-_:
-{
+_: {
   imports = [
     ./filestash-oci.nix
     ./ssl.nix

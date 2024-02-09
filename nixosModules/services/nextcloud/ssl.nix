@@ -22,10 +22,12 @@ in
       forceSSL = true;
       sslCertificate = config.age.secrets."ssl-cert".path;
       sslCertificateKey = config.age.secrets."ssl-key".path;
-      /* NOTE: endpoints managed by nextcloud module
-      */
+      # NOTE: endpoints managed by nextcloud module
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 }

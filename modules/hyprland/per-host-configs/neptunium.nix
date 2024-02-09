@@ -1,8 +1,7 @@
 # [[file:../../../new_project.org::*Neptunium hyprland config][Neptunium hyprland config:1]]
-_:
-{
+_: {
   wayland.windowManager.hyprland = {
-    extraConfig = '''';
+    extraConfig = "";
   };
 }
 # Neptunium hyprland config:1 ends here

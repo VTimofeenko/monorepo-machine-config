@@ -1,7 +1,5 @@
-/* Home-manager module to configure GTK theme */
-{ pkgs
-, ...
-}:
+# Home-manager module to configure GTK theme
+{ pkgs, ... }:
 {
   gtk = {
     enable = true;

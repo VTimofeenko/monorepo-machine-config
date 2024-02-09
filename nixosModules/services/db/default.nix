@@ -1,6 +1,1 @@
-_:
-{
-  imports = [
-    ./postgresql.nix
-  ];
-}
+_: { imports = [ ./postgresql.nix ]; }

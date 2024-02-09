@@ -1,6 +1,5 @@
 # [[file:../../../new_project.org::*Kitty][Kitty:1]]
-_:
-{
+_: {
   programs.kitty = {
     enable = true;
     # theme = "Neopolitan";
@@ -20,7 +19,7 @@ _:
       active_tab_title_template = "{fmt.noitalic}{fmt.bg.black}{fmt.fg.white} {title.split()[0]} ";
       # Make vim the scollback pager to copy back and forth
       # Also see https://github.com/mikesmithgh/kitty-scrollback.nvim
-      scrollback_pager = ''nvim -c ':lua KITTY_SCROLLBACK(INPUT_LINE_NUMBER, CURSOR_LINE, CURSOR_COLUMN)' - '';
+      scrollback_pager = "nvim -c ':lua KITTY_SCROLLBACK(INPUT_LINE_NUMBER, CURSOR_LINE, CURSOR_COLUMN)' - ";
     };
     keybindings = {
       # Opens a new Kitty window in the current working directory
@@ -29,4 +28,3 @@ _:
   };
 }
 # Kitty:1 ends here
-

@@ -10,5 +10,7 @@
       options = "--delete-older-than 7d";
     };
   };
-  system.nixos.label = toString (self.shortRev or self.dirtyShortRev or self.lastModified or "unknown");
+  system.nixos.label = toString (
+    self.shortRev or self.dirtyShortRev or self.lastModified or "unknown"
+  );
 }

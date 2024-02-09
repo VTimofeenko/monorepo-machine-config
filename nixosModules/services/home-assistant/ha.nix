@@ -1,10 +1,15 @@
-{ nixpkgs-unstable, config, pkgs, ... }:
+{
+  nixpkgs-unstable,
+  config,
+  pkgs,
+  ...
+}:
 let
   inherit (config) my-data;
   srvConfig = my-data.lib.getServiceConfig "home-assistant";
   homeassistantUser = config.systemd.services.home-assistant.serviceConfig.User;
 
-  /* This approach makes openssl permitted only in this module */
+  # This approach makes openssl permitted only in this module
   pkgs-unstable = import nixpkgs-unstable {
     inherit (pkgs) system;
     config.permittedInsecurePackages = [
@@ -14,7 +19,7 @@ let
   };
 in
 {
-  /* Secrets */
+  # Secrets
   age.secrets.ha-secret = {
     file = my-data.lib.getSrvSecret "home-assistant" "ha-secrets";
     owner = homeassistantUser;
@@ -22,28 +27,28 @@ in
   };
 
   services.home-assistant = {
-    /* Using the latest version from unstable */
-    package = (pkgs-unstable.home-assistant.overrideAttrs (_: {
-      doInstallCheck = false;
-    })).override {
+    # Using the latest version from unstable
+    package = (pkgs-unstable.home-assistant.overrideAttrs (_: { doInstallCheck = false; })).override {
       packageOverrides = _: super: {
-        python-telegram-bot = super.python-telegram-bot.overridePythonAttrs (oldAttrs: {
-          version = "13.1";
-          src = pkgs.fetchPypi {
-            inherit (oldAttrs) pname;
+        python-telegram-bot = super.python-telegram-bot.overridePythonAttrs (
+          oldAttrs: {
             version = "13.1";
-            hash = "sha256-X+67CO0I17cc60wFNyufaiHYOZS1AY2xEVCXZYgcgoI=";
-          };
-          doCheck = false;
-          dontCheckRuntimeDeps = true; /* I only need Telegram for outbound notifications. This will probably break polling code. */
-          propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ [
-            super.certifi
-            super.future
-            super.urllib3
-            super.tornado
-            super.decorator
-          ];
-        });
+            src = pkgs.fetchPypi {
+              inherit (oldAttrs) pname;
+              version = "13.1";
+              hash = "sha256-X+67CO0I17cc60wFNyufaiHYOZS1AY2xEVCXZYgcgoI=";
+            };
+            doCheck = false;
+            dontCheckRuntimeDeps = true; # I only need Telegram for outbound notifications. This will probably break polling code.
+            propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ [
+              super.certifi
+              super.future
+              super.urllib3
+              super.tornado
+              super.decorator
+            ];
+          }
+        );
       };
     };
 
@@ -74,7 +79,7 @@ in
     "f ${config.services.home-assistant.configDir}/automations.yaml 0755 ${homeassistantUser} ${homeassistantUser}"
   ];
 
-  /* Additional config */
+  # Additional config
   imports = [
     ./automations.nix
     ./scripts.nix

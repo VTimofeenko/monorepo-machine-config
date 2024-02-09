@@ -1,6 +1,4 @@
-{ config
-, ...
-}:
+{ config, ... }:
 let
   inherit (config) my-data;
 
@@ -10,9 +8,8 @@ in
   services.openntpd = {
     enable = true;
     servers = srvConfig.upstream;
-    extraConfig =
-      ''
-        listen on ${(my-data.lib.getOwnHostInNetwork "lan").ipAddress}
-      '';
+    extraConfig = ''
+      listen on ${(my-data.lib.getOwnHostInNetwork "lan").ipAddress}
+    '';
   };
 }

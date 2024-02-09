@@ -1,19 +1,25 @@
 { lib, nixos-hardware, ... }:
 {
-  /* Boot */
+  # Boot
   boot = {
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
     initrd = {
-      availableKernelModules = [ "ahci" "xhci_pci" "usbhid" "usb_storage" "sd_mod" ];
+      availableKernelModules = [
+        "ahci"
+        "xhci_pci"
+        "usbhid"
+        "usb_storage"
+        "sd_mod"
+      ];
       kernelModules = [ ];
     };
     kernelModules = [ "kvm-intel" ];
   };
 
-  /* File systems */
+  # File systems
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-uuid/8b8ed380-e3b4-4c64-95fa-d3c14acd0f1e";
@@ -25,14 +31,13 @@
       fsType = "vfat";
     };
   };
-  swapDevices = [{ device = "/dev/disk/by-uuid/51449286-d2ba-4f22-b951-0697af940370"; }];
+  swapDevices = [ { device = "/dev/disk/by-uuid/51449286-d2ba-4f22-b951-0697af940370"; } ];
 
-  /* Misc */
+  # Misc
   system.stateVersion = "23.11";
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkForce true;
   networking.wireless.enable = false;
-  /* Imports */
+  # Imports
   imports = [ nixos-hardware.nixosModules.framework-11th-gen-intel ];
 }
-

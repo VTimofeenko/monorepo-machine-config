@@ -8,7 +8,7 @@ let
 in
 {
   virtualisation.oci-containers = {
-    /* Better systemd orchestration */
+    # Better systemd orchestration
     backend = "podman";
     containers = {
       filestash = {
@@ -26,7 +26,5 @@ in
       };
     };
   };
-  systemd.tmpfiles.rules = [
-    "d ${filestashDir} 0755 1000 1000"
-  ];
+  systemd.tmpfiles.rules = [ "d ${filestashDir} 0755 1000 1000" ];
 }

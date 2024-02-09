@@ -1,9 +1,10 @@
-/* NixOS module to configure PostgreSQL backend for all services at home */
-{ config
-, lib
-, pkgs
-, localLib
-, ...
+# NixOS module to configure PostgreSQL backend for all services at home
+{
+  config,
+  lib,
+  pkgs,
+  localLib,
+  ...
 }:
 
 let
@@ -20,7 +21,8 @@ let
   };
 in
 {
-  /* Secrets */ # TODO: not reuse the ssl-terminator secret here?
+  # Secrets
+  # TODO: not reuse the ssl-terminator secret here?
   age.secrets.psql-ssl-cert = {
     file = my-data.lib.getSrvSecret "ssl-terminator" "cert";
     owner = config.systemd.services.postgresql.serviceConfig.User;
@@ -32,7 +34,7 @@ in
     group = config.systemd.services.postgresql.serviceConfig.Group;
   };
 
-  /* Service configuration */
+  # Service configuration
   services.postgresql = {
     enable = true;
     package = pkgs.postgresql_14; # TODO: Migrate to 15
@@ -51,11 +53,16 @@ in
       ssl = "on";
       ssl_cert_file = config.age.secrets.psql-ssl-cert.path;
       ssl_key_file = config.age.secrets.psql-ssl-key.path;
-      /* Listen only on these addresses */
-      listen_addresses = lib.mkForce
-        (lib.concatStringsSep
-          ", "
-          ((map (netName: (my-data.lib.getOwnHostInNetwork netName).ipAddress) [ "mgmt" "db" ]) ++ [ "127.0.0.1" ]));
+      # Listen only on these addresses
+      listen_addresses = lib.mkForce (
+        lib.concatStringsSep ", " (
+          (map (netName: (my-data.lib.getOwnHostInNetwork netName).ipAddress) [
+            "mgmt"
+            "db"
+          ])
+          ++ [ "127.0.0.1" ]
+        )
+      );
     };
     authentication = ''
       # TYPE  DATABASE        USER            ADDRESS                 METHOD
@@ -69,25 +76,35 @@ in
   };
   networking.firewall.allowedTCPPorts = [ config.services.postgresql.port ];
 
-  /* DB configuration for services */
+  # DB configuration for services
   imports =
     map
       (srvName: {
         services.postgresql = {
           ensureDatabases = [ srvName ];
-          ensureUsers = [{ name = srvName; ensureDBOwnership = true; }];
+          ensureUsers = [
+            {
+              name = srvName;
+              ensureDBOwnership = true;
+            }
+          ];
         };
       })
-      [ "tt_rss" "nextcloud" "docspell" ]; # TODO: Generate these in data-flake
+      [
+        "tt_rss"
+        "nextcloud"
+        "docspell"
+      ]; # TODO: Generate these in data-flake
 
-  /* LUKS setup */
-  systemd.services.postgresql.unitConfig.RequiresMountsFor = lib.mkOptionDefault [ config.services.postgresql.dataDir ];
+  # LUKS setup
+  systemd.services.postgresql.unitConfig.RequiresMountsFor = lib.mkOptionDefault [
+    config.services.postgresql.dataDir
+  ];
   environment.etc."crypttab".text = localLib.mkCryptTab { inherit (luks) device_name UUID; };
-  systemd.mounts =
-    [
-      (localLib.mkLuksMount {
-        inherit (luks) device_name;
-        target = config.services.postgresql.dataDir;
-      })
-    ];
+  systemd.mounts = [
+    (localLib.mkLuksMount {
+      inherit (luks) device_name;
+      target = config.services.postgresql.dataDir;
+    })
+  ];
 }

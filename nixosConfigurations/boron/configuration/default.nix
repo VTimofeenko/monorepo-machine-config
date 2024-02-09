@@ -1,12 +1,38 @@
-{ pkgs, lib, nixos-hardware, ... }:
 {
-  /* Boot */
+  pkgs,
+  lib,
+  nixos-hardware,
+  ...
+}:
+{
+  # Boot
   boot = {
     initrd = {
-      availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" "hid_logitech_hidpp" "xhci_pci_renesas" ];
-      kernelModules = [ "xhci_pci" "usbhid" "usb_storage" "hid_logitech_hidpp" "xhci_pci_renesas" ];
+      availableKernelModules = [
+        "xhci_pci"
+        "usbhid"
+        "usb_storage"
+        "hid_logitech_hidpp"
+        "xhci_pci_renesas"
+      ];
+      kernelModules = [
+        "xhci_pci"
+        "usbhid"
+        "usb_storage"
+        "hid_logitech_hidpp"
+        "xhci_pci_renesas"
+      ];
     };
-    supportedFilesystems = lib.mkForce [ "btrfs" "reiserfs" "vfat" "f2fs" "xfs" "ntfs" "cifs" "ext4" ];
+    supportedFilesystems = lib.mkForce [
+      "btrfs"
+      "reiserfs"
+      "vfat"
+      "f2fs"
+      "xfs"
+      "ntfs"
+      "cifs"
+      "ext4"
+    ];
     kernelPackages = pkgs.linuxPackages_latest;
     tmp = {
       useTmpfs = true;
@@ -31,14 +57,14 @@
     };
   };
 
-  /* File systems */
+  # File systems
   fileSystems."/" = {
     device = "/dev/disk/by-label/NIXOS_SD";
     fsType = "ext4";
     options = [ "noatime" ];
   };
 
-  /* Network */
+  # Network
   networking.interfaces.wlan0.useDHCP = lib.mkForce true;
   networking = {
     wireless = {
@@ -47,10 +73,10 @@
     };
   };
 
-  /* Misc */
+  # Misc
   hardware.enableRedistributableFirmware = true;
   system.stateVersion = "22.05";
 
-  /* Imports */
+  # Imports
   imports = [ nixos-hardware.nixosModules.raspberry-pi-4 ];
 }

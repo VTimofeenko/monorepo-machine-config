@@ -1,10 +1,9 @@
 { config, pkgs, ... }:
 {
-  imports =
-    [
-      ./hardware-configuration.nix
-      ./disk-config.nix
-    ];
+  imports = [
+    ./hardware-configuration.nix
+    ./disk-config.nix
+  ];
   boot.loader = {
 
     # Use the systemd-boot EFI boot loader.
@@ -41,6 +40,4 @@
       options = "--delete-older-than 30d";
     };
   };
-
 }
-

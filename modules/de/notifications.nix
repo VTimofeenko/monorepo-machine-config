@@ -14,7 +14,7 @@
             "run-on": "action"
           }
         },
-    */
+  */
   xdg.configFile."swaync/config.json".text =
     # Taken from swaync 0.8.0
     ''
@@ -82,8 +82,7 @@
           }
         }
       }
-    ''
-  ;
+    '';
   systemd.user.services.swaync =
     let
       target = "graphical-session.target";

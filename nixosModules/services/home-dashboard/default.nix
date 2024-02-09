@@ -1,5 +1,4 @@
-_:
-{
+_: {
   imports = [
     ./homepage-dashboard.nix
     ./ssl.nix

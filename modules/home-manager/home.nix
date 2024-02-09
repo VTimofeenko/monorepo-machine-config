@@ -1,6 +1,5 @@
 # [[file:../../new_project.org::*home.nix][home.nix:1]]
-_:
-{
+_: {
   home.stateVersion = "22.11";
   programs.home-manager.enable = true;
 }

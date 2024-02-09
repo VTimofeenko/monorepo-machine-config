@@ -1,5 +1,6 @@
 # [[file:../../new_project.org::*Hardware][Hardware:1]]
-{ ... }: {
+{ ... }:
+{
   imports = [
     ./disks.nix # (ref:disks-import)
     ./scanner.nix # (ref:scanner-import)

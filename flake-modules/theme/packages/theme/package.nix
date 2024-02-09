@@ -1,6 +1,7 @@
-{ stdenv
-, nickel
-, lib
+{
+  stdenv,
+  nickel,
+  lib,
 }:
 stdenv.mkDerivation {
   name = "theme";

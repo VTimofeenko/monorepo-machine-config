@@ -1,3 +1,2 @@
 # Just a service stub
-_:
-{ }
+_: { }

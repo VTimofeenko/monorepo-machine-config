@@ -4,7 +4,7 @@ let
   srvName = "pgadmin";
 in
 {
-  /* Service config */
+  # Service config
   services.pgadmin = {
     enable = true;
     initialEmail = "pgadmin@${my-data.settings.publicDomainName}";
@@ -14,7 +14,7 @@ in
     };
   };
 
-  /* Secrets */
+  # Secrets
   age.secrets = {
     pgadmin-password = {
       file = my-data.lib.getSrvSecret srvName "pgadmin-password";
@@ -23,12 +23,14 @@ in
     };
   };
 
-  /* Allow access only from nginx */
+  # Allow access only from nginx
   systemd.services.pgadmin = {
     serviceConfig = {
       IPAddressDeny = "any";
-      IPAddressAllow = [ (my-data.lib.getHostInNetwork (my-data.lib.getService "db").onHost "db").ipAddress "localhost" ];
+      IPAddressAllow = [
+        (my-data.lib.getHostInNetwork (my-data.lib.getService "db").onHost "db").ipAddress
+        "localhost"
+      ];
     };
   };
-
 }

@@ -1,5 +1,6 @@
 # [[file:../../new_project.org::*Firejail][Firejail:1]]
-{ pkgs, lib, ... }: {
+{ pkgs, lib, ... }:
+{
   programs.firejail.enable = true;
   programs.firejail.wrappedBinaries = {
     thunderbird = {
@@ -22,7 +23,15 @@
         exec = "thunderbird %U";
         icon = "thunderbird";
         terminal = false;
-        mimeType = [ "text/html" "text/xml" "application/xhtml+xml" "application/vnd.mozilla.xul+xml" "x-scheme-handler/http" "x-scheme-handler/https" "x-scheme-handler/ftp" ];
+        mimeType = [
+          "text/html"
+          "text/xml"
+          "application/xhtml+xml"
+          "application/vnd.mozilla.xul+xml"
+          "x-scheme-handler/http"
+          "x-scheme-handler/https"
+          "x-scheme-handler/ftp"
+        ];
       };
       telegram = {
         # Taken from Telegram v 3.1.11

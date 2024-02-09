@@ -5,12 +5,19 @@
 #   thisHostInNetwork = lan.hostsInNetwork.${config.networking.hostName};
 # in
 {
-  /* Boot */
+  # Boot
   boot = {
-    /* Sets screen timeout to 1 minute */
+    # Sets screen timeout to 1 minute
     kernelParams = [ "consoleblank=60" ];
     initrd = {
-      availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
+      availableKernelModules = [
+        "xhci_pci"
+        "ehci_pci"
+        "ahci"
+        "usb_storage"
+        "sd_mod"
+        "rtsx_pci_sdmmc"
+      ];
       kernelModules = [ ];
     };
     kernelModules = [ "kvm-intel" ];
@@ -21,7 +28,7 @@
     };
   };
 
-  /* File systems */
+  # File systems
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-label/nixos";
@@ -33,16 +40,16 @@
       fsType = "vfat";
     };
   };
-  swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
+  swapDevices = [ { device = "/dev/disk/by-label/swap"; } ];
 
-  /* Network */
+  # Network
   networking.interfaces.wlan0.useDHCP = lib.mkForce true;
   networking = {
     wireless.enable = lib.mkForce true;
     wireless.interfaces = [ "wlan0" ];
   };
 
-  /* Misc */
+  # Misc
   system.stateVersion = "22.11";
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware = {
@@ -51,6 +58,6 @@
     enableRedistributableFirmware = true;
   };
   services.logind.lidSwitch = "ignore";
-  /* Imports */
+  # Imports
   imports = [ ];
 }

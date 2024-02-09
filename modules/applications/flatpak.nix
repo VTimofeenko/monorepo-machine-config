@@ -1,6 +1,5 @@
 # [[file:../../new_project.org::*Flatpak][Flatpak:1]]
-_:
-{
+_: {
   services.flatpak.enable = true;
   xdg.portal.enable = true;
 }

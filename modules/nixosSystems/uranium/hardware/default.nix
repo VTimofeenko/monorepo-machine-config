@@ -1,12 +1,7 @@
 # [[file:../../../../new_project.org::*Uranium specific hardware][Uranium specific hardware:1]]
-{ pkgs
-, lib
-, ...
-}:
+{ pkgs, lib, ... }:
 {
-  imports = [
-    ./frame.work.nix
-  ];
+  imports = [ ./frame.work.nix ];
   boot = {
     loader = {
       # Use the systemd-boot EFI boot loader.
@@ -17,13 +12,21 @@
       useTmpfs = true;
       tmpfsSize = "8G";
     };
-    kernelModules = [ "kvm-amd" "coretemp" ];
+    kernelModules = [
+      "kvm-amd"
+      "coretemp"
+    ];
     extraModulePackages = [ ];
     # Frame.work needs latest kernel for BT and Wi-Fi to work.
     kernelPackages = pkgs.linuxPackages_latest;
     initrd = {
       # Modules I want to ensure are there
-      availableKernelModules = [ "thunderbolt" "nvme" "usb_storage" "uas" ];
+      availableKernelModules = [
+        "thunderbolt"
+        "nvme"
+        "usb_storage"
+        "uas"
+      ];
       kernelModules = [ ];
       luks.gpgSupport = true;
       luks.devices."luks".device = "/dev/disk/by-uuid/c2e5cd09-b5d7-42cb-a78a-f549edfa0eb4";
@@ -35,8 +38,14 @@
     useDHCP = false;
   };
   fileSystems = {
-    "/" = { device = "/dev/disk/by-uuid/cbaf293c-c8dc-4586-ba65-73cff3f24468"; fsType = "ext4"; };
-    "/boot" = { device = "/dev/disk/by-uuid/028E-BC0A"; fsType = "vfat"; };
+    "/" = {
+      device = "/dev/disk/by-uuid/cbaf293c-c8dc-4586-ba65-73cff3f24468";
+      fsType = "ext4";
+    };
+    "/boot" = {
+      device = "/dev/disk/by-uuid/028E-BC0A";
+      fsType = "vfat";
+    };
   };
 
   swapDevices = [ ];

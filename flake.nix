@@ -149,65 +149,90 @@
       url = "github:eikek/docspell?dir=nix";
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
-
   };
   outputs =
-    inputs@{ flake-parts
-    , self
-    , ...
-    }:
-    flake-parts.lib.mkFlake
-      { inherit inputs; }
-      (
-        { withSystem, flake-parts-lib, ... }:
-        let
-          inherit (inputs.nixpkgs-lib) lib;# A faster way to propagate lib to certain modules
-          inherit (flake-parts-lib) importApply;
-          /* Import the public flake modules.
+    inputs@{ flake-parts, self, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } (
+      { withSystem, flake-parts-lib, ... }:
+      let
+        inherit (inputs.nixpkgs-lib) lib; # A faster way to propagate lib to certain modules
+        inherit (flake-parts-lib) importApply;
+        /* Import the public flake modules.
 
-          The attribute names don't matter */
-          publicFlakeModules = {
-            nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
-            tmuxModule = importApply ./flake-modules/tmux { inherit withSystem self; };
-            newNvimModule = importApply ./flake-modules/new-nvim { inherit withSystem self; };
-            zshModule = importApply ./flake-modules/zsh { inherit self; };
-            gitModule = importApply ./flake-modules/git;
-            hyprlandHelpersModule = importApply ./flake-modules/hyprland-helpers { inherit withSystem lib self; };
-            emacsModule = importApply ./flake-modules/emacs {
-              inherit withSystem lib self importApply;
-              inherit (inputs) kroki-src;
-            };
-            themeModule = importApply ./flake-modules/theme { inherit lib self; };
+           The attribute names don't matter
+        */
+        publicFlakeModules = {
+          nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
+          tmuxModule = importApply ./flake-modules/tmux { inherit withSystem self; };
+          newNvimModule = importApply ./flake-modules/new-nvim { inherit withSystem self; };
+          zshModule = importApply ./flake-modules/zsh { inherit self; };
+          gitModule = importApply ./flake-modules/git;
+          hyprlandHelpersModule = importApply ./flake-modules/hyprland-helpers {
+            inherit withSystem lib self;
           };
-        in
-        {
-          imports =
-            builtins.concatLists [
-              [
-                inputs.devshell.flakeModule
-                inputs.flake-parts.flakeModules.easyOverlay
-                inputs.pre-commit-hooks-nix.flakeModule
-                inputs.treefmt-nix.flakeModule
-              ]
-              # Construct imports from this flake's flake modules
-              (lib.lists.flatten (map builtins.attrValues [ inputs.my-flake-modules.flake-modules publicFlakeModules ]))
-            ];
-          systems = [ "x86_64-linux" "aarch64-darwin" "aarch64-linux" ];
-          perSystem = { config, inputs', pkgs, ... }: {
+          emacsModule = importApply ./flake-modules/emacs {
+            inherit
+              withSystem
+              lib
+              self
+              importApply
+              ;
+            inherit (inputs) kroki-src;
+          };
+          themeModule = importApply ./flake-modules/theme { inherit lib self; };
+        };
+      in
+      {
+        imports = builtins.concatLists [
+          [
+            inputs.devshell.flakeModule
+            inputs.flake-parts.flakeModules.easyOverlay
+            inputs.pre-commit-hooks-nix.flakeModule
+            inputs.treefmt-nix.flakeModule
+          ]
+          # Construct imports from this flake's flake modules
+          (lib.lists.flatten (
+            map builtins.attrValues [
+              inputs.my-flake-modules.flake-modules
+              publicFlakeModules
+            ]
+          ))
+        ];
+        systems = [
+          "x86_64-linux"
+          "aarch64-darwin"
+          "aarch64-linux"
+        ];
+        perSystem =
+          {
+            config,
+            inputs',
+            pkgs,
+            ...
+          }:
+          {
             overlayAttrs = config.packages;
             legacyPackages.homeConfigurations =
               let
                 /* Create the default homeManagerConfiguration with inherited pkgs.
 
-                  The provided attrset will be merged into the homeManagerConfiguration.
+                   The provided attrset will be merged into the homeManagerConfiguration.
 
-                   Type: mkHmc :: attrset -> home-manger.lib.homeManagerConfiguration
-
-                  */
-                mkHmc = attrset: inputs.home-manager.lib.homeManagerConfiguration ({
-                  inherit pkgs;
-                  extraSpecialArgs = { inherit inputs' inputs; selfModules = self.nixosModule; selfPkgs = self.packages; };
-                } // attrset);
+                    Type: mkHmc :: attrset -> home-manger.lib.homeManagerConfiguration
+                */
+                mkHmc =
+                  attrset:
+                  inputs.home-manager.lib.homeManagerConfiguration (
+                    {
+                      inherit pkgs;
+                      extraSpecialArgs = {
+                        inherit inputs' inputs;
+                        selfModules = self.nixosModule;
+                        selfPkgs = self.packages;
+                      };
+                    }
+                    // attrset
+                  );
               in
               {
                 deck = mkHmc {
@@ -220,12 +245,21 @@
                 };
               };
             bumpInputs = {
-              changingInputs = [ "my-flake-modules" "hostsBlockList" "data-flake" ];
+              changingInputs = [
+                "my-flake-modules"
+                "hostsBlockList"
+                "data-flake"
+              ];
               bumpAllInputs = true;
             };
             # My modules config
             format-module = {
-              languages = [ "lua" "shell" "rust" "nickel" ];
+              languages = [
+                "lua"
+                "shell"
+                "rust"
+                "nickel"
+              ];
               addFormattersToDevshell = true;
             };
             devshellCmds.deployment = {
@@ -234,125 +268,164 @@
               useDeployRs = true;
             };
 
-            devshells.default = let devShellCmds = import ./lib/devshellCmds.nix { inherit pkgs; }; in {
-              env = [ ];
-              commands = devShellCmds;
-              packages = [ ];
-            };
+            devshells.default =
+              let
+                devShellCmds = import ./lib/devshellCmds.nix { inherit pkgs; };
+              in
+              {
+                env = [ ];
+                commands = devShellCmds;
+                packages = [ ];
+              };
 
             packages = {
-              hostsBlockList = import ./packages/hostsBlockList { inherit pkgs; src = inputs.hostsBlockList; };
+              hostsBlockList = import ./packages/hostsBlockList {
+                inherit pkgs;
+                src = inputs.hostsBlockList;
+              };
               /* Nitrocli pinned to more current nixpkgs to save on rebuilding.
-                   Needed occasionally so not part of the world. */
+                   Needed occasionally so not part of the world.
+              */
               nitrocli = inputs'.nitrocli.packages.default;
-              /* Package with some services icons */
-              dashboard-icons = import ./packages/dashboard-icons/package.nix { inherit (pkgs) stdenv fetchFromGitHub; };
-              /* Desktop icons */
-              arcticons = import ./packages/arcticons/package.nix { inherit (pkgs) stdenv fetchFromGitHub inkscape scour xmlstarlet yq jq; };
-
+              # Package with some services icons
+              dashboard-icons = import ./packages/dashboard-icons/package.nix {
+                inherit (pkgs) stdenv fetchFromGitHub;
+              };
+              # Desktop icons
+              arcticons = import ./packages/arcticons/package.nix {
+                inherit (pkgs)
+                  stdenv
+                  fetchFromGitHub
+                  inkscape
+                  scour
+                  xmlstarlet
+                  yq
+                  jq
+                  ;
+              };
             };
           };
-          flake =
-            let
-              homelab = import ./lib/homelab.nix {
-                inherit (inputs) nixpkgs self deploy-rs;
-                inherit (inputs.nixpkgs) lib;
-              };
-            in
-            {
-              /* flake-modules are passed through to the output of this flake */
-              inherit (inputs.my-flake-modules) flake-modules;
-              nixosModules =
-                let nix-config = importApply ./nixosModules/nix { inherit (inputs) nixpkgs-stable nixpkgs-unstable; }; in
-                {
-                  default = { ... }: {
+        flake =
+          let
+            homelab = import ./lib/homelab.nix {
+              inherit (inputs) nixpkgs self deploy-rs;
+              inherit (inputs.nixpkgs) lib;
+            };
+          in
+          {
+            # flake-modules are passed through to the output of this flake
+            inherit (inputs.my-flake-modules) flake-modules;
+            nixosModules =
+              let
+                nix-config = importApply ./nixosModules/nix { inherit (inputs) nixpkgs-stable nixpkgs-unstable; };
+              in
+              {
+                default =
+                  { ... }:
+                  {
                     imports = [
                       self.nixosModules.zsh
                       nix-config
                     ];
                   };
-                  inherit nix-config;
+                inherit nix-config;
+              };
+            nixosConfigurations =
+              let
+                specialArgs = inputs // {
+                  selfModules = self.nixosModules;
+                  selfPkgs = self.packages;
+                  selfHMModules = self.homeManagerModules;
                 };
-              nixosConfigurations =
-                let
-                  specialArgs = inputs // { selfModules = self.nixosModules; selfPkgs = self.packages; selfHMModules = self.homeManagerModules; };
-                in
-                  /* Iterates over the attrset of managed nodes, creating the nixosConfigurations per machine */
-                (builtins.mapAttrs
-                  (_: hostData: homelab.mkSystem { inherit hostData specialArgs; inherit (inputs) data-flake; })
-                  inputs.data-flake.data.hosts.managed)
-                //
-                {
-                  neutronium-x86_64 =
-                    inputs.nixpkgs.lib.nixosSystem {
-                      system = "x86_64-linux";
-                      modules = [
-                        "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-                        inputs.data-flake.nixosModules.data
-                        ./nixosConfigurations/neutronium
-                      ];
-                    };
-                  uranium = inputs.nixpkgs.lib.nixosSystem {
-                    system = "x86_64-linux";
-                    modules = [
-                      inputs.nur.nixosModules.nur
-                      ./modules
-                      ./modules/nixosSystems/uranium # (ref:uranium-import)
-                      # private-config.nixosModules.machines.uranium
-                      inputs.data-flake.nixosModules.uranium
-                    ];
-                    inherit specialArgs;
-                  };
-                  # FIXME: not implemented
-
-                  # neptunium = inputs.nixpkgs.lib.nixosSystem {
-                  #   system = "x86_64-linux";
-                  #   modules = [
-                  #     inputs.nur.nixosModules.nur
-                  #     ./modules
-                  #     ./modules/nixosSystems/neptunium
-                  #   ];
-                  #   inherit specialArgs;
-                  # };
-                  nitrogen-seed = inputs.nixpkgs.lib.nixosSystem {
-                    system = "x86_64-linux";
-                    modules = [
-                      inputs.data-flake.nixosModules.data
-                      inputs.disko.nixosModules.disko
-                      ./nixosConfigurations/nitrogen/seed
-                    ];
-                    inherit specialArgs;
-                  };
-                };
-              deploy.nodes =
-                lib.recursiveUpdate
-                  (builtins.mapAttrs
-                    (hostName: hostData: homelab.mkDeployRsNode
-                      {
-                        nodeName = hostData.hostName;
-                        inherit (hostData) system;
-                      })
-                    inputs.data-flake.data.hosts.managed)
-                  {
-                    /* Temporary overrides can be configured here like so:
-
-                    hydrogen.hostname = "192.168.1.1";
-                    */
+              in
+              # Iterates over the attrset of managed nodes, creating the nixosConfigurations per machine
+              (builtins.mapAttrs
+                (
+                  _: hostData:
+                  homelab.mkSystem {
+                    inherit hostData specialArgs;
+                    inherit (inputs) data-flake;
                   }
-              ;
-              overlays.homelab = _: prev: withSystem prev.stdenv.hostPlatform.system ({ config, ... }: {
-                inherit (config.packages) hostsBlockList dashboard-icons;
-              });
+                )
+                inputs.data-flake.data.hosts.managed
+              )
+              // {
+                neutronium-x86_64 = inputs.nixpkgs.lib.nixosSystem {
+                  system = "x86_64-linux";
+                  modules = [
+                    "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+                    inputs.data-flake.nixosModules.data
+                    ./nixosConfigurations/neutronium
+                  ];
+                };
+                uranium = inputs.nixpkgs.lib.nixosSystem {
+                  system = "x86_64-linux";
+                  modules = [
+                    inputs.nur.nixosModules.nur
+                    ./modules
+                    ./modules/nixosSystems/uranium # (ref:uranium-import)
+                    # private-config.nixosModules.machines.uranium
+                    inputs.data-flake.nixosModules.uranium
+                  ];
+                  inherit specialArgs;
+                };
+                # FIXME: not implemented
 
-              homeManagerModules = {
-                kitty = import ./modules/homeManager/kitty;
+                # neptunium = inputs.nixpkgs.lib.nixosSystem {
+                #   system = "x86_64-linux";
+                #   modules = [
+                #     inputs.nur.nixosModules.nur
+                #     ./modules
+                #     ./modules/nixosSystems/neptunium
+                #   ];
+                #   inherit specialArgs;
+                # };
+                nitrogen-seed = inputs.nixpkgs.lib.nixosSystem {
+                  system = "x86_64-linux";
+                  modules = [
+                    inputs.data-flake.nixosModules.data
+                    inputs.disko.nixosModules.disko
+                    ./nixosConfigurations/nitrogen/seed
+                  ];
+                  inherit specialArgs;
+                };
               };
+            deploy.nodes =
+              lib.recursiveUpdate
+                (builtins.mapAttrs
+                  (
+                    hostName: hostData:
+                    homelab.mkDeployRsNode {
+                      nodeName = hostData.hostName;
+                      inherit (hostData) system;
+                    }
+                  )
+                  inputs.data-flake.data.hosts.managed
+                )
+                {
+                  /* Temporary overrides can be configured here like so:
 
-              templates.default = {
-                path = ./templates/base;
-                description = "Base template for my projects";
-              };
+                     hydrogen.hostname = "192.168.1.1";
+                  */
+                };
+            overlays.homelab =
+              _: prev:
+              withSystem prev.stdenv.hostPlatform.system (
+                { config, ... }:
+                {
+                  inherit (config.packages) hostsBlockList dashboard-icons;
+                }
+              );
+
+            homeManagerModules = {
+              kitty = import ./modules/homeManager/kitty;
             };
-        }
-      );
+
+            templates.default = {
+              path = ./templates/base;
+              description = "Base template for my projects";
+            };
+          };
+      }
+    );
 }

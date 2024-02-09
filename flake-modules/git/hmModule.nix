@@ -1,5 +1,10 @@
 # Home manager module that configures git
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   inherit (lib) getExe;
   inherit (config.my-colortheme) semantic raw;
@@ -7,9 +12,7 @@ let
   inherit (semantic) activeFrameBorder inactiveFrameBorder;
 in
 {
-  home.packages = builtins.attrValues {
-    inherit (pkgs) git git-crypt;
-  };
+  home.packages = builtins.attrValues { inherit (pkgs) git git-crypt; };
 
   # Directory where local overrides can be places
   xdg.configFile."git/local.d/.keep".source = builtins.toFile "keep" "";

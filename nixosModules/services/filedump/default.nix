@@ -1,5 +1,4 @@
-_:
-{
+_: {
   imports = [
     ./ssl.nix
     ./filedump.nix

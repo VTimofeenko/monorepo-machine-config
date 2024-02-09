@@ -8,13 +8,13 @@ let
   dbService = my-data.lib.getService "db";
 in
 {
-  /* Secrets */
+  # Secrets
   age.secrets.tt-rss-db-password = {
     file = my-data.lib.getSrvSecret srvName "dbPassword";
     owner = config.services.tt-rss.user;
   };
 
-  /* Service config */
+  # Service config
   services.tt-rss = {
     enable = true;
     virtualHost = service.fqdn;
@@ -32,9 +32,12 @@ in
     selfUrlPath = "https://${service.fqdn}";
   };
 
-  /* Wait for VPN to be online before connecting to the database */
+  # Wait for VPN to be online before connecting to the database
   systemd.services.tt-rss =
-    let dependency = [ dbService.settings.systemdUnitName ]; in {
+    let
+      dependency = [ dbService.settings.systemdUnitName ];
+    in
+    {
       wants = dependency;
       after = dependency;
     };

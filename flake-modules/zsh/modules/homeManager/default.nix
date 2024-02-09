@@ -1,18 +1,19 @@
 # Home manager module that configures zsh
-{ pkgs
-, config
-, lib
-, ...
+{
+  pkgs,
+  config,
+  lib,
+  ...
 }:
 let
-  commonSettings = import ../common {
-    inherit pkgs config;
-  };
+  commonSettings = import ../common { inherit pkgs config; };
 
   inherit (config.my-colortheme) raw semantic;
 in
 {
-  home = { inherit (commonSettings) packages; };
+  home = {
+    inherit (commonSettings) packages;
+  };
   programs = {
     zsh = {
       enable = true;
@@ -42,43 +43,52 @@ in
       # W/A for missing completions
       # Source: https://github.com/nix-community/home-manager/issues/2562
       initExtraBeforeCompInit =
-        let profileDir = config.home.profileDirectory; in
+        let
+          profileDir = config.home.profileDirectory;
+        in
         ''
           fpath+=("${profileDir}"/share/zsh/site-functions "${profileDir}"/share/zsh/$ZSH_VERSION/functions "${profileDir}"/share/zsh/vendor-completions)
         '';
       # initExtraFirst # Commands that should be added to top of .zshrc.
-      localVariables = commonSettings.variables
-        //
+      localVariables = commonSettings.variables //
         # TODO: move this ot DE configuration, doesn't really belong here?
         {
           BEMENU_OPTS = lib.concatStringsSep " " [
-            "--tb  '${raw.color0."#hex"}'" #Title background
-            "--tf  '#${raw.indigo."#hex"}'" #Title foreground
-            "--fb  '#${raw.color0."#hex"}'" #Filter background
-            "--ff  '#${raw.fg-main."#hex"}'" #Filter foregroun
-            "--cb  '#${raw.color0."#hex"}'" #Cursor background
-            "--cf  '#${raw.fg-main."#hex"}'" #Cursor foregroun
-            "--nb  '#${raw.color0."#hex"}'" #Normal background
-            "--nf  '#${raw.fg-main."#hex"}'" #Normal foreground
-            "--hb  '#${raw.color0."#hex"}'" #Highlighted background
-            "--hf  '#${semantic.activeFrameBorder."#hex"}'" #Highlighted foreground
-            "--fbb '#${raw.color0."#hex"}'" #Feedback background
-            "--fbf '#${raw.fg-main."#hex"}'" #Feedback foreground
-            "--sb  '#${raw.color0."#hex"}'" #Selected background
-            "--sf  '#${raw.fg-main."#hex"}'" #Selected foreground
-            "--ab  '#${raw.color0."#hex"}'" #Alternating background color
-            "--af  '#${raw.fg-main."#hex"}'" #Alternating foreground color
-            "--scb '#${raw.color0."#hex"}'" #Scrollbar background
-            "--scf '#${raw.fg-main."#hex"}'" #Scrollbar foreground
+            "--tb  '${raw.color0."#hex"}'" # Title background
+            "--tf  '#${raw.indigo."#hex"}'" # Title foreground
+            "--fb  '#${raw.color0."#hex"}'" # Filter background
+            "--ff  '#${raw.fg-main."#hex"}'" # Filter foregroun
+            "--cb  '#${raw.color0."#hex"}'" # Cursor background
+            "--cf  '#${raw.fg-main."#hex"}'" # Cursor foregroun
+            "--nb  '#${raw.color0."#hex"}'" # Normal background
+            "--nf  '#${raw.fg-main."#hex"}'" # Normal foreground
+            "--hb  '#${raw.color0."#hex"}'" # Highlighted background
+            "--hf  '#${semantic.activeFrameBorder."#hex"}'" # Highlighted foreground
+            "--fbb '#${raw.color0."#hex"}'" # Feedback background
+            "--fbf '#${raw.fg-main."#hex"}'" # Feedback foreground
+            "--sb  '#${raw.color0."#hex"}'" # Selected background
+            "--sf  '#${raw.fg-main."#hex"}'" # Selected foreground
+            "--ab  '#${raw.color0."#hex"}'" # Alternating background color
+            "--af  '#${raw.fg-main."#hex"}'" # Alternating foreground color
+            "--scb '#${raw.color0."#hex"}'" # Scrollbar background
+            "--scf '#${raw.fg-main."#hex"}'" # Scrollbar foreground
             "--width-factor 0.2"
           ];
         };
 
-      /* Plugin configuration */
+      # Plugin configuration
       plugins =
         commonSettings.packagePlugins
-        ++
-        (with commonSettings.myPlugins; map (name: { inherit name; file = "${name}.zsh"; src = baseDir; }) list);
+        ++ (
+          with commonSettings.myPlugins;
+          map
+            (name: {
+              inherit name;
+              file = "${name}.zsh";
+              src = baseDir;
+            })
+            list
+        );
 
       shellGlobalAliases = {
         G = "| rg";
@@ -86,18 +96,19 @@ in
       syntaxHighlighting.enable = true;
 
       inherit (commonSettings) shellAliases completionInit;
-      initExtra = commonSettings.initExtra
+      initExtra =
+        commonSettings.initExtra
         # set SSH_AUTH_SOCK <=> gpg-agent is enabled in home-manager
-        +
-        (if config.services.gpg-agent.enable
-        then
-          ''
-            if [[ -z "$SSH_AUTH_SOCK" ]]; then
-              export SSH_AUTH_SOCK="$(${config.programs.gpg.package}/bin/gpgconf --list-dirs agent-ssh-socket)"
-            fi
-          ''
-        else "");
-
+        + (
+          if config.services.gpg-agent.enable then
+            ''
+              if [[ -z "$SSH_AUTH_SOCK" ]]; then
+                export SSH_AUTH_SOCK="$(${config.programs.gpg.package}/bin/gpgconf --list-dirs agent-ssh-socket)"
+              fi
+            ''
+          else
+            ""
+        );
     };
     direnv = {
       enable = true;

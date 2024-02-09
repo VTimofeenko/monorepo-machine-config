@@ -1,6 +1,5 @@
-/* Modules that are common across all machines in the homelab */
-_:
-{
+# Modules that are common across all machines in the homelab
+_: {
   imports = [
     ./dump.nix
     ./firewall.nix

@@ -1,6 +1,5 @@
 # Time-related settings
-_:
-{
+_: {
   time.timeZone = "America/Los_Angeles";
   # TODO: my local NTP
 }

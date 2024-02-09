@@ -1,8 +1,9 @@
 # [[file:../../../../new_project.org::*Frame.work specific][Frame.work specific:1]]
-{ pkgs
-, lib
-, nixos-hardware
-, ...
+{
+  pkgs,
+  lib,
+  nixos-hardware,
+  ...
 }:
 {
   imports = [
@@ -19,7 +20,6 @@
       driSupport = true;
       driSupport32Bit = true;
     };
-
 
     # Custom udev rules
     # services.udev.extraRules = ''
@@ -70,12 +70,11 @@
   };
 
   # For fingerprint support
-  /* services.fprintd.enable = lib.mkDefault true; */
+  # services.fprintd.enable = lib.mkDefault true;
 
   services.xserver = {
     enable = true;
     videoDrivers = [ "amdgpu" ];
   };
-
 }
 # Frame.work specific:1 ends here

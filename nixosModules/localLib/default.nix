@@ -4,22 +4,26 @@ let
   luksOpts = "noauto,nofail,_netdev";
 in
 {
-  recursiveMerge = attrList:
+  recursiveMerge =
+    attrList:
     with lib;
     let
-      f = attrPath:
-        zipAttrsWith (n: values:
-          if tail values == [ ]
-          then head values
-          else if all isList values
-          then unique (concatLists values)
-          else if all isAttrs values
-          then f (attrPath ++ [ n ]) values
-          else last values
+      f =
+        attrPath:
+        zipAttrsWith (
+          n: values:
+          if tail values == [ ] then
+            head values
+          else if all isList values then
+            unique (concatLists values)
+          else if all isAttrs values then
+            f (attrPath ++ [ n ]) values
+          else
+            last values
         );
     in
     f [ ] attrList;
-  /** Creates the systemd mount that waits for network to be active */
+  # * Creates the systemd mount that waits for network to be active
   mkLuksMount =
     { device_name, target }:
     {
@@ -28,24 +32,25 @@ in
       requires = [ "systemd-cryptsetup@${device_name}.service" ];
       options = luksOpts;
     };
-  /** Makes a /etc/crypttab entry for a generated LUKS unit so that it's activated after SSH */
+  # * Makes a /etc/crypttab entry for a generated LUKS unit so that it's activated after SSH
   mkCryptTab =
     { device_name, UUID }:
     ''
       ${device_name} UUID=${UUID} - ${luksOpts}
     '';
-  /** Plucks an attribute from nested attrset, returing a list of values
+  /* * Plucks an attribute from nested attrset, returing a list of values
 
         Example:
           pluck "foo" { a = { foo = 1; }; b = { bar = 2; }; c = { foo = 3; }; }
           => [ 1 3 ]
         Type:
           pluck :: String -> AttrSet -> [ Any ]
-    */
-  pluck = attrName: attrSet:
-    lib.catAttrs
-      attrName
+  */
+  pluck =
+    attrName: attrSet:
+    lib.catAttrs attrName
       # Strip the outer keys and turn into a list
-      (builtins.map (x: x.value) (lib.attrsets.attrsToList attrSet))
-  ;
+      (
+        builtins.map (x: x.value) (lib.attrsets.attrsToList attrSet)
+      );
 }

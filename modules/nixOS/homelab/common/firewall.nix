@@ -1,5 +1,4 @@
-_:
-{
+_: {
   networking = {
     firewall.enable = true;
     nftables.enable = true;

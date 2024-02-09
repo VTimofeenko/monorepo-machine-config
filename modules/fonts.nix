@@ -1,5 +1,6 @@
 # [[file:../new_project.org::*Fonts.nix][Fonts.nix:1]]
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   fonts = {
     packages = with pkgs; [
       # TODO: remove with pkgs;

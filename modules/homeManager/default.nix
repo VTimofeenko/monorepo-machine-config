@@ -1,6 +1,1 @@
-_:
-{
-  imports = [
-    ./kitty
-  ];
-}
+_: { imports = [ ./kitty ]; }

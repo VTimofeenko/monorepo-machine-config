@@ -1,9 +1,7 @@
 # Seed config for hydrogen, to be used after formatting the disk
 { pkgs, ... }:
 {
-  imports = [
-    ./hardware-configuration.nix
-  ];
+  imports = [ ./hardware-configuration.nix ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -44,4 +42,3 @@
     };
   };
 }
-

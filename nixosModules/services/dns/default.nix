@@ -1,5 +1,4 @@
-_:
-{
+_: {
   imports = [
     ./unbound.nix
     ./firewall.nix

@@ -1,7 +1,12 @@
 # [[file:../../new_project.org::*hyprland language switch notifier][hyprland language switch notifier:1]]
 # Home manager module to configure a user service that notifies when language was switched
 localFlake:
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   cfg = config.services.hyprland-language-switch-notifier;
   pkg = localFlake.packages.${pkgs.stdenv.hostPlatform.system}.hyprland-lang-notifier;

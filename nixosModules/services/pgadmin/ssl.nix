@@ -6,7 +6,7 @@ let
   mgmtNet = my-data.lib.getNetwork "mgmt";
 in
 {
-  /* Secrets */
+  # Secrets
   age.secrets = {
     "ssl-cert" = {
       file = my-data.lib.getSrvSecret "ssl-terminator" "cert";
@@ -20,7 +20,7 @@ in
     };
   };
 
-  /* SSL proxy, allow only network */
+  # SSL proxy, allow only network
   # Maybe worth changing the listen address rather than use extraConfig -- this way the future "make ssl proxy"
   # function would be easier
   services.nginx = {
@@ -44,5 +44,8 @@ in
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 }

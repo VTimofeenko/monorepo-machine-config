@@ -1,9 +1,10 @@
 # [[file:../new_project.org::*Common system configuration modules][Common system configuration modules:1]]
 # These arguments are passed through specialArgs
-{ pkgs
-, home-manager
-, selfModules
-, ...
+{
+  pkgs,
+  home-manager,
+  selfModules,
+  ...
 }:
 {
   imports = [
@@ -22,7 +23,6 @@
     ./hardware # (ref:hardware-import)
     ./network # (ref:network-import)
     ./user # (ref:user-import)
-
   ];
   time.timeZone = "America/Los_Angeles";
 
@@ -36,7 +36,7 @@
 
   # Cross-compilation setup
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
-  /* Fixes some annoying services that won't quit */
+  # Fixes some annoying services that won't quit
   services.logind.killUserProcesses = true;
 }
 # Common system configuration modules:1 ends here

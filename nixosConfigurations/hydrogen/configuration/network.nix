@@ -1,13 +1,16 @@
-{ config
-, lib
-, ...
-}:
+{ config, lib, ... }:
 let
   inherit (config) my-data;
   inherit (my-data.networks) lan;
   inherit (my-data.lib.getOwnHostConfig) netInterfaces;
 
-  inherit (netInterfaces) wan lan-1 lan-2 lan-3 lan-bridge;
+  inherit (netInterfaces)
+    wan
+    lan-1
+    lan-2
+    lan-3
+    lan-bridge
+    ;
 
   lanIP = (my-data.lib.getOwnHostInNetwork "lan").ipAddress;
 in
@@ -24,20 +27,30 @@ in
       let
         mkLink = link: {
           name = "0-${link.name}";
-          value = { matchConfig.PermanentMACAddress = link.macAddr; linkConfig.Name = link.name; };
+          value = {
+            matchConfig.PermanentMACAddress = link.macAddr;
+            linkConfig.Name = link.name;
+          };
         };
       in
-      builtins.listToAttrs (map mkLink [ wan lan-1 lan-2 lan-3 ]);
+      builtins.listToAttrs (
+        map mkLink [
+          wan
+          lan-1
+          lan-2
+          lan-3
+        ]
+      );
     networks = {
       "1-bridge-bind" = {
         # Binds the devices to the bridge, needs to go first
         # https://wiki.archlinux.org/title/Systemd-networkd#Bind_Ethernet_to_bridge
         enable = true;
-        matchConfig.Name =
-          lib.concatMapStringsSep
-            " "
-            (adapter: adapter.name)
-            [ lan-1 lan-2 lan-3 ];
+        matchConfig.Name = lib.concatMapStringsSep " " (adapter: adapter.name) [
+          lan-1
+          lan-2
+          lan-3
+        ];
         networkConfig = {
           Bridge = lan-bridge.name;
         };

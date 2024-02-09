@@ -35,9 +35,15 @@
     };
   };
 
-  outputs = inputs@{ flake-parts, ... }:
+  outputs =
+    inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ];
 
       imports = [
         inputs.devshell.flakeModule
@@ -46,19 +52,24 @@
       ] ++ (builtins.attrValues inputs.my-flake-modules.flake-modules);
 
       perSystem =
-        { pkgs
-          /* These inputs are unused in the template, but might be useful later */
+        {
+          pkgs,
+          # These inputs are unused in the template, but might be useful later
           # , config
           # , self'
           # , inputs'
           # , system
-        , ...
-        }: {
+          ...
+        }:
+        {
           packages.default = pkgs.hello;
 
           devshells.default = {
             env = [
-              { name = "HTTP_PORT"; value = 8080; }
+              {
+                name = "HTTP_PORT";
+                value = 8080;
+              }
             ];
             commands = [
               {

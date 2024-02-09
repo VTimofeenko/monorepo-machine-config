@@ -1,9 +1,12 @@
 # NixOS module that configures zsh
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
-  commonSettings = import ../common {
-    inherit pkgs config;
-  };
+  commonSettings = import ../common { inherit pkgs config; };
   inherit (lib) concatMapStringsSep;
 in
 {
@@ -12,29 +15,33 @@ in
     enableCompletion = lib.mkForce false;
     histFile = "$XDG_CACHE_HOME/zsh_history";
     histSize = 10000;
-    interactiveShellInit = commonSettings.initExtra
+    interactiveShellInit =
+      commonSettings.initExtra
       + commonSettings.completionInit
-      + (with commonSettings.myPlugins;
-      ''
-        fpath=(${baseDir} $fpath)
-      ''
-      + concatMapStringsSep "\n" (plugin: "autoload -Uz ${plugin}.zsh && ${plugin}.zsh") list)
+      + (
+        with commonSettings.myPlugins;
+        ''
+          fpath=(${baseDir} $fpath)
+        ''
+        + concatMapStringsSep "\n" (plugin: "autoload -Uz ${plugin}.zsh && ${plugin}.zsh") list
+      )
       + "\n"
-      +
-      (concatMapStringsSep "\n" (plugin: "source ${plugin.src}/${plugin.file}") commonSettings.packagePlugins)
-    ;
+      + (concatMapStringsSep "\n" (plugin: "source ${plugin.src}/${plugin.file}")
+        commonSettings.packagePlugins
+      );
     inherit (commonSettings) shellAliases;
     syntaxHighlighting = {
       enable = true;
     };
 
     autosuggestions.enable = true;
-
   };
   programs.starship.enable = true;
-  environment = { inherit (commonSettings) variables; };
+  environment = {
+    inherit (commonSettings) variables;
+  };
   environment.systemPackages = commonSettings.packages;
 
-  /* Add completions */
+  # Add completions
   environment.pathsToLink = [ "/share/zsh" ];
 }

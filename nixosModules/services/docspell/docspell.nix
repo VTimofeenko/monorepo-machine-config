@@ -38,7 +38,6 @@ in
       #     type = "file-system";
       #     directory = minioCloneDir;
       #   };
-
     };
     docspell-restserver = {
       enable = true;

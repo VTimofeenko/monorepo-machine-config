@@ -1,5 +1,6 @@
 # [[file:../../new_project.org::*Virtualization][Virtualization:1]]
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   virtualisation.libvirtd.enable = true;
   environment.systemPackages = with pkgs; [ virt-manager ];
   users.users.spacecadet.extraGroups = [ "libvirtd" ];

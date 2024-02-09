@@ -1,28 +1,27 @@
 # Flake module for the homegrown Hyprland helpers and their module
 # Doc is here: https://crane.dev
-{ withSystem # Flake-parts helper
-, lib # To use the common lib
-, self
-, ...
+{
+  withSystem, # Flake-parts helper
+  lib, # To use the common lib
+  self,
+  ...
 }:
 {
   perSystem =
-    { system
-    , ...
-    }:
+    { system, ... }:
     let
       craneLib = self.inputs.crane.lib.${system}; # NOTE: not inputs' since it seems to strip non-standard outputs.
     in
     {
-      packages = withSystem system ({ pkgs
-                                      # , inputs'
-                                    , ...
-                                    }:
+      packages = withSystem system (
+        {
+          pkgs,
+          # , inputs'
+          ...
+        }:
         let
           version = "0.1.0";
-          /*
-          Taken from crane quickstart, slightly modified for flake-parts
-          */
+          # Taken from crane quickstart, slightly modified for flake-parts
           src = craneLib.cleanCargoSource (craneLib.path ./src);
           # Common arguments can be set here to avoid repeating them later
           commonArgs = rec {
@@ -52,25 +51,21 @@
 
           # Build the actual crate itself, reusing the dependency
           # artifacts from above.
-          hyprland-helpers = craneLib.buildPackage (commonArgs // {
-            inherit cargoArtifacts;
-          });
+          hyprland-helpers = craneLib.buildPackage (commonArgs // { inherit cargoArtifacts; });
 
           workspaceMembers = (builtins.fromTOML (builtins.readFile ./src/Cargo.toml)).workspace.members;
           # Constructs an attrset with packages taken from workspace members. This is used to expose them in the flake output
           workspaceNixPackages = builtins.listToAttrs (
             map
-              (name:
-                {
-                  inherit name;
-                  value = craneLib.buildPackage {
-                    inherit src cargoArtifacts version;
-                    pname = name;
-                    cargoExtraArgs = "-p ${name}";
-                    meta.mainProgram = name;
-                  };
-                }
-              )
+              (name: {
+                inherit name;
+                value = craneLib.buildPackage {
+                  inherit src cargoArtifacts version;
+                  pname = name;
+                  cargoExtraArgs = "-p ${name}";
+                  meta.mainProgram = name;
+                };
+              })
               workspaceMembers
           );
         in
@@ -81,12 +76,11 @@
           # hyprland-helpers-llm-coverage = craneLibLLvmTools.cargoLlvmCov (commonArgs // {
           #   inherit cargoArtifacts;
           # });
-        } // workspaceNixPackages);
+        }
+        // workspaceNixPackages
+      );
 
-      devShells = withSystem system
-        (_: {
-          rust = craneLib.devShell { };
-        });
+      devShells = withSystem system (_: { rust = craneLib.devShell { }; });
 
       # Pre-commit hooks
       pre-commit.settings = {
@@ -97,13 +91,12 @@
         settings.rust.cargoManifestPath = "./flake-modules/hyprland-helpers/src/Cargo.toml";
       };
     };
-  flake =
-    {
-      homeManagerModules = {
-        hyprland-helpers = import ./homeManagerModules self;
-        hyprland-language-switch-notifier = import ./homeManagerModules/hyprland-language-switch-notifier.nix self;
-        hyprland-mode-switch-notifier = import ./homeManagerModules/hyprland-mode-switch-notifier.nix self;
-        hyprland-workspace-switch-notifier = import ./homeManagerModules/hyprland-workspace-notifier.nix self;
-      };
+  flake = {
+    homeManagerModules = {
+      hyprland-helpers = import ./homeManagerModules self;
+      hyprland-language-switch-notifier = import ./homeManagerModules/hyprland-language-switch-notifier.nix self;
+      hyprland-mode-switch-notifier = import ./homeManagerModules/hyprland-mode-switch-notifier.nix self;
+      hyprland-workspace-switch-notifier = import ./homeManagerModules/hyprland-workspace-notifier.nix self;
     };
+  };
 }

@@ -1,6 +1,5 @@
 # [[file:../../../../new_project.org::*Neptunium filesystems][Neptunium filesystems:1]]
-_:
-{
+_: {
   fileSystems = {
     "/" = {
       device = "/dev/mapper/crypt-root";
@@ -11,6 +10,6 @@ _:
       fsType = "vfat";
     };
   };
-  swapDevices = [{ device = "/dev/disk/by-label/swap"; }];
+  swapDevices = [ { device = "/dev/disk/by-label/swap"; } ];
 }
 # Neptunium filesystems:1 ends here

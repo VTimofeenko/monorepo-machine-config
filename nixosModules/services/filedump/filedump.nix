@@ -1,5 +1,10 @@
-/* NixOS module to configure filedump */
-{ lib, config, pkgs, ... }:
+# NixOS module to configure filedump
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.services.myFiledump;
 
@@ -21,8 +26,14 @@ let
 in
 {
   options.services.myFiledump = {
-    dir = lib.mkOption { type = lib.types.path; default = "/var/lib/filedump"; };
-    dashboard-icons = lib.mkOption { type = lib.types.str; default = "dashboard-icons"; };
+    dir = lib.mkOption {
+      type = lib.types.path;
+      default = "/var/lib/filedump";
+    };
+    dashboard-icons = lib.mkOption {
+      type = lib.types.str;
+      default = "dashboard-icons";
+    };
   };
 
   config.systemd.tmpfiles.rules = [

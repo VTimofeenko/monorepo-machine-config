@@ -6,7 +6,10 @@ in
 {
   scratchpad-terminal = pkgs.writeShellApplication {
     name = "scratchpad-terminal";
-    runtimeInputs = [ pkgs.hyprland pkgs.kitty ];
+    runtimeInputs = [
+      pkgs.hyprland
+      pkgs.kitty
+    ];
     text = ''
       TERM="${lib.getExe pkgs.kitty}"
       TERM_TITLE="dropdown-terminal"
