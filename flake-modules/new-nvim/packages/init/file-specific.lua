@@ -54,3 +54,8 @@ vim.api.nvim_create_autocmd("FileType", {
 		wk.register({ ["gf"] = { open_file, "Open file under cursor" } })
 	end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "markdown" },
+	command = "setlocal conceallevel=3",
+})
