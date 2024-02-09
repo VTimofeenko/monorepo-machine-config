@@ -5,6 +5,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Lua files should not expand tab
+-- TODO: review this
 vim.api.nvim_create_autocmd({
 	"BufNewFile",
 	"BufRead",
