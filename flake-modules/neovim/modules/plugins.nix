@@ -93,7 +93,7 @@ let
         ./configs/ufo.lua
       ]
       [
-        (mkPluginFromInput "nvim-devdocs") # devdocs.io inside nvim
+        (mkPluginFromInput "nvim-devdocs") # devdocs.io inside nvim # TODO: pre-install the docs
         ./configs/devdocs.lua
       ]
       [
