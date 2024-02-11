@@ -35,8 +35,10 @@ rec {
     ip = "ip -c";
     # Neat display of all relevant things in lsblk
     lsblk = "lsblk --topology --fs -o NAME,SIZE,TYPE,LABEL,UUID,FSAVAIL,FSUSE%,MOUNTPOINTS";
-    # Quick nix repl with nixpkgs imported
-    nrn = "nix repl -f flake:nixpkgs";
+    # Quick nix repl with stable nixpkgs imported
+    nrn = "nix repl -f flake:ns";
+    nrs = "nix repl -f flake:ns";
+    nru = "nix repl -f flake:nu"; # Unstable
   };
   # InteractiveShellInit?
   # List of shell-only packages
