@@ -50,7 +50,7 @@ in
           fpath+=("${profileDir}"/share/zsh/site-functions "${profileDir}"/share/zsh/$ZSH_VERSION/functions "${profileDir}"/share/zsh/vendor-completions)
         '';
       # initExtraFirst # Commands that should be added to top of .zshrc.
-      localVariables = commonSettings.variables //
+      sessionVariables = commonSettings.variables //
         # TODO: move this ot DE configuration, doesn't really belong here?
         {
           BEMENU_OPTS = lib.concatStringsSep " " [

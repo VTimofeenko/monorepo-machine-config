@@ -42,28 +42,38 @@ rec {
   };
   # InteractiveShellInit?
   # List of shell-only packages
-  packages = builtins.attrValues {
-    inherit (pkgs)
-      fzf # fuzzy finder. Installed for completions.
-      bat # cat with wings!
-      jq # parsing some JSON
-      direnv # controls environments in projects
-      curl # does not need introduction
-      wget # neither does this
-      fd # find replacement with saner syntax
-      inetutils # a couple of utilities to be kept offline
-      moreutils # a collection of additional tools
-      file # Detects what kind of file is this
-      ripgrep # useful grep replacement
-      lsof # shows file handles
-      dig # quick DNS tester
-      unzip # unpacks archives
-      htop # system monitoring
-      broot # console file manager
-      eza # for completions
-      spacer
-      ;
-  };
+  packages =
+    builtins.attrValues {
+      inherit (pkgs)
+        fzf # fuzzy finder. Installed for completions.
+        bat # cat with wings!
+        jq # parsing some JSON
+        direnv # controls environments in projects
+        curl # does not need introduction
+        wget # neither does this
+        fd # find replacement with saner syntax
+        inetutils # a couple of utilities to be kept offline
+        moreutils # a collection of additional tools
+        file # Detects what kind of file is this
+        ripgrep # useful grep replacement
+        lsof # shows file handles
+        dig # quick DNS tester
+        unzip # unpacks archives
+        htop # system monitoring
+        broot # console file manager
+        eza # for completions
+        spacer
+        ;
+    }
+    ++ [
+      (pkgs.writeShellScriptBin "deploy-local" ''
+        if [[ $(grep -s ^NAME= /etc/os-release | sed 's/^.*=//') == "NixOS" ]]; then
+          sudo nixos-rebuild switch --flake ''${DOTFILES_REPO_LOCATION}
+        else # Not a NixOS machine
+          home-manager switch --flake ''${DOTFILES_REPO_LOCATION}
+        fi
+      '')
+    ];
   additionalOptions =
     [
       "INTERACTIVE_COMMENTS" # Bash-style comments in interactive shell
@@ -231,5 +241,6 @@ rec {
     XDG_DATA_HOME = "$HOME/.local/share";
     XDG_STATE_HOME = "$HOME/.local/state";
     # May be obsoleted by https://github.com/nix-community/home-manager/pull/4713
+    DOTFILES_REPO_LOCATION = "$HOME/code/literate-machine-config";
   };
 }
