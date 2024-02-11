@@ -61,10 +61,11 @@
       url = "github:mtth/scratch.vim";
       flake = false;
     };
-    nvim-devdocs = {
-      url = "github:luckasRanarison/nvim-devdocs";
-      flake = false;
-    };
+    # Disable for now, need to find alternative
+    # nvim-devdocs = {
+    #   url = "github:luckasRanarison/nvim-devdocs";
+    #   flake = false;
+    # };
 
     # My development stuff
     flake-parts = {

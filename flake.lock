@@ -1124,22 +1124,6 @@
         "type": "github"
       }
     },
-    "nvim-devdocs": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1703234230,
-        "narHash": "sha256-qqtBNfBBGyxMsHL3UXu+MF/UyfVAubG+6fnwLK9kY9Q=",
-        "owner": "luckasRanarison",
-        "repo": "nvim-devdocs",
-        "rev": "521d24661ffe6d1ba025debea2675c765a9c1ee1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "luckasRanarison",
-        "repo": "nvim-devdocs",
-        "type": "github"
-      }
-    },
     "nvim-nightly": {
       "inputs": {
         "flake-compat": "flake-compat_2",
@@ -1257,7 +1241,6 @@
         "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-unstable": "nixpkgs-unstable_2",
         "nur": "nur",
-        "nvim-devdocs": "nvim-devdocs",
         "nvim-nightly": "nvim-nightly",
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
         "pyprland": "pyprland",

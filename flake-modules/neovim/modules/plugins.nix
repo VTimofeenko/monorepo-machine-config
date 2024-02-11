@@ -92,10 +92,10 @@ let
         vimPlugins.nvim-ufo # Adds LSP folds
         ./configs/ufo.lua
       ]
-      [
-        (mkPluginFromInput "nvim-devdocs") # devdocs.io inside nvim # TODO: pre-install the docs
-        ./configs/devdocs.lua
-      ]
+      # [
+      #   (mkPluginFromInput "nvim-devdocs") # devdocs.io inside nvim # TODO: pre-install the docs
+      #   ./configs/devdocs.lua
+      # ]
       [
         vimPlugins.nvim-colorizer-lua
         ./configs/colorizer.lua
