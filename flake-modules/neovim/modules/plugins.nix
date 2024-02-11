@@ -1,5 +1,10 @@
 # Main file where all plugins are configured
-{ pkgs, inputs }:
+{
+  pkgs,
+  inputs,
+  withLangServers ? false,
+  extraPlugins ? [ ],
+}:
 let
   common =
     builtins.attrValues {
@@ -20,35 +25,80 @@ let
     ++ [
       [
         vimPlugins.which-key-nvim
-        ./plugins-config/which-key.lua
+        ./configs/which-key.lua
       ]
       [
         vimPlugins.hop-nvim # Allows quickly jumping around the file
-        ./plugins-config/hop.lua
+        ./configs/hop.lua
       ]
       [
         (mkPluginFromInput "vim-scratch-plugin") # scratch buffer
-        ./plugins-config/scratch.lua
+        ./configs/scratch.lua
       ]
       [
         vimPlugins.todo-comments-nvim # Provides nice parsed TODO badges inline
-        ./plugins-config/todo-comments.lua
+        ./configs/todo-comments.lua
       ]
       [
         vimPlugins.luasnip
-        ./plugins-config/luasnip.lua
+        ./configs/luasnip.lua
       ]
       [
         vimPlugins.telescope-nvim
-        ./plugins-config/telescope.lua
+        ./configs/telescope.lua
       ]
       [
         vimPlugins.telescope-file-browser-nvim
-        ./plugins-config/telescope-file-browser.lua
+        ./configs/telescope-file-browser.lua
       ]
       [
         pkgs.vimPlugins.nvim-cmp
-        ./plugins-config/cmp.lua # TODO: lang-server specific completion
+        ./configs/cmp.lua # TODO: lang-server specific completion
+      ]
+    ];
+
+  langServerPlugins =
+    builtins.attrValues {
+      inherit (vimPlugins)
+        cmp-nvim-lsp # completions from LSP
+        hmts-nvim # highlights inside strings in Nix
+        vim-nickel
+        vim-nix # Needed at least for builtins. completions
+        ;
+      inherit (vimPlugins.nvim-treesitter) withAllGrammars;
+    }
+    ++ [
+      [
+        vimPlugins.nvim-treesitter # Treesitter itself
+        "require('nvim-treesitter.configs').setup { highlight = { enable = true }, }"
+      ]
+      [
+        vimPlugins.fidget-nvim # UI for LSP
+        "require('fidget').setup {}"
+      ]
+      [
+        vimPlugins.neodev-nvim
+        "require('neodev').setup({})" # TODO: there was something more
+      ]
+      [
+        vimPlugins.nvim-lspconfig # Helper for configuring LSP connections
+        ./configs/lspconfig.lua
+      ]
+      [
+        vimPlugins.nvim-treesitter-context # Adds LSP context on the top
+        ./configs/treesitter-context.lua
+      ]
+      [
+        vimPlugins.nvim-ufo # Adds LSP folds
+        ./configs/ufo.lua
+      ]
+      [
+        (mkPluginFromInput "nvim-devdocs") # devdocs.io inside nvim
+        ./configs/devdocs.lua
+      ]
+      [
+        vimPlugins.nvim-colorizer-lua
+        ./configs/colorizer.lua
       ]
     ];
 
@@ -88,6 +138,10 @@ let
     else
       builtins.abort "Not sure what to do with ${plugin}";
 
+  /* Create a plugin from input using the bound instance of `pkgs`.
+
+     Example: mkPluginFromInput input-flake -> derivation
+  */
   mkPluginFromInput =
     inputPlugin:
     pkgs.vimUtils.buildVimPlugin {
@@ -98,5 +152,7 @@ let
   inherit (pkgs) lib;
 in
 {
-  plugins = map normalizePlugin common;
+  plugins = map normalizePlugin (
+    common ++ (if withLangServers then langServerPlugins else [ ]) ++ extraPlugins
+  );
 }

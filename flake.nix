@@ -162,9 +162,8 @@
            The attribute names don't matter
         */
         publicFlakeModules = {
-          nvimModule = importApply ./flake-modules/vim { inherit withSystem self; };
           tmuxModule = importApply ./flake-modules/tmux { inherit withSystem self; };
-          newNvimModule = importApply ./flake-modules/new-nvim { inherit withSystem self; };
+          nvimModule = importApply ./flake-modules/neovim { inherit withSystem self; };
           zshModule = importApply ./flake-modules/zsh { inherit self; };
           gitModule = importApply ./flake-modules/git;
           hyprlandHelpersModule = importApply ./flake-modules/hyprland-helpers {

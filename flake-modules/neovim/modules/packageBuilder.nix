@@ -3,7 +3,8 @@
   neovimPkg,
   pkgs,
   plugins ? [ ],
-  initLua ? "",
+  initLua,
+  extraInitLua ? "",
   additionalPkgs ? [ ],
 }:
 let
@@ -11,7 +12,13 @@ let
 
   initLuaFile = pkgs.writeTextFile {
     name = "init.lua";
-    text = initLua + lib.concatMapStringsSep "\n" (plugin: (plugin.config or "")) plugins;
+    text = lib.concatStringsSep "\n" (
+      lib.flatten [
+        initLua
+        (map (plugin: (plugin.config or "")) plugins)
+        extraInitLua
+      ]
+    );
   };
 
   nvimConfig = pkgs.neovimUtils.makeNeovimConfig {

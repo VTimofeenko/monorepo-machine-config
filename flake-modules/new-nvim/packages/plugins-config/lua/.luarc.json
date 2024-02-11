@@ -1,8 +1,0 @@
-{
-    "workspace.library": [
-        "/nix/store/lfa9qsncyihfvdgmggld4dcrd40xzmpp-vimplugin-neodev.nvim-2023-05-22/types/stable",
-        "/nix/store/j9wxx953zyf6i67xmxrwm0358djbx8dz-neovim-unwrapped-0.9.1/share/nvim/runtime/lua",
-        "/home/spacecadet/code/temp-nvim-flake/modules/neovimBuilder/lua",
-        "${3rd}/luv/library"
-    ]
-}

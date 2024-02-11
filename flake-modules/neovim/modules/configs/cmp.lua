@@ -26,6 +26,8 @@ cmp.setup({
 		}),
 	},
 	sources = cmp.config.sources({
+		{ name = "luasnip" }, -- TODO: need conditional enablement
+		{ name = "nvim_lsp" }, -- TODO: need conditional enablement
 		{ name = "path" },
 		{ name = "buffer" },
 	}),

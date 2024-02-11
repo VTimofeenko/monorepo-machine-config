@@ -30,13 +30,23 @@
         imports = [
           # my-doom-config.nixosModules.default
           ../home-manager # (ref:linux-user-import)
+
+          # selfHMModules.vim
+          # {
+          #   programs.myNvim = {
+          #     enable = true;
+          #     withLangServers = true;
+          #   };
+          # }
+
           selfHMModules.vim
           {
-            programs.myNvim = {
+            programs.myNeovim = {
               enable = true;
               withLangServers = true;
             };
           }
+
           selfHMModules.zsh
           selfHMModules.git
           selfHMModules.emacs
