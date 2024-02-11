@@ -45,3 +45,6 @@ wk.register({ ["gF"] = { ":e <cfile><cr>", "Open file under cursor even if it do
 -- Quickfix quick jumps
 wk.register({ ["[q"] = { "<cmd>cprevious<cr>", "Quickfix previous" } })
 wk.register({ ["]q"] = { "<cmd>cnext<cr>", "Quickfix next" } })
+
+-- Escape -> clear search highlight
+vim.api.nvim_set_keymap("n", "<ESC>", ":noh<CR>", { noremap = true, silent = true })
