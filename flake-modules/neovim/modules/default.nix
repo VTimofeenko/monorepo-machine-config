@@ -66,7 +66,10 @@ in
       internal = true;
       readOnly = true;
       description = lib.mdDoc "Base init.lua";
-      default = import ./initLua.nix { inherit pkgs lib; };
+      default = import ./initLua.nix {
+        inherit pkgs lib;
+        colortheme = localFlake.data.my-colortheme; # Use the default values from my colorscheme
+      };
     };
     extraInitLua = mkOption {
       type = lib.types.str;
