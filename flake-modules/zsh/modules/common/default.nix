@@ -67,6 +67,8 @@ rec {
     }
     ++ [
       (pkgs.writeShellScriptBin "deploy-local" ''
+        set -euo pipefail
+
         if [[ $(grep -s ^NAME= /etc/os-release | sed 's/^.*=//') == "NixOS" ]]; then
           sudo nixos-rebuild switch --flake ''${DOTFILES_REPO_LOCATION}
         else # Not a NixOS machine
