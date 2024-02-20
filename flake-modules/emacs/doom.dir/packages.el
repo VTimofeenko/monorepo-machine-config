@@ -71,6 +71,8 @@
 (package! org-super-agenda)
 
 (package! vdirel)
+
+(package! org-ql)
 ;; TODO: telega.el
 
 ;; TODO: Org-ai
