@@ -11,6 +11,7 @@ let
     levelWarn
     levelErr
     ;
+  inherit (colortheme.raw) fg-alt;
 in
 lib.concatMapStringsSep "\n" builtins.readFile [
   ./configs/init/base.lua
@@ -40,4 +41,15 @@ lib.concatMapStringsSep "\n" builtins.readFile [
   local diagnosticErr = vim.api.nvim_get_hl(0, { name = "DiagnosticErr" })
   diagnosticErr["fg"] = "${levelErr."#hex"}"
   vim.api.nvim_set_hl(0, "DiagnosticErr", diagnosticErr)
+
+  -- Manpages
+  local manPageBold = vim.api.nvim_get_hl(0, { name = "manBold" })
+  manPageBold["fg"] = "${fg-alt."#hex"}"
+  vim.api.nvim_set_hl(0, "manBold", manPageBold)
+
+  -- General Title link
+  local title = vim.api.nvim_get_hl(0, { name = "Title" })
+  title["fg"] = "${fg-alt."#hex"}"
+  vim.api.nvim_set_hl(0, "Title", title)
+
 ''
