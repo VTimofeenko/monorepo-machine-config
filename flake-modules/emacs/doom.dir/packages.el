@@ -56,8 +56,6 @@
 (package! openwith)
 ;; To embed screenshots
 (package! org-download)
-;; Auto format nix files on save
-(package! nixpkgs-fmt)
 ;; Ability to read logs
 (package! logview)
 ;; SQL workbook
@@ -73,7 +71,5 @@
 (package! vdirel)
 
 (package! org-ql)
-;; TODO: telega.el
 
-;; TODO: Org-ai
-
+(package! org-ai)
