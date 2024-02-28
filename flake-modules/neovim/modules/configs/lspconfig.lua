@@ -8,6 +8,7 @@ wk.register({
 	r = { vim.lsp.buf.rename, "LSP rename" },
 	a = { vim.lsp.buf.code_action, "LSP code actions" },
 	f = { vim.lsp.buf.format, "LSP format" },
+	t = { require("telescope.builtin").treesitter, "Treesitter symbols" },
 }, { prefix = "<localleader>" })
 
 wk.register({
