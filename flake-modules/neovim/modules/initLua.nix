@@ -22,6 +22,7 @@ lib.concatMapStringsSep "\n" builtins.readFile [
   vim.opt.clipboard = 'unnamed${if pkgs.stdenv.isLinux then "plus" else ""}'
 ''
 # My theme
+# TODO: add a nix-based generic function to override colors
 + ''
   -- Search highlights
   local searchResults = vim.api.nvim_get_hl(0, { name = "Search" })
