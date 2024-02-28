@@ -11,7 +11,7 @@ let
     levelWarn
     levelErr
     ;
-  inherit (colortheme.raw) fg-alt;
+  inherit (colortheme.raw) fg-alt slate;
 in
 lib.concatMapStringsSep "\n" builtins.readFile [
   ./configs/init/base.lua
@@ -46,6 +46,11 @@ lib.concatMapStringsSep "\n" builtins.readFile [
   local manPageBold = vim.api.nvim_get_hl(0, { name = "manBold" })
   manPageBold["fg"] = "${fg-alt."#hex"}"
   vim.api.nvim_set_hl(0, "manBold", manPageBold)
+
+  -- Statements
+  local statement = vim.api.nvim_get_hl(0, { name = "Statement" })
+  manPageBold["fg"] = "${slate."#hex"}"
+  vim.api.nvim_set_hl(0, "Statement", statement)
 
   -- General Title link
   local title = vim.api.nvim_get_hl(0, { name = "Title" })
