@@ -15,7 +15,6 @@ wk.register({
 		end,
 		"Look around in the current dir",
 	},
-	["b"] = { require("telescope.builtin").buffers, "Buffers" },
 	["/"] = {
 		function()
 			require("telescope.builtin").live_grep({ glob_pattern = "!*.lock" })

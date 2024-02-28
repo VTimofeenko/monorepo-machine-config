@@ -58,3 +58,13 @@ wk.register({
 		R = { "<cmd>set readonly!<cr>", "Toggle read-only flag" },
 	},
 }, { prefix = "<leader>" })
+
+wk.register({
+	b = {
+		b = { require("telescope.builtin").buffers, "Buffer selector" },
+		d = { "<cmd>bd<cr>", "Close buffer" },
+		["["] = { "<cmd>bprevious<cr>", "Previous buffer" },
+		["]"] = { "<cmd>bnext<cr>", "Next buffer" },
+		"+buffer",
+	},
+}, { prefix = "<leader>" })
