@@ -14,6 +14,12 @@ let hexHelpers = {
   convert = fun hex => [firstChar, lastChar] |> std.array.map (fun f => f hex) |> std.array.reduce_left (+)
 }
 in
+let addFlippedFields = fun v =>
+  let flippedFields = ["hex", "#hex", "HEX", "#HEX"] in
+  let mkInsertFunction = fun field => std.record.insert "%{field}" (v |> std.record.map_values (fun val => val."%{field}")) in
+  v
+  |> std.array.fold_left (std.function.compose) std.function.id (std.array.map mkInsertFunction flippedFields)
+in
 {
   scheme =
     rawData
@@ -47,3 +53,4 @@ in
     }
     |> std.record.map (fun colorName colorValue => colorValue |> std.record.update "origName" colorValue.name |> std.record.update "name" colorName),
 }
+|> std.record.map_values (fun v => addFlippedFields v)
