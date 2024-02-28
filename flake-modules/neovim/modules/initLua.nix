@@ -4,14 +4,14 @@
   colortheme,
 }:
 let
-  inherit (colortheme.semantic)
+  inherit (colortheme.semantic."#hex")
     foundTextBg
     foundTextFg
     levelInfo
     levelWarn
     levelErr
     ;
-  inherit (colortheme.raw) fg-alt slate;
+  inherit (colortheme.raw."#hex") fg-alt slate;
 in
 lib.concatMapStringsSep "\n" builtins.readFile [
   ./configs/init/base.lua
@@ -26,36 +26,36 @@ lib.concatMapStringsSep "\n" builtins.readFile [
 + ''
   -- Search highlights
   local searchResults = vim.api.nvim_get_hl(0, { name = "Search" })
-  searchResults["fg"] = "${foundTextFg."#hex"}"
-  searchResults["bg"] = "${foundTextBg."#hex"}"
+  searchResults["fg"] = "${foundTextFg}"
+  searchResults["bg"] = "${foundTextBg}"
   vim.api.nvim_set_hl(0, "Search", searchResults)
 
   -- Diagnostic signs
   local diagnosticInfo = vim.api.nvim_get_hl(0, { name = "DiagnosticInfo" })
-  diagnosticInfo["fg"] = "${levelInfo."#hex"}"
+  diagnosticInfo["fg"] = "${levelInfo}"
   vim.api.nvim_set_hl(0, "DiagnosticInfo", diagnosticInfo)
 
   local diagnosticWarn = vim.api.nvim_get_hl(0, { name = "DiagnosticWarn" })
-  diagnosticWarn["fg"] = "${levelWarn."#hex"}"
+  diagnosticWarn["fg"] = "${levelWarn}"
   vim.api.nvim_set_hl(0, "DiagnosticWarn", diagnosticWarn)
 
   local diagnosticErr = vim.api.nvim_get_hl(0, { name = "DiagnosticErr" })
-  diagnosticErr["fg"] = "${levelErr."#hex"}"
+  diagnosticErr["fg"] = "${levelErr}"
   vim.api.nvim_set_hl(0, "DiagnosticErr", diagnosticErr)
 
   -- Manpages
   local manPageBold = vim.api.nvim_get_hl(0, { name = "manBold" })
-  manPageBold["fg"] = "${fg-alt."#hex"}"
+  manPageBold["fg"] = "${fg-alt}"
   vim.api.nvim_set_hl(0, "manBold", manPageBold)
 
   -- Statements
   local statement = vim.api.nvim_get_hl(0, { name = "Statement" })
-  statement["fg"] = "${slate."#hex"}"
+  statement["fg"] = "${slate}"
   vim.api.nvim_set_hl(0, "Statement", statement)
 
   -- General Title link
   local title = vim.api.nvim_get_hl(0, { name = "Title" })
-  title["fg"] = "${fg-alt."#hex"}"
+  title["fg"] = "${fg-alt}"
   vim.api.nvim_set_hl(0, "Title", title)
 
 ''
