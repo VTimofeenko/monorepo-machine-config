@@ -49,7 +49,7 @@ lib.concatMapStringsSep "\n" builtins.readFile [
 
   -- Statements
   local statement = vim.api.nvim_get_hl(0, { name = "Statement" })
-  manPageBold["fg"] = "${slate."#hex"}"
+  statement["fg"] = "${slate."#hex"}"
   vim.api.nvim_set_hl(0, "Statement", statement)
 
   -- General Title link
