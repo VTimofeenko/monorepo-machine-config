@@ -1,1 +1,4 @@
-{ ... }: { imports = [ ./kea.nix ]; }
+{ ... }:
+{
+  imports = [ ./kea.nix ];
+}
