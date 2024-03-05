@@ -5,7 +5,9 @@
         "darwin": [
           "stub-flake"
         ],
-        "home-manager": "home-manager",
+        "home-manager": [
+          "home-manager"
+        ],
         "nixpkgs": [
           "nixpkgs-unstable"
         ],
@@ -123,7 +125,9 @@
         "nixpkgs-stable": [
           "nixpkgs-stable"
         ],
-        "nixpkgs-unstable": "nixpkgs-unstable",
+        "nixpkgs-unstable": [
+          "nixpkgs-unstable"
+        ],
         "pre-commit-hooks-nix": [
           "pre-commit-hooks-nix"
         ],
@@ -512,27 +516,6 @@
     },
     "home-manager": {
       "inputs": {
-        "nixpkgs": [
-          "agenix",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1703113217,
-        "narHash": "sha256-7ulcXOk63TIT2lVDSExj7XzFx09LpdSAPtvgtM7yQPE=",
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "3bfaacf46133c037bb356193bd2f1765d9dc82c1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "type": "github"
-      }
-    },
-    "home-manager_2": {
-      "inputs": {
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
@@ -550,7 +533,7 @@
         "type": "github"
       }
     },
-    "home-manager_3": {
+    "home-manager_2": {
       "inputs": {
         "nixpkgs": "nixpkgs_10"
       },
@@ -913,21 +896,6 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1706550542,
-        "narHash": "sha256-UcsnCG6wx++23yeER4Hg18CXWbgNpqNXcHIo5/1Y+hc=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "97b17f32362e475016f942bbdfda4a4a72a8a652",
-        "type": "github"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "ref": "nixos-unstable",
-        "type": "indirect"
-      }
-    },
-    "nixpkgs-unstable_2": {
-      "locked": {
         "lastModified": 1709237383,
         "narHash": "sha256-cy6ArO4k5qTx+l5o+0mL9f5fa86tYUX3ozE1S+Txlds=",
         "owner": "NixOS",
@@ -1233,7 +1201,7 @@
         "disko": "disko",
         "docspell-flake": "docspell-flake",
         "flake-parts": "flake-parts",
-        "home-manager": "home-manager_2",
+        "home-manager": "home-manager",
         "hostsBlockList": "hostsBlockList",
         "hyprland": "hyprland",
         "kroki-src": "kroki-src",
@@ -1243,7 +1211,7 @@
         "nixpkgs": "nixpkgs_5",
         "nixpkgs-lib": "nixpkgs-lib",
         "nixpkgs-stable": "nixpkgs-stable",
-        "nixpkgs-unstable": "nixpkgs-unstable_2",
+        "nixpkgs-unstable": "nixpkgs-unstable",
         "nur": "nur",
         "nvim-nightly": "nvim-nightly",
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
@@ -1619,7 +1587,7 @@
         "crane": "crane_2",
         "devshell": "devshell_2",
         "flake-parts": "flake-parts_4",
-        "home-manager": "home-manager_3",
+        "home-manager": "home-manager_2",
         "hyprland": "hyprland_2",
         "nixpkgs": "nixpkgs_12",
         "xremap": "xremap"

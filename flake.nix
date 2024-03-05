@@ -14,6 +14,7 @@
       inputs = {
         nixpkgs.follows = "nixpkgs-unstable";
         darwin.follows = "stub-flake";
+        home-manager.follows = "home-manager";
       };
     };
 
@@ -116,6 +117,7 @@
         devshell.follows = "devshell";
         nixpkgs-lib.follows = "nixpkgs-lib";
         nixpkgs-stable.follows = "nixpkgs-stable";
+        nixpkgs-unstable.follows = "nixpkgs-unstable";
         pre-commit-hooks-nix.follows = "pre-commit-hooks-nix";
         flake-parts.follows = "flake-parts";
         nixpkgs.follows = "nixpkgs-unstable";
