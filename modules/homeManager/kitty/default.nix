@@ -24,6 +24,7 @@ _: {
     keybindings = {
       # Opens a new Kitty window in the current working directory
       "kitty_mod+enter" = "launch --cwd=current";
+      "kitty_mod+i" = "set_tab_title";
     };
   };
 }
