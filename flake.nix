@@ -306,6 +306,7 @@
                   ;
               };
             };
+            checks = import ./checks { inherit self pkgs lib; };
           };
         flake =
           let
