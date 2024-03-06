@@ -20,5 +20,5 @@
     };
   };
 
-  environment.systemPackages = [ pkgs.nix-melt ];
+  environment.systemPackages = builtins.attrValues { inherit (pkgs) nix-melt nix-top; };
 }
