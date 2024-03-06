@@ -1,5 +1,6 @@
 { nixpkgs-stable, nixpkgs-unstable }:
-_: {
+{ pkgs, ... }:
+{
   # Allow unfree packages across the board
   nixpkgs.config.allowUnfree = true;
   nix = {
@@ -18,4 +19,6 @@ _: {
       nu.flake = nixpkgs-unstable;
     };
   };
+
+  environment.systemPackages = [ pkgs.nix-melt ];
 }
