@@ -149,7 +149,7 @@
     };
 
     docspell-flake = {
-      url = "github:eikek/docspell?dir=nix";
+      url = "github:eikek/docspell";
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
   };
