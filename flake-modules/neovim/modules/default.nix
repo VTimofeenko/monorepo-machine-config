@@ -105,7 +105,6 @@ in
               {
                 inherit (pkgs-unstable)
                   nil # Nix lang server
-                  rnix-lsp # TODO: check if needed?
                   rust-analyzer # Rust lang server
                   nls # Nickel language server
                   shellcheck # For shell files
