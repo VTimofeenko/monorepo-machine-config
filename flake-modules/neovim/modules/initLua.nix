@@ -58,4 +58,10 @@ lib.concatMapStringsSep "\n" builtins.readFile [
   title["fg"] = "${fg-alt}"
   vim.api.nvim_set_hl(0, "Title", title)
 
+  -- Type
+  local typeHl = vim.api.nvim_get_hl(0, { name = "Type" })
+  typeHl["fg"] = "LightGreen"
+  typeHl["underline"] = true
+  vim.api.nvim_set_hl(0, "Type", typeHl)
+
 ''
