@@ -62,6 +62,16 @@
       url = "github:mtth/scratch.vim";
       flake = false;
     };
+    nvim-ufo = {
+      # TODO: drop this when nixpkgs bumps the version
+      url = "github:kevinhwang91/nvim-ufo";
+      flake = false;
+    };
+    promise-async = {
+      # TODO: drop this when nixpkgs bumps the nvim-ufo
+      url = "github:kevinhwang91/promise-async";
+      flake = false;
+    };
     # Disable for now, need to find alternative
     # nvim-devdocs = {
     #   url = "github:luckasRanarison/nvim-devdocs";

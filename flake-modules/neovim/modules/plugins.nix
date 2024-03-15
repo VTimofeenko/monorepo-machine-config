@@ -89,7 +89,11 @@ let
         ./configs/treesitter-context.lua
       ]
       [
-        vimPlugins.nvim-ufo # Adds LSP folds
+        (mkPluginFromInput "promise-async") # TODO: remove when fix for nvim-ufo lands in nix
+        "" # Stub config
+      ]
+      [
+        (mkPluginFromInput "nvim-ufo") # TODO: unpin when fix lands in nix
         ./configs/ufo.lua
       ]
       # [
