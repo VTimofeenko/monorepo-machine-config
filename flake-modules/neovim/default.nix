@@ -1,11 +1,12 @@
-/* Flake-module entry point for neovim configuration.
+/*
+  Flake-module entry point for neovim configuration.
 
-   It provides outputs for:
+  It provides outputs for:
 
-   - base neovim package with some plugins
-   - neovim package with language servers
-   - nixOS module for installing neovim
-   - home-manager module for installing neovim
+  - base neovim package with some plugins
+  - neovim package with language servers
+  - nixOS module for installing neovim
+  - home-manager module for installing neovim
 */
 { withSystem, self }:
 {

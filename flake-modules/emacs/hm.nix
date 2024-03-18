@@ -39,9 +39,10 @@ in
           ))
         ]
         ++
-          /* External dependencies.
+          /*
+            External dependencies.
 
-             NOTE: According to https://github.com/NixOS/nixpkgs/issues/267548 this sometimes breaks
+            NOTE: According to https://github.com/NixOS/nixpkgs/issues/267548 this sometimes breaks
           */
           builtins.attrValues {
             inherit (pkgs)
@@ -97,9 +98,10 @@ in
 
   # TODO: add all icons font?
 
-  /* This activation script will check out doom-emacs into a pre-defined directory
+  /*
+    This activation script will check out doom-emacs into a pre-defined directory
 
-     It should check if the directory exist and become a no-op if it does ('true' part)
+    It should check if the directory exist and become a no-op if it does ('true' part)
   */
   # TODO: only if Linux
   home.activation.gitCheckoutDoom = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

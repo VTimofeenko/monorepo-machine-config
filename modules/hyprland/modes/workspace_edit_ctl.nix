@@ -1,6 +1,5 @@
 # [[file:../../../new_project.org::*Workspace_edit][Workspace_edit:1]]
 # TODO: Implement
-_:
-{ }
+_: { }
 
 # Workspace_edit:1 ends here

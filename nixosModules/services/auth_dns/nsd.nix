@@ -9,9 +9,8 @@ in
     enable = true;
     inherit (thisSrvConfig) port;
     interfaces = [ "127.0.0.1" ];
-    zones =
-      lib.mapAttrs
-        (domain: recordsData: { data = srvLib.mkZoneData { inherit domain recordsData lib; }; })
-        thisSrvConfig.zoneRecords;
+    zones = lib.mapAttrs (domain: recordsData: {
+      data = srvLib.mkZoneData { inherit domain recordsData lib; };
+    }) thisSrvConfig.zoneRecords;
   };
 }

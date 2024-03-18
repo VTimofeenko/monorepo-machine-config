@@ -22,17 +22,15 @@ let
 
   pluginsType =
     with lib.types;
-    listOf attrsOf (
-      submodule {
-        options = {
-          pkg = lib.mkOption { type = package; };
-          config = lib.mkOption {
-            type = str;
-            description = lib.mdDoc "Plugin-related config snippet.";
-          };
+    listOf attrsOf (submodule {
+      options = {
+        pkg = lib.mkOption { type = package; };
+        config = lib.mkOption {
+          type = str;
+          description = lib.mdDoc "Plugin-related config snippet.";
         };
-      }
-    );
+      };
+    });
 
   # Decide where to add the packages
   outer = if mode == "homeManager" then "home" else "environment";

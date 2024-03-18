@@ -56,17 +56,15 @@
           workspaceMembers = (builtins.fromTOML (builtins.readFile ./src/Cargo.toml)).workspace.members;
           # Constructs an attrset with packages taken from workspace members. This is used to expose them in the flake output
           workspaceNixPackages = builtins.listToAttrs (
-            map
-              (name: {
-                inherit name;
-                value = craneLib.buildPackage {
-                  inherit src cargoArtifacts version;
-                  pname = name;
-                  cargoExtraArgs = "-p ${name}";
-                  meta.mainProgram = name;
-                };
-              })
-              workspaceMembers
+            map (name: {
+              inherit name;
+              value = craneLib.buildPackage {
+                inherit src cargoArtifacts version;
+                pname = name;
+                cargoExtraArgs = "-p ${name}";
+                meta.mainProgram = name;
+              };
+            }) workspaceMembers
           );
         in
         {
@@ -80,7 +78,9 @@
         // workspaceNixPackages
       );
 
-      devShells = withSystem system (_: { rust = craneLib.devShell { }; });
+      devShells = withSystem system (_: {
+        rust = craneLib.devShell { };
+      });
 
       # Pre-commit hooks
       pre-commit.settings = {

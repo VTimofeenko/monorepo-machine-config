@@ -38,19 +38,18 @@ in
     ''
       ${device_name} UUID=${UUID} - ${luksOpts}
     '';
-  /* * Plucks an attribute from nested attrset, returing a list of values
+  /*
+    * Plucks an attribute from nested attrset, returing a list of values
 
-        Example:
-          pluck "foo" { a = { foo = 1; }; b = { bar = 2; }; c = { foo = 3; }; }
-          => [ 1 3 ]
-        Type:
-          pluck :: String -> AttrSet -> [ Any ]
+       Example:
+         pluck "foo" { a = { foo = 1; }; b = { bar = 2; }; c = { foo = 3; }; }
+         => [ 1 3 ]
+       Type:
+         pluck :: String -> AttrSet -> [ Any ]
   */
   pluck =
     attrName: attrSet:
     lib.catAttrs attrName
       # Strip the outer keys and turn into a list
-      (
-        builtins.map (x: x.value) (lib.attrsets.attrsToList attrSet)
-      );
+      (builtins.map (x: x.value) (lib.attrsets.attrsToList attrSet));
 }

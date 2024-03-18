@@ -28,29 +28,31 @@ in
 
   services.home-assistant = {
     # Using the latest version from unstable
-    package = (pkgs-unstable.home-assistant.overrideAttrs (_: { doInstallCheck = false; })).override {
-      packageOverrides = _: super: {
-        python-telegram-bot = super.python-telegram-bot.overridePythonAttrs (
-          oldAttrs: {
-            version = "13.1";
-            src = pkgs.fetchPypi {
-              inherit (oldAttrs) pname;
+    package =
+      (pkgs-unstable.home-assistant.overrideAttrs (_: {
+        doInstallCheck = false;
+      })).override
+        {
+          packageOverrides = _: super: {
+            python-telegram-bot = super.python-telegram-bot.overridePythonAttrs (oldAttrs: {
               version = "13.1";
-              hash = "sha256-X+67CO0I17cc60wFNyufaiHYOZS1AY2xEVCXZYgcgoI=";
-            };
-            doCheck = false;
-            dontCheckRuntimeDeps = true; # I only need Telegram for outbound notifications. This will probably break polling code.
-            propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ [
-              super.certifi
-              super.future
-              super.urllib3
-              super.tornado
-              super.decorator
-            ];
-          }
-        );
-      };
-    };
+              src = pkgs.fetchPypi {
+                inherit (oldAttrs) pname;
+                version = "13.1";
+                hash = "sha256-X+67CO0I17cc60wFNyufaiHYOZS1AY2xEVCXZYgcgoI=";
+              };
+              doCheck = false;
+              dontCheckRuntimeDeps = true; # I only need Telegram for outbound notifications. This will probably break polling code.
+              propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ [
+                super.certifi
+                super.future
+                super.urllib3
+                super.tornado
+                super.decorator
+              ];
+            });
+          };
+        };
 
     enable = true;
     extraComponents = [

@@ -108,15 +108,16 @@ let
 
   inherit (pkgs) vimPlugins;
 
-  /* Takes a list of plugins and transforms it for downstream compatibility
+  /*
+    Takes a list of plugins and transforms it for downstream compatibility
 
-     If an element is just a derivation -- turn it into attrset with  single "pkg" element and empty "config"
+    If an element is just a derivation -- turn it into attrset with  single "pkg" element and empty "config"
 
-     If an element is a list, turn it into an attrset:
-       1. Take the first element, use it for "pkg" attribute
-       2. Take the second element, put it into "config" attribute:
-         - If it's a path -- read the file
-         - If it's a string -- leave as is
+    If an element is a list, turn it into an attrset:
+      1. Take the first element, use it for "pkg" attribute
+      2. Take the second element, put it into "config" attribute:
+        - If it's a path -- read the file
+        - If it's a string -- leave as is
   */
   normalizePlugin =
     plugin:
@@ -142,9 +143,10 @@ let
     else
       builtins.abort "Not sure what to do with ${plugin}";
 
-  /* Create a plugin from input using the bound instance of `pkgs`.
+  /*
+    Create a plugin from input using the bound instance of `pkgs`.
 
-     Example: mkPluginFromInput input-flake -> derivation
+    Example: mkPluginFromInput input-flake -> derivation
   */
   mkPluginFromInput =
     inputPlugin:

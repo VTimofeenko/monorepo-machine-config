@@ -35,15 +35,13 @@ in
     +
 
       lib.concatStringsSep "\n" (
-        lib.mapAttrsToList
-          (
-            domainName: recordValue:
-            if recordsData.recordType == "CNAME" then
-              mkCNAMERecord domainName recordValue
-            else
-              mkARecord domainName recordValue
-          )
-          recordsData.data
+        lib.mapAttrsToList (
+          domainName: recordValue:
+          if recordsData.recordType == "CNAME" then
+            mkCNAMERecord domainName recordValue
+          else
+            mkARecord domainName recordValue
+        ) recordsData.data
       )
     + "\n\n" # WARN: LEAVE IN PLACE
   ;

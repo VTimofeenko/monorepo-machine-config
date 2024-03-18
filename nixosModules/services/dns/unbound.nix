@@ -109,13 +109,10 @@ in
         }
       ];
       # Ask NSD for data on entries in the custom zones
-      stub-zone =
-        map
-          (zone: {
-            name = zone;
-            stub-addr = [ "127.0.0.1@${toString config.services.nsd.port}" ];
-          })
-          zones;
+      stub-zone = map (zone: {
+        name = zone;
+        stub-addr = [ "127.0.0.1@${toString config.services.nsd.port}" ];
+      }) zones;
 
       # Designated upstream
       forward-zone = [

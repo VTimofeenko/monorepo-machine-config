@@ -58,11 +58,9 @@ in
 
     "# Plugins"
     (lib.concatStrings (
-      map
-        (x: ''
-          run-shell ${x.rtp}
-        '')
-        plugins
+      map (x: ''
+        run-shell ${x.rtp}
+      '') plugins
     ))
   ];
 }

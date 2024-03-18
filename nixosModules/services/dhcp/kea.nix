@@ -41,13 +41,10 @@ in
             }
           ];
           # Static DHCP assignments
-          reservations =
-            lib.attrsets.mapAttrsToList
-              (_: hostData: {
-                hw-address = hostData.macAddr;
-                ip-address = hostData.ipAddress;
-              })
-              lan.hostsInNetwork;
+          reservations = lib.attrsets.mapAttrsToList (_: hostData: {
+            hw-address = hostData.macAddr;
+            ip-address = hostData.ipAddress;
+          }) lan.hostsInNetwork;
         }
       ];
       option-data = [

@@ -103,13 +103,15 @@ in
         exec-once = systemdctl --user start set-random-wallpaper.service
         env = LIBVA_DRIVER_NAME,${if hostName == "neptunium" then "nvidia" else "radeonsi"}
         env = XDG_SESSION_TYPE,wayland
-        ${if hostName == "neptunium" then
-          ''
-            env = GBM_BACKEND,nvidia-drm
-            env = __GLX_VENDOR_LIBRARY_NAME,nvidia
-          ''
-        else
-          ""}
+        ${
+          if hostName == "neptunium" then
+            ''
+              env = GBM_BACKEND,nvidia-drm
+              env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+            ''
+          else
+            ""
+        }
         env = WLR_NO_HARDWARE_CURSORS,1
 
         # Some default env vars.

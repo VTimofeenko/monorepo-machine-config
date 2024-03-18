@@ -170,9 +170,10 @@
       let
         inherit (inputs.nixpkgs-lib) lib; # A faster way to propagate lib to certain modules
         inherit (flake-parts-lib) importApply;
-        /* Import the public flake modules.
+        /*
+          Import the public flake modules.
 
-           The attribute names don't matter
+          The attribute names don't matter
         */
         publicFlakeModules = {
           tmuxModule = importApply ./flake-modules/tmux { inherit withSystem self; };
@@ -227,11 +228,12 @@
             overlayAttrs = config.packages;
             legacyPackages.homeConfigurations =
               let
-                /* Create the default homeManagerConfiguration with inherited pkgs.
+                /*
+                  Create the default homeManagerConfiguration with inherited pkgs.
 
-                   The provided attrset will be merged into the homeManagerConfiguration.
+                  The provided attrset will be merged into the homeManagerConfiguration.
 
-                    Type: mkHmc :: attrset -> home-manger.lib.homeManagerConfiguration
+                   Type: mkHmc :: attrset -> home-manger.lib.homeManagerConfiguration
                 */
                 mkHmc =
                   attrset:
@@ -296,8 +298,9 @@
                 inherit pkgs;
                 src = inputs.hostsBlockList;
               };
-              /* Nitrocli pinned to more current nixpkgs to save on rebuilding.
-                   Needed occasionally so not part of the world.
+              /*
+                Nitrocli pinned to more current nixpkgs to save on rebuilding.
+                  Needed occasionally so not part of the world.
               */
               nitrocli = inputs'.nitrocli.packages.default;
               # Package with some services icons
@@ -353,16 +356,13 @@
                 };
               in
               # Iterates over the attrset of managed nodes, creating the nixosConfigurations per machine
-              (builtins.mapAttrs
-                (
-                  _: hostData:
-                  homelab.mkSystem {
-                    inherit hostData specialArgs;
-                    inherit (inputs) data-flake;
-                  }
-                )
-                inputs.data-flake.data.hosts.managed
-              )
+              (builtins.mapAttrs (
+                _: hostData:
+                homelab.mkSystem {
+                  inherit hostData specialArgs;
+                  inherit (inputs) data-flake;
+                }
+              ) inputs.data-flake.data.hosts.managed)
               // {
                 neutronium-x86_64 = inputs.nixpkgs.lib.nixosSystem {
                   system = "x86_64-linux";
@@ -406,20 +406,18 @@
               };
             deploy.nodes =
               lib.recursiveUpdate
-                (builtins.mapAttrs
-                  (
-                    hostName: hostData:
-                    homelab.mkDeployRsNode {
-                      nodeName = hostData.hostName;
-                      inherit (hostData) system;
-                    }
-                  )
-                  inputs.data-flake.data.hosts.managed
-                )
+                (builtins.mapAttrs (
+                  hostName: hostData:
+                  homelab.mkDeployRsNode {
+                    nodeName = hostData.hostName;
+                    inherit (hostData) system;
+                  }
+                ) inputs.data-flake.data.hosts.managed)
                 {
-                  /* Temporary overrides can be configured here like so:
+                  /*
+                    Temporary overrides can be configured here like so:
 
-                     hydrogen.hostname = "192.168.1.1";
+                    hydrogen.hostname = "192.168.1.1";
                   */
                 };
             overlays.homelab =

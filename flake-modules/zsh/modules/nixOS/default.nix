@@ -26,9 +26,9 @@ in
         + concatMapStringsSep "\n" (plugin: "autoload -Uz ${plugin}.zsh && ${plugin}.zsh") list
       )
       + "\n"
-      + (concatMapStringsSep "\n" (plugin: "source ${plugin.src}/${plugin.file}")
-        commonSettings.packagePlugins
-      );
+      + (concatMapStringsSep "\n" (
+        plugin: "source ${plugin.src}/${plugin.file}"
+      ) commonSettings.packagePlugins);
     inherit (commonSettings) shellAliases;
     syntaxHighlighting = {
       enable = true;

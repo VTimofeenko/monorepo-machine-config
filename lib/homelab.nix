@@ -41,9 +41,9 @@
               specialArgs.selfModules.zsh
               specialArgs.selfModules.tmux
             ]
-            ++ (map (module: ../nixosModules/services + "/${module}")
-              data-flake.data.hosts.all.${hostName}.modulesAt.public
-            ) # NOTE: Needs default.nix in the service directory
+            ++ (map (
+              module: ../nixosModules/services + "/${module}"
+            ) data-flake.data.hosts.all.${hostName}.modulesAt.public) # NOTE: Needs default.nix in the service directory
           ;
         }
       ];
@@ -51,15 +51,16 @@
         localLib = import ../nixosModules/localLib { inherit lib; };
       }; # nixos-hardware is passed this way
     };
-  /* Returns attrset in format expected by deploy-rs.
+  /*
+    Returns attrset in format expected by deploy-rs.
 
-     Example:
-     mkDeployRsNode {nodeName = "foo-node"; system = "x86_64-linux"; }: {
-     profiles.system = {
-       user = "root";
-       path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.foo-node;
-     };
-     }
+    Example:
+    mkDeployRsNode {nodeName = "foo-node"; system = "x86_64-linux"; }: {
+    profiles.system = {
+      user = "root";
+      path = deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.foo-node;
+    };
+    }
   */
   mkDeployRsNode =
     { nodeName, system }:

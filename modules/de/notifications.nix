@@ -2,18 +2,19 @@
 # Home-manager module for swaync
 { pkgs, lib, ... }:
 {
-  /* Removed piece
-        "scripts": {
-          "example-script": {
-            "exec": "echo 'Do something...'",
-            "urgency": "Normal"
-          },
-          "example-action-script": {
-            "exec": "echo 'Do something actionable!'",
-            "urgency": "Normal",
-            "run-on": "action"
-          }
-        },
+  /*
+    Removed piece
+       "scripts": {
+         "example-script": {
+           "exec": "echo 'Do something...'",
+           "urgency": "Normal"
+         },
+         "example-action-script": {
+           "exec": "echo 'Do something actionable!'",
+           "urgency": "Normal",
+           "run-on": "action"
+         }
+       },
   */
   xdg.configFile."swaync/config.json".text =
     # Taken from swaync 0.8.0
