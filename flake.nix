@@ -431,6 +431,10 @@
 
             homeManagerModules = {
               kitty = import ./modules/homeManager/kitty;
+              nix-config = importApply ./nixosModules/nix {
+                inherit (inputs) nixpkgs-stable nixpkgs-unstable;
+                inHomeManager = true;
+              };
             };
 
             templates.default = {
