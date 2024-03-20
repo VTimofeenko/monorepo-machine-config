@@ -20,7 +20,7 @@ local levelMap = {
 	-- Three level urgency system
 	["Info"] = { "Todo", "Note" },
 	["Warn"] = { "Warn", "Perf", "Test" },
-	["Error"] = { "Fix", "Hack" },
+	["Err"] = { "Fix", "Hack" },
 }
 
 -- override the links
