@@ -5,9 +5,6 @@ let
   inherit (config.my-colortheme) semantic;
 in
 rec {
-  # TODO: style fzf (needs semantic styles)
-  # TODO: After 23.11 -- fzf-preview with kitty
-
   # Shell aliases
   shellAliases = {
     e = "$EDITOR";
@@ -90,7 +87,6 @@ rec {
     # Enable all options
     (concatMapStringsSep "\n" (opt: "setopt ${opt}") additionalOptions)
     # Source default fzf bindings
-    # TODO: style fzf
     "source ${pkgs.fzf}/share/fzf/key-bindings.zsh"
     ''
       # Word Navigation shortcuts
