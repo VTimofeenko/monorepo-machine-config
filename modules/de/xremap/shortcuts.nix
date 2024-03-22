@@ -92,17 +92,25 @@ in
         };
       }
       {
+        name = "Emacs-only paste";
+        application.only = [ "Emacs" ];
+        remap."SUPER-v" = "Shift-insert";
+      }
+
+      {
         name = "Global-like shortcuts for terminal and emacs";
-        application = {
-          "only" = consoleLikeApps;
-        };
+        application.only = [
+          "kitty"
+          "kitty-dropterm"
+        ];
         remap = {
           # Copy
           "SUPER-c" = "C-Shift-c";
           # Paste
-          "SUPER-v" = "Shift-insert";
+          "SUPER-v" = "C-Shift-v";
         };
       }
+
       {
         name = "Close stuff by super-w";
         application = {
