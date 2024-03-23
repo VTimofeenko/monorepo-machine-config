@@ -92,6 +92,28 @@ in
       };
     };
 
+  systemd.user.services.wl-clip-persist =
+    let
+      target = "graphical-session.target";
+    in
+    {
+      Unit = {
+        Description = "Keep the clipboard content after original owner exited";
+        PartOf = [ target ];
+        After = [ target ];
+        BindsTo = [ "hyprland-session.target" ];
+        ConditionEnvironment = "WAYLAND_DISPLAY";
+      };
+      Service = {
+        Type = "simple";
+        ExecStart = "${lib.getExe pkgs.wl-clip-persist} --clipboard both";
+        Restart = "always";
+      };
+      Install = {
+        WantedBy = [ target ];
+      };
+    };
+
   wayland.windowManager.hyprland = {
     enable = true;
     systemdIntegration = true;
