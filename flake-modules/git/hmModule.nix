@@ -30,6 +30,7 @@ in
         # NOTE: Needs findutils xargs for -L1 argument
         pushall = "!git remote | ${pkgs.findutils}/bin/xargs -L1 git push --all";
         branch-note = "!git config branch.$(git symbolic-ref --short HEAD).note $( if [ $# -gt 0 ]; then $1; fi)";
+        dft = "difftool --tool=difftastic";
       };
       userEmail = "id@vtimofeenko.com";
       userName = "Vladimir Timofeenko";
@@ -41,11 +42,13 @@ in
         # where envrc stores its stuff
         ".direnv/"
       ];
-      extraConfig.url."https://github.com/" = {
-        insteadOf = [
+      extraConfig = {
+        url."https://github.com/".insteadOf = [
           "gh:"
           "github:"
         ];
+        "difftool \"difftastic\"".cmd = ''${getExe pkgs.difftastic} "$LOCAL" "$REMOTE"'';
+        difftool.prompt = false; # Disables 'launch $TOOLNAME' prompt
       };
       includes = [
         { path = "~/.config/git/local.d/gitconfig"; } # Local ad-hoc overrides for git config
