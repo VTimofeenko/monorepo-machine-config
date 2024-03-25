@@ -129,6 +129,10 @@ rec {
     ''
       mkcd(){ mkdir -p "$@" && cd "$@"; }
     ''
+    # alias that cd-s into a file's directory
+    ''
+      cdd(){ cd $(dirname $1)}
+    ''
     # alias that cd-s into nix package's directory in store
     ''
       cdnixpkg(){cd $(dirname $(readlink --canonicalize $(which $1)))}
