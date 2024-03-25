@@ -9,9 +9,9 @@
 }:
 let
   inherit (lib) getExe;
-  inherit (config.my-colortheme) semantic raw;
 
-  inherit (semantic) activeFrameBorder inactiveFrameBorder;
+  inherit (config.my-colortheme.semantic.hex) activeFrameBorder inactiveFrameBorder;
+  inherit (config.my-colortheme.raw.hex) fg-main;
 in
 {
   home.packages = builtins.attrValues { inherit (pkgs) git git-crypt; };
@@ -60,14 +60,14 @@ in
       enable = true;
       settings = {
         gui.theme = {
-          selectedLineBgColor = [ "#${inactiveFrameBorder.hex}" ];
-          selectedRangeBgColor = [ "#${inactiveFrameBorder.hex}" ];
+          selectedLineBgColor = [ "#${inactiveFrameBorder}" ];
+          selectedRangeBgColor = [ "#${inactiveFrameBorder}" ];
           activeBorderColor = [
-            "#${activeFrameBorder.hex}"
+            "#${activeFrameBorder}"
             "bold" # Otherwise strikethrough creeps in for some reason
           ];
-          inactiveBorderColor = [ "#${inactiveFrameBorder.hex}" ];
-          optionsTextColor = [ "#${raw.fg-main.hex}" ];
+          inactiveBorderColor = [ "#${inactiveFrameBorder}" ];
+          optionsTextColor = [ "#${fg-main}" ];
         };
         git.paging.pager = "${getExe pkgs.diff-so-fancy}";
       };
