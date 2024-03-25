@@ -1,4 +1,6 @@
-# Home manager module that configures git
+/**
+  Home manager module that configures git and related packages.
+*/
 {
   pkgs,
   lib,
@@ -72,4 +74,3 @@ in
     };
   };
 }
-# Git:1 ends here
