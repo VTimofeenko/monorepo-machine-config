@@ -264,7 +264,7 @@
                 "my-flake-modules"
                 "hostsBlockList"
                 "data-flake"
-                "neovim-nightly-overlay"
+                "nvim-nightly"
               ];
               bumpAllInputs = true;
             };
