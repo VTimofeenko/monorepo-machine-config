@@ -438,9 +438,15 @@
               };
             };
 
-            templates.default = {
-              path = ./templates/base;
-              description = "Base template for my projects";
+            templates = {
+              default = {
+                path = ./templates/base;
+                description = "Base template for my projects";
+              };
+              sample-check = {
+                path = ./templates/sample-check;
+                description = "Template for a sample check with home-manager.";
+              };
             };
           };
       }
