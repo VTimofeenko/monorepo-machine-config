@@ -110,6 +110,7 @@ in
                   glow # for markdown previews
                   stylua # for lua static checks
                   nixfmt-rfc-style
+                  marksman
                   ;
                 # inherit (pkgs-unstable)
                 inherit (pkgs.nodePackages)
