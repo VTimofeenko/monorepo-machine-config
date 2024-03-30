@@ -25,6 +25,8 @@ _: {
       # Opens a new Kitty window in the current working directory
       "kitty_mod+enter" = "launch --cwd=current";
       "kitty_mod+i" = "set_tab_title";
+      # Detach current window and ask where to move
+      "kitty_mod+d" = "detach_window ask";
     };
   };
 }
