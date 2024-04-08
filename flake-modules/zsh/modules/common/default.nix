@@ -36,6 +36,7 @@ rec {
     nrn = "nix repl -f flake:ns";
     nrs = "nix repl -f flake:ns";
     nru = "nix repl -f flake:nu"; # Unstable
+    nrlf = ''nix repl --expr "builtins.getFlake \"$PWD\""'';
   };
   # InteractiveShellInit?
   # List of shell-only packages
