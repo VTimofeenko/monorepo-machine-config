@@ -28,9 +28,6 @@ in
 
   services.home-assistant = {
     # Using the latest version from unstable
-    # FIXME: telegram needs 13a2db03486d402baab3ce681c25200415b5c229 merged
-    # Fix would need either an earlier pin for nixpkgs-unstable or a massive pin
-    # Python dependencies paired with vendored manifests are tough :(
     package = pkgs-unstable.home-assistant;
 
     enable = true;
