@@ -36,7 +36,14 @@ in
       "esphome"
       "met"
       "radio_browser"
+      "homekit_controller"
+      "zeroconf"
+      "mqtt"
+      "dhcp"
     ] ++ srvConfig.components;
+
+    # Build custom components. { } does not pass deps which is OK for now
+    customComponents = map (x: pkgs.callPackage x { }) [ ./customComponents/meross_lan.nix ];
 
     config = {
       default_config = { };
