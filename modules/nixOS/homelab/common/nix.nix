@@ -1,5 +1,10 @@
 # Nix the package manager config
-{ pkgs, self, ... }:
+{
+  pkgs,
+  self,
+  lib,
+  ...
+}:
 let
   inherit (self.inputs) nixpkgs-stable nixpkgs-unstable;
 in
@@ -11,6 +16,10 @@ in
       automatic = true;
       dates = "weekly";
       options = "--delete-older-than 7d";
+    };
+    optimise = {
+      automatic = true;
+      dates = lib.mkForce [ "weekly" ];
     };
     registry = {
       ns.flake = nixpkgs-stable;
