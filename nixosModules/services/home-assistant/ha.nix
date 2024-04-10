@@ -40,6 +40,7 @@ in
       "zeroconf"
       "mqtt"
       "dhcp"
+      "zha"
     ] ++ srvConfig.components;
 
     # Build custom components. { } does not pass deps which is OK for now
