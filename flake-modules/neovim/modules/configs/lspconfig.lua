@@ -201,6 +201,10 @@ end
 -- 'pluging.config.lspconfig' is from NvChad configuraion
 lspconfig.ltex.setup({
 	on_attach = on_attach,
+	-- start by hand only. Live checking is sluggish
+	-- start command
+	-- :lua require"lspconfig".ltex.setup{}
+	autostart = false,
 	-- capabilities = require("lspconfig").capabilities,
 	capabilities = caps,
 	filetypes = { "tex", "markdown" },
