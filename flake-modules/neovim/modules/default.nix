@@ -111,6 +111,7 @@ in
                   stylua # for lua static checks
                   nixfmt-rfc-style
                   marksman
+                  ltex-ls
                   ;
                 # inherit (pkgs-unstable)
                 inherit (pkgs.nodePackages)

@@ -109,3 +109,5 @@ require("lspconfig").lua_ls.setup({
 })
 
 require("lspconfig").marksman.setup({})
+
+require("lspconfig").ltex.setup({})
