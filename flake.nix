@@ -335,7 +335,10 @@
             inherit (inputs.my-flake-modules) flake-modules;
             nixosModules =
               let
-                nix-config = importApply ./nixosModules/nix { inherit (inputs) nixpkgs-stable nixpkgs-unstable; };
+                nix-config = importApply ./nixosModules/nix {
+                  inherit (inputs) nixpkgs-stable nixpkgs-unstable;
+                  inherit inputs;
+                };
               in
               {
                 default =
@@ -434,6 +437,7 @@
               kitty = import ./modules/homeManager/kitty;
               nix-config = importApply ./nixosModules/nix {
                 inherit (inputs) nixpkgs-stable nixpkgs-unstable;
+                inherit inputs;
                 inHomeManager = true;
               };
             };
