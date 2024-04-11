@@ -138,6 +138,12 @@ rec {
     ''
       cdnixpkg(){cd $(dirname $(readlink --canonicalize $(which $1)))}
     ''
+    # automatically open files with certain extensions in EDITOR
+    (concatMapStringsSep "\n" (ext: "alias -s ${ext}=$EDITOR") [
+      "nix"
+      "ncl"
+      "md"
+    ])
     # Debug stuff
     ''
       _debug_show_completions(){
