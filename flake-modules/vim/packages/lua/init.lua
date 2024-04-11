@@ -1,6 +1,5 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
-vim.g.spellfile = vim.fn.stdpath("data") .. "/site/spell/en.utf-8.add"
 
 local options = vim.opt
 -- These are on by default

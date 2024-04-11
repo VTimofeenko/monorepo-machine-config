@@ -58,5 +58,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "markdown" },
-	command = "setlocal conceallevel=3 textwidth=80 spell",
+	command = "setlocal conceallevel=3 textwidth=80 spell spellfile="
+		.. vim.fn.stdpath("data")
+		.. "/site/spell/en.utf-8.add",
 })
