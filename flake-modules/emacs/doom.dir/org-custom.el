@@ -1,6 +1,6 @@
 ;; Fancy priorities mode
 (after! org-fancy-priorities
-  (setq org-fancy-priorities-list '("↑" "←" "↓")))
+  (setq org-fancy-priorities-list '("↗" "→" "↘")))
 
 (after! org (org-fancy-priorities-mode))
 
