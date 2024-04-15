@@ -10,13 +10,7 @@ let
   homeassistantUser = config.systemd.services.home-assistant.serviceConfig.User;
 
   # This approach makes openssl permitted only in this module
-  pkgs-unstable = import nixpkgs-unstable {
-    inherit (pkgs) system;
-    config.permittedInsecurePackages = [
-      # Needed by home assistant
-      "openssl-1.1.1w"
-    ];
-  };
+  pkgs-unstable = import nixpkgs-unstable { inherit (pkgs) system; };
 in
 {
   # Secrets
