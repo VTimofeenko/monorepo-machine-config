@@ -83,4 +83,12 @@
   };
 
   system.stateVersion = "22.11";
+
+  # NOTE: Helium is very space-constrained and is running off the emmc
+  # This prevents writes and caps the RAM usage
+  # Logs are shipped off anyway
+  services.journald.extraConfig = ''
+    Storage=volatile
+    SystemMaxUse=100M
+  '';
 }
