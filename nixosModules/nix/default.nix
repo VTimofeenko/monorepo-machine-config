@@ -45,9 +45,10 @@ in
         nu.flake = nixpkgs-unstable;
       }
       # Since my systems have a single global flake that governs them, I can pin all its inputs in the local registry for fast reuse in flake.lock.
-      // (mapAttrs' (a: v: nameValuePair ("pinned-" + a) { flake = v; }) (
-        filterAttrs (_: v: (v ? _type && v._type == "flake")) inputs # Filter only flakes in inputs
-      ));
+      // lib.pipe inputs [
+        (filterAttrs (_: v: (v ? _type && v._type == "flake"))) # Filter only flakes in inputs
+        (mapAttrs' (a: v: nameValuePair ("pinned-" + a) { flake = v; })) # Turn them into proper entries in registry
+      ];
   };
 
   ${outer}.${inner} = builtins.attrValues { inherit (pkgs) nix-melt nix-top; };
