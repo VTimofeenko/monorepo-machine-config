@@ -162,6 +162,12 @@
       url = "github:eikek/docspell";
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
+
+    redpanda-flake = {
+      url = "github:fornybar/redpanda.nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.pre-commit-hooks.follows = "pre-commit-hooks-nix";
+    };
   };
   outputs =
     inputs@{ flake-parts, self, ... }:

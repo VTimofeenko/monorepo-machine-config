@@ -1421,6 +1421,29 @@
         "type": "github"
       }
     },
+    "redpanda-flake": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ],
+        "pre-commit-hooks": [
+          "pre-commit-hooks-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1709310558,
+        "narHash": "sha256-jk1FGgdcqK/wzY+I/avPHzLY9k/MtDz7T+PsbkjdJDs=",
+        "owner": "fornybar",
+        "repo": "redpanda.nix",
+        "rev": "7f343e4b70947b6fc07809e29c59b8897441bf06",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fornybar",
+        "repo": "redpanda.nix",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -1450,6 +1473,7 @@
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
         "promise-async": "promise-async",
         "pyprland": "pyprland",
+        "redpanda-flake": "redpanda-flake",
         "stub-flake": "stub-flake",
         "treefmt-nix": "treefmt-nix",
         "vim-scratch-plugin": "vim-scratch-plugin",
