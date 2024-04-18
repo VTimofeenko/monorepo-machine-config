@@ -45,6 +45,11 @@ in
         nu.flake = nixpkgs-unstable;
       }
       # Since my systems have a single global flake that governs them, I can pin all its inputs in the local registry for fast reuse in flake.lock.
+      # Usage example:
+      # in another flake.nix
+      # inputs.devshell.url = "pinned-devshell"
+      # inputs.nixpkgs.url = "pinned-nixpkgs"
+      # ...
       // lib.pipe inputs [
         (filterAttrs (_: v: (v ? _type && v._type == "flake"))) # Filter only flakes in inputs
         (mapAttrs' (a: v: nameValuePair ("pinned-" + a) { flake = v; })) # Turn them into proper entries in registry
