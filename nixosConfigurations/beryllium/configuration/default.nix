@@ -46,6 +46,7 @@
 
   # Misc
   hardware.enableRedistributableFirmware = true;
+  system.stateVersion = "22.05";
 
   # Imports
   imports = [ nixos-hardware.nixosModules.raspberry-pi-4 ];
