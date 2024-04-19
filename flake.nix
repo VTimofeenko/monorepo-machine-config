@@ -200,6 +200,7 @@
           };
           themeModule = importApply ./flake-modules/theme { inherit lib self; };
           desktopEnvironment = importApply ./flake-modules/desktopEnvironment { inherit withSystem self; };
+          ipython = importApply ./flake-modules/ipython { inherit withSystem self; };
         };
       in
       {
