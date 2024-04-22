@@ -103,6 +103,7 @@ in
               {
                 inherit (pkgs-unstable)
                   nil # Nix lang server
+                  # TODO: restore nixd ?
                   rust-analyzer # Rust lang server
                   nls # Nickel language server
                   shellcheck # For shell files
