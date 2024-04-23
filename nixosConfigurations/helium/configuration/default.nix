@@ -91,4 +91,12 @@
     Storage=volatile
     SystemMaxUse=100M
   '';
+
+  # NOTE: Same reason, disable all documentation
+  documentation = {
+    enable = false;
+    man.enable = false;
+    doc.enable = false;
+    nixos.enable = false;
+  };
 }
