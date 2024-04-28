@@ -5,6 +5,7 @@
   pkgs,
   config,
   lib,
+  nixos-hardware,
   ...
 }:
 {
@@ -51,6 +52,7 @@
   system.stateVersion = "23.11";
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkForce true;
+
   systemd.services.console-blank = {
     enable = true;
     description = "Blank and powerdown the monitor";
@@ -75,5 +77,24 @@
   };
 
   # Imports
-  imports = [ ];
+  imports = [
+    nixos-hardware.nixosModules.common-gpu-intel
+    nixos-hardware.nixosModules.common-cpu-intel
+  ];
+
+  # Hardware acceleration
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+    driSupport32Bit = true;
+    # extraPackages = [
+    #   pkgs.intel-vaapi-driver
+    #   pkgs.intel-media-driver
+    #   pkgs.vaapiVdpau
+    #   pkgs.libvdpau-va-gl
+    # ];
+  };
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "i965";
+  };
 }
