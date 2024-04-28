@@ -80,6 +80,7 @@
   imports = [
     nixos-hardware.nixosModules.common-gpu-intel
     nixos-hardware.nixosModules.common-cpu-intel
+    ./interrupt-disable.nix
   ];
 
   # Hardware acceleration
