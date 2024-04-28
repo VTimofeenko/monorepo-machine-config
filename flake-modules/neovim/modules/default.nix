@@ -103,7 +103,7 @@ in
               {
                 inherit (pkgs-unstable)
                   nil # Nix lang server
-                  # TODO: restore nixd ?
+                  # nixd # Maybe in the future. As of Apr 28, nixd 2.1.0 does not have code actions which is a dealbreaker for me :(
                   rust-analyzer # Rust lang server
                   nls # Nickel language server
                   shellcheck # For shell files
