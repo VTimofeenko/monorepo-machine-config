@@ -14,8 +14,10 @@ let
       pkgs.gawk
     ];
     text = ''
-      INTERRUPT_TARGET=$(grep -Ev '^[ ]*0'  /sys/firmware/acpi/interrupts/gpe?? | sort --field-separator=: --key=2 --numeric --reverse | head -1 | awk -F: '{print $1}')
-      echo disable > "$INTERRUPT_TARGET"
+      # INTERRUPT_TARGET=$(grep -Ev '^[ ]*0'  /sys/firmware/acpi/interrupts/gpe?? | sort --field-separator=: --key=2 --numeric --reverse | head -1 | awk -F: '{print $1}')
+      INTERRUPT_TARGET="/sys/firmware/acpi/interrupts/gpe13";
+      # Hack: always succeed
+      echo disable > "$INTERRUPT_TARGET" || true
     '';
   };
 in
