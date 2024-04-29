@@ -78,23 +78,23 @@
 
   # Imports
   imports = [
-    nixos-hardware.nixosModules.common-gpu-intel
+    # nixos-hardware.nixosModules.common-gpu-intel
     nixos-hardware.nixosModules.common-cpu-intel
     ./interrupt-disable.nix
   ];
 
   # Hardware acceleration
-  hardware.opengl = {
-    enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
-    # extraPackages = [
-    #   pkgs.intel-vaapi-driver
-    #   pkgs.intel-media-driver
-    #   pkgs.vaapiVdpau
-    #   pkgs.libvdpau-va-gl
-    # ];
-  };
+  # hardware.opengl = {
+  #   enable = true;
+  #   driSupport = true;
+  #   driSupport32Bit = true;
+  #   # extraPackages = [
+  #   #   pkgs.intel-vaapi-driver
+  #   #   pkgs.intel-media-driver
+  #   #   pkgs.vaapiVdpau
+  #   #   pkgs.libvdpau-va-gl
+  #   # ];
+  # };
   environment.sessionVariables = {
     LIBVA_DRIVER_NAME = "i965";
   };
