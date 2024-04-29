@@ -103,5 +103,11 @@
     matchConfig.PermanentMACAddress = "14:ac:60:29:76:dd";
     linkConfig.Name = "wifi-lan";
   };
+
+  # Power button handling
+  services.logind = {
+    powerKey = "suspend";
+    powerKeyLongPress = "poweroff";
+  };
 }
 # Uranium specific hardware:1 ends here
