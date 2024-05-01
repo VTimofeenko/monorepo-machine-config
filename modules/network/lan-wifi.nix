@@ -1,10 +1,17 @@
-# [[file:../../new_project.org::*LAN WiFi][LAN WiFi:1]]
-{ config, ... }:
+{ lib, config, ... }:
 let
   inherit (config) my-data;
   lan = my-data.lib.getNetwork "lan";
 
   ownIP = (my-data.lib.getOwnHostInNetwork "lan").ipAddress;
+
+  cctv = my-data.lib.getNetwork "cctv";
+
+  cctvRouterIP = lib.pipe (my-data.lib.getService "cctv-router") [
+    (builtins.getAttr "onHost") # -> "uranium"
+    (lib.flip my-data.lib.getHostInNetwork "lan")
+    (builtins.getAttr "ipAddress")
+  ];
 in
 {
   networking = {
@@ -22,6 +29,14 @@ in
       dns = lan.dnsServers;
       # Search domain goes here
       domains = [ lan.domain ];
+      routes = [
+        {
+          routeConfig = {
+            Gateway = cctvRouterIP;
+            Destination = cctv.prefix;
+          };
+        }
+      ];
       networkConfig = {
         Address = [ "${ownIP}${lan.settings.netmask}" ];
         Gateway = lan.settings.defaultGateway;
@@ -39,4 +54,3 @@ in
   # Any interface being up should be OK
   systemd.network.wait-online.anyInterface = true;
 }
-# LAN WiFi:1 ends here
