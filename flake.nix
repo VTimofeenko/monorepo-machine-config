@@ -272,6 +272,8 @@
                 "hostsBlockList"
                 "data-flake"
                 "nvim-nightly"
+                "nixpkgs"
+                "nixpkgs-unstable"
               ];
               bumpAllInputs = true;
             };
