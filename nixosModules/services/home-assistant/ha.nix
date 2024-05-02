@@ -9,7 +9,6 @@ let
   srvConfig = my-data.lib.getServiceConfig "home-assistant";
   homeassistantUser = config.systemd.services.home-assistant.serviceConfig.User;
 
-  # This approach makes openssl permitted only in this module
   pkgs-unstable = import nixpkgs-unstable { inherit (pkgs) system; };
 in
 {
