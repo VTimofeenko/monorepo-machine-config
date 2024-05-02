@@ -4,6 +4,5 @@ _: {
     ./firewall.nix
     ./logging.nix
     # TODO: monitoring
-    # TODO: firewall
   ];
 }
