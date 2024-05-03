@@ -81,6 +81,7 @@
     # nixos-hardware.nixosModules.common-gpu-intel
     nixos-hardware.nixosModules.common-cpu-intel
     ./interrupt-disable.nix
+    ./hw-acceleration.nix
   ];
 
   # Hardware acceleration
@@ -95,7 +96,7 @@
   #   #   pkgs.libvdpau-va-gl
   #   # ];
   # };
-  environment.sessionVariables = {
-    LIBVA_DRIVER_NAME = "i965";
-  };
+  # environment.sessionVariables = {
+  #   LIBVA_DRIVER_NAME = "i965";
+  # };
 }

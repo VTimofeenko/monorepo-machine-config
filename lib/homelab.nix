@@ -18,9 +18,13 @@
     in
     lib.nixosSystem {
       inherit (hostData) system;
+      # NOTE: `pkgs` instance is configured >>HERE<<
       pkgs = import nixpkgs {
         inherit (hostData) system;
-        config.allowUnfree = true;
+        config = {
+          allowUnfree = true;
+          nvidia.acceptLicense = true;
+        };
         overlays = [ self.overlays.homelab ];
       };
       modules = [
