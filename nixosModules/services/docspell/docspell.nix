@@ -3,6 +3,11 @@ let
   inherit (config) my-data;
   srvName = "docspell";
   serviceConfig = my-data.lib.getServiceConfig srvName;
+  full-text-search = {
+    enabled = true;
+    backend = "postgresql";
+    postgresql.use-default-connection = true;
+  };
 in
 {
   services = {
@@ -16,7 +21,9 @@ in
 
       scheduler.pool-size = 1;
 
-      inherit (serviceConfig) full-text-search jdbc;
+      inherit (serviceConfig) jdbc;
+      inherit full-text-search;
+
       convert.wkhtmlpdf = {
         working-dir = "/tmp/docspell-convert/";
         command = {
@@ -46,8 +53,9 @@ in
         address = "localhost";
         port = 7880;
       };
-      inherit (serviceConfig) auth full-text-search admin-endpoint;
+      inherit (serviceConfig) auth admin-endpoint;
 
+      inherit full-text-search;
       backend = {
         signup.mode = "closed";
         inherit (serviceConfig) jdbc;

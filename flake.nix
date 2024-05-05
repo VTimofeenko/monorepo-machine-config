@@ -335,7 +335,13 @@
         flake =
           let
             homelab = import ./lib/homelab.nix {
-              inherit (inputs) nixpkgs self deploy-rs;
+              # NOTE: Overlays from inputs are passed here
+              inherit (inputs)
+                nixpkgs
+                self
+                deploy-rs
+                docspell-flake
+                ;
               inherit (inputs.nixpkgs) lib;
             };
           in

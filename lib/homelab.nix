@@ -3,6 +3,7 @@
   self,
   deploy-rs,
   nixpkgs,
+  docspell-flake,
   ...
 }:
 {
@@ -25,7 +26,10 @@
           allowUnfree = true;
           nvidia.acceptLicense = true;
         };
-        overlays = [ self.overlays.homelab ];
+        overlays = [
+          self.overlays.homelab
+          docspell-flake.overlays.default # Docspell commands rely on pkgs.docspell-joex, needs overlay
+        ];
       };
       modules = [
         (./. + "/../nixosConfigurations/${hostName}/configuration") # every host has "configuration" directory. /. converts it to path
