@@ -33,22 +33,22 @@ in
 
         # Log all messages for now
         # Enable to log resolver query messages. These are messages from Unbound to upstream servers.
-        dnstap-log-resolver-query-messages = true;
+        dnstap-log-resolver-query-messages = false;
 
         # Enable to log resolver response messages. These are replies from upstream servers to Unbound.
-        dnstap-log-resolver-response-messages = true;
+        dnstap-log-resolver-response-messages = false;
 
         # Enable to log client query messages. These are client queries to Unbound.
         dnstap-log-client-query-messages = true;
 
         # Enable to log client response messages. These are responses from Unbound to clients.
-        dnstap-log-client-response-messages = true;
+        dnstap-log-client-response-messages = false;
 
         # Enable to log forwarder query messages.
-        dnstap-log-forwarder-query-messages = true;
+        dnstap-log-forwarder-query-messages = false;
 
         # Enable to log forwarder response messages.
-        dnstap-log-forwarder-response-messages = true;
+        dnstap-log-forwarder-response-messages = false;
       };
     };
 
