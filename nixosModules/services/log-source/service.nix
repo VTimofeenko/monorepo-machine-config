@@ -30,12 +30,20 @@ in
           path = pkgs.writeTextFile {
             name = "my-ip-to-hostname-data.csv";
             text =
+              let
+                networkToRecords =
+                  netName:
+                  lib.pipe my-data.networks.${netName}.hostsInNetwork [
+                    (lib.mapAttrsToList (name: value: "${name},${value.ipAddress}"))
+                    (builtins.concatStringsSep "\n")
+                  ];
+              in
               ''
                 hostname,ip
               ''
-              + lib.pipe my-data.networks.lan.hostsInNetwork [
-                (lib.mapAttrsToList (name: value: "${name},${value.ipAddress}"))
-                (builtins.concatStringsSep "\n")
+              + lib.concatMapStringsSep "\n" networkToRecords [
+                "lan"
+                "client"
               ];
           };
           encoding.type = "csv";
