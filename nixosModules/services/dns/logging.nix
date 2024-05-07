@@ -81,7 +81,8 @@ in
             # Extract the query
             # Usually there is one for the message types I am interested in
             # More robust way would be to do like a pluck or catAttrs, but YOLO
-            .my_query = .requestData.question[0].domainName
+            .my_query = .responseData.question[0].domainName
+            .my_answer = .responseData.answers[0].rData
           '';
         };
         sinks = {
