@@ -47,4 +47,8 @@ in
     # admin.username
     # admin.password
   };
+
+  # Enforce CPU limit
+  # The cooler whine on nitrogen is too much to bear and I don't need the logs _that_ fast
+  systemd.services.redpanda.serviceConfig.CPUQuota = "15%";
 }
