@@ -39,10 +39,10 @@ in
         dnstap-log-resolver-response-messages = false;
 
         # Enable to log client query messages. These are client queries to Unbound.
-        dnstap-log-client-query-messages = true;
+        dnstap-log-client-query-messages = false;
 
         # Enable to log client response messages. These are responses from Unbound to clients.
-        dnstap-log-client-response-messages = false;
+        dnstap-log-client-response-messages = true;
 
         # Enable to log forwarder query messages.
         dnstap-log-forwarder-query-messages = false;
