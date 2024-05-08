@@ -13,29 +13,26 @@ let
   clientNetViewName = "wg_client_network";
 
   inherit (import ./lib.nix) mkARecord;
-  lan = my-data.lib.getNetwork "lan";
   client = my-data.lib.getNetwork "client";
 
   inherit (my-data.networks) zones;
   selfPkgs' = selfPkgs.${pkgs.system};
 in
 {
+
+  imports = [ ./service/acl.nix ];
+
   services.unbound = {
     enable = true;
     resolveLocalQueries = false;
     localControlSocketPath = "/run/unbound/unbound.socket";
     settings = {
       server = {
-        # IP-based access control section
         interface = # Where to listen on
           [
             (my-data.lib.getOwnHostInNetwork "lan").ipAddress # Listen in LAN
             (my-data.lib.getOwnHostInNetwork "client").ipAddress # Listen in client network
           ];
-        access-control = [
-          "${lan.subnet}.1${lan.settings.netmask} allow"
-          "${client.settings.clientSubNet}.1/24 allow" # TODO: move netmask to settings? Or core network schema?
-        ];
 
         # Custom records go here
         local-zone =
