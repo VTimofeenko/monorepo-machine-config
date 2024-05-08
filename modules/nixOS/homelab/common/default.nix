@@ -8,5 +8,6 @@ _: {
     ./shell.nix
     ./sshd.nix
     ./time.nix
+    ./resolved.nix
   ];
 }
