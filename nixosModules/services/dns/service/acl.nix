@@ -2,6 +2,7 @@
 { config, ... }:
 let
   inherit (config) my-data;
+  thisSrvConfig = my-data.lib.getServiceConfig "dns_1"; # FIXME: flaky _1 addressing
 
   lan = my-data.lib.getNetwork "lan";
   client = my-data.lib.getNetwork "client";
@@ -12,5 +13,5 @@ in
       lan
       client
     ])
-    ++ [ "${lan.hostsInNetwork.meross-outlet-1.ipAddress}/32 deny" ]; # TODO: maybe move this to a setting?
+    ++ (map (x: "${lan.hostsInNetwork.${x}.ipAddress}/32 deny") thisSrvConfig.clientsNonGrata);
 }
