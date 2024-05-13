@@ -29,3 +29,9 @@
 
 (after! vdirel
         (setq vdirel-repository "~/.local/state/vdirs/contacts/nextcloud/contacts"))
+
+(after! notmuch
+        (setq notmuch-fcc-dirs
+              '(
+                (".*" . "migadu/Sent"))) ;; Save sent emails to "Sent" dir
+        )
