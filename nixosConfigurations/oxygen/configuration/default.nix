@@ -75,6 +75,16 @@
     wireless.enable = false;
     networkmanager.enable = true; # For whatever reason this host needed networkmanager to get to wifi. TODO: change this to declarative management and add wireless module
   };
+  # W/a for network manager wait online failing
+  # Source: https://github.com/NixOS/nixpkgs/issues/180175
+  systemd.services.NetworkManager-wait-online = {
+    serviceConfig = {
+      ExecStart = [
+        ""
+        "${pkgs.networkmanager}/bin/nm-online -q"
+      ];
+    };
+  };
 
   # Imports
   imports = [
