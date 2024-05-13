@@ -28,7 +28,7 @@
       flake = false;
     };
 
-    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
 
     nvim-nightly = {
       url = "github:nix-community/neovim-nightly-overlay";
