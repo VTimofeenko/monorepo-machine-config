@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  docspell-flake,
+  ...
+}:
 let
   inherit (config) my-data;
   srvName = "docspell";
@@ -8,12 +13,18 @@ let
     backend = "postgresql";
     postgresql.use-default-connection = true;
   };
+
+  docspell-packages = docspell-flake.packages.${pkgs.system};
 in
 {
   services = {
     docspell-joex = {
       enable = true;
+
       base-url = "http://localhost:7878";
+
+      package = docspell-packages.docspell-joex;
+
       bind = {
         address = "localhost";
         port = 7878;
@@ -48,7 +59,11 @@ in
     };
     docspell-restserver = {
       enable = true;
+
       base-url = "http://localhost:7880";
+
+      package = docspell-packages.docspell-restserver;
+
       bind = {
         address = "localhost";
         port = 7880;

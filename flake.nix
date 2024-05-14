@@ -344,12 +344,7 @@
           let
             homelab = import ./lib/homelab.nix {
               # NOTE: Overlays from inputs are passed here
-              inherit (inputs)
-                nixpkgs
-                self
-                deploy-rs
-                docspell-flake
-                ;
+              inherit (inputs) nixpkgs self deploy-rs;
               inherit (inputs.nixpkgs) lib;
             };
           in

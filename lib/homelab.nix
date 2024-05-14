@@ -3,7 +3,6 @@
   self,
   deploy-rs,
   nixpkgs,
-  docspell-flake,
   ...
 }:
 {
@@ -28,7 +27,7 @@
         };
         overlays = [
           self.overlays.homelab
-          docspell-flake.overlays.default # Docspell commands rely on pkgs.docspell-joex, needs overlay
+          # docspell-flake.overlays.default # Docspell commands rely on pkgs.docspell-joex, needs overlay
         ];
       };
       modules = [
