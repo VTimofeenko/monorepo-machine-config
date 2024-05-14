@@ -35,7 +35,15 @@
     };
 
     # Service that remaps arbitrary keyboard combinations
-    xremap-flake.url = "github:xremap/nix-flake";
+    xremap-flake = {
+      url = "github:xremap/nix-flake";
+      inputs = {
+        treefmt-nix.follows = "treefmt-nix";
+        devshell.follows = "devshell";
+        hyprland.follows = "stub-flake";
+        home-manager.follows = "stub-flake";
+      };
+    };
 
     devshell.url = "github:numtide/devshell";
     devshell.inputs.nixpkgs.follows = "nixpkgs-unstable";
