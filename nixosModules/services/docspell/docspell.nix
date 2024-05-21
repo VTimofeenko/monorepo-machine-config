@@ -7,6 +7,7 @@
 let
   inherit (config) my-data;
   srvName = "docspell";
+  srv = my-data.lib.getService srvName;
   serviceConfig = my-data.lib.getServiceConfig srvName;
   full-text-search = {
     enabled = true;
@@ -21,7 +22,7 @@ in
     docspell-joex = {
       enable = true;
 
-      base-url = "http://localhost:7878";
+      base-url = "https://${srv.fqdn}";
 
       package = docspell-packages.docspell-joex;
 
@@ -60,7 +61,7 @@ in
     docspell-restserver = {
       enable = true;
 
-      base-url = "http://localhost:7880";
+      base-url = "https://${srv.fqdn}";
 
       package = docspell-packages.docspell-restserver;
 
@@ -68,13 +69,15 @@ in
         address = "localhost";
         port = 7880;
       };
-      inherit (serviceConfig) auth admin-endpoint;
+      inherit (serviceConfig) auth admin-endpoint openid;
 
       inherit full-text-search;
       backend = {
         signup.mode = "closed";
         inherit (serviceConfig) jdbc;
       };
+
+      extraConfig.auth.on-account-source-conflict = "convert";
 
       # extraConfig.files.stores.filesystem =
       #   {
