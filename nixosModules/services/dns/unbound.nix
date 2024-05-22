@@ -85,14 +85,19 @@ in
         verbosity = 1;
         identity = "DNS";
         do-not-query-localhost = "no";
+
         # To enable monitoring
+        # TODO: move to monitoring file
         extended-statistics = "yes";
-        log-queries = "yes";
-        log-replies = "yes";
+
+        # Not logging these as dnstap takes care of it
+        log-queries = "no";
+        log-replies = "no";
         # add a "reply: prefix to the logs"
-        log-tag-queryreply = "yes";
-        log-local-actions = "yes";
+        log-tag-queryreply = "no";
+        log-local-actions = "no";
       };
+
       view = [
         {
           name = clientNetViewName;
