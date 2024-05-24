@@ -11,6 +11,6 @@ members = [
 resolver = "2"
 
 [workspace.dependencies]
-hyprland = "0.3.12"
+hyprland = "0.4.0-alpha.2"
 notify-rust = "4.10.0"
 clap = { version = "4.4.8", features = ["derive"] }
