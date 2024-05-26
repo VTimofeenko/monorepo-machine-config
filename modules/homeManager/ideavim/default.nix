@@ -28,5 +28,8 @@ _: {
       " Disable all bells
       set visualbell
       set noerrorbells
+      " yank highlight
+      set highlightedyank
+      let g:highlightedyank_highlight_duration="100"
     '';
 }
