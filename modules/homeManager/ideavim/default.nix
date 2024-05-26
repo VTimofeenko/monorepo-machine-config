@@ -10,6 +10,10 @@ _: {
       nnoremap <leader>wj <C-W>j
       nnoremap <leader>wh <C-W>h
 
+      " jump to next error
+      nnoremap ]d :action GotoNextError<CR>
+      nnoremap [d :action GotoPreviousError<CR>
+
       Plug 'tpope/vim-surround'
       Plug 'tpope/vim-commentary'
       Plug 'easymotion/vim-easymotion'
