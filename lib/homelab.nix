@@ -30,6 +30,10 @@
           # docspell-flake.overlays.default # Docspell commands rely on pkgs.docspell-joex, needs overlay
         ];
       };
+
+      # Extend standard lib argument to have my homelab data
+      lib = lib.extend (_: _: { inherit (data-flake.lib) homelab; });
+
       modules = [
         (./. + "/../nixosConfigurations/${hostName}/configuration") # every host has "configuration" directory. /. converts it to path
         {
