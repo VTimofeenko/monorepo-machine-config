@@ -21,6 +21,7 @@ in
   programs = {
     git = {
       enable = true;
+
       aliases = {
         ci = "commit";
         st = "status";
@@ -49,6 +50,9 @@ in
         ];
         "difftool \"difftastic\"".cmd = ''${getExe pkgs.difftastic} "$LOCAL" "$REMOTE"'';
         difftool.prompt = false; # Disables 'launch $TOOLNAME' prompt
+
+        # Adds diffs to the commits window
+        commit.verbose = true;
       };
       includes = [
         { path = "~/.config/git/local.d/gitconfig"; } # Local ad-hoc overrides for git config
