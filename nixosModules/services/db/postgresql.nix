@@ -3,17 +3,18 @@
   config,
   lib,
   pkgs,
-  localLib,
   ...
 }:
 
 let
-  inherit (config) my-data;
+  inherit (lib.homelab) getNetwork getOwnIpInNetwork getSrvSecret;
+  inherit (lib.localLib) mkCryptTab mkLuksMount;
+
   # srvName = "db";
   # service = my-data.lib.getService srvName;
 
-  dbNet = my-data.lib.getNetwork "db";
-  mgmtNet = my-data.lib.getNetwork "mgmt";
+  dbNet = getNetwork "db";
+  mgmtNet = getNetwork "mgmt";
 
   luks = {
     device_name = "luks_db";
@@ -24,12 +25,12 @@ in
   # Secrets
   # TODO: not reuse the ssl-terminator secret here?
   age.secrets.psql-ssl-cert = {
-    file = my-data.lib.getSrvSecret "ssl-terminator" "cert";
+    file = getSrvSecret "ssl-terminator" "cert";
     owner = config.systemd.services.postgresql.serviceConfig.User;
     group = config.systemd.services.postgresql.serviceConfig.Group;
   };
   age.secrets.psql-ssl-key = {
-    file = my-data.lib.getSrvSecret "ssl-terminator" "private-key";
+    file = getSrvSecret "ssl-terminator" "private-key";
     owner = config.systemd.services.postgresql.serviceConfig.User;
     group = config.systemd.services.postgresql.serviceConfig.Group;
   };
@@ -56,7 +57,7 @@ in
       # Listen only on these addresses
       listen_addresses = lib.mkForce (
         lib.concatStringsSep ", " (
-          (map (netName: (my-data.lib.getOwnHostInNetwork netName).ipAddress) [
+          (map getOwnIpInNetwork [
             "mgmt"
             "db"
           ])
@@ -100,9 +101,9 @@ in
   systemd.services.postgresql.unitConfig.RequiresMountsFor = lib.mkOptionDefault [
     config.services.postgresql.dataDir
   ];
-  environment.etc."crypttab".text = localLib.mkCryptTab { inherit (luks) device_name UUID; };
+  environment.etc."crypttab".text = mkCryptTab { inherit (luks) device_name UUID; };
   systemd.mounts = [
-    (localLib.mkLuksMount {
+    (mkLuksMount {
       inherit (luks) device_name;
       target = config.services.postgresql.dataDir;
     })
