@@ -1,7 +1,6 @@
-{ lib, config, ... }:
+{ lib, ... }:
 let
-  inherit (config) my-data;
-  thisSrvConfig = my-data.lib.getServiceConfig "auth_dns_1"; # FIXME: flaky _1 addressing
+  thisSrvConfig = lib.homelab.getServiceConfig "auth_dns";
   srvLib = import ./lib.nix;
 in
 {
