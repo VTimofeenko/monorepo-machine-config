@@ -1,14 +1,14 @@
 {
   config,
   pkgs,
+  lib,
   localLib,
   ...
 }:
 let
-  inherit (config) my-data;
-  srvName = "nextcloud";
+  inherit (lib.homelab) getServiceConfig getServiceFqdn getSrvSecret;
 
-  service = my-data.lib.getService srvName;
+  srvName = "nextcloud";
 
   luks = {
     device_name = "luks_nextcloud";
@@ -20,20 +20,20 @@ in
   services.nextcloud = {
     enable = true;
     package = pkgs.nextcloud27;
-    hostName = service.fqdn;
+    hostName = getServiceFqdn srvName;
 
     config = {
       dbtype = "pgsql";
       dbuser = "nextcloud";
       # Predicated on postgres running on the same host
-      dbhost = (my-data.lib.getService "db").fqdn;
+      dbhost = getServiceFqdn "db";
       dbname = "nextcloud";
       dbpassFile = config.age.secrets.dbpassFile.path;
       adminuser = "root";
       overwriteProtocol = "https";
       adminpassFile = config.age.secrets.adminpassFile.path;
     };
-    extraOptions = my-data.lib.getServiceConfig srvName;
+    extraOptions = getServiceConfig srvName;
 
     secretFile = config.age.secrets.nextcloudSecrets.path;
   };
@@ -45,17 +45,17 @@ in
     in
     {
       dbpassFile = {
-        file = my-data.lib.getSrvSecret srvName "dbpassFile";
+        file = getSrvSecret srvName "dbpassFile";
         owner = nextcloudUsr;
         group = nextcloudUsr;
       };
       adminpassFile = {
-        file = my-data.lib.getSrvSecret srvName "adminpassFile";
+        file = getSrvSecret srvName "adminpassFile";
         owner = nextcloudUsr;
         group = nextcloudUsr;
       };
       nextcloudSecrets = {
-        file = my-data.lib.getSrvSecret srvName "nextcloudSecrets";
+        file = getSrvSecret srvName "nextcloudSecrets";
         owner = nextcloudUsr;
         group = nextcloudUsr;
       };
