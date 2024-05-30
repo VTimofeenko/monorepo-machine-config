@@ -2,11 +2,15 @@
   nixpkgs-unstable,
   config,
   pkgs,
+  lib,
   ...
 }:
 let
-  inherit (config) my-data;
-  srvConfig = my-data.lib.getServiceConfig "home-assistant";
+  inherit (lib.homelab) getServiceConfig getSrvSecret;
+
+  srvName = "home-assistant";
+  srvConfig = getServiceConfig srvName;
+
   homeassistantUser = config.systemd.services.home-assistant.serviceConfig.User;
 
   pkgs-unstable = import nixpkgs-unstable { inherit (pkgs) system; };
@@ -14,7 +18,7 @@ in
 {
   # Secrets
   age.secrets.ha-secret = {
-    file = my-data.lib.getSrvSecret "home-assistant" "ha-secrets";
+    file = getSrvSecret srvName "ha-secrets";
     owner = homeassistantUser;
     path = "${config.services.home-assistant.configDir}/secrets.yaml";
   };

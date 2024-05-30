@@ -1,12 +1,11 @@
-{ config, ... }:
+{ config, lib, ... }:
 let
   srvName = "home-assistant";
-  inherit (config) my-data;
+  inherit (lib.homelab) getSrvSecret;
 in
-# srvConfig = my-data.lib.getServiceConfig srvName;
 {
   age.secrets.zwaveSecrets = {
-    file = my-data.lib.getSrvSecret srvName "zwave-secrets";
+    file = getSrvSecret srvName "zwave-secrets";
     mode = "444";
     # owner = head (split ":" config.systemd.services.zwave-js.serviceConfig.User); # User is 'zwave-js:0'
     # owner = config.systemd.services.zwave-js.serviceConfig.User; # User is 'zwave-js:0'

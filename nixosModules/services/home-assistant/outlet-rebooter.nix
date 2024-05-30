@@ -1,11 +1,6 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ pkgs, lib, ... }:
 let
-  inherit (config) my-data;
+  inherit (lib.homelab) getHostInNetwork;
 in
 {
   systemd.services.reboot-outlet = {
@@ -13,7 +8,7 @@ in
     script =
       let
         kasaCli = lib.getExe' pkgs.python3Packages.python-kasa "kasa";
-        outletIp = (my-data.lib.getHostInNetwork "patio-outlet" "lan").ipAddress;
+        outletIp = (getHostInNetwork "patio-outlet" "lan").ipAddress;
       in
       ''
         ${kasaCli} --host ${outletIp} reboot
