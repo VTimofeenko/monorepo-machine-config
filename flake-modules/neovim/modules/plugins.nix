@@ -89,11 +89,7 @@ let
         ./configs/treesitter-context.lua
       ]
       [
-        (mkPluginFromInput "promise-async") # TODO: remove when fix for nvim-ufo lands in nix
-        "" # Stub config
-      ]
-      [
-        (mkPluginFromInput "nvim-ufo") # TODO: unpin when fix lands in nix
+        vimPlugins.nvim-ufo
         ./configs/ufo.lua
       ]
       # [

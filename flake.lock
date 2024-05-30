@@ -1129,22 +1129,6 @@
         "type": "github"
       }
     },
-    "nvim-ufo": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1716226930,
-        "narHash": "sha256-tucS6d6ALl5mX7YHZlv+FDaVy8Tyho6yLqsbUBqRS1c=",
-        "owner": "kevinhwang91",
-        "repo": "nvim-ufo",
-        "rev": "65dda6360879f6ffe0278163b9192a573a0d2a08",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kevinhwang91",
-        "repo": "nvim-ufo",
-        "type": "github"
-      }
-    },
     "poetry2nix": {
       "inputs": {
         "flake-utils": "flake-utils_4",
@@ -1186,22 +1170,6 @@
       "original": {
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "type": "github"
-      }
-    },
-    "promise-async": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1709041466,
-        "narHash": "sha256-v6iWktPHr8QqvxzI8hRUQVzxKzLk5SdroPpEGPRjMRU=",
-        "owner": "kevinhwang91",
-        "repo": "promise-async",
-        "rev": "93540c168c5ed2b030ec3e6c40ab8bbb85e36355",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kevinhwang91",
-        "repo": "promise-async",
         "type": "github"
       }
     },
@@ -1279,9 +1247,7 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nur": "nur",
         "nvim-nightly": "nvim-nightly",
-        "nvim-ufo": "nvim-ufo",
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
-        "promise-async": "promise-async",
         "pyprland": "pyprland",
         "redpanda-flake": "redpanda-flake",
         "stub-flake": "stub-flake",
