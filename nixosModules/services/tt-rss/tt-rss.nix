@@ -1,23 +1,24 @@
 # Module to set up my tiny tiny RSS instance
-{ config, ... }:
+{ config, lib, ... }:
 let
-  inherit (config) my-data;
-  srvName = "tt-rss";
-  service = my-data.lib.getService srvName;
+  inherit (lib.homelab) getService getSrvSecret;
 
-  dbService = my-data.lib.getService "db";
+  srvName = "tt-rss";
+  thisSrv = getService srvName;
+
+  dbService = getService "db";
 in
 {
   # Secrets
   age.secrets.tt-rss-db-password = {
-    file = my-data.lib.getSrvSecret srvName "dbPassword";
+    file = getSrvSecret srvName "dbPassword";
     owner = config.services.tt-rss.user;
   };
 
   # Service config
   services.tt-rss = {
     enable = true;
-    virtualHost = service.fqdn;
+    virtualHost = thisSrv.fqdn;
     singleUserMode = true;
     database = {
       user = "tt_rss";
@@ -29,7 +30,7 @@ in
       passwordFile = config.age.secrets.tt-rss-db-password.path;
       createLocally = false;
     };
-    selfUrlPath = "https://${service.fqdn}";
+    selfUrlPath = "https://${thisSrv.fqdn}";
   };
 
   # Wait for VPN to be online before connecting to the database
