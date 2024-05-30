@@ -1,13 +1,19 @@
-{ config, ... }:
+{ config, lib, ... }:
 let
-  inherit (config) my-data;
+
+  inherit (lib.homelab)
+    getSettings
+    getService
+    getSrvSecret
+    getHostInNetwork
+    ;
   srvName = "pgadmin";
 in
 {
   # Service config
   services.pgadmin = {
     enable = true;
-    initialEmail = "pgadmin@${my-data.settings.publicDomainName}";
+    initialEmail = "pgadmin@${getSettings.publicDomainName}";
     initialPasswordFile = "${config.age.secrets.pgadmin-password.path}";
     settings = {
       UPGRADE_CHECK_ENABLED = false;
@@ -17,7 +23,7 @@ in
   # Secrets
   age.secrets = {
     pgadmin-password = {
-      file = my-data.lib.getSrvSecret srvName "pgadmin-password";
+      file = getSrvSecret srvName "pgadmin-password";
       owner = config.systemd.services.pgadmin.serviceConfig.User;
       group = config.systemd.services.pgadmin.serviceConfig.User;
     };
@@ -28,7 +34,7 @@ in
     serviceConfig = {
       IPAddressDeny = "any";
       IPAddressAllow = [
-        (my-data.lib.getHostInNetwork (my-data.lib.getService "db").onHost "db").ipAddress
+        (getHostInNetwork (getService "db").onHost "db").ipAddress
         "localhost"
       ];
     };
