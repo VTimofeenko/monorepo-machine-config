@@ -2,18 +2,17 @@
   Implements the ingestion framework using Kafka.
 */
 {
-  config,
   lib,
   redpanda-flake,
   pkgs,
   ...
 }:
 let
-  inherit (config) my-data;
+  inherit (lib.homelab) getOwnIpInNetwork;
   # srvName = "log-sink";
   # service = my-data.lib.getService srvName;
 
-  loggingIP = (my-data.lib.getOwnHostInNetwork "logging").ipAddress;
+  loggingIP = getOwnIpInNetwork "logging";
 
   redpanda-flake-packages' = redpanda-flake.packages.${pkgs.system};
 in
