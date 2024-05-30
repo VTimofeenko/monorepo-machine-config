@@ -1,18 +1,20 @@
 { config, lib, ... }:
 let
   inherit (config) my-data;
-  srvName = "alien-reverse-proxy";
-  srvCfg = my-data.lib.getServiceConfig srvName;
+  inherit (lib.homelab) getServiceConfig getSrvSecret getSettings;
   inherit (lib) mapAttrs' nameValuePair;
+
+  srvName = "alien-reverse-proxy";
+  srvCfg = getServiceConfig srvName;
 in
 {
   age.secrets."ssl-cert" = {
-    file = my-data.lib.getSrvSecret "ssl-terminator" "cert";
+    file = getSrvSecret "ssl-terminator" "cert";
     owner = config.services.nginx.user;
     inherit (config.services.nginx) group;
   };
   age.secrets."ssl-key" = {
-    file = my-data.lib.getSrvSecret "ssl-terminator" "private-key";
+    file = getSrvSecret "ssl-terminator" "private-key";
     owner = config.services.nginx.user;
     inherit (config.services.nginx) group;
   };
@@ -23,7 +25,7 @@ in
     # Produces an attrset of proxied domains with some standard nginx settings
     virtualHosts = mapAttrs' (
       name: value:
-      nameValuePair "${name}.${my-data.settings.publicDomainName}" {
+      nameValuePair "${name}.${getSettings.publicDomainName}" {
         forceSSL = true;
         sslCertificate = config.age.secrets."ssl-cert".path;
         sslCertificateKey = config.age.secrets."ssl-key".path;
