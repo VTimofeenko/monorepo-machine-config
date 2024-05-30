@@ -1,14 +1,16 @@
 {
-  config,
   pkgs,
+  lib,
   docspell-flake,
   ...
 }:
 let
-  inherit (config) my-data;
+  inherit (lib.homelab) getService getServiceConfig;
   srvName = "docspell";
-  srv = my-data.lib.getService srvName;
-  serviceConfig = my-data.lib.getServiceConfig srvName;
+
+  srv = getService srvName;
+  serviceConfig = getServiceConfig srvName;
+
   full-text-search = {
     enabled = true;
     backend = "postgresql";
