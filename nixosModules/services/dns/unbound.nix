@@ -9,11 +9,21 @@
 let
   inherit (config) my-data;
 
-  thisSrvConfig = my-data.lib.getServiceConfig "dns_1"; # FIXME: flaky _1 addressing
+  inherit (lib.homelab)
+    getServiceConfig
+    getService
+    getNetwork
+    getOwnIpInNetwork
+    ;
+
+  srvName = "dns";
+  thisSrv = getService srvName;
+  thisSrvConfig = getServiceConfig "dns";
+
   clientNetViewName = "wg_client_network";
 
   inherit (import ./lib.nix) mkARecord;
-  client = my-data.lib.getNetwork "client";
+  client = getNetwork "client";
 
   inherit (my-data.networks) zones;
   selfPkgs' = selfPkgs.${pkgs.system};
@@ -28,11 +38,8 @@ in
     localControlSocketPath = "/run/unbound/unbound.socket";
     settings = {
       server = {
-        interface = # Where to listen on
-          [
-            (my-data.lib.getOwnHostInNetwork "lan").ipAddress # Listen in LAN
-            (my-data.lib.getOwnHostInNetwork "client").ipAddress # Listen in client network
-          ];
+        # Where to listen on
+        interface = map getOwnIpInNetwork thisSrv.networkAccess;
 
         # Custom records go here
         local-zone =

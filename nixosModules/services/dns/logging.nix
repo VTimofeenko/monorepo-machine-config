@@ -7,16 +7,15 @@
   Also sets up a mapping between hostnames and IPs that vector does on the fly.
 */
 {
-  config,
   pkgs,
+  lib,
   nixpkgs-unstable,
   ...
 }:
 let
   pkgs-unstable = import nixpkgs-unstable { inherit (pkgs) system; }; # FIXME: remove after 24.05. Only vector >= 0.37 supports tcp dnstap sink
-  inherit (config) my-data;
 
-  loggingConfig = my-data.lib.getServiceLogging "dns_1"; # FIXME: flaky _1 addressing
+  loggingConfig = lib.homelab.getServiceLogging "dns";
 in
 {
   services = {
