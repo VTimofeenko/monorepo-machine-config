@@ -1,10 +1,8 @@
-{ lib, config, ... }:
+{ lib, ... }:
 let
-  inherit (config) my-data;
-  # thisSrvConfig = localLib.getSrvConfig "dhcp"; # TODO: add to the main data
-  lan = my-data.lib.getNetwork "lan";
+  lan = lib.homelab.getNetwork "lan";
 
-  hostConfig = my-data.lib.getOwnHostConfig;
+  hostConfig = lib.homelab.getOwnHostConfig;
 
   inherit (hostConfig) netInterfaces;
   inherit (netInterfaces) lan-bridge;
@@ -61,8 +59,6 @@ in
           data = lan.domain;
         }
       ];
-      # TODO: loggers
     };
   };
-  # TODO: Firewall
 }

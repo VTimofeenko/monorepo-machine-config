@@ -1,4 +1,7 @@
-{ ... }:
-{
-  imports = [ ./kea.nix ];
+_: {
+  imports = [
+    ./kea.nix
+    # ./logging.nix # TODO
+    # ./firewall.nix # TODO
+  ];
 }
