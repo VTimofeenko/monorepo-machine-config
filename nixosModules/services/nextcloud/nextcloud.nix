@@ -2,11 +2,11 @@
   config,
   pkgs,
   lib,
-  localLib,
   ...
 }:
 let
   inherit (lib.homelab) getServiceConfig getServiceFqdn getSrvSecret;
+  inherit (lib.localLib) mkCryptTab mkLuksMount;
 
   srvName = "nextcloud";
 
@@ -64,9 +64,9 @@ in
   # LUKS setup
   systemd.services.nextcloud-setup.unitConfig.RequiresMountsFor = [ config.services.nextcloud.home ];
 
-  environment.etc."crypttab".text = localLib.mkCryptTab { inherit (luks) device_name UUID; };
+  environment.etc."crypttab".text = mkCryptTab { inherit (luks) device_name UUID; };
   systemd.mounts = [
-    (localLib.mkLuksMount {
+    (mkLuksMount {
       inherit (luks) device_name;
       target = config.services.nextcloud.home;
     })
