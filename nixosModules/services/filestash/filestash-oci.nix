@@ -1,8 +1,8 @@
-{ config, ... }:
+{ lib, ... }:
 let
-  inherit (config) my-data;
+  inherit (lib.homelab) getServiceFqdn;
+
   srvName = "filestash";
-  service = my-data.lib.getService srvName;
 
   filestashDir = "/var/lib/${srvName}";
 in
@@ -20,7 +20,7 @@ in
           "/mnt:/data"
         ];
         environment = {
-          APPLICATION_URL = service.fqdn;
+          APPLICATION_URL = getServiceFqdn srvName;
         };
         cmd = [ ];
       };
