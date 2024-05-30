@@ -1,15 +1,13 @@
-{ config, ... }:
+{ lib, ... }:
 let
-  inherit (config) my-data;
-
-  srvConfig = my-data.lib.getServiceConfig "ntp";
+  inherit (lib.homelab) getServiceConfig getOwnIpInNetwork;
 in
 {
   services.openntpd = {
     enable = true;
-    servers = srvConfig.upstream;
+    servers = (getServiceConfig "ntp").upstream;
     extraConfig = ''
-      listen on ${(my-data.lib.getOwnHostInNetwork "lan").ipAddress}
+      listen on ${(getOwnIpInNetwork "lan")}
     '';
   };
 }
