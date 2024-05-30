@@ -9,9 +9,10 @@
 }:
 let
   inherit (config) my-data;
+  inherit (lib.homelab) getServiceConfig;
+
   srvName = "log-sink";
-  # service = my-data.lib.getService srvName;
-  srvConfig = my-data.lib.getServiceConfig srvName;
+  srvConfig = getServiceConfig srvName;
 in
 {
   services.vector = {
