@@ -1,4 +1,7 @@
-{ localLib, ... }:
+{ lib, ... }:
+let
+  inherit (lib.localLib) pluck;
+in
 {
-  pluckConcat = field: target: builtins.concatStringsSep ", " (localLib.pluck field target);
+  pluckConcat = field: target: builtins.concatStringsSep ", " (pluck field target);
 }

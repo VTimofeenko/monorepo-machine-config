@@ -1,10 +1,5 @@
 # Simple firewall to get me started. Written by hand, no DSL
-{
-  lib,
-  pkgs,
-  localLib,
-  ...
-}:
+{ lib, pkgs, ... }:
 let
   inherit (lib.homelab) getServiceConfig getOwnHostConfig getNetwork;
 
@@ -22,7 +17,7 @@ let
   clientNet = getNetwork "client";
   mgmtNet = getNetwork "mgmt";
 
-  srvLib = import ./lib.nix { inherit localLib; };
+  srvLib = import ./lib.nix { inherit lib; };
 in
 {
   # Enabled by hand and without mangling the chains
