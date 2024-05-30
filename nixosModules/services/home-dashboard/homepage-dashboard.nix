@@ -6,10 +6,11 @@
   ...
 }:
 let
-  inherit (config) my-data;
+  inherit (lib.homelab) getServiceConfig getService getSrvSecret;
+
   srvName = "home-dashboard";
-  srvCfg = my-data.lib.getServiceConfig srvName;
-  srv = my-data.lib.getService srvName;
+  srvCfg = getServiceConfig srvName;
+  srv = getService srvName;
 
   srvDataDir = "/var/lib/homepage-dashboard";
 
@@ -54,7 +55,5 @@ in
   };
 
   # Add homepage-dashboard specific secrets to agenix
-  age.secrets = builtins.mapAttrs (name: _: {
-    file = my-data.lib.getSrvSecret srvName name;
-  }) srv.secrets;
+  age.secrets = builtins.mapAttrs (name: _: { file = getSrvSecret srvName name; }) srv.secrets;
 }
