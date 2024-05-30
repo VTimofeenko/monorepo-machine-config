@@ -32,7 +32,17 @@
       };
 
       # Extend standard lib argument to have my homelab data
-      lib = lib.extend (_: _: { inherit (data-flake.lib) homelab; });
+      lib =
+        let
+          inherit (data-flake.lib) homelab;
+        in
+        lib.extend (
+          _: _:
+          lib.pipe { inherit homelab; } [
+            (lib.flip builtins.removeAttrs [ "_mkOwnFuncs" ]) # Remove generating func
+            (lib.recursiveUpdate { homelab = homelab._mkOwnFuncs hostName; }) # Bind get functions to hostname, producing getOwn* functions
+          ]
+        );
 
       modules = [
         (./. + "/../nixosConfigurations/${hostName}/configuration") # every host has "configuration" directory. /. converts it to path
