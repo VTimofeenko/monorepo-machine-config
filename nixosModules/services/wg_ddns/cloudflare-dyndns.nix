@@ -1,15 +1,14 @@
-{ config, ... }:
+{ lib, config, ... }:
 let
+  inherit (lib.homelab) getServiceConfig getSrvSecret;
   srvName = "wg_ddns";
-  inherit (config) my-data;
-  srvConfig = my-data.lib.getServiceConfig srvName;
 in
 {
-  age.secrets.cfApifile.file = my-data.lib.getSrvSecret srvName "cfApifile";
+  age.secrets.cfApifile.file = getSrvSecret srvName "cfApifile";
 
   services.cloudflare-dyndns = {
     enable = true;
-    inherit (srvConfig) domains;
+    inherit (getServiceConfig srvName) domains;
     apiTokenFile = config.age.secrets.cfApifile.path;
   };
   # Hardening
