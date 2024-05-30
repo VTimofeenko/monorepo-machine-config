@@ -2,25 +2,25 @@
 {
   lib,
   pkgs,
-  config,
   localLib,
   ...
 }:
 let
-  inherit (config) my-data;
-  srvName = "wan_firewall";
-  thisSrvConfig = my-data.lib.getServiceConfig srvName;
+  inherit (lib.homelab) getServiceConfig getOwnHostConfig getNetwork;
 
-  wanFWHostSettings = my-data.lib.getOwnHostConfig;
+  srvName = "wan_firewall";
+  thisSrvConfig = getServiceConfig srvName;
+
+  wanFWHostSettings = getOwnHostConfig;
   inherit (wanFWHostSettings) netInterfaces;
 
   extractName = name: netInterfaces.${name}.name;
   wan = extractName "wan";
   lan-bridge = extractName "lan-bridge";
 
-  lanNet = my-data.lib.getNetwork "lan";
-  clientNet = my-data.lib.getNetwork "client";
-  mgmtNet = my-data.lib.getNetwork "mgmt";
+  lanNet = getNetwork "lan";
+  clientNet = getNetwork "client";
+  mgmtNet = getNetwork "mgmt";
 
   srvLib = import ./lib.nix { inherit localLib; };
 in
