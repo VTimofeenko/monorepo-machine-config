@@ -1,14 +1,11 @@
-{
-  config,
-  lib,
-  localLib,
-  ...
-}:
+{ config, lib, ... }:
 let
-  inherit (config) my-data;
+  inherit (lib.homelab) getOwnIpInNetwork getServiceFqdn;
+  inherit (lib.localLib) mkCryptTab mkLuksMount;
+
   srvName = "gitea";
-  service = my-data.lib.getService srvName;
-  ownIP = (my-data.lib.getOwnHostInNetwork "lan").ipAddress;
+  srvFqdn = getServiceFqdn srvName;
+  ownIP = getOwnIpInNetwork "lan";
 
   luks = {
     device_name = "gitea_data";
@@ -21,8 +18,8 @@ in
     enable = true;
     settings = {
       server = {
-        ROOT_URL = "https://${service.fqdn}";
-        DOMAIN = service.fqdn;
+        ROOT_URL = "https://${srvFqdn}";
+        DOMAIN = srvFqdn;
         SSH_LISTEN_HOST = ownIP; # TODO: Add to client network?
         # SSH_SERVER_HOST_KEYS = "ssh/gitea.ed25519"; # TODO: Record SSH key, add it to known hosts
         START_SSH_SERVER = true;
@@ -58,9 +55,9 @@ in
   };
 
   # LUKS setup
-  environment.etc."crypttab".text = localLib.mkCryptTab { inherit (luks) device_name UUID; };
+  environment.etc."crypttab".text = mkCryptTab { inherit (luks) device_name UUID; };
   systemd.mounts = [
-    (localLib.mkLuksMount {
+    (mkLuksMount {
       inherit (luks) device_name;
       target = config.services.gitea.stateDir;
     })
