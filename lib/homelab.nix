@@ -35,12 +35,20 @@
       lib =
         let
           inherit (data-flake.lib) homelab;
+
+          homelabExt =
+            _: _:
+            lib.pipe { inherit homelab; } [
+              (lib.flip builtins.removeAttrs [ "_mkOwnFuncs" ]) # Remove generating func
+              (lib.recursiveUpdate { homelab = homelab._mkOwnFuncs hostName; }) # Bind get functions to hostname, producing getOwn* functions
+            ];
+
+          localLibExt = _: _: { localLib = import ./locallib.nix { inherit lib; }; };
         in
         lib.extend (
-          _: _:
-          lib.pipe { inherit homelab; } [
-            (lib.flip builtins.removeAttrs [ "_mkOwnFuncs" ]) # Remove generating func
-            (lib.recursiveUpdate { homelab = homelab._mkOwnFuncs hostName; }) # Bind get functions to hostname, producing getOwn* functions
+          lib.composeManyExtensions [
+            homelabExt
+            localLibExt
           ]
         );
 
@@ -68,9 +76,7 @@
           ;
         }
       ];
-      specialArgs = specialArgs // {
-        localLib = import ../nixosModules/localLib { inherit lib; };
-      }; # nixos-hardware is passed this way
+      inherit specialArgs;
     };
   /*
     Returns attrset in format expected by deploy-rs.
