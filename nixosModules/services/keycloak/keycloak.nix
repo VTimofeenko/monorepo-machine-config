@@ -1,14 +1,8 @@
 /**
   Sandbox keycloak
 */
-{
-  nixpkgs-unstable,
-  pkgs,
-  config,
-  ...
-}:
+{ config, ... }:
 let
-  pkgs-unstable = import nixpkgs-unstable { inherit (pkgs) system; }; # FIXME: remove after 24.05. keycloak is insecure in 23.11
   inherit (config) my-data;
   srvName = "keycloak";
   service = my-data.lib.getService srvName;
@@ -21,7 +15,6 @@ in
   };
 
   services.keycloak = {
-    package = pkgs-unstable.keycloak;
     enable = true;
 
     sslCertificate = config.age.secrets.ssl-cert.path;
