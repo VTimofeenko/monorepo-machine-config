@@ -117,9 +117,7 @@ in
   wayland.windowManager.hyprland = {
     enable = true;
     systemd.enable = true;
-    xwayland = {
-      enable = true;
-    };
+    xwayland.enable = true;
     extraConfig =
       ''
         exec-once = systemdctl --user start set-random-wallpaper.service
