@@ -8,9 +8,10 @@
 }:
 {
   perSystem =
-    { system, ... }:
+    { system, pkgs, ... }:
     let
-      craneLib = self.inputs.crane.lib.${system}; # NOTE: not inputs' since it seems to strip non-standard outputs.
+      # craneLib = self.inputs.crane.lib.${system}; # NOTE: not inputs' since it seems to strip non-standard outputs.
+      craneLib = self.inputs.crane.mkLib pkgs;
     in
     {
       packages = withSystem system (
