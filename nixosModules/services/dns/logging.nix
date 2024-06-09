@@ -6,14 +6,8 @@
 
   Also sets up a mapping between hostnames and IPs that vector does on the fly.
 */
-{
-  pkgs,
-  lib,
-  nixpkgs-unstable,
-  ...
-}:
+{ pkgs, lib, ... }:
 let
-  pkgs-unstable = import nixpkgs-unstable { inherit (pkgs) system; }; # FIXME: remove after 24.05. Only vector >= 0.37 supports tcp dnstap sink
 
   loggingConfig = lib.homelab.getServiceLogging "dns";
 in
@@ -52,9 +46,6 @@ in
     };
 
     vector = {
-
-      package = pkgs-unstable.vector; # FIXME: vector dnstap TCP support needs a fresh version remove after 24.05
-
       settings = {
         sources = {
           local-dnstap = {
