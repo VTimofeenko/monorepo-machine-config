@@ -19,21 +19,21 @@ in
   # Service configuration
   services.nextcloud = {
     enable = true;
-    package = pkgs.nextcloud27;
+    package = pkgs.nextcloud29;
     hostName = getServiceFqdn srvName;
 
     config = {
       dbtype = "pgsql";
       dbuser = "nextcloud";
-      # Predicated on postgres running on the same host
       dbhost = getServiceFqdn "db";
       dbname = "nextcloud";
       dbpassFile = config.age.secrets.dbpassFile.path;
       adminuser = "root";
-      overwriteProtocol = "https";
       adminpassFile = config.age.secrets.adminpassFile.path;
     };
-    extraOptions = getServiceConfig srvName;
+    settings = getServiceConfig srvName // {
+      overwriteprotocol = "https";
+    };
 
     secretFile = config.age.secrets.nextcloudSecrets.path;
   };
