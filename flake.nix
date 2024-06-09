@@ -6,7 +6,7 @@
     home-manager.url = "github:rycee/home-manager/release-24.05";
     nixpkgs-lib.url = "github:NixOS/nixpkgs/nixos-unstable?dir=lib";
     nur.url = "github:nix-community/NUR";
-    nixpkgs-stable.url = "nixpkgs";
+    nixpkgs-stable.follows = "nixpkgs";
 
     deploy-rs.url = "github:serokell/deploy-rs";
     agenix = {
