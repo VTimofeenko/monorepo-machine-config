@@ -7,7 +7,7 @@
   };
   services.avahi = {
     enable = true;
-    nssmdns = true;
+    nssmdns4 = true;
   };
   users.users.spacecadet.extraGroups = [ "scanner" ];
 }
