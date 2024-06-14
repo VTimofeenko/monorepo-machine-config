@@ -107,9 +107,31 @@
            ((lambda () ('regexp ":my_type:")))
            )
           ))
-  (setq org-agenda-files (list "inbox.org" "agenda.org"
-                               "notes.org" "projects.org"
-                               "~/.local/state/ical-org-export.org")) ;; NOTE: looks like emacs gracefully handles absence of a file
+  (setq org-agenda-files
+        (append
+          (list "inbox.org" "agenda.org"
+                "notes.org" "projects.org"
+                "~/.local/state/ical-org-export.org")
+          (split-string
+            (shell-command-to-string "rg --glob=\"*.org\" -l -S \"filetags:.*proj\" ~/org/roam")
+            "\n"
+            t ; omit-nulls
+            )))
+
+  (defun vt/agenda-files-update ()
+    "Add agenda files by specific filetag"
+    (interactive)
+    (setq org-agenda-files
+          (append
+            (list "inbox.org" "agenda.org"
+                  "notes.org" "projects.org"
+                  "~/.local/state/ical-org-export.org")
+            (split-string
+              (shell-command-to-string "rg --glob=\"*.org\" -l -S \"filetags:.*proj\" ~/org/roam")
+              "\n"
+              t ; omit-nulls. Without this entries would be duplicated in agenda
+              ))))
+
   (setq org-agenda-custom-commands
         '(("g" "Get Things Done (GTD)"
            ;; Only show entries with the tag "inbox" -- just in case some entry outside inbox.org still has that file
