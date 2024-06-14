@@ -10,6 +10,7 @@
     withWlroots = true;
     userName = "spacecadet";
     serviceMode = "user";
+    watch = true;
   };
 }
 # Xremap:1 ends here
