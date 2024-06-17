@@ -30,7 +30,10 @@ let
 in
 {
 
-  imports = [ ./service/acl.nix ];
+  imports = [
+    ./service/acl.nix
+    ./service/performance.nix
+  ];
 
   services.unbound = {
     enable = true;
