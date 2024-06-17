@@ -1,11 +1,11 @@
 # Module that configures Unbound for recursive DNS, DNSSEC and caching
-{ config, ... }:
+{ lib, ... }:
 let
-  inherit (config) my-data;
-  thisSrvConfig = my-data.lib.getServiceConfig "dns_1"; # FIXME: flaky _1 addressing
+  inherit (lib.homelab) getServiceConfig getNetwork;
+  thisSrvConfig = getServiceConfig "dns";
 
-  lan = my-data.lib.getNetwork "lan";
-  client = my-data.lib.getNetwork "client";
+  lan = getNetwork "lan";
+  client = getNetwork "client";
 in
 {
   services.unbound.settings.server.access-control =
