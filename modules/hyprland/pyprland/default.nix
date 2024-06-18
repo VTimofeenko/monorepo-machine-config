@@ -1,22 +1,23 @@
 # [[file:../../../new_project.org::*Pyprland config][Pyprland config:1]]
 # Home-manager module for pyprland
-{
-  pkgs,
-  lib,
-  pyprland,
-  ...
-}:
+{ pkgs, lib, ... }:
 let
   droptermClass = "kitty-dropterm";
 in
 {
-  imports = [ pyprland.homeManagerModules.default ];
+  imports = [ ./impl.nix ];
   services.pyprland.enable = true;
   programs.pyprland = {
     enable = true;
-    extraConfig = {
+    settings = {
       pyprland = {
-        plugins = [ "scratchpads" ];
+        plugins = [
+          "scratchpads"
+          # TODO: setup
+          # "expose"
+          # TODO: needs engine (some form of dmenu like thing)
+          # "fetch_client_menu"
+        ];
       };
       scratchpads = {
         "term" = {

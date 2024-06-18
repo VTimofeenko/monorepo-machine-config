@@ -47,13 +47,6 @@
 
     devshell.url = "github:numtide/devshell";
     devshell.inputs.nixpkgs.follows = "nixpkgs-unstable";
-    pyprland = {
-      url = "github:VTimofeenko/pyprland?ref=nix";
-      inputs = {
-        devshell.follows = "devshell";
-        flake-parts.follows = "flake-parts";
-      };
-    };
 
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
 

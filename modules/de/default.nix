@@ -1,6 +1,5 @@
 # [[file:../../new_project.org::*Desktop environment][Desktop environment:1]]
 {
-  pyprland,
   selfPkgs,
   selfHMModules,
   hyprland,
@@ -14,7 +13,6 @@
     ./xremap
   ];
   home-manager.extraSpecialArgs = {
-    inherit pyprland;
     inherit selfPkgs;
     inherit selfHMModules;
   };
