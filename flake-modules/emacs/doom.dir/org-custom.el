@@ -170,7 +170,7 @@
            ((todo "TODO"
                   ((org-agenda-skip-function
                     '(org-agenda-skip-entry-if 'deadline 'scheduled))
-                   (org-agenda-files (list "agenda.org" "notes.org" "projects.org")) (org-agenda-prefix-format "  %i %-12:c [%e] ")
+                   (org-agenda-prefix-format "  %i %-12:c [%e] ")
                    (org-agenda-overriding-header "\nTasks: Can be done\n")))
             (agenda nil
                     ((org-scheduled-past-days 0)
