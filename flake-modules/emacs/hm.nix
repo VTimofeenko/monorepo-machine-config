@@ -50,6 +50,7 @@ in
               ripgrep # fast grep
               sqlite # org roam
               lua-language-server # lua LSP
+              graphviz # dot for roam
               ;
             inherit (pkgs.python311Packages) grip; # markdown previews
             inherit (pkgs.nodePackages) bash-language-server; # sh LSP
