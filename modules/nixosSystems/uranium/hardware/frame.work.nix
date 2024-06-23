@@ -15,7 +15,11 @@
   ];
   hardware = {
     enableRedistributableFirmware = true; # NOTE: required for wifi to work
-    opengl.extraPackages = builtins.attrValues { inherit (pkgs) rocm-opencl-icd rocm-opencl-runtime; };
+    opengl.extraPackages = builtins.attrValues {
+      inherit (pkgs) rocm-opencl-icd rocm-opencl-runtime;
+      inherit (pkgs.rocmPackages) clr;
+      inherit (pkgs.rocmPackages.clr) icd;
+    };
     opengl = {
       driSupport = true;
       driSupport32Bit = true;
@@ -41,7 +45,9 @@
     amdgpu = {
       loadInInitrd = true;
       # amdvlk = true; # TODO: check if makes sense
-      opencl = true;
+      # FIXME: As of Jun 23 this is disabled on 24.05 for some reason. The PRs don't make too much sense at first glance, so replacing this with the implementation from unstable
+      # implementation is in opengl.extraPackages above
+      # opencl = true;
     };
   };
   # hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
