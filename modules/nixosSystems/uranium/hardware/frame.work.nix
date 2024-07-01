@@ -43,7 +43,7 @@
     sensor.iio.enable = lib.mkDefault true;
 
     amdgpu = {
-      loadInInitrd = true;
+      initrd.enable = true;
       # amdvlk = true; # TODO: check if makes sense
       # FIXME: As of Jun 23 this is disabled on 24.05 for some reason. The PRs don't make too much sense at first glance, so replacing this with the implementation from unstable
       # implementation is in opengl.extraPackages above
