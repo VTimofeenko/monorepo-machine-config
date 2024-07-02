@@ -37,7 +37,7 @@ in
       # Do not warn on dirty git repo
       warn-dirty = false
       # Automatically optimize store
-      auto-optimise-store = true
+      # auto-optimise-store = true
     '';
     registry =
       {
