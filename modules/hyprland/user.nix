@@ -206,7 +206,6 @@ in
         master {
             # See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
             # When creating a new window - it should be off to the side
-            new_is_master = false
             # Make master window occupy only half of the screen
             mfact = 0.5
             ${
