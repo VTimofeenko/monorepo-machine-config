@@ -45,6 +45,22 @@
         "type": "github"
       }
     },
+    "catppuccin": {
+      "locked": {
+        "lastModified": 1720132245,
+        "narHash": "sha256-FqpChnugphpOqKDaUr/4Ic3qf/V0ARNhXGj+Hg51VM8=",
+        "ref": "keep-gtk",
+        "rev": "301fd017177998a0a559d780bc6331956939415f",
+        "revCount": 257,
+        "type": "git",
+        "url": "https://github.com/VTimofeenko/catppucin-nix"
+      },
+      "original": {
+        "ref": "keep-gtk",
+        "type": "git",
+        "url": "https://github.com/VTimofeenko/catppucin-nix"
+      }
+    },
     "color_scheme": {
       "flake": false,
       "locked": {
@@ -1148,6 +1164,7 @@
       "inputs": {
         "agenix": "agenix",
         "base16": "base16",
+        "catppuccin": "catppuccin",
         "color_scheme": "color_scheme",
         "crane": "crane",
         "data-flake": "data-flake",

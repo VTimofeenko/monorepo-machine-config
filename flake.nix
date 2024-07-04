@@ -159,6 +159,8 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       inputs.pre-commit-hooks.follows = "pre-commit-hooks-nix";
     };
+
+    catppuccin.url = "git+https://github.com/VTimofeenko/catppucin-nix?ref=keep-gtk";
   };
   outputs =
     inputs@{ flake-parts, self, ... }:
