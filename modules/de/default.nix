@@ -24,6 +24,7 @@
         ./eww # (ref:eww-import)
         ./notifications.nix # (ref:notifications-de-import)
         ./wallpaper.nix
+        ./vnc
         hyprland.homeManagerModules.default
       ];
       home.packages = builtins.attrValues { inherit (pkgs) wl-clipboard; };
