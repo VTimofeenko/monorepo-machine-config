@@ -135,5 +135,10 @@ in
         theme = "1337";
       };
     };
+
+    broot = {
+      enable = true;
+      settings.modal = true;
+    };
   };
 }
