@@ -11,4 +11,13 @@
       };
     };
   };
+
+  environment.systemPackages = [
+    (pkgs.writeShellApplication {
+      name = "launch-hyprland";
+      text = ''
+        systemd-cat --identifier hyprland Hyprland
+      '';
+    })
+  ];
 }
