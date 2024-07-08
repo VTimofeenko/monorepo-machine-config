@@ -100,6 +100,10 @@ let
         vimPlugins.nvim-colorizer-lua
         ./configs/colorizer.lua
       ]
+      [
+        vimPlugins.gitsigns-nvim
+        ./configs/gitsigns.lua
+      ]
     ];
 
   inherit (pkgs) vimPlugins;
