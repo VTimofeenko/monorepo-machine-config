@@ -104,6 +104,10 @@ let
         vimPlugins.gitsigns-nvim
         ./configs/gitsigns.lua
       ]
+      [
+        vimPlugins.trouble-nvim
+        ./configs/trouble-nvim.lua
+      ]
     ];
 
   inherit (pkgs) vimPlugins;
