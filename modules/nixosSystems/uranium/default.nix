@@ -4,6 +4,7 @@
   imports = [
     ../../de
     ./hardware # (ref:uranium-hw-import)
+    # TODO: move to a separate module (impl + default)
     ./network-selector.nix
   ];
   options.myMachines.uranium = {
