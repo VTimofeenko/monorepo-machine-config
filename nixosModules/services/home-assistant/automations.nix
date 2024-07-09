@@ -92,7 +92,7 @@ in
         ];
         action = [
           {
-            service = "script.night_nix";
+            service = "script.night";
             data = { };
           }
           {
