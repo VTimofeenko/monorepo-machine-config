@@ -39,17 +39,9 @@ KITTY_SCROLLBACK = function(INPUT_LINE_NUMBER, CURSOR_LINE, CURSOR_COLUMN)
 			-- Jump to the end of file
 			-- Usually ctrl+shift+g does CURSOR_COLUMN=0, CURSOR_LINE=0
 			if CURSOR_LINE == 0 then
-				-- Jump to the very end
+				-- Jump to the very end, return to previous non-empty char
 				-- This also serves as a fallback behavior
-				vim.api.nvim_command("normal! G")
-				-- Try to jump back to the first chevron
-				-- FIXME: does not work :(
-				--
-				-- local line_num = vim.fn.search('❯ ', 'b')
-				-- print(line_num)
-				-- if line_num > 0 then
-				-- 	vim.api.nvim_win_set_cursor(0, { line_num, 0 })
-				-- end
+				vim.api.nvim_command("normal! G{")
 			else
 				vim.api.nvim_win_set_cursor(0, { CURSOR_LINE + 1, CURSOR_COLUMN })
 			end
