@@ -2,6 +2,12 @@
 { lib, ... }:
 let
   luksOpts = "noauto,nofail,_netdev";
+  inherit (lib)
+    pipe
+    splitString
+    reverseList
+    concatStringsSep
+    ;
 in
 {
   recursiveMerge =
@@ -52,4 +58,21 @@ in
     lib.catAttrs attrName
       # Strip the outer keys and turn into a list
       (builtins.map (x: x.value) (lib.attrsets.attrsToList attrSet));
+
+  /**
+    Useful for reversing the octets of an IP address.
+
+       Example:
+         splitReverseJoin "192.168.1.2"
+         => "2.1.168.192"
+       Type:
+         splitReverseJoin :: String -> String
+  */
+  splitReverseJoin =
+    x:
+    pipe x [
+      (splitString ".")
+      reverseList
+      (concatStringsSep ".")
+    ];
 }

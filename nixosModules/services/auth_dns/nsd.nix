@@ -4,6 +4,7 @@ let
   srvLib = import ./lib.nix;
 in
 {
+  imports = [ ./service ];
   services.nsd = {
     enable = true;
     inherit (thisSrvConfig) port;
