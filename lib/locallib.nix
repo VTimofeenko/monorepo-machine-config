@@ -69,11 +69,16 @@ in
   /**
     Useful for reversing the octets of an IP address.
 
-       Example:
-         splitReverseJoin "192.168.1.2"
-         => "2.1.168.192"
-       Type:
-         splitReverseJoin :: String -> String
+    # Type
+    ```
+    splitReverseJoin :: String -> String
+    ```
+
+    # Example
+    ```nix
+    splitReverseJoin "192.168.1.2"
+    => "2.1.168.192"
+    ```
   */
   splitReverseJoin =
     x:
