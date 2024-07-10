@@ -44,14 +44,21 @@ in
     ''
       ${device_name} UUID=${UUID} - ${luksOpts}
     '';
-  /*
-    * Plucks an attribute from nested attrset, returing a list of values
 
-       Example:
-         pluck "foo" { a = { foo = 1; }; b = { bar = 2; }; c = { foo = 3; }; }
-         => [ 1 3 ]
-       Type:
-         pluck :: String -> AttrSet -> [ Any ]
+  /**
+    Plucks an attribute from nested attrset, returing a list of values
+
+    # Type
+
+    ```
+    pluck :: String -> AttrSet -> [ Any ]
+    ```
+
+    # Examples
+    ```nix
+    pluck "foo" { a = { foo = 1; }; b = { bar = 2; }; c = { foo = 3; }; }
+    => [ 1 3 ]
+    ```
   */
   pluck =
     attrName: attrSet:
