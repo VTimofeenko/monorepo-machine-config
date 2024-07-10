@@ -33,6 +33,7 @@ in
   imports = [
     ./service/acl.nix
     ./service/performance.nix
+    ./service/reverse.nix
   ];
 
   services.unbound = {
