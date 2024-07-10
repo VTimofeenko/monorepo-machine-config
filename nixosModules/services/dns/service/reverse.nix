@@ -2,13 +2,11 @@
 { config, lib, ... }:
 let
   inherit (config.my-data) networks;
-  inherit (lib.localLib) pluck;
+  inherit (lib.localLib) pluck splitReverseJoin;
   inherit (lib)
     filterAttrs
     pipe
     splitString
-    reverseList
-    concatStringsSep
     elemAt
     last
     unique
@@ -17,9 +15,7 @@ let
   subnetsInArpa = pipe networks [
     (filterAttrs (n: _: builtins.elem n networks.allNetworks)) # filter only actual networks, get an attrset back
     (pluck "subnet") # -> list of "subnet" values
-    (map (splitString "."))
-    (map reverseList)
-    (map (concatStringsSep "."))
+    (map splitReverseJoin)
   ];
 
   localZones = pipe subnetsInArpa [
