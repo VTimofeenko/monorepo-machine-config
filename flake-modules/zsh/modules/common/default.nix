@@ -23,7 +23,11 @@ rec {
     mv = "mv -v";
     rm = "${pkgs.coreutils}/bin/rm -id";
     vidir = "${pkgs.moreutils}/bin/vidir --verbose";
-    ccopy = if pkgs.stdenv.isDarwin then "pbcopy" else "${pkgs.wl-clipboard}/bin/wl-copy";
+    ccopy = concatStringsSep " " [
+      "${getExe pkgs.perl} -p -e 'chomp if eof'"
+      "|"
+      (if pkgs.stdenv.isDarwin then "pbcopy" else "${pkgs.wl-clipboard}/bin/wl-copy")
+    ];
     syu = "systemctl --user";
     ju = "journalctl --user";
     cde = "cd /etc/nixos";
