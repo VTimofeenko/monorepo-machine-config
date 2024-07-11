@@ -8,6 +8,7 @@ let
 in
 {
   services.home-assistant.config = {
+    # "automation" needs to be first here
     "automation nix " = [
       {
         id = "test-record";
@@ -17,7 +18,6 @@ in
             data = {
               duration = 30;
               lookback = 0;
-
               # W/A from https://github.com/home-assistant/core/issues/40241#issuecomment-1233073391
               filename = ''${cfg.config.homeassistant.media_dirs.recordings}/{{ '{{ entity_id.entity_id }}' }}_{{ now().strftime("%Y%m%d-%H%M%S") }}.mp4'';
             };
@@ -58,11 +58,11 @@ in
         ];
         mode = "single";
       }
+
       {
         id = "sunset";
         alias = "Sunset";
         description = "Run light-related automations based on sunset";
-
         trigger = [
           {
             platform = "sun";
@@ -76,14 +76,13 @@ in
             target.entity_id = "switch.tp_link_smart_plug_8c5f_kasa_smart_plug_8c5f_1";
           }
         ];
-
         mode = "single";
       }
+
       {
         id = "night-routine";
         alias = "Night routine";
         description = "Actions to be processed at night";
-
         trigger = [
           {
             platform = "time";
@@ -100,9 +99,9 @@ in
             data = { };
           }
         ];
-
         mode = "single";
       }
+
     ] ++ srvConfig.automations;
     # This allows automations to be provisioned from Nix and to be defined from UI
     "automation ui" = "!include automations.yaml";
