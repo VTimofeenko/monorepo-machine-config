@@ -38,11 +38,11 @@ in
           }
         ]; # TODO: replace deviceId with proper name
       }
-      {
-        id = "day-temp";
-        alias = "Day temp";
-        description = "Set target temperature to 71 at 7 AM";
 
+      {
+        id = "day-routine";
+        alias = "Day routine";
+        description = "Actions to be processed at start of day";
         trigger = [
           {
             platform = "time";
@@ -51,9 +51,8 @@ in
         ];
         action = [
           {
-            data.temperature = 73;
-            service = "climate.set_temperature";
-            target.entity_id = "climate.t6_pro_z_wave_programmable_thermostat";
+            service = "script.day_mode";
+            data = { };
           }
         ];
         mode = "single";
