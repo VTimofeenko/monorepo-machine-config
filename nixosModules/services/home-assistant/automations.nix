@@ -59,26 +59,6 @@ in
       }
 
       {
-        id = "sunset";
-        alias = "Sunset";
-        description = "Run light-related automations based on sunset";
-        trigger = [
-          {
-            platform = "sun";
-            event = "sunset";
-            offset = 0;
-          }
-        ];
-        action = [
-          {
-            service = "switch.turn_on";
-            target.entity_id = "switch.tp_link_smart_plug_8c5f_kasa_smart_plug_8c5f_1";
-          }
-        ];
-        mode = "single";
-      }
-
-      {
         id = "night-routine";
         alias = "Night routine";
         description = "Actions to be processed at night";
