@@ -223,6 +223,12 @@ rec {
         zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
         # Space to continue completions
         zstyle ':fzf-tab:*' continuous-trigger space
+
+        # Case-insensitive completion
+        zstyle ':completion:*' matcher-list \
+          'm:{[:lower:]}={[:upper:]}' \
+          '+r:|[._-]=* r:|=*' \
+          '+l:|=*'
       ''
     )
   ];
