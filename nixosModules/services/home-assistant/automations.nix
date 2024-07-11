@@ -92,7 +92,7 @@ in
         ];
         action = [
           {
-            service = "script.night";
+            service = "script.night_mode";
             data = { };
           }
           {
