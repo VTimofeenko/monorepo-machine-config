@@ -5,11 +5,11 @@ trouble.setup()
 local wk = require("which-key")
 wk.register({
 	t = {
-		A = { "<cmd>Trouble todo<cr>", "TODOs in trouble" },
-		Q = { "<cmd>Trouble quickfix<cr>", "Quickfix in trouble" },
-		L = { "<cmd>Trouble loclist<cr>", "Loclist in trouble" },
-		T = { "<cmd>Trouble telescope<cr>", "Telescope in trouble" },
-		D = { "<cmd>Trouble diagnostics<cr>", "Diagnostics(Trouble)" },
+		A = { "<cmd>Trouble todo<cr>", "TODOs (Trouble)" },
+		Q = { "<cmd>Trouble quickfix<cr>", "Quickfix (Trouble)" },
+		L = { "<cmd>Trouble loclist<cr>", "Loclist (Trouble)" },
+		T = { "<cmd>Trouble telescope<cr>", "Telescope (Trouble)" },
+		D = { "<cmd>Trouble diagnostics<cr>", "Diagnostics (Trouble)" },
 	},
 }, { prefix = "<leader>" })
 
