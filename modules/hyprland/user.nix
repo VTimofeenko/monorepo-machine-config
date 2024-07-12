@@ -300,6 +300,7 @@ in
         windowrule = float,$pinentry
         windowrule = float,xdg-desktop-portal-gtk
         windowrule = size 25% 20%,$pinentry
+        windowrule = center,$pinentry
         windowrule = stayfocused,$pinentry
         windowrule = dimaround,$pinentry
         bind = $mainMod SHIFT, Space, focuscurrentorlast
