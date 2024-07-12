@@ -8,7 +8,7 @@ wk.register({
 		A = { "<cmd>Trouble todo<cr>", "TODOs in trouble" },
 		Q = { "<cmd>Trouble quickfix<cr>", "Quickfix in trouble" },
 		L = { "<cmd>Trouble loclist<cr>", "Loclist in trouble" },
-		T = { "<cmd>Trouble telescope<cr>", "Loclist in trouble" },
+		T = { "<cmd>Trouble telescope<cr>", "Telescope in trouble" },
 	},
 }, { prefix = "<leader>" })
 
