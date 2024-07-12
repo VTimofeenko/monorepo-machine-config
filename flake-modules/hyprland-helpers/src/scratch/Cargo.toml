@@ -1,0 +1,10 @@
+[package]
+name = "scratch"
+version = "0.1.0"
+edition = "2021"
+description = "Scratch"
+
+[dependencies]
+gtk4 = "0.9.0"
+hyprland = {workspace = true}
+notify-rust = {workspace = true}

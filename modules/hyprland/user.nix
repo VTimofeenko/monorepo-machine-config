@@ -305,6 +305,13 @@ in
         windowrule = dimaround,$pinentry
         bind = $mainMod SHIFT, Space, focuscurrentorlast
         bind = $mainMod, Space, exec, ${lib.getExe selfPkgs'.hyprland-switch-lang-on-xremap}
+
+        windowrule = float,com.example.FirstGtkApp
+        # windowrule = center,com.example.FirstGtkApp
+        # windowrule = move 100% 100%-h-, com.example.FirstGtkApp
+        windowrule = size 40% 15%, com.example.FirstGtkApp
+        windowrule = move 30% 4%, com.example.FirstGtkApp
+        windowrule = noinitialfocus, com.example.FirstGtkApp
       ''
       + mergedConfig;
   };

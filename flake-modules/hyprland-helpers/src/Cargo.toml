@@ -6,7 +6,8 @@ members = [
 "hyprland-mode-notifier",
 "hyprland-switch-lang-on-xremap",
 "hyprland-workspace-notifier",
-"hyprland-maybe-restart-hyprland-session"
+"hyprland-maybe-restart-hyprland-session",
+"scratch"
 ]
 resolver = "2"
 
