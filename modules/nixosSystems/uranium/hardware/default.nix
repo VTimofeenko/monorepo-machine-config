@@ -76,7 +76,7 @@
     };
     udisks2.enable = true; # NOTE: fwupdmgr uses this to check the boot
   };
-  # pipewire config, from https://nixos.wiki/wiki/PipeWire
+  # pipewire config, from https://wiki.nixos.org/wiki/PipeWire
   security.rtkit.enable = true;
   environment.etc = {
     # battery management

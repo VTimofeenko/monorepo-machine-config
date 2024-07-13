@@ -4341,7 +4341,7 @@ Imported [[(uranium-hw-import)][here]].
   # bluetooth
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
-  # pipewire config, from https://nixos.wiki/wiki/PipeWire
+  # pipewire config, from https://wiki.nixos.org/wiki/PipeWire
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -4414,7 +4414,7 @@ Imported [[(uranium-hw-import)][here]].
   # Instead of archwiki, frame.work forums recommend this with s2idle
 
   # Hardware acceleration
-  # Taken from https://nixos.wiki/wiki/Accelerated_Video_Playback
+  # Taken from https://wiki.nixos.org/wiki/Accelerated_Video_Playback
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
   };
