@@ -1,0 +1,102 @@
+#+title: Plan
+
+- [X] System [6/6]
+  - [X] Check literate-machine-config/modules/de
+  - [X] Check literate-machine-config/modules/hyprland
+  - [X] Greeter module
+  - [X] XDG portal
+  - [X] Base hyprland module
+  - [X] Lock screen system parts
+- [-] Home manager [3/10]
+  - [X] Check literate-machine-config/modules/de
+  - [X] Check literate-machine-config/modules/hyprland
+  - [X] Wallpaper with proper opts
+  - [ ] user.nix from modules/hyprland
+  - [ ] Swaync (source: notifications.nix)
+  - [ ] My-wayvnc config
+  - [ ] lock
+  - [ ] Keybinds
+  - [ ] Modes
+  - [ ] Theme
+
+- [ ] Split xremap into a separate dir from literate-machine-config/modules/de
+- [ ] Split pyprland into a separate dir from literate-machine-config/modules/hyprland
+
+- [ ] Import the modules in the main config
+- [ ] Go through the current hyprland config; make sure all sections are present
+- [ ] Make sure helpers are enabled
+
+* Parking lot
+Unclear why is this in the de:
+#+begin_src nix
+  home-manager.extraSpecialArgs = {
+    inherit selfPkgs;
+    inherit selfHMModules;
+  };
+#+end_src
+
+
+Maybe:
+#+begin_src nix
+      home.packages = builtins.attrValues { inherit (pkgs) wl-clipboard; };
+#+end_src
+
+Maybe ~wl-clip-persist~ service?
+#+begin_src nix
+    systemd.user.services.wl-clip-persist =
+    let
+      target = "graphical-session.target";
+    in
+    {
+      Unit = {
+        Description = "Keep the clipboard content after original owner exited";
+        PartOf = [ target ];
+        After = [ target ];
+        BindsTo = [ "hyprland-session.target" ];
+        ConditionEnvironment = "WAYLAND_DISPLAY";
+      };
+      Service = {
+        Type = "simple";
+        ExecStart = "${lib.getExe pkgs.wl-clip-persist} --clipboard both";
+        Restart = "always";
+      };
+      Install = {
+        WantedBy = [ target ];
+      };
+    };
+
+#+end_src
+
+Some watcher:
+
+#+begin_src nix
+  # systemd.user.services.wl-clipboard-watcher =
+  #   let
+  #     target = "graphical-session.target";
+  #   in
+  #   {
+  #     Unit = {
+  #       Description = "Wallpaper daemon";
+  #       PartOf = [ target ];
+  #       After = [ target ];
+  #       BindsTo = [ "hyprland-session.target" ];
+  #       ConditionEnvironment = "WAYLAND_DISPLAY";
+  #     };
+  #     Service = {
+  #       Type = "simple";
+  #       ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --watch ${cliphist} store";
+  #       Restart = "always";
+  #     };
+  #     Install = {
+  #       WantedBy = [ target ];
+  #     };
+  #   };
+
+#+end_src
+
+Monitor config for neptunium:
+
+#+begin_src nix
+        monitor=DP-2,3440x1440@120.0,0x0,1.0
+        monitor=DVI-D-1,1920x1080@119.982002,3440x0,1.0
+#+end_src

@@ -3,6 +3,6 @@
 _: {
   flake = {
     nixosModules.myHyprland = import ./nixosModules { };
-    homeManagerModules.myHyprland = { };
+    homeManagerModules.myHyprland = import ./homeManagerModules {};
   };
 }
