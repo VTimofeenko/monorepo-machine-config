@@ -6,7 +6,7 @@
   - Checks for automatic tests
   - home-manager(?) module for installing the environment
 */
-{ withSystem, ... }:
+{ withSystem, self, ... }:
 {
   perSystem =
     { system, ... }:
@@ -18,11 +18,15 @@
             name = "desktop-environment-canary";
 
             nodes.machine1 =
-              { pkgs, ... }:
+              { pkgs, lib, ... }:
               {
+                imports = [ self.nixosModules.de ];
 
                 # User-related configuration
                 services.getty.autologinUser = "alice";
+                # Force disable greet so autologin works
+                services.greetd.enable = lib.mkForce false;
+
                 users.users.alice = {
                   password = "hunter2";
                   isNormalUser = true;
@@ -31,8 +35,6 @@
                 # Hyprland needs this to start
                 virtualisation.qemu.options = [ "-vga none -device virtio-gpu-pci" ];
                 hardware.opengl.enable = true;
-                # Hyprland config
-                programs.hyprland.enable = true;
                 # Stub terminal emulator
                 environment.systemPackages = [ pkgs.kitty ];
               };
@@ -44,4 +46,8 @@
         }
       );
     };
+
+  flake = {
+    nixosModules.de = import ./nixosModules { };
+  };
 }
