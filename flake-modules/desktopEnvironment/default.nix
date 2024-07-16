@@ -20,7 +20,10 @@
             nodes.machine1 =
               { pkgs, lib, ... }:
               {
-                imports = [ self.nixosModules.de ];
+                imports = [
+                  self.nixosModules.de
+                  self.inputs.home-manager.nixosModules.home-manager
+                ];
 
                 # User-related configuration
                 services.getty.autologinUser = "alice";
@@ -30,6 +33,12 @@
                 users.users.alice = {
                   password = "hunter2";
                   isNormalUser = true;
+                };
+
+                home-manager.users.alice = {
+                  imports = [ self.homeManagerModules.de ];
+
+                  home.stateVersion = "24.05";
                 };
 
                 # Hyprland needs this to start
@@ -49,5 +58,6 @@
 
   flake = {
     nixosModules.de = import ./nixosModules { };
+    homeManagerModules.de = import ./homeManagerModules { };
   };
 }
