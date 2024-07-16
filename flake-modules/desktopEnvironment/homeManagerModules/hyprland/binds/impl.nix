@@ -163,7 +163,10 @@ in
 {
   # Interface
   options.wayland.windowManager.hyprland.myBinds = mkOption {
-    type = types.attrsOf types.attrs; # (types.either binding types.attrs);
+    # type = types.attrsOf types.attrs; # (types.either binding types.attrs);
+    type = types.attrs // {
+      merge = loc: lib.foldl' (res: def: lib.recursiveUpdate res def.value) { };
+    };
     default = { };
 
     example = {
