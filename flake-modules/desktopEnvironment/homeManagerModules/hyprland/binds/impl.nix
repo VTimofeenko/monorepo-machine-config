@@ -271,6 +271,7 @@ in
       ];
 
       recursiveRender =
+        outer: # Looks like nested submaps need one and only one "submap=reset"
         attrset:
         pipe attrset [
           (mapAttrs (
@@ -300,24 +301,28 @@ in
                 removeMetaArgs
 
                 # Append "exit submap by esc"
-                (flip mergeAttrs {
-                  "escape" = {
-                    mod = "";
-                    dispatcher = "submap";
-                    arg = "reset";
-                    description = "exit submap";
-                  };
-                })
+                # (flip mergeAttrs {
+                #   "escape" = {
+                #     mod = "";
+                #     dispatcher = "submap";
+                #     arg = "reset";
+                #     description = "exit submap";
+                #   };
+                # })
 
                 # Recurse, render sub-submaps
-                recursiveRender
+                (recursiveRender false)
 
                 # Prepend the key to enter the submap
                 # and append the "submap = reset" so hyprland knows the submap definition is over
+                # the "escape" binding is done first so that it stays in the same submap when rendered
                 (x: ''
                   ${renderSingleBind n v'}
+
+                  submap = ${v'.arg}
+                  bind = , escape, submap, reset
                   ${x}
-                  submap = reset
+                  ${if outer then "submap = reset" else ""}
                 '')
               ])
             else
@@ -327,5 +332,5 @@ in
           (concatStringsSep "\n")
         ];
     in
-    recursiveRender cfg;
+    recursiveRender true cfg;
 }
