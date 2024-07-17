@@ -147,6 +147,9 @@ rec {
       "nix"
       "ncl"
       "md"
+      "yml"
+      "yaml"
+      "sql"
     ])
     # Debug stuff
     ''
