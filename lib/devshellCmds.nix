@@ -36,4 +36,30 @@
     # TODO: depend on emacs, scp and config somehow
     command = "emacsclient -eval '(org-batch-store-agenda-views)' && scp ~/code/infra/services/dashy/home_maint.html root@nitrogen.mgmt.home.arpa:/var/lib/filedump";
   }
+
+  {
+    help = "Switch data-flake to local source";
+    name = "switch-data-flake-source";
+    command =
+      # bash
+      ''
+        set -x
+        DATA_FLAKE_SOURCE=$(nix flake metadata $PRJ_ROOT --json | jq --raw-output '.locks.nodes."data-flake".original.type')
+
+        echo $DATA_FLAKE_SOURCE
+        if [ "$DATA_FLAKE_SOURCE" == "git" ]; then
+          # disable remote_src
+          perl -p -i -e 's/^(\s+)(url.* # REMOTE_SRC$)/\1# \2/' ./flake.nix
+          # enable local_src
+          perl -p -i -e 's/^(\s+)# (url.* # LOCAL_SRC$)/\1\2/' ./flake.nix
+        else
+          # disable local_src
+          perl -p -i -e 's/^(\s+)(url.* # LOCAL_SRC$)/\1# \2/' ./flake.nix
+          # enable remote_src
+          perl -p -i -e 's/^(\s+)# (url.* # REMOTE_SRC$)/\1\2/' ./flake.nix
+        fi
+
+      '';
+
+  }
 ]
