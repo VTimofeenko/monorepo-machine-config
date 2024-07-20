@@ -1,7 +1,12 @@
 # A set of settings that are common for both modules
 { pkgs, config, ... }:
 let
-  inherit (pkgs.lib) getExe concatMapStringsSep concatStringsSep;
+  inherit (pkgs.lib)
+    getExe
+    concatMapStringsSep
+    concatStringsSep
+    pipe
+    ;
   inherit (config.my-colortheme) semantic;
 in
 rec {
@@ -130,18 +135,13 @@ rec {
       autoload -Uz bracketed-paste-magic
       zle -N bracketed-paste bracketed-paste-magic
     ''
-    # alias that creates the directory and changes into it
-    ''
-      mkcd(){ mkdir -p "$@" && cd "$@"; }
-    ''
-    # alias that cd-s into a file's directory
-    ''
-      cdd(){ cd $(dirname $1)}
-    ''
-    # alias that cd-s into nix package's directory in store
-    ''
-      cdnixpkg(){cd $(dirname $(readlink --canonicalize $(which $1)))}
-    ''
+
+    (pipe (import ./functions.nix { inherit pkgs; }) [
+      (builtins.mapAttrs (name: value: "${name}(){${value.text}}")) # Turn into zsh function
+      builtins.attrValues
+      (concatStringsSep "\n")
+    ])
+
     # automatically open files with certain extensions in EDITOR
     (concatMapStringsSep "\n" (ext: "alias -s ${ext}=$EDITOR") [
       "nix"
