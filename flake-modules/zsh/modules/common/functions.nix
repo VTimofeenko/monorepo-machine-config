@@ -8,7 +8,7 @@ in
   mkcd = {
     description = "Make a directory and change there";
     text = # bash
-      "mkdir -p \"$@\" && cd \"$@\";\n";
+      ''mkdir -p "$@" && cd "$@"'';
   };
 
   cdd = {
@@ -22,4 +22,5 @@ in
     text = # bash
       "cd $(${dirname} $(${readlink} --canonicalize $(which $1)))";
   };
+
 }
