@@ -28,4 +28,10 @@ in
     text = # bash
       ''${pkgs.expect}/bin/unbuffer "$@" | ${pkgs.lib.getExe pkgs.spacer}'';
   };
+
+  ad-nauseam = {
+    description = "Repeat last command by every press of Return";
+    text = # bash
+      ''while true; do read && !!; done'';
+  };
 }
