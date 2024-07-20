@@ -23,4 +23,9 @@ in
       "cd $(${dirname} $(${readlink} --canonicalize $(which $1)))";
   };
 
+  spacer-unbuf = {
+    description = "launch command in unbuffer, piping into spacer. Preserves colors.";
+    text = # bash
+      ''${pkgs.expect}/bin/unbuffer "$@" | ${pkgs.lib.getExe pkgs.spacer}'';
+  };
 }
