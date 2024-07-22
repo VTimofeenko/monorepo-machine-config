@@ -3,6 +3,6 @@ _: {
   imports = [
     ./gitea.nix
     ./ssl.nix
-    # ./bkp.nix # TODO: implement
+    ./bkp.nix
   ];
 }
