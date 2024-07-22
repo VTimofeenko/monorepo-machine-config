@@ -52,7 +52,9 @@ vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "nix" },
 	callback = function()
 		local wk = require("which-key")
-		wk.register({ ["gf"] = { open_file, "Open file under cursor" } })
+		wk.add({
+			{ "gf", open_file, desc = "Open file under cursor" },
+		})
 	end,
 })
 

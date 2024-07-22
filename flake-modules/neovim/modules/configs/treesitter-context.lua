@@ -5,12 +5,9 @@ local tsContext = require("treesitter-context")
 tsContext.setup({
 	max_lines = 4,
 	on_attach = function()
-		wk.register({
-			u = { tsContext.go_to_context, "Jump to treesitter context" },
-		}, { prefix = "<localleader>" })
-
-		wk.register({
-			T = { c = { tsContext.toggle, "Toggle treesitter context" } },
-		}, { prefix = "<leader>" })
+		wk.add({
+			{ "<localleader>u", tsContext.go_to_context, desc = "Jump to treesitter context" },
+			{ "<leader>Tc", tsContext.toggle, desc = "Toggle treesitter context" },
+		})
 	end,
 })
