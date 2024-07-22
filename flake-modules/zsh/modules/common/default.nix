@@ -150,6 +150,7 @@ rec {
       "yml"
       "yaml"
       "sql"
+      "lua"
     ])
     # Debug stuff
     ''
