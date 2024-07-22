@@ -28,7 +28,8 @@
       flake = false;
     };
 
-    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+    # TODO: move to proper module in nixpkgs
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1&rev=bd526822deb9ed47c0b51b534817aa8541fff07b";
 
     nvim-nightly = {
       url = "github:nix-community/neovim-nightly-overlay";
