@@ -4,10 +4,6 @@ vim.g.WK_shown = false
 
 local wk = require("which-key")
 
-wk.setup({
-	key_labels = { ["<leader>"] = "SPC" },
-})
-
 -- Used to remap <leader>w -> +window dispatcher in Whichkey
 -- Source https://github.com/folke/which-key.nvim/issues/428
 local function wk_alias(keys)
