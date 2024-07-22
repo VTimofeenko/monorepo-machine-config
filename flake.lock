@@ -291,17 +291,14 @@
         ]
       },
       "locked": {
-        "lastModified": 1721283709,
-        "narHash": "sha256-NXWAeKqE92bRwumSi8lWMDZpkFbO4fvZty9fiq/jwgs=",
-        "owner": "eikek",
-        "repo": "docspell",
-        "rev": "c584c397f0364eb3e3e858a0a83a64061f0f7f28",
-        "type": "github"
+        "lastModified": 1721665883,
+        "narHash": "sha256-0n+nVfnKE7opEXxa3VQiyLAtpwgHcmu+6R7lQnAjWA0=",
+        "path": "/home/spacecadet/code/forks/docspell/",
+        "type": "path"
       },
       "original": {
-        "owner": "eikek",
-        "repo": "docspell",
-        "type": "github"
+        "path": "/home/spacecadet/code/forks/docspell/",
+        "type": "path"
       }
     },
     "flake-compat": {

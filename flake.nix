@@ -150,7 +150,8 @@
     };
 
     docspell-flake = {
-      url = "github:eikek/docspell";
+      # url = "github:eikek/docspell";
+      url = "path:///home/spacecadet/code/forks/docspell/";
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
