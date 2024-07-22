@@ -161,8 +161,9 @@
                    (org-agenda-overriding-header "\nTasks: in progress\n")))
 
             ;; Show tasks that I completed today
-            (tags "CLOSED>=\"<today>\""
-                  ((org-agenda-overriding-header "\nCompleted today\n"))))
+            (tags "CLOSED>=\"<today>\"|LAST_REPEAT>=\"<today>\""
+                  ((org-agenda-todo-keyword-format "") ;; Disable the status display
+                   (org-agenda-overriding-header "\nCompleted today\n"))))
            (
             ;; The list of items is already filtered by this tag, no point in showing that it exists
             (org-agenda-hide-tags-regexp "inbox")))
