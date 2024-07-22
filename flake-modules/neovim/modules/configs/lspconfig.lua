@@ -1,23 +1,23 @@
 local wk = require("which-key")
 
-wk.register({
-	s = { vim.lsp.buf.signature_help, "See signature help" },
-	h = { vim.lsp.buf.hover, "Trigger hover" },
-	d = { vim.diagnostic.open_float, "Show diagnostics in a floating window." },
-	q = { vim.diagnostic.setloclist, "Add buffer diagnostics to the location list" },
-	r = { vim.lsp.buf.rename, "LSP rename" },
-	a = { vim.lsp.buf.code_action, "LSP code actions" },
-	f = { vim.lsp.buf.format, "LSP format" },
-	t = { require("telescope.builtin").treesitter, "Treesitter symbols" },
-}, { prefix = "<localleader>" })
+wk.add({
+	{ "<localleader>s", vim.lsp.buf.signature_help, desc = "See signature help" },
+	{ "<localleader>h", vim.lsp.buf.hover, desc = "Trigger hover" },
+	{ "<localleader>d", vim.diagnostic.open_float, desc = "Show diagnostics in a floating window." },
+	{ "<localleader>q", vim.diagnostic.setloclist, desc = "Add buffer diagnostics to the location list" },
+	{ "<localleader>r", vim.lsp.buf.rename, desc = "LSP rename" },
+	{ "<localleader>a", vim.lsp.buf.code_action, desc = "LSP code actions" },
+	{ "<localleader>f", vim.lsp.buf.format, desc = "LSP format" },
+	{ "<localleader>t", require("telescope.builtin").treesitter, desc = "Treesitter symbols" },
+})
 
-wk.register({
-	["gD"] = { vim.lsp.buf.declaration, "Go to declaration" },
-	["gd"] = { vim.lsp.buf.definition, "Go to definition" },
-	["gi"] = { vim.lsp.buf.implementation, "Go to implementation" },
-	["gr"] = { vim.lsp.buf.references, "Go to references" },
-	["[d"] = { vim.diagnostic.goto_prev, "Previous diagnostic" },
-	["]d"] = { vim.diagnostic.goto_next, "Next diagnostic" },
+wk.add({
+	{ "gD", vim.lsp.buf.declaration, desc = "Go to declaration" },
+	{ "gd", vim.lsp.buf.definition, desc = "Go to definition" },
+	{ "gi", vim.lsp.buf.implementation, desc = "Go to implementation" },
+	{ "gr", vim.lsp.buf.references, desc = "Go to references" },
+	{ "[d", vim.diagnostic.goto_prev, desc = "Previous diagnostic" },
+	{ "]d", vim.diagnostic.goto_next, desc = "Next diagnostic" },
 })
 
 --vim.keymap.set('x', '\\a', function() vim.lsp.buf.code_action() end)

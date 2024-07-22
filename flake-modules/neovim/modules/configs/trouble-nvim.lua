@@ -3,15 +3,15 @@ local trouble = require("trouble")
 trouble.setup()
 
 local wk = require("which-key")
-wk.register({
-	t = {
-		A = { "<cmd>Trouble todo<cr>", "TODOs (Trouble)" },
-		Q = { "<cmd>Trouble quickfix<cr>", "Quickfix (Trouble)" },
-		L = { "<cmd>Trouble loclist<cr>", "Loclist (Trouble)" },
-		T = { "<cmd>Trouble telescope<cr>", "Telescope (Trouble)" },
-		D = { "<cmd>Trouble diagnostics<cr>", "Diagnostics (Trouble)" },
+wk.add({
+	{
+		{ "<leader>tA", "<cmd>Trouble todo<cr>", desc = "TODOs (Trouble)" },
+		{ "<leader>tD", "<cmd>Trouble diagnostics<cr>", desc = "Diagnostics (Trouble)" },
+		{ "<leader>tL", "<cmd>Trouble loclist<cr>", desc = "Loclist (Trouble)" },
+		{ "<leader>tQ", "<cmd>Trouble quickfix<cr>", desc = "Quickfix (Trouble)" },
+		{ "<leader>tT", "<cmd>Trouble telescope<cr>", desc = "Telescope (Trouble)" },
 	},
-}, { prefix = "<leader>" })
+})
 
 local open_with_trouble = require("trouble.sources.telescope").open
 

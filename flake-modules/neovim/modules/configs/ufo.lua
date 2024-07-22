@@ -6,9 +6,9 @@ vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 
 local wk = require("which-key")
-wk.register({
-	["zR"] = { require("ufo").openAllFolds, "Open all folds" },
-	["zM"] = { require("ufo").closeAllFolds, "Close all folds" },
+wk.add({
+	{ "zR", require("ufo").openAllFolds, desc = "Open all folds" },
+	{ "zM", require("ufo").closeAllFolds, desc = "Close all folds" },
 })
 
 -- Option 2: nvim lsp as LSP client

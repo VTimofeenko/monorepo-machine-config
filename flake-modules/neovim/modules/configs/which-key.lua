@@ -30,16 +30,27 @@ vim.api.nvim_create_autocmd({ "Filetype" }, {
 	end,
 })
 
-wk.register({
-	w = {
+wk.add({
+	-- Window shortcuts
+	{
+		"<leader>w",
 		function()
 			wk_alias("<c-w>")
 		end,
-		"+window",
+		group = "window",
 	},
-}, { prefix = "<leader>" })
-wk.register({
-	["<C-w>d"] = { "<C-w>c", "Close window" },
+	{ "<C-w>d", "<C-w>c", desc = "Close window" },
+	-- Toggle shortcuts
+	{ "<leader>TN", "<cmd>set number! relativenumber!<cr>", desc = "Toggle all numbers" },
+	{ "<leader>TR", "<cmd>set readonly!<cr>", desc = "Toggle read-only flag" },
+	{ "<leader>Tn", "<cmd>set number!<cr>", desc = "Toggle number" },
+	{ "<leader>Tr", "<cmd>set relativenumber!<cr>", desc = "Toggle relative numbers" },
+	-- Buffer shortcuts
+	{ "<leader>b", desc = "+buffer" },
+	{ "<leader>b[", "<cmd>bprevious<cr>", desc = "Previous buffer" },
+	{ "<leader>b]", "<cmd>bnext<cr>", desc = "Next buffer" },
+	{ "<leader>bb", require("telescope.builtin").buffers, desc = "Buffer selector" },
+	{ "<leader>bd", "<cmd>bd<cr>", desc = "Close buffer" },
 })
 -- Force bind the localleader, source
 -- https://github.com/folke/which-key.nvim/issues/172
@@ -49,22 +60,3 @@ vim.api.nvim_set_keymap(
 	"<cmd>lua require'which-key'.show(',', {mode='n'})<cr>",
 	{ silent = true }
 )
-
-wk.register({
-	T = {
-		N = { "<cmd>set number! relativenumber!<cr>", "Toggle all numbers" },
-		n = { "<cmd>set number!<cr>", "Toggle number" },
-		r = { "<cmd>set relativenumber!<cr>", "Toggle relative numbers" },
-		R = { "<cmd>set readonly!<cr>", "Toggle read-only flag" },
-	},
-}, { prefix = "<leader>" })
-
-wk.register({
-	b = {
-		b = { require("telescope.builtin").buffers, "Buffer selector" },
-		d = { "<cmd>bd<cr>", "Close buffer" },
-		["["] = { "<cmd>bprevious<cr>", "Previous buffer" },
-		["]"] = { "<cmd>bnext<cr>", "Next buffer" },
-		"+buffer",
-	},
-}, { prefix = "<leader>" })

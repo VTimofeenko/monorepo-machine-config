@@ -79,12 +79,10 @@ end
 
 --
 
-require("which-key").register({
-	t = {
-		name = "todos",
-		a = { ":TodoTelescope<CR>", "All todos" },
-		t = { ":TodoTelescope keywords=" .. mkNonNoteLevels() .. "<CR>", "Non-NOTE todos" },
-		u = { ":TodoTelescope keywords=" .. getErrorKeywords() .. "<CR>", "Urgent todos" },
-		n = { ":TodoTelescope keywords=NOTE<CR>", "NOTEs in project" },
-	},
-}, { prefix = "<leader>" })
+require("which-key").add({
+	{ "<leader>t", group = "todos" },
+	{ "<leader>ta", ":TodoTelescope<CR>", desc = "All todos" },
+	{ "<leader>tn", ":TodoTelescope keywords=NOTE<CR>", desc = "NOTEs in project" },
+	{ "<leader>tt", ":TodoTelescope keywords=TODO,,FIX,HACK,WARN,PERF,TES<CR>", desc = "Non-NOTE todos" },
+	{ "<leader>tu", ":TodoTelescope keywords=<CR>", desc = "Urgent todos" },
+})

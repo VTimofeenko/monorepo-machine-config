@@ -8,6 +8,6 @@ vim.g["scratch_no_mappings"] = 1
 vim.g["scratch_autohide"] = 0
 
 local wk = require("which-key")
-wk.register({
-	x = { ":Scratch<CR>", "Open scratch" },
-}, { prefix = "<leader>" })
+wk.add({
+	{ "<leader>x", ":Scratch<CR>", desc = "Open scratch" },
+})

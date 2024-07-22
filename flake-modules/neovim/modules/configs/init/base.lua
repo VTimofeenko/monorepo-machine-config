@@ -38,13 +38,14 @@ vim.api.nvim_create_autocmd("VimResized", {
 	end,
 })
 
--- add "create file under cursor" binding
 local wk = require("which-key")
-wk.register({ ["gF"] = { ":e <cfile><cr>", "Open file under cursor even if it does not exist" } })
-
--- Quickfix quick jumps
-wk.register({ ["[q"] = { "<cmd>cprevious<cr>", "Quickfix previous" } })
-wk.register({ ["]q"] = { "<cmd>cnext<cr>", "Quickfix next" } })
+wk.add({
+	-- add "create file under cursor" binding
+	{ "gF", ":e <cfile><cr>", desc = "Open file under cursor even if it does not exist" },
+	-- Quickfix quick jumps
+	{ "[q", "<cmd>cprevious<cr>", desc = "Quickfix previous" },
+	{ "]q", "<cmd>cnext<cr>", desc = "Quickfix next" },
+})
 
 -- Escape -> clear search highlight
 vim.api.nvim_set_keymap("n", "<ESC>", ":noh<CR>", { noremap = true, silent = true })
