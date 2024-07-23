@@ -264,6 +264,11 @@
            :desc "Show only the current heading, fold all others"
            "c"
            'my-org-show-current-heading-tidily)))
+
+ ;; Neatly shows the headline when jumping there from agenda
+ (after! org
+         (advice-add 'org-agenda-goto :after #'my-org-show-current-heading-tidily))
+
   (after! org
     (setq org-export-with-superscripts '{})
     (setq org-use-sub-scripts '{})
