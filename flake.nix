@@ -326,6 +326,8 @@
               };
             };
             checks = import ./checks { inherit self pkgs lib; };
+
+            pre-commit = import ./.dev/pre-commit.nix { inherit inputs' lib; };
           };
         flake =
           let
