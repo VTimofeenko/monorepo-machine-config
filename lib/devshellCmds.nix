@@ -52,11 +52,13 @@
           perl -p -i -e 's/^(\s+)(url.* # REMOTE_SRC$)/\1# \2/' $PRJ_ROOT/flake.nix
           # enable local_src
           perl -p -i -e 's/^(\s+)# (url.* # LOCAL_SRC$)/\1\2/' $PRJ_ROOT/flake.nix
+          echo "✅Switched data flake to local"
         else
           # disable local_src
           perl -p -i -e 's/^(\s+)(url.* # LOCAL_SRC$)/\1# \2/' $PRJ_ROOT/flake.nix
           # enable remote_src
           perl -p -i -e 's/^(\s+)# (url.* # REMOTE_SRC$)/\1\2/' $PRJ_ROOT/flake.nix
+          echo "✅Switched data flake to remote"
         fi
 
       '';
