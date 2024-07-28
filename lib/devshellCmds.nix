@@ -43,10 +43,8 @@
     command =
       # bash
       ''
-        set -x
         DATA_FLAKE_SOURCE=$(nix flake metadata $PRJ_ROOT --json | jq --raw-output '.locks.nodes."data-flake".original.type')
 
-        echo $DATA_FLAKE_SOURCE
         if [ "$DATA_FLAKE_SOURCE" == "git" ]; then
           # disable remote_src
           perl -p -i -e 's/^(\s+)(url.* # REMOTE_SRC$)/\1# \2/' $PRJ_ROOT/flake.nix
