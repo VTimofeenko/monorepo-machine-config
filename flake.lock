@@ -156,17 +156,14 @@
         "wg-namespace-flake": "wg-namespace-flake"
       },
       "locked": {
-        "lastModified": 1721880479,
-        "narHash": "sha256-VyaymU0BSeT1wOvOXbHgfiCJKe4H+FxBMpzmOVLYY+E=",
-        "ref": "refs/heads/master",
-        "rev": "2100a8e83e81a9eafbd88e2b1877c64d2abb011e",
-        "revCount": 418,
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git"
+        "lastModified": 1722188665,
+        "narHash": "sha256-rCq/2Fxbyi+l0u4uL6uIWkSnqEcgDVyaw81s5E03X0s=",
+        "path": "/home/spacecadet/code/data-flake",
+        "type": "path"
       },
       "original": {
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git"
+        "path": "/home/spacecadet/code/data-flake",
+        "type": "path"
       }
     },
     "deploy-rs": {
@@ -612,7 +609,7 @@
     "hostsBlockList": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-vJJxepZuFCiqgVGLGtPLvirH2QfJEcyQ645ig2C15lw=",
+        "narHash": "sha256-KItCRR0D0CDV7dwAQtEJ6RswkCJlBQRDCevjpKVjsRQ=",
         "type": "file",
         "url": "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
       },
