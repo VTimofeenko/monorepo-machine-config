@@ -12,6 +12,7 @@
       hostData,
       specialArgs,
       data-flake,
+      nur,
     }:
     let
       inherit (hostData) hostName;
@@ -70,6 +71,12 @@
               specialArgs.selfModules.zsh
               specialArgs.selfModules.tmux
             ]
+            # Per-host overrides
+            # TODO: make more generic
+            ++ (lib.optionals (hostData.hostName == "uranium") [
+              nur.nixosModules.nur
+              ../modules
+            ])
             ++ (map (
               module: ../nixosModules/services + "/${module}"
             ) data-flake.data.hosts.all.${hostName}.modulesAt.public) # NOTE: Needs default.nix in the service directory

@@ -13,12 +13,7 @@
   inHomeManager ? false,
   inputs,
 }:
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}:
+{ pkgs, lib, ... }:
 let
   outer = if inHomeManager then "home" else "environment";
   inner = if inHomeManager then "packages" else "systemPackages";
@@ -27,7 +22,6 @@ let
 in
 {
   # Allow unfree packages across the board
-  nixpkgs.config.allowUnfree = true;
   nix = {
     settings = {
       connect-timeout = 5;

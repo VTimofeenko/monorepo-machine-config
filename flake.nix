@@ -371,7 +371,7 @@
                 _: hostData:
                 homelab.mkSystem {
                   inherit hostData specialArgs;
-                  inherit (inputs) data-flake;
+                  inherit (inputs) data-flake nur;
                 }
               ) inputs.data-flake.data.hosts.managed)
               // {
@@ -382,17 +382,6 @@
                     inputs.data-flake.nixosModules.data
                     ./nixosConfigurations/neutronium
                   ];
-                };
-                uranium = inputs.nixpkgs.lib.nixosSystem {
-                  system = "x86_64-linux";
-                  modules = [
-                    inputs.nur.nixosModules.nur
-                    ./modules
-                    ./modules/nixosSystems/uranium # (ref:uranium-import)
-                    # private-config.nixosModules.machines.uranium
-                    inputs.data-flake.nixosModules.uranium
-                  ];
-                  inherit specialArgs;
                 };
                 # FIXME: not implemented
 
