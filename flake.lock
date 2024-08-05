@@ -270,11 +270,11 @@
     "emacs-elisp-autofmt": {
       "flake": false,
       "locked": {
-        "lastModified": 1718581552,
-        "narHash": "sha256-f5xeGU/qOg5BjYWolStNKw2NX8WwQl1H5WtvwC8N5IY=",
+        "lastModified": 1722518713,
+        "narHash": "sha256-VuiFGr16aIC98+j1Gntju7RaJOThb82+1lmSo7TGA7A=",
         "ref": "refs/heads/main",
-        "rev": "98edd8158b778ff9a0e34b5c6615523c0035f8d6",
-        "revCount": 293,
+        "rev": "43a44dcbd17adf3b235de93e748321c7076f1c3c",
+        "revCount": 294,
         "type": "git",
         "url": "https://codeberg.org/ideasman42/emacs-elisp-autofmt"
       },
@@ -811,11 +811,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1722365923,
-        "narHash": "sha256-6isfXQwM3NkXSraBEInU2+1K1CCaIbeG5c9cO8EbVig=",
+        "lastModified": 1722895937,
+        "narHash": "sha256-VhJaLF88dlfgmD1tqRE+UoiYLyT/1Tk/U95d6ko6u+E=",
         "owner": "VTimofeenko",
         "repo": "flake-modules",
-        "rev": "658cbfab3036c71e77fb7f4978eb9719f5f550cc",
+        "rev": "383358f60ffe81dc1a5ae25a05afe2da02b23550",
         "type": "github"
       },
       "original": {
