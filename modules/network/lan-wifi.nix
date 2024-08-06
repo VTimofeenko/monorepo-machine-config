@@ -9,6 +9,7 @@ let
 
   cctvRouterIP = lib.pipe (my-data.lib.getService "cctv-router") [
     (builtins.getAttr "onHost") # -> "uranium"
+    # TODO: replace with getHostIpInNetwork and fix config.my-data reference
     (lib.flip my-data.lib.getHostInNetwork "lan")
     (builtins.getAttr "ipAddress")
   ];
