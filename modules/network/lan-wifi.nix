@@ -1,17 +1,20 @@
-{ lib, config, ... }:
+{ lib, ... }:
 let
-  inherit (config) my-data;
-  lan = my-data.lib.getNetwork "lan";
+  inherit (lib.homelab)
+    getNetwork
+    getOwnIpInNetwork
+    getService
+    getHostIpInNetwork
+    ;
+  lan = getNetwork "lan";
 
-  ownIP = (my-data.lib.getOwnHostInNetwork "lan").ipAddress;
+  ownIP = getOwnIpInNetwork "lan";
 
-  cctv = my-data.lib.getNetwork "cctv";
+  cctv = getNetwork "cctv";
 
-  cctvRouterIP = lib.pipe (my-data.lib.getService "cctv-router") [
+  cctvRouterIP = lib.pipe (getService "cctv-router") [
     (builtins.getAttr "onHost") # -> "uranium"
-    # TODO: replace with getHostIpInNetwork and fix config.my-data reference
-    (lib.flip my-data.lib.getHostInNetwork "lan")
-    (builtins.getAttr "ipAddress")
+    (lib.flip getHostIpInNetwork "lan")
   ];
 in
 {
