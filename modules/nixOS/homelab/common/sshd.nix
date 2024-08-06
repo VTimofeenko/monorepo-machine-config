@@ -1,7 +1,7 @@
 # sshd configuration
-{ config, ... }:
+{ lib, ... }:
 let
-  inherit (config) my-data;
+  inherit (lib.homelab) getSettings;
 in
 {
   services.openssh = {
@@ -9,6 +9,6 @@ in
     settings.PermitRootLogin = "prohibit-password";
     openFirewall = false; # WARN: important
   };
-  users.users.root.openssh.authorizedKeys.keys = my-data.settings.SSHKeys;
+  users.users.root.openssh.authorizedKeys.keys = getSettings.SSHKeys;
   networking.firewall.allowedTCPPorts = [ 22 ]; # TODO: allow only on management network
 }
