@@ -75,7 +75,7 @@ in
       host    all             all             ${dbNet.subnet}.0/24          scram-sha-256
     '';
   };
-  networking.firewall.allowedTCPPorts = [ config.services.postgresql.port ];
+  networking.firewall.allowedTCPPorts = [ config.services.postgresql.settings.port ];
 
   # DB configuration for services
   imports =
