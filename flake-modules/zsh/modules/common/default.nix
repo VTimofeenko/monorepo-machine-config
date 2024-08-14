@@ -151,6 +151,7 @@ rec {
       "yaml"
       "sql"
       "lua"
+      "toml"
     ])
     # Debug stuff
     ''
