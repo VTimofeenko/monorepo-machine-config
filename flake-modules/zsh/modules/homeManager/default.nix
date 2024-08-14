@@ -113,6 +113,7 @@ in
     };
     direnv = {
       enable = true;
+      config.warn_timeout = "15s";
       nix-direnv.enable = true;
       config.whitelist.prefix = [ "${config.home.homeDirectory}/code" ];
     };
