@@ -38,7 +38,7 @@ in
       "mqtt"
       "dhcp"
       "zha"
-      # "apache_kafka" # Streaming the events out
+      "apache_kafka" # Streaming the events out
     ] ++ srvConfig.components;
 
     # Build custom components. { } does not pass deps which is OK for now
