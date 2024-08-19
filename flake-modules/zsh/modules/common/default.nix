@@ -46,6 +46,8 @@ rec {
     nrs = "nix repl -f flake:ns";
     nru = "nix repl -f flake:nu"; # Unstable
     nrlf = ''nix repl --expr "builtins.getFlake \"$PWD\""'';
+    poweroff = "confirm poweroff";
+    reboot = "confirm reboot";
   };
   # InteractiveShellInit?
   # List of shell-only packages
