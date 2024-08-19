@@ -82,6 +82,7 @@ rec {
           home-manager switch --flake ''${DOTFILES_REPO_LOCATION}
         fi
       '')
+      (import ./packages/confirm.nix { inherit (pkgs) writeShellApplication; })
     ];
   additionalOptions =
     [
