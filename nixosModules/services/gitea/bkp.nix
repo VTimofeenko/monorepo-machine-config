@@ -13,7 +13,9 @@
 }:
 let
   inherit (config.services) gitea;
-  inherit (lib.homelab) getServiceFqdn;
+  inherit (lib.homelab) getServiceFqdn getServiceBackups;
+
+  srvName = "gitea";
 in
 {
   services.gitea.dump = {
@@ -29,7 +31,7 @@ in
     services = {
       gitea-dump.unitConfig =
         let
-          checkId = "82604b15-6dea-4b82-a945-df40bd6192ef@localhost";
+          checkId = (getServiceBackups srvName).local.HCGUID;
         in
         {
           OnFailure = "ping-healthchecks@${checkId}:failure.service";
