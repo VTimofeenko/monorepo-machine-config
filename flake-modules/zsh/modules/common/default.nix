@@ -157,6 +157,7 @@ rec {
       "toml"
       "json"
     ])
+
     # Debug stuff
     ''
       _debug_show_completions(){
