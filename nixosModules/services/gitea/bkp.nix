@@ -3,7 +3,7 @@
 
   For now only rotates on-device dumps.
 
-  # TODO: implement properly
+  # TODO: move the script into flake-level packages
 */
 {
   config,
