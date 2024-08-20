@@ -127,6 +127,8 @@
         my-flake-modules.follows = "my-flake-modules";
         treefmt-nix.follows = "treefmt-nix";
         stub-flake.follows = "stub-flake";
+        terranix.follows = "stub-flake";
+        nixpkgs-terraform-providers-bin.follows = "stub-flake";
       };
     };
     # Source for DNS block
