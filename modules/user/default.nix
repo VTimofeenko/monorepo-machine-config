@@ -61,7 +61,10 @@
 
         programs.password-store = {
           enable = true;
-          package = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
+          package = pkgs.pass.withExtensions (exts: [
+            exts.pass-otp
+            exts.pass-genphrase
+          ]);
         };
 
         home.file.".icons/default".source = "${pkgs.vanilla-dmz}/share/icons/Vanilla-DMZ";
