@@ -155,6 +155,7 @@ rec {
       "sql"
       "lua"
       "toml"
+      "json"
     ])
     # Debug stuff
     ''
