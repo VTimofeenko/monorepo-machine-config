@@ -376,6 +376,31 @@
                   inherit (inputs) data-flake nur;
                 }
               ) inputs.data-flake.data.hosts.managed)
+
+              // (
+                # Create -seed configs for hosts provisioning
+                # Provisioning happens by
+                # nix run github:nix-community/nixos-anywhere -- --flake .#<hostName>-seed root@<IP>
+                lib.pipe
+                  [
+                    "nitrogen"
+                    "fluorine"
+                  ]
+                  [
+                    (map (hostName: {
+                      name = "${hostName}-seed";
+                      value = inputs.nixpkgs.lib.nixosSystem {
+                        inherit (inputs.data-flake.data.hosts.managed.${hostName}) system;
+                        modules = [
+                          inputs.data-flake.nixosModules.data
+                          inputs.disko.nixosModules.disko
+                          ./nixosConfigurations/${hostName}/seed
+                        ];
+                      };
+                    }))
+                    builtins.listToAttrs
+                  ]
+              )
               // {
                 neutronium-x86_64 = inputs.nixpkgs.lib.nixosSystem {
                   system = "x86_64-linux";
@@ -396,15 +421,6 @@
                 #   ];
                 #   inherit specialArgs;
                 # };
-                nitrogen-seed = inputs.nixpkgs.lib.nixosSystem {
-                  system = "x86_64-linux";
-                  modules = [
-                    inputs.data-flake.nixosModules.data
-                    inputs.disko.nixosModules.disko
-                    ./nixosConfigurations/nitrogen/seed
-                  ];
-                  inherit specialArgs;
-                };
               };
             deploy.nodes =
               lib.recursiveUpdate
