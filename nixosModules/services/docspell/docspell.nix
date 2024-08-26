@@ -38,6 +38,21 @@ in
       inherit (serviceConfig) jdbc;
       inherit full-text-search;
 
+      convert.wkhtmlpdf = {
+        working-dir = "/tmp/docspell-convert/";
+        command = {
+          program = lib.mkForce "${pkgs.python3Packages.weasyprint}/bin/weasyprint";
+          args = [
+            "--optimize-size"
+            "all"
+            "--encoding"
+            "{{encoding}}"
+            "-"
+            "{{outfile}}"
+          ];
+        };
+      };
+
       # extraConfig.files.stores.filesystem =
       #   {
       #     enabled = true;
