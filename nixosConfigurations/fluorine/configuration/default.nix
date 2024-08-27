@@ -45,5 +45,8 @@ in
   hardware.enableRedistributableFirmware = true;
   services.fstrim.enable = true;
   # Imports
-  imports = [ ./experimental-networkd.nix ];
+  imports = [
+    ./experimental-networkd.nix
+    ./experimental-monitoring.nix
+  ];
 }
