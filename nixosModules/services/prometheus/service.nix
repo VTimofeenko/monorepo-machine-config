@@ -42,4 +42,5 @@ in
     ];
   };
 
+  imports = [ ./synology ];
 }
