@@ -1,31 +1,12 @@
-{ config, lib, ... }:
+{ lib, ... }:
 let
   inherit (lib) pipe;
+  inherit (lib.homelab) getServiceConfig;
   listenAddress = lib.homelab.getOwnIpInNetwork "monitoring";
-  # TODO: move to module settings?
-  exporters = [
-    "node"
-    "systemd"
-    "smartctl"
-  ];
+  inherit (getServiceConfig "prometheus") exporters;
 in
 {
   imports = [ ./collect-nixos-version.nix ];
-  # This is the generic per adapter firewall
-  # Maybe adapt it to module?
-  # networking.firewall.interfaces = pipe (getService srvName) [
-  #   (builtins.getAttr "networkAccess") # -> ["lan" "client"]
-  #   (map (network: getOwnHost.networks.${network}.adapter or network)) # -> ["eth0" "client"]
-  #   (map (interface: {
-  #     name = interface;
-  #     value.allowedTCPPorts = [ config.services.${srvName}.port ];
-  #   }))
-  #   builtins.listToAttrs
-  # ];
-
-  networking.firewall.interfaces.monitoring.allowedTCPPorts = pipe exporters [
-    (map (x: config.services.prometheus.exporters.${x}.port))
-  ];
 
   services.prometheus.exporters =
     # Enable exporters with standard options
