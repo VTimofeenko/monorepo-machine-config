@@ -2,12 +2,8 @@
 let
   srvName = "prometheus";
   inherit (lib) pipe;
-  inherit (lib.homelab) getHostInNetwork;
-  exporters = [
-    "node"
-    "systemd"
-    "smartctl"
-  ];
+  inherit (lib.homelab) getHostInNetwork getServiceConfig;
+  inherit (getServiceConfig "prometheus") exporters;
 in
 {
   services.prometheus = {
@@ -17,7 +13,7 @@ in
       (map (x: {
         job_name = x;
         scrape_interval = "30s";
-        static_configs = pipe [ "fluorine" ] [
+        static_configs = pipe config.my-data.services.all.monitoring-source.onHosts [
           (map (nodeName: {
             targets = [
               "${(getHostInNetwork nodeName "monitoring").fqdn}:${
@@ -26,7 +22,6 @@ in
             ];
             labels.alias = "${nodeName}.home.arpa";
           }))
-
         ];
       }))
     ];
