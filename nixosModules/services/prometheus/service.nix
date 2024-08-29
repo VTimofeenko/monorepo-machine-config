@@ -46,5 +46,6 @@ in
   imports = [
     ./synology
     ./service-scraping
+    ./alertmanager.nix
   ];
 }
