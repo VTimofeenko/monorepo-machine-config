@@ -42,5 +42,8 @@ in
     ];
   };
 
-  imports = [ ./synology ];
+  imports = [
+    ./synology
+    ./service-scraping
+  ];
 }
