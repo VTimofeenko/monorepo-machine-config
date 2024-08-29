@@ -47,5 +47,6 @@ in
     ./synology
     ./service-scraping
     ./alertmanager.nix
+    ./healthchecks-scraping.nix
   ];
 }
