@@ -2,13 +2,14 @@
 let
   srvName = "prometheus";
   inherit (lib) pipe;
-  inherit (lib.homelab) getHostInNetwork getServiceConfig;
+  inherit (lib.homelab) getHostInNetwork getServiceConfig getServiceIP;
   inherit (getServiceConfig "prometheus") exporters;
 in
 {
   services.prometheus = {
     enable = true;
     retentionTime = "30d";
+    listenAddress = getServiceIP srvName;
     scrapeConfigs = pipe exporters [
       (map (x: {
         job_name = x;
