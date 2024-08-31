@@ -1,6 +1,8 @@
-{ config, ... }:
+{ config, lib, ... }:
 let
   inherit (config) my-data;
+  inherit (lib.homelab) getServiceConfig;
+  inherit (getServiceConfig srvName) heatmapToken;
   srvName = "gitea";
 in
 {
@@ -28,6 +30,12 @@ in
       locations."/" = {
         proxyPass = "http://localhost:${toString config.services.gitea.settings.server.HTTP_PORT}";
         proxyWebsockets = true;
+      };
+      locations."/api/v1/users/spacecadet/heatmap" = {
+        proxyPass = "http://localhost:${toString config.services.gitea.settings.server.HTTP_PORT}/api/v1/users/spacecadet/heatmap";
+        extraConfig = ''
+          proxy_set_header Authorization "${heatmapToken}";
+        '';
       };
     };
   };
