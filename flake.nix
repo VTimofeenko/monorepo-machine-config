@@ -134,7 +134,9 @@
     # Source for DNS block
     hostsBlockList = {
       flake = false;
-      url = "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts";
+      # FIXME: https://github.com/StevenBlack/hosts/pull/2713
+      # There's a borked domain in this release
+      url = "https://raw.githubusercontent.com/StevenBlack/hosts/32b967f09f40da0c9cce66dd265cb6ad3c481de0/hosts";
     };
     # Empty flake
     stub-flake.url = "github:VTimofeenko/stub-flake"; # A completely empty flake

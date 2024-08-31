@@ -602,13 +602,13 @@
     "hostsBlockList": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-ZRmgITh8VutbA1VK7e+3llYs+T7/0daZvYJCRsmz/5U=",
+        "narHash": "sha256-j3s8j1bZiIoO7ixyVllwkPkXgHl23vYN+6FDnUd6JSI=",
         "type": "file",
-        "url": "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+        "url": "https://raw.githubusercontent.com/StevenBlack/hosts/32b967f09f40da0c9cce66dd265cb6ad3c481de0/hosts"
       },
       "original": {
         "type": "file",
-        "url": "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+        "url": "https://raw.githubusercontent.com/StevenBlack/hosts/32b967f09f40da0c9cce66dd265cb6ad3c481de0/hosts"
       }
     },
     "hyprcursor": {
