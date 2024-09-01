@@ -18,6 +18,7 @@ in
           assert config.services.prometheus.alertmanager.enable;
           config.services.prometheus.alertmanager.port
         )
+        443 # FIXME: Temporary
       ];
     }))
     builtins.listToAttrs

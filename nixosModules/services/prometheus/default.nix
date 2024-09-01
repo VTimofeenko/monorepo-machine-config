@@ -3,7 +3,7 @@ _: {
   imports = [
     ./service.nix
     ./firewall.nix
-    # ./ssl.nix
+    ./ssl.nix
     # ./bkp.nix
   ];
 }
