@@ -153,7 +153,9 @@
                      (org-deadline-warning-days 0)))
             ;; Show tasks on hold
             (todo "HOLD"
-                  ((org-agenda-prefix-format "  %i %-12:c [%e] ")
+                  ((org-agenda-skip-function
+                    '(org-agenda-skip-entry-if 'deadline 'scheduled))
+                   (org-agenda-prefix-format "  %i %-12:c [%e] ")
                    (org-agenda-overriding-header "\nTasks: on hold\n")))
             ;; Show tasks that are in progress
             (todo "STRT"
