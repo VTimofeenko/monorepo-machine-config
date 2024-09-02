@@ -150,7 +150,8 @@
             ;; Show agenda around today
             (agenda nil
                     ((org-scheduled-past-days 0)
-                     (org-deadline-warning-days 0)))
+                     (org-deadline-warning-days 0)
+                     (org-agenda-prefix-format "  %i %-12:c [%e] ")))
             ;; Show tasks on hold
             (todo "HOLD"
                   ((org-agenda-skip-function
