@@ -1,10 +1,10 @@
 { lib, config, ... }:
 let
-  srvName = "prometheus";
+  srvName = "alert-manager";
   inherit (lib.homelab) getServiceIP getSettings getSrvSecret;
 in
 {
-  age.secrets.alertmanager-tg-key.file = getSrvSecret "prometheus" "telegram-key";
+  age.secrets.alertmanager-tg-key.file = getSrvSecret srvName "telegram-key";
   systemd.services.alertmanager.serviceConfig = {
     LoadCredential = [ "tg-key:${config.age.secrets.alertmanager-tg-key.path}" ];
     Environment = [ "TG_KEY_PATH=%d/tg-key" ];
@@ -34,5 +34,4 @@ in
       ];
     };
   };
-
 }
