@@ -14,10 +14,6 @@ in
       value.allowedTCPPorts = [
         config.services.${srvName}.port
         # Checks that the service is on the same host. Prevents misuse of the module
-        (
-          assert config.services.prometheus.alertmanager.enable;
-          config.services.prometheus.alertmanager.port
-        )
         443 # FIXME: Temporary
       ];
     }))
