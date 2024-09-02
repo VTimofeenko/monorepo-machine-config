@@ -7,10 +7,8 @@ let
     getServiceConfig
     ;
   fqdn = getServiceFqdn srvName;
-  srvName = "prometheus";
-  proxyUrl = "http://${config.services.${srvName}.listenAddress}:${
-    toString config.services.${srvName}.port
-  }";
+  srvName = "alert-manager";
+  proxyUrl = "http://${config.services.prometheus.alertmanager.listenAddress}:${toString config.services.prometheus.alertmanager.port}";
 in
 {
   services.oauth2-proxy = {
@@ -19,35 +17,35 @@ in
 
     cookie = {
       secure = true;
-      domain = fqdn;
+      domain = getSettings.publicDomainName;
     };
 
     upstream = [
       (
-        assert config.services.prometheus.enable;
-        proxyUrl
+        assert config.services.prometheus.alertmanager.enable;
+        (proxyUrl + "/${srvName}")
       )
     ];
 
-    extraConfig = {
-      whitelist-domain = [
-        fqdn
-        getSettings.publicDomainName
-      ];
-      session-cookie-minimal = true;
-      # Reducing the scope helps with "headers" too large
-      scope = [ "openid" ];
+    # extraConfig = {
+    #   whitelist-domain = [
+    #     fqdn
+    #     getSettings.publicDomainName
+    #   ];
+    #   session-cookie-minimal = true;
+    #   # Reducing the scope helps with "headers" too large
+    #   scope = [ "openid" ];
 
-      # The following two options are critical -- they allow grafana's 'forward OAuth Identity' to work
-      # At least for me :)
-      skip-jwt-bearer-tokens = true;
-      extra-jwt-issuers = [ "${(getServiceConfig "keycloak").realmURL}=master-realm" ];
-    };
+    #   # The following two options are critical -- they allow grafana's 'forward OAuth Identity' to work
+    #   # At least for me :)
+    #   skip-jwt-bearer-tokens = true;
+    #   extra-jwt-issuers = [ "${(getServiceConfig "keycloak").realmURL}=master-realm" ];
+    # };
 
-    keyFile = config.age.secrets.oauth2-prometheus-client-secret.path;
+    # keyFile = config.age.secrets.oauth2-alert-manager-client-secret;
     provider = "keycloak-oidc";
 
-    nginx.domain = fqdn;
+    nginx.domain = getSettings.publicDomainName;
     nginx.virtualHosts.${fqdn}.allowed_email_domains = [ getSettings.domain ];
     email.domains = [ getSettings.domain ];
     oidcIssuerUrl = (getServiceConfig "keycloak").realmURL;
@@ -72,8 +70,8 @@ in
 
   # Secrets
   age.secrets = {
-    oauth2-prometheus-client-secret = {
-      file = getServiceSecret srvName "oauth2-prometheus-client-secret";
+    oauth2-alert-manager-client-secret = {
+      file = getServiceSecret srvName "oauth2-alert-manager-client-secret";
       owner = config.users.users.oauth2-proxy.name;
     };
 
