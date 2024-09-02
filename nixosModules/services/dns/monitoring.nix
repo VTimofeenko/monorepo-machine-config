@@ -1,0 +1,17 @@
+{ config, lib, ... }:
+let
+  inherit (lib.homelab) getOwnIpInNetwork;
+in
+{
+  services.prometheus.exporters.unbound = {
+    enable =
+      assert config.services.unbound.enable;
+      true;
+    unbound.host = "unix:///run/unbound/unbound.socket";
+    listenAddress = getOwnIpInNetwork "monitoring";
+    openFirewall = lib.mkForce false;
+  };
+
+  networking.firewall.interfaces.monitoring.allowedTCPPorts =
+    config.services.prometheus.exporters.unbound.port;
+}

@@ -3,6 +3,6 @@ _: {
     ./unbound.nix
     ./firewall.nix
     ./logging.nix
-    # TODO: monitoring
+    ./monitoring.nix
   ];
 }
