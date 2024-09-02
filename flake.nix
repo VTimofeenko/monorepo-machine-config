@@ -95,10 +95,7 @@
       };
     };
     # Rust
-    crane = {
-      url = "github:ipetkov/crane";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    crane.url = "github:ipetkov/crane";
 
     # Unused at the moment. TODO: use this with the local packages
     # fenix = {
