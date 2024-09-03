@@ -2,7 +2,7 @@
 { lib, config, ... }:
 {
   services.prometheus.scrapeConfigs = lib.pipe config.my-data.services.all [
-    (lib.filterAttrs (_: v: v ? monitoring && v.monitoring ? scrapeUrl))
+    (lib.filterAttrs (_: v: v ? monitoring && v.monitoring.enable && v.monitoring ? scrapeUrl))
     # Extract the service <> scrapeUrl
     # Implementation note: technically all values don't need these functions but this will survive interface
     # changes
