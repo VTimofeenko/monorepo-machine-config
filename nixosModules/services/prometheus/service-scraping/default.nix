@@ -29,6 +29,7 @@ in
               )
               lib.singleton
             ];
+            labels.nodeName = "${v.onHost}.home.arpa";
           }
         ];
         metrics_path =
