@@ -1,13 +1,18 @@
 { lib, ... }:
 let
-  inherit (lib.homelab) getServiceConfig getOwnIpInNetwork;
+  inherit (lib.homelab) getOwnIpInNetwork;
 in
 {
-  services.openntpd = {
+  services.ntpd-rs = {
     enable = true;
-    servers = (getServiceConfig "ntp").upstream;
-    extraConfig = ''
-      listen on ${(getOwnIpInNetwork "lan")}
-    '';
+    useNetworkingTimeServers = true;
+    settings = {
+      server = [
+        {
+          listen = "${getOwnIpInNetwork "lan"}:123";
+        }
+      ];
+    };
+    metrics.enable = true;
   };
 }
