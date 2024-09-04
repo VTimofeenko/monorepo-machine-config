@@ -1,7 +1,7 @@
 # Scrapes the individual services metrics
 { lib, config, ... }:
 let
-  inherit (lib.homelab) getHostIpInNetwork;
+  inherit (lib.homelab) getHostIpInNetwork getServiceMonitoring;
 in
 {
   services.prometheus.scrapeConfigs = lib.pipe config.my-data.services.all [
@@ -23,7 +23,10 @@ in
                 x:
                 let
                   ipAddress = getHostIpInNetwork v.onHost "monitoring";
-                  scrapePort = config.services.prometheus.exporters.${v.monitoring.exporterNixOption}.port;
+                  # Try to retrieve the port from service monitoring; fall back to config
+                  scrapePort =
+                    (getServiceMonitoring srvName).scrapePort
+                      or config.services.prometheus.exporters.${v.monitoring.exporterNixOption}.port;
                 in
                 if x == null then "${ipAddress}:${toString scrapePort}" else x
               )
