@@ -14,7 +14,7 @@ let
 in
 {
   services.oauth2-proxy = {
-    enable = true;
+    enable = false;
     httpAddress = "http://127.0.0.1:4180";
 
     cookie = {
@@ -72,10 +72,10 @@ in
 
   # Secrets
   age.secrets = {
-    oauth2-prometheus-client-secret = {
-      file = getServiceSecret srvName "oauth2-prometheus-client-secret";
-      owner = config.users.users.oauth2-proxy.name;
-    };
+    # oauth2-prometheus-client-secret = {
+    #   file = getServiceSecret srvName "oauth2-prometheus-client-secret";
+    #   owner = config.users.users.oauth2-proxy.name;
+    # };
 
     "ssl-cert" = {
       file = getServiceSecret "ssl-terminator" "cert";
