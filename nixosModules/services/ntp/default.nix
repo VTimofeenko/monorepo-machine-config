@@ -1,6 +1,6 @@
 _: {
   imports = [
-    ./openntp.nix
+    ./service.nix
     ./firewall.nix
     ./monitoring.nix
   ];
