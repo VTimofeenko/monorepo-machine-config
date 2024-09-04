@@ -76,7 +76,7 @@ in
 
             # Extract target version and status of switch
             # .*? is non-greedy match for hostname
-            target_version = parse_regex!(.message, r'.*nixos-system-.*?-(?P<version>.*)').version
+            target_version = parse_regex!(.message, r'.*nixos-system-.*?-(?P<version>[^ ]*)').version
             status = parse_regex(.message, r'status (?P<status>\d)').status ?? 0
 
             # Store needed values
