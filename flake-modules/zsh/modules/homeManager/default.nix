@@ -93,6 +93,7 @@ in
 
       shellGlobalAliases = {
         G = "| rg";
+        C = "| ccopy";
       };
       syntaxHighlighting.enable = true;
 
