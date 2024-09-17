@@ -1,24 +1,43 @@
 # NixOS module that configures the UPS monitoring daemon
-_:
-# TODO:
-# 1. Listen on monitoring network IP
+{ config, lib, ... }:
+let
+  srvName = "nut-server";
+  srvCfg = lib.homelab.getServiceConfig srvName;
+in
 {
+  age.secrets.nut-password.file = lib.homelab.getServiceSecret "nut-client" "password";
   power.ups = {
     enable = true;
-    ups.CP1500PFCRM2U = {
+    mode = lib.mkForce "netserver";
+    ups.${srvCfg.UPS.model} = with srvCfg.UPS; {
       driver = "usbhid-ups";
       port = "auto";
       directives = [
-        "vendorid = 0764" # Result from `lsusb`
-        "productid = 0601" # Result from `lsusb`
+        "vendorid = ${vendorId}" # Result from `lsusb`
+        "productid = ${productId}" # Result from `lsusb`
       ];
-      description = "Main rack UPS";
+      inherit description;
     };
 
-    upsmon.monitor.CP1500PFCRM2U = {
-      user = "upsmon";
-    };
+    upsd.listen = [
+      {
+        address = lib.homelab.getServiceIP srvName;
+      }
+    ];
 
+    users = {
+      # Upsmon makes the following distinction between users:
+      # * primary = "UPS is connected to this machine, shut it down last"
+      # * secondary = "UPS" is not connected to this machine, start shutdown here first
+      primary-client = {
+        passwordFile = config.age.secrets.nut-password.path;
+        upsmon = "primary";
+      };
+      secondary-client = {
+        passwordFile = config.age.secrets.nut-password.path;
+        upsmon = "secondary";
+      };
+    };
   };
   # TODO:
   # imports = [./webgui.nix];

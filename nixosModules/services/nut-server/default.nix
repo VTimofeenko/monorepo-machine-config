@@ -1,7 +1,7 @@
 _: {
   imports = [
     ./nut.nix
-    # ./firewall.nix
+    ./firewall.nix
     # ./monitoring.nix
   ];
 }
