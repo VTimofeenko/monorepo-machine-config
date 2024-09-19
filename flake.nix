@@ -287,6 +287,7 @@
               enable = true;
               localDeployment = true;
               useDeployRs = true;
+              desktopNotifications = true;
             };
 
             devshells.default =
