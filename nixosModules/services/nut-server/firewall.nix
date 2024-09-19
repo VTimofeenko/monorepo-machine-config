@@ -12,6 +12,7 @@ let
   clientIPs = lib.pipe "nut-client" [
     getService
     (builtins.getAttr "onHosts")
+    (lib.concat [ "nas" ]) # Manually add non-managed NAS in this context
     (map (lib.flip getHostIpInNetwork "lan"))
   ];
 in
