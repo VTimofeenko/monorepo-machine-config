@@ -18,6 +18,9 @@ in
             targets = lib.pipe srvName [
               # Try http
               lib.homelab.getServiceFqdn
+              # Override if the exporter is a separate process
+              # Leave in place otherwise
+              (if v.monitoring.exporterSeparateFromService then _: null else lib.id)
               # Fall back to non http
               (
                 x:
