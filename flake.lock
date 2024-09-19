@@ -157,11 +157,11 @@
         "wg-namespace-flake": "wg-namespace-flake"
       },
       "locked": {
-        "lastModified": 1726770101,
-        "narHash": "sha256-M1+8GXQulgGHU7gBXVMv0z28ZcN0EOoVprDbxbG7eqs=",
+        "lastModified": 1726781078,
+        "narHash": "sha256-W/1GBw56vX7Xnp5Lh8VrJzlZM26FQ7WrVyOYyiKWf2o=",
         "ref": "refs/heads/master",
-        "rev": "aed7b14038229f565cfc1941e4218619aee3d360",
-        "revCount": 569,
+        "rev": "a9f4b54ee5e4281a07a07b59338b7fe9059990b3",
+        "revCount": 570,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git"
       },
