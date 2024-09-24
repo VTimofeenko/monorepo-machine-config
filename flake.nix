@@ -297,7 +297,7 @@
               {
                 env = [ ];
                 commands = devShellCmds;
-                packages = [ ];
+                packages = [ pkgs.nixos-anywhere ];
               };
 
             packages = {
