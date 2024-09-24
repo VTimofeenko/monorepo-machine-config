@@ -31,7 +31,11 @@ in
       name = "10-lan";
       # Default is to match the name of the network
       matchConfig.Name = lib.mkForce config.systemd.network.links."10-phy-lan".linkConfig.Name;
-      networkConfig.DHCP = "yes";
+      networkConfig = {
+        DHCP = "yes";
+        # This will also disable ipv6 assigning
+        LinkLocalAddressing = "no";
+      };
     };
 
     links."10-phy-lan" = {
