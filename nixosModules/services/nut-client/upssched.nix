@@ -13,11 +13,11 @@ let
         # The first argument passed to your CMDSCRIPT is the name of the timer from your AT lines or the value of EXECUTE directive
         case $1 in
           halt)
-        		logger -t upssched-dispatch "Got the halt event"
-            ${pkgs.systemd}/bin/shutdown now
+            logger -t upssched-dispatch "Got the halt event"
+            # ${pkgs.systemd}/bin/shutdown now
             ;;
           *)
-        		logger -t upssched-dispatch "Unrecognized command: $1"
+            logger -t upssched-dispatch "Unrecognized command: $1"
         		;;
         esac
       '';
