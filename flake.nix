@@ -385,6 +385,7 @@
                   [
                     "nitrogen"
                     "fluorine"
+                    "helium"
                   ]
                   [
                     (map (hostName: {
