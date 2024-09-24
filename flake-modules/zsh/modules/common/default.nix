@@ -45,7 +45,8 @@ rec {
     nrn = "nix repl -f flake:ns";
     nrs = "nix repl -f flake:ns";
     nru = "nix repl -f flake:nu"; # Unstable
-    nrlf = ''nix repl --expr "builtins.getFlake \"$PWD\""'';
+    # Load flake into repl. Try $PRJ_ROOT first, if not found -- fall back to PWD
+    nrlf = ''nix repl --expr "builtins.getFlake \"''${PRJ_ROOT:-$PWD}\""'';
     poweroff = "confirm poweroff";
     reboot = "confirm reboot";
   };
