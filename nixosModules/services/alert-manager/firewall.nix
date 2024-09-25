@@ -1,4 +1,4 @@
-{ lib, config, ... }:
+{ lib, ... }:
 let
   srvName = "alert-manager";
   inherit (lib) pipe;
@@ -12,8 +12,8 @@ in
     (map (interface: {
       name = interface;
       value.allowedTCPPorts = [
-        config.services.prometheus.alertmanager.port
-        # 443
+        # config.services.prometheus.alertmanager.port
+        443
       ];
     }))
     builtins.listToAttrs
