@@ -42,6 +42,7 @@ in
           reservations = lib.attrsets.mapAttrsToList (_: hostData: {
             hw-address = hostData.macAddr;
             ip-address = hostData.ipAddress;
+            hostname = hostData.fqdn;
           }) lan.hostsInNetwork;
         }
       ];
