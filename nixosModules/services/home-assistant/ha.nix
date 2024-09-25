@@ -39,6 +39,7 @@ in
       "dhcp"
       "zha"
       "apache_kafka" # Streaming the events out
+      "wiz"
     ] ++ srvConfig.components;
 
     # Build custom components. { } does not pass deps which is OK for now
