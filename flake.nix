@@ -326,6 +326,11 @@
                   jq
                   ;
               };
+
+              # Wiz CLI
+              riz = import ./packages/riz/package.nix {
+                inherit (pkgs) fetchFromGitHub rustPlatform;
+              };
             };
             checks = import ./checks { inherit self pkgs lib; };
 
