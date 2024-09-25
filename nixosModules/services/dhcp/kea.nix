@@ -28,7 +28,7 @@ in
       subnet4 = [
         {
           id = 1;
-          pools = [ { pool = "${lan.subnet}.2 - ${lan.subnet}.254"; } ];
+          pools = [ { pool = "${lan.subnet}.240 - ${lan.subnet}.254"; } ];
           subnet = "${lan.subnet}.0${lan.settings.netmask}";
 
           # Looks like this is needed as an advertisement from DHCP to get gateway to hosts
