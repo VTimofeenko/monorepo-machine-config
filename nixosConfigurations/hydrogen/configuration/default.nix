@@ -38,4 +38,5 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkForce true;
   imports = [ ./network.nix ];
+  powerManagement.cpuFreqGovernor = "performance";
 }
