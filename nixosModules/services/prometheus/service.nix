@@ -8,7 +8,7 @@ in
 {
   services.prometheus = {
     enable = true;
-    retentionTime = "30d";
+    retentionTime = "120d";
     listenAddress = getServiceIP srvName;
     scrapeConfigs = pipe exporters [
       (map (x: {
