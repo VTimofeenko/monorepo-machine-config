@@ -116,7 +116,7 @@ in
         application = {
           "only" = [
             "firefox"
-            "Brave-browser"
+            "brave-browser"
           ];
         };
         remap = {
@@ -129,7 +129,7 @@ in
       {
         name = "Brave set incognito to a sane shortcut";
         application = {
-          "only" = "Brave-browser";
+          "only" = "brave-browser";
         };
         remap = {
           "C-Shift-p" = "C-Shift-n";
