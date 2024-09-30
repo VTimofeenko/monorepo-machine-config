@@ -2,5 +2,6 @@
 _: {
   services.home-assistant = {
     extraComponents = [ "prometheus" ];
+    config.prometheus = { };
   };
 }
