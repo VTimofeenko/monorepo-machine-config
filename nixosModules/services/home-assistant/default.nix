@@ -5,5 +5,6 @@ _: {
     ./zwave.nix
     ./ssl.nix
     ./outlet-rebooter.nix
+    ./monitoring.nix
   ];
 }
