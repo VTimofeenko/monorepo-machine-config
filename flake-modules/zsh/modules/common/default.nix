@@ -70,7 +70,6 @@ rec {
         dig # quick DNS tester
         unzip # unpacks archives
         htop # system monitoring
-        broot # console file manager
         eza # for completions
         spacer
         ;
