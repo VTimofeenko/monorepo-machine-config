@@ -57,44 +57,47 @@
             ;
         };
 
-        programs.browserpass.enable = true;
-
-        programs.password-store = {
-          enable = true;
-          package = pkgs.pass.withExtensions (exts: [
-            exts.pass-otp
-            exts.pass-genphrase
-          ]);
-        };
-
         home.file.".icons/default".source = "${pkgs.vanilla-dmz}/share/icons/Vanilla-DMZ";
-        # Overrides for broot
-        # FIXME: [24.11]
 
-        programs.broot = {
-          package = nixpkgs-unstable.legacyPackages.${pkgs.stdenv.system}.broot;
-          settings.preview_transformers = [
-            {
-              input_extensions = [ "pdf" ];
-              output_extension = "png";
-              mode = "image";
-              command = [
-                "${pkgs.mupdf-headless}/bin/mutool"
-                "draw"
-                "-w"
-                "1000"
-                "-o"
-                "{output-path}"
-                "{input-path}"
-              ];
-            }
-            {
-              input_extensions = [ "json" ];
-              output_extension = "json";
-              mode = "text";
-              command = [ "jq" ];
-            }
-          ];
+        programs = {
+
+          browserpass.enable = true;
+
+          password-store = {
+            enable = true;
+            package = pkgs.pass.withExtensions (exts: [
+              exts.pass-otp
+              exts.pass-genphrase
+            ]);
+          };
+
+          # Overrides for broot
+          # FIXME: [24.11]
+          broot = {
+            package = nixpkgs-unstable.legacyPackages.${pkgs.stdenv.system}.broot;
+            settings.preview_transformers = [
+              {
+                input_extensions = [ "pdf" ];
+                output_extension = "png";
+                mode = "image";
+                command = [
+                  "${pkgs.mupdf-headless}/bin/mutool"
+                  "draw"
+                  "-w"
+                  "1000"
+                  "-o"
+                  "{output-path}"
+                  "{input-path}"
+                ];
+              }
+              {
+                input_extensions = [ "json" ];
+                output_extension = "json";
+                mode = "text";
+                command = [ "jq" ];
+              }
+            ];
+          };
         };
       };
   };
