@@ -129,7 +129,8 @@
            "agenda.org"
            "notes.org"
            "projects.org"
-           "~/.local/state/ical-org-export.org")
+           "~/.local/state/ical-org-export.org"
+           "~/org/roam/daily/")
           (split-string
            (shell-command-to-string
             "rg --glob=\"*.org\" -l -S \"filetags:.*proj\" ~/org/roam")
