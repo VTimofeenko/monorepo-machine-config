@@ -1,4 +1,5 @@
 # home-manager module for swayimg
+# Dup of https://github.com/nix-community/home-manager/pull/5651
 {
   config,
   lib,
