@@ -9,6 +9,7 @@
     ./swayimg
 
     ../homeManager
+    ./file-associations.nix
   ];
 }
 # homeConfigurations default.nix:1 ends here
