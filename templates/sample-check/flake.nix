@@ -16,6 +16,8 @@
       pkgs = import nixpkgs { inherit system; };
     in
     {
+      # Runnable via
+      # ❯ nix build -L .\#checks.x86_64-linux.test
       checks.${system}.test = pkgs.testers.runNixOSTest {
         name = "test";
         node.specialArgs = {
