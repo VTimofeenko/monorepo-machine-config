@@ -16,7 +16,7 @@
     settings = {
       # Disable showing image metadata (needs >2.2 in nixpkgs-stable) [24.11]
       info.show = "no";
-      key.viewer = {
+      "keys.viewer" = {
         n = "next_file";
         p = "prev_file";
       };
