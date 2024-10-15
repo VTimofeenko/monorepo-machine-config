@@ -2,14 +2,14 @@
   config,
   lib,
   pkgs,
+  nixpkgs-unstable,
   ...
 }:
 let
   srvName = "home-assistant";
   inherit (lib.homelab) getSrvSecret;
 
-  # FIXME: drop once https://github.com/NixOS/nixpkgs/pull/323350 is merged
-  zwave136 = pkgs.callPackage ./zwave-pkg.nix { };
+  pkgs-unstable = import nixpkgs-unstable { inherit (pkgs) system; };
 
 in
 {
@@ -25,7 +25,7 @@ in
     enable = true;
     serialPort = "/dev/ttyUSB0";
     secretsConfigFile = config.age.secrets.zwaveSecrets.path;
-    package = zwave136;
+    package = pkgs-unstable.zwave-js-server;
   };
   # /* Sets up the rules for the USB dongle */
   # services.udev.extraRules = ''
