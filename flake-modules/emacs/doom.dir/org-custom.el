@@ -199,7 +199,7 @@
        nil ((org-scheduled-past-days 0) (org-deadline-warning-days 0)))))))
  (setq org-agenda-time-grid
        '((daily today require-timed remove-match)
-         (800 1000 1200 1400 1600 1800 2000)
+         (800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000)
          "......"
          "----------------"))
  ;; taken from stackexchange
@@ -409,5 +409,55 @@
               nil nil org-download-screenshot-basename)
            nil)))
     (org-download-clipboard file)))
+
+;; Set up a custom agenda hook that clears agenda grid if something is scheduled for that slot
+(after!
+ org
+ (defun vt/clear-agenda-grid ()
+   (let*
+       ((occupied-timestamps
+         (-->
+          (org-ql-select
+           'org-agenda-files ; Searches through all agenda files
+           '(ts :on today) ; Query headlines with scheduled dates
+           :action
+           (lambda ()
+             (->>
+              (let* ((scheduled-time (org-entry-get (point) "SCHEDULED"))
+                     (timestamp (org-entry-get (point) "TIMESTAMP"))
+                     (found-timestamp
+                      (when
+                       (or scheduled-time timestamp)
+                       (org-timestamp-from-string scheduled-time)))
+                     (hour-start
+                      (when
+                       found-timestamp
+                       (plist-get (car (cdr found-timestamp)) :hour-start)))
+                     (hour-end
+                      (when
+                       found-timestamp
+                       (plist-get (car (cdr found-timestamp)) :hour-end))))
+                (list hour-start hour-end)) ;; end of let*
+              (--filter (not (equal it nil))) ;; removes nils
+              )
+             ; end of ->>
+             )
+           ; end of lambda body
+           ) ; end of lambda
+          (-distinct it) (remove nil it)
+          (mapcan
+           (lambda (y) ; Produces continuous list of hour stamps
+             (-->
+              y (apply #'number-sequence it)
+              (-drop-last 1 it) ; The generated list will exclude the last hour. This is done so that there could be a grid _after_ an event
+              (mapcar (lambda (x) (* x 100)) it) ; Turn into hours
+              ))
+           it))))
+     (setq org-agenda-time-grid
+           (-update-at
+            1
+            (lambda (x) (-difference x occupied-timestamps))
+            org-agenda-time-grid))))
+ (add-hook 'org-agenda-mode-hook #'vt/clear-agenda-grid))
 
 (require 'org-web-tools)
