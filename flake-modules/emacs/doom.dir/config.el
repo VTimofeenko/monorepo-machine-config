@@ -9,6 +9,8 @@
 (load! "semantic-commits")
 (load! "ejc-custom")
 (load! "office-stuff")
+(load! "org-agenda-grid-hide-hook")
+
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
@@ -41,4 +43,3 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
-
