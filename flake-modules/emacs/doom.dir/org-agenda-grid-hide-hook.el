@@ -73,18 +73,14 @@
              (let* ((scheduled-time (org-entry-get (point) "SCHEDULED"))
                     (timestamp (org-entry-get (point) "TIMESTAMP"))
                     (determined-timestamp (or scheduled-time timestamp))
-                    (found-timestamp
+                    (parsed-timestamp
                      (when
                       determined-timestamp
                       (org-timestamp-from-string determined-timestamp)))
                     (hour-start
-                     (when
-                      found-timestamp
-                      (plist-get (car (cdr found-timestamp)) :hour-start)))
+                     (plist-get (-second-item parsed-timestamp) :hour-start))
                     (hour-end
-                     (when
-                      found-timestamp
-                      (plist-get (car (cdr found-timestamp)) :hour-end)))
+                     (plist-get (-second-item parsed-timestamp) :hour-end))
                     ; TODO: Maybe move subtraction logic here
                     ; Logic:
                     ; If hour-start == hour-end -- do nothing
