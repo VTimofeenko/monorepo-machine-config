@@ -97,7 +97,11 @@
     }
   */
   mkDeployRsNode =
-    { nodeName, system }:
+    {
+      nodeName,
+      system,
+      data-flake,
+    }:
     let
       # This will reuse NixOS binary cache for deploy-rs building instead of building the package locally
       pkgs = import nixpkgs { inherit system; };
@@ -115,7 +119,7 @@
       };
     in
     {
-      hostname = nodeName + ".mgmt.home.arpa"; # TODO: Make this more generic
+      hostname = "${nodeName}.${data-flake.data.networks.mgmt.domain}";
       sshUser = "root";
       profiles.system = {
         user = "root";
