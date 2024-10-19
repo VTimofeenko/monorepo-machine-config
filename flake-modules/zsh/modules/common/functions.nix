@@ -45,4 +45,12 @@ in
         nix-instantiate --eval -E "builtins.fromJSON '''$JSON'''"
       '';
   };
+
+  json-to-nix = {
+    description = "Turns json into nix to stdout.";
+    text = # bash
+      ''
+        nix-instantiate --eval -E "builtins.fromJSON (builtins.readFile $1)"
+      '';
+  };
 }
