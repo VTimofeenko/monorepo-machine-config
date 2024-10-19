@@ -110,8 +110,8 @@
     # };
 
     data-flake = {
-      # url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git"; # REMOTE_SRC
-      url = "path:///home/spacecadet/code/data-flake"; # LOCAL_SRC
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git"; # REMOTE_SRC
+      # url = "path:///home/spacecadet/code/data-flake"; # LOCAL_SRC
       inputs = {
         devshell.follows = "devshell";
         nixpkgs-lib.follows = "nixpkgs-lib";
