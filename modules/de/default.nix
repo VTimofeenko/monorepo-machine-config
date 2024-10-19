@@ -8,7 +8,6 @@
 {
   imports = [
     ./greeter.nix # (ref:greeter-import)
-    # ./wofi  # TODO: 23.05
     ../hyprland/system.nix # (ref:hyprland-system-import)
     ./xremap
   ];
