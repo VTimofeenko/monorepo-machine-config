@@ -42,9 +42,6 @@ in
         }
       ];
     };
-    # TODO:
-    # admin.username
-    # admin.password
   };
 
   # Redpanda needs this to be higher

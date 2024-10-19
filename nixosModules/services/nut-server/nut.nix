@@ -39,6 +39,4 @@ in
       };
     };
   };
-  # TODO:
-  # imports = [./webgui.nix];
 }

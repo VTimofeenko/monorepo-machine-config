@@ -21,7 +21,6 @@ let
   inherit (lib) mapAttrs' nameValuePair filterAttrs;
 in
 {
-  # Allow unfree packages across the board
   nix = {
     settings = {
       connect-timeout = 5;

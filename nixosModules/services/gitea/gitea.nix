@@ -20,8 +20,7 @@ in
       server = {
         ROOT_URL = "https://${srvFqdn}";
         DOMAIN = srvFqdn;
-        SSH_LISTEN_HOST = ownIP; # TODO: Add to client network?
-        # SSH_SERVER_HOST_KEYS = "ssh/gitea.ed25519"; # TODO: Record SSH key, add it to known hosts
+        SSH_LISTEN_HOST = ownIP;
         START_SSH_SERVER = true;
       };
       session.COOKIE_SECURE = true;
@@ -33,7 +32,6 @@ in
         REGISTER_MANUAL_CONFIRM = true;
       };
 
-      # TODO: Review
       webhook.ALLOWED_HOST_LIST = "external,${ownIP}";
     };
     # Needed for backups

@@ -2,8 +2,6 @@
   Backup implementation for gitea.
 
   For now only rotates on-device dumps.
-
-  # TODO: move the script into flake-level packages
 */
 {
   config,

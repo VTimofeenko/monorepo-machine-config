@@ -44,7 +44,6 @@
       device = "/dev/disk/by-label/boot";
       fsType = "vfat";
     };
-    # TODO: nvr?
   };
   swapDevices = [ { device = "/dev/disk/by-label/swap"; } ];
 
