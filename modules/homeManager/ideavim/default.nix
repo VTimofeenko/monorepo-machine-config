@@ -32,7 +32,6 @@ _: {
       set highlightedyank
       let g:highlightedyank_highlight_duration="100"
 
-      " TODO: works on darwin?
       set clipboard+=unnamed
     '';
 }
