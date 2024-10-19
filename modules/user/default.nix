@@ -18,7 +18,6 @@
   };
   home-manager = {
 
-    # TODO: check if still needed
     useGlobalPkgs = true;
     useUserPackages = true;
 
