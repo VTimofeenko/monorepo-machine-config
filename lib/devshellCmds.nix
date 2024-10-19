@@ -1,5 +1,5 @@
 # Devshell commands to check various things
-{ pkgs, ... }:
+{ pkgs, data-flake, ... }:
 [
   {
     help = "Check the DNS replies";
@@ -33,8 +33,15 @@
   {
     help = "Deploy dashboard";
     name = "deploy-dashboard";
-    # TODO: depend on emacs, scp and config somehow
-    command = "emacsclient -eval '(org-batch-store-agenda-views)' && scp ~/code/infra/services/dashy/home_maint.html root@nitrogen.mgmt.home.arpa:/var/lib/filedump";
+    command =
+      let
+        inherit (data-flake) data;
+        filedumpHost = "${data.services.all.filedump.onHost}.${data.networks.mgmt.domain}";
+      in
+      ''
+        ${pkgs.emacs}/bin/emacsclient -eval '(org-batch-store-agenda-views)' &&
+        ${pkgs.openssh}/bin/scp ~/code/infra/services/dashy/home_maint.html \
+                                ${filedumpHost}:/var/lib/filedump'';
   }
 
   {

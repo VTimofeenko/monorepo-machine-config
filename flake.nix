@@ -291,7 +291,10 @@
 
             devshells.default =
               let
-                devShellCmds = import ./lib/devshellCmds.nix { inherit pkgs; };
+                devShellCmds = import ./lib/devshellCmds.nix {
+                  inherit pkgs;
+                  inherit (inputs) data-flake;
+                };
               in
               {
                 env = [ ];
