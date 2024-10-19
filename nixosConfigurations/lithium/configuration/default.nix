@@ -39,8 +39,7 @@
     fsType = "ext4";
     options = [ "noatime" ];
   };
-  # TODO: Move this to label
-  swapDevices = [ { device = "/dev/disk/by-uuid/318726e3-add5-4460-89c2-f141e47da4a9"; } ];
+  swapDevices = [ { device = "/dev/disk/by-label/swap"; } ];
 
   # Misc
   hardware.enableRedistributableFirmware = true;
