@@ -3,6 +3,7 @@ let
   inherit (pkgs) coreutils-full;
   dirname = "${coreutils-full}/bin/dirname";
   readlink = "${coreutils-full}/bin/readlink";
+  inherit (pkgs.lib) getExe;
 in
 {
   mkcd = {
@@ -33,5 +34,15 @@ in
     description = "Repeat last command by every press of Return";
     text = # bash
       ''while true; do read && !!; done'';
+  };
+
+  yml-to-nix = {
+    description = "Turns yaml into nix to stdout.";
+    text = # bash
+      ''
+        FROM_YML_TO_JSON_CMD="${getExe pkgs.yq-go}"
+        JSON=$($FROM_YML_TO_JSON_CMD e -o=json "$1")
+        nix-instantiate --eval -E "builtins.fromJSON '''$JSON'''"
+      '';
   };
 }
