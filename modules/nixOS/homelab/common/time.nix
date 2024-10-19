@@ -1,5 +1,6 @@
 # Time-related settings
-_: {
+{ lib, ... }:
+{
   time.timeZone = "America/Los_Angeles";
-  # TODO: my local NTP
+  services.timesyncd.servers = lib.mkForce [ (lib.homelab.getServiceFqdn "ntp") ];
 }
