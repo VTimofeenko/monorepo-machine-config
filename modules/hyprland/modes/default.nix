@@ -21,7 +21,6 @@ in
   imports = builtins.map (module: (import module mkModeBinding)) [
     ./sound_ctl.nix
     ./resize_ctl.nix
-    # ./workspace_edit.nix # TODO
     ./screenshot.nix
     ./power_ctl.nix
     ./pass-helpers.nix
