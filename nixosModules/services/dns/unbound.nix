@@ -97,10 +97,6 @@ in
         identity = "DNS";
         do-not-query-localhost = "no";
 
-        # To enable monitoring
-        # TODO: move to monitoring file
-        extended-statistics = "yes";
-
         # Not logging these as dnstap takes care of it
         log-queries = "no";
         log-replies = "no";
