@@ -5,5 +5,6 @@ _: {
     ./ssl.nix
     ./bkp.nix
     ./monitoring.nix
+    ./network.nix
   ];
 }

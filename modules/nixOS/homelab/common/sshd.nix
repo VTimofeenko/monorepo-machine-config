@@ -10,5 +10,5 @@ in
     openFirewall = false; # WARN: important
   };
   users.users.root.openssh.authorizedKeys.keys = getSettings.SSHKeys;
-  networking.firewall.allowedTCPPorts = [ 22 ]; # TODO: allow only on management network
+  networking.firewall.interfaces.mgmt.allowedTCPPorts = [ 22 ];
 }
