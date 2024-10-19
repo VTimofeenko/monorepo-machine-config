@@ -1,8 +1,8 @@
 _: {
   imports = [
     ./kea.nix
-    # ./logging.nix # TODO
-    # ./firewall.nix # TODO
+    # ./logging.nix
+    # ./firewall.nix
     ./monitoring.nix
   ];
 }

@@ -36,7 +36,7 @@ in
             platform = "device";
             type = "motion";
           }
-        ]; # TODO: replace deviceId with proper name
+        ];
       }
 
       {

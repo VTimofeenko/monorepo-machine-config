@@ -1,4 +1,3 @@
-# TODO: Add generic "allow all 53" back; check impact on DNS performance. Probably neglibible.
 { lib, config, ... }:
 {
   # Takes the list of networks the service should access and sets the firewall rules accordingly
