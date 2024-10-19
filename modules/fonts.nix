@@ -1,14 +1,9 @@
-# [[file:../new_project.org::*Fonts.nix][Fonts.nix:1]]
 { pkgs, ... }:
 {
   fonts = {
-    packages = with pkgs; [
-      # TODO: remove with pkgs;
-      (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
-      roboto
-      twitter-color-emoji
-      font-awesome
-    ];
+    packages =
+      builtins.attrValues { inherit (pkgs) roboto twitter-color-emoji font-awesome; }
+      + [ (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; }) ];
     fontconfig = {
       defaultFonts = {
         monospace = [ "JetBrainsMono Nerd Font" ];
@@ -19,4 +14,3 @@
     };
   };
 }
-# Fonts.nix:1 ends here
