@@ -35,6 +35,7 @@ in
           "rm *"
           "# *" # I don't care about full-line comments
           "k" # standalone "k" is usually mistyped up arrow
+          "cd /tmp" # I usually don't care about what happens after I cd to tmp
         ];
         ignoreSpace = true; # Do not include lines that start with a space. On by default, but I want to make sure.
         path = "${config.xdg.dataHome}/zsh/zsh_history"; # unclutter profile
