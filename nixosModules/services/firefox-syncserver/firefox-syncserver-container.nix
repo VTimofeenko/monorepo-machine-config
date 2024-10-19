@@ -1,6 +1,8 @@
 /**
   Implementation for local Firefox sync server.
 
+  It is currently unused, pending reimplementation
+
   Since syncserver in nixpkgs uses mysql as the only supported database and my main db is on postgres -- this service will live in its own container.
 */
 {
@@ -47,7 +49,7 @@ in
         services = {
           firefox-syncserver = {
             enable = true;
-            secrets = "/super-secret"; # TODO: let binding
+            secrets = "/super-secret";
             singleNode = {
               enable = true; # Setup is simple
               hostname = service.domain;
