@@ -53,7 +53,6 @@
   system.stateVersion = "22.11";
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware = {
-    # TODO: move to auto-generated, this is known
     cpu.intel.updateMicrocode = lib.mkForce true;
     enableRedistributableFirmware = true;
   };

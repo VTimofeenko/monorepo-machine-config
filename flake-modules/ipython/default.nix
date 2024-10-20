@@ -28,6 +28,5 @@
           };
         }
       );
-      # TODO: add a check
     };
 }
