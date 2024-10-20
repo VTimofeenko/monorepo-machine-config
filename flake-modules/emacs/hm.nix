@@ -103,13 +103,11 @@ in
 
     It should check if the directory exist and become a no-op if it does ('true' part)
   */
-  # TODO: only if Linux
   home.activation.gitCheckoutDoom = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     $DRY_RUN_CMD [ ! -d ${doomRepoLocation} ] && ${lib.getExe pkgs.git} clone --depth=1 --single-branch "${doomGit}" "${doomRepoLocation} || true"
   '';
 
   # Doom really wants its dir in .config. I want to manage everything in this repo.
   # xdg.configFile."doom".source = config.lib.file.mkOutOfStoreSymlink gitManageddoomDir;
-  # TODO: only if Linux?
   systemd.user.tmpfiles.rules = [ "L ${doomDir} - - - - ${gitManageddoomDir} " ];
 }
