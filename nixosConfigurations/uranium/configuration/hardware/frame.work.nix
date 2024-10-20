@@ -42,15 +42,9 @@
     # Needed for desktop environments to detect/manage display brightness
     sensor.iio.enable = lib.mkDefault true;
 
-    amdgpu = {
-      initrd.enable = true;
-      # amdvlk = true; # TODO: check if makes sense
-      # FIXME: As of Jun 23 this is disabled on 24.05 for some reason. The PRs don't make too much sense at first glance, so replacing this with the implementation from unstable
-      # implementation is in opengl.extraPackages above
-      # opencl = true;
-    };
+    amdgpu.initrd.enable = true;
   };
-  # hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
   boot = {
     kernelParams = [
       # Fixes white flickering after resume/unlock
