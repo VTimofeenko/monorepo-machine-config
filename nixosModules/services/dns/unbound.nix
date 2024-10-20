@@ -140,9 +140,6 @@ in
           forward-first = "no";
         }
       ];
-
-      # TODO: Move to monitoring module?
-      remote-control.control-enable = true;
     };
   };
 }

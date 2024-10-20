@@ -4,8 +4,11 @@ let
 in
 {
   services = {
-    unbound.settings.server.extended-statistics = "yes";
-
+    # Needed settings for stats
+    unbound.settings = {
+      server.extended-statistics = "yes";
+      remote-control-enable = true;
+    };
     prometheus.exporters.unbound = {
       enable =
         assert config.services.unbound.enable;
