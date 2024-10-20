@@ -98,7 +98,7 @@ in
         log-sink = {
           type = "kafka";
           inputs = [ "local-journal" ];
-          encoding.codec = "json"; # TODO: protobuf?
+          encoding.codec = "json";
 
           # bootstrap_servers = "${service.fqdn}:9092"; # TODO: fix the network resolution in this vpn
           bootstrap_servers = "10.5.0.7:9092";
@@ -113,5 +113,4 @@ in
     journaldAccess = true;
   };
 
-  # TODO: ipAllow for vector only on logging network
 }

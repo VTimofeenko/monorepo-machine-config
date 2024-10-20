@@ -39,7 +39,6 @@ let
   ];
 in
 {
-  # TODO: fix the SOA record
   services.nsd.zones =
     (mapAttrs (
       name: value: {
