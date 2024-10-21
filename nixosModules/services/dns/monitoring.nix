@@ -7,7 +7,7 @@ in
     # Needed settings for stats
     unbound.settings = {
       server.extended-statistics = "yes";
-      remote-control-enable = true;
+      remote-control.control-enable = true;
     };
     prometheus.exporters.unbound = {
       enable =
