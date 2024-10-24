@@ -3,7 +3,7 @@ let
   inherit (pkgs) coreutils-full;
   dirname = "${coreutils-full}/bin/dirname";
   readlink = "${coreutils-full}/bin/readlink";
-  inherit (pkgs.lib) getExe;
+  inherit (pkgs.lib) getExe getExe';
 in
 {
   mkcd = {
@@ -51,6 +51,14 @@ in
     text = # bash
       ''
         nix-instantiate --eval -E "builtins.fromJSON (builtins.readFile $1)"
+      '';
+  };
+
+  normalizeFileName = {
+    description = "Turns an input sentence into a reasonable file name.";
+    text = # bash
+      ''
+        echo "$1" | ${getExe' pkgs.rakudo "raku"} -e 'say $*IN.get.lc.trans(" _" => "-");'
       '';
   };
 }
