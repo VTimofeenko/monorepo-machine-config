@@ -60,13 +60,11 @@ in
       inherit (srvConfig) telegram_bot notify;
     };
   };
-  systemd.tmpfiles.rules = [
-    "f ${config.services.home-assistant.configDir}/automations.yaml 0755 ${homeassistantUser} ${homeassistantUser}"
-  ];
 
   # Additional config
   imports = [
     ./automations.nix
     ./scripts.nix
+    ./allow-ui-object-editing.nix
   ];
 }

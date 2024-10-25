@@ -82,7 +82,5 @@ in
       }
 
     ] ++ srvConfig.automations;
-    # This allows automations to be provisioned from Nix and to be defined from UI
-    "automation ui" = "!include automations.yaml";
   };
 }
