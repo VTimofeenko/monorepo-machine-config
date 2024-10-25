@@ -152,6 +152,7 @@ in
                 key = "Scope";
                 title = "Scope";
                 type = "input";
+                suggestions.command = "cat .dev/scopes";
               }
               {
                 key = "Breaking";
