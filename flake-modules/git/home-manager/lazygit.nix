@@ -24,6 +24,8 @@ in
         optionsTextColor = [ "#${fg-main}" ];
       };
       git.paging.pager = "${getExe pkgs.diff-so-fancy}";
+      # Doc:
+      # https://github.com/jesseduffield/lazygit/blob/master/docs/Custom_Command_Keybindings.md
       customCommands = [
         {
           command = "git commit --message '{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}'";
@@ -34,65 +36,15 @@ in
           prompts = [
             {
               key = "Type";
-              options = [
-                {
-                  description = "Changes that affect the build system or external dependencies";
-                  name = "build";
-                  value = "build";
-                }
-                {
-                  description = "A new feature";
-                  name = "feat";
-                  value = "feat";
-                }
-                {
-                  description = "A bug fix";
-                  name = "fix";
-                  value = "fix";
-                }
-                {
-                  description = "Other changes that don't modify src or test files";
-                  name = "chore";
-                  value = "chore";
-                }
-                {
-                  description = "Changes to CI configuration files and scripts";
-                  name = "ci";
-                  value = "ci";
-                }
-                {
-                  description = "Documentation only changes";
-                  name = "docs";
-                  value = "docs";
-                }
-                {
-                  description = "A code change that improves performance";
-                  name = "perf";
-                  value = "perf";
-                }
-                {
-                  description = "A code change that neither fixes a bug nor adds a feature";
-                  name = "refactor";
-                  value = "refactor";
-                }
-                {
-                  description = "Reverts a previous commit";
-                  name = "revert";
-                  value = "revert";
-                }
-                {
-                  description = "Changes that do not affect the meaning of the code";
-                  name = "style";
-                  value = "style";
-                }
-                {
-                  description = "Adding missing tests or correcting existing tests";
-                  name = "test";
-                  value = "test";
-                }
+              command = lib.pipe ./conventional-commit-helper [
+                (lib.flip pkgs.callPackage { })
+                lib.getExe
               ];
+              filter = "((?P<c_type>[a-z]*):.*)";
+              valueFormat = "{{ .c_type }}";
+              labelFormat = "{{ .group_1 }}";
               title = "Type of change";
-              type = "menu";
+              type = "menuFromCommand";
             }
             {
               initialValue = "";

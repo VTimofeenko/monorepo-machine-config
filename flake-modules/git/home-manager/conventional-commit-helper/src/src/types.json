@@ -1,0 +1,46 @@
+[
+  {
+    "name": "build",
+    "description": "Changes that affect the build system or external dependencies"
+  },
+  {
+    "name": "feat",
+    "description": "A new feature"
+  },
+  {
+    "name": "fix",
+    "description": "A bug fix"
+  },
+  {
+    "name": "chore",
+    "description": "Other changes that don't modify src or test files"
+  },
+  {
+    "name": "ci",
+    "description": "Changes to CI configuration files and scripts"
+  },
+  {
+    "name": "docs",
+    "description": "Documentation only changes"
+  },
+  {
+    "name": "perf",
+    "description": "A code change that improves performance"
+  },
+  {
+    "name": "refactor",
+    "description": "A code change that neither fixes a bug nor adds a feature"
+  },
+  {
+    "name": "revert",
+    "description": "Reverts a previous commit"
+  },
+  {
+    "name": "style",
+    "description": "Changes that do not affect the meaning of the code"
+  },
+  {
+    "name": "test",
+    "description": "Adding missing tests or correcting existing tests"
+  }
+]
