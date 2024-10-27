@@ -64,7 +64,6 @@ in
   # Additional config
   imports = [
     ./automations.nix
-    ./scripts.nix
     ./allow-ui-object-editing.nix
   ];
 }
