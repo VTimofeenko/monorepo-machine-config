@@ -1,9 +1,6 @@
 # File that contains home-assistant automations
 { config, ... }:
 let
-  inherit (config) my-data;
-  srvConfig = my-data.lib.getServiceConfig "home-assistant";
-
   cfg = config.services.home-assistant;
 in
 {
@@ -81,6 +78,6 @@ in
         mode = "single";
       }
 
-    ] ++ srvConfig.automations;
+    ];
   };
 }
