@@ -1,3 +1,8 @@
+/**
+  File with a grab bag of shell functions.
+
+  WRT naming: I should try to follow camelCase functions, but whatever works or is muscle memory.
+*/
 { pkgs, ... }:
 let
   inherit (pkgs) coreutils-full;
