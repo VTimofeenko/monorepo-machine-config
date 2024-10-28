@@ -2,15 +2,6 @@
   Experimental generic networkd module.
 
   Main purpose -- clear names of physical adapters by calling them "phy-lan"
-
-  Path to non-experimental:
-  * Test on fluorine
-  * Test on nitrogen
-  * Test on carbon
-  * Resolve conflicts with existing networkd per-host configs
-  * Hydrogen may still be special due to its role as router/fw
-  * Mass-apply
-  * Fix explosions
 */
 { lib, config, ... }:
 let
