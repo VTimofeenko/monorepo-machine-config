@@ -61,4 +61,12 @@ in
         echo "$1" | ${getExe' pkgs.rakudo "raku"} -e 'say $*IN.get.lc.trans(" _" => "-");'
       '';
   };
+
+  nixBuildPackage = {
+    description = "A convenience wrapper around nix-=build. I can never remember this flag.";
+    text = # bash
+      ''
+        nix-build --expr "with import <nixpkgs> {}; callPackage ./$1 {}"
+      '';
+  };
 }
