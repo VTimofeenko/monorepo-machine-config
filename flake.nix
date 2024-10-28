@@ -151,8 +151,8 @@
 
     # TODO: Locked to reduce rebuilds. re-lock this after next docspell release
     docspell-flake = {
-      url = "github:eikek/docspell?rev=559f6df495f2c300b40d394220ea441ac6a003ee";
-      # url = "path:///home/spacecadet/code/forks/docspell/";
+      # url = "github:eikek/docspell?rev=559f6df495f2c300b40d394220ea441ac6a003ee";
+      url = "path:///home/spacecadet/code/forks/docspell/";
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
