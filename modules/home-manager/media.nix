@@ -1,4 +1,3 @@
-# [[file:../../new_project.org::*Media config][Media config:1]]
 _: {
   programs.mpv = {
     enable = true;
@@ -17,4 +16,3 @@ _: {
   };
   programs.yt-dlp.enable = true;
 }
-# Media config:1 ends here
