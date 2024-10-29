@@ -1,4 +1,5 @@
-_: {
+{ pkgs, ... }:
+{
   programs.mpv = {
     enable = true;
     bindings = {
@@ -15,4 +16,10 @@ _: {
     };
   };
   programs.yt-dlp.enable = true;
+
+  # Local image editing and organizing
+  home.packages = [
+    pkgs.digikam
+    pkgs.exiftool
+  ];
 }
