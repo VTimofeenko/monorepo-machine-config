@@ -35,7 +35,5 @@
   hardware.cpu.intel.updateMicrocode = lib.mkForce true;
   networking.interfaces.ens3.useDHCP = true;
   # Imports
-  imports = [
-    ../../fluorine/configuration/experimental-networkd.nix
-  ];
+  imports = [ ];
 }

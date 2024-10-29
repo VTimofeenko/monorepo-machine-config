@@ -37,6 +37,5 @@
   # Imports
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    ../../fluorine/configuration/experimental-networkd.nix
   ];
 }

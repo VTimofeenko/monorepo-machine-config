@@ -10,5 +10,6 @@ _: {
     ./sshd.nix
     ./time.nix
     ./resolved.nix
+    ./networkd.nix
   ];
 }

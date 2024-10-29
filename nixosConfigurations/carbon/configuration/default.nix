@@ -58,7 +58,5 @@
   };
   services.logind.lidSwitch = "ignore";
   # Imports
-  imports = [
-    ../../fluorine/configuration/experimental-networkd.nix
-  ];
+  imports = [ ];
 }

@@ -48,6 +48,5 @@
   # Imports
   imports = [
     nixos-hardware.nixosModules.raspberry-pi-4
-    ../../fluorine/configuration/experimental-networkd.nix
   ];
 }

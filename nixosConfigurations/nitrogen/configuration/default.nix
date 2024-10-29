@@ -41,6 +41,5 @@
   # Imports
   imports = [
     nixos-hardware.nixosModules.framework-11th-gen-intel
-    ../../fluorine/configuration/experimental-networkd.nix
   ];
 }

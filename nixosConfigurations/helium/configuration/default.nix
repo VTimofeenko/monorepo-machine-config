@@ -37,7 +37,5 @@
   hardware.cpu.intel.updateMicrocode = lib.mkForce true;
 
   # Imports
-  imports = [
-    ../../fluorine/configuration/experimental-networkd.nix
-  ];
+  imports = [ ];
 }
