@@ -35,5 +35,8 @@
   system.stateVersion = "24.05";
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   # Imports
-  imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
+  imports = [
+    (modulesPath + "/profiles/qemu-guest.nix")
+    ../../fluorine/configuration/experimental-networkd.nix
+  ];
 }
