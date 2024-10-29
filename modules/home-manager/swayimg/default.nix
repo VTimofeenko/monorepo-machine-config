@@ -20,6 +20,12 @@
         n = "next_file";
         p = "prev_file";
       };
+      "keys.gallery" = {
+        "h" = "step_left";
+        "j" = "step_down";
+        "k" = "step_up";
+        "l" = "step_right";
+      };
     };
   };
 }
