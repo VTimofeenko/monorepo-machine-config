@@ -39,5 +39,8 @@
   hardware.cpu.intel.updateMicrocode = lib.mkForce true;
   networking.wireless.enable = false;
   # Imports
-  imports = [ nixos-hardware.nixosModules.framework-11th-gen-intel ];
+  imports = [
+    nixos-hardware.nixosModules.framework-11th-gen-intel
+    ../../fluorine/configuration/experimental-networkd.nix
+  ];
 }
