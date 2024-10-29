@@ -5,7 +5,7 @@
 */
 { lib, config, ... }:
 let
-  inherit (lib.homelab) getOwnHostInNetwork;
+  inherit (lib.homelab) getOwnHostInNetwork amInNetwork;
 in
 {
   networking = {
@@ -15,7 +15,7 @@ in
     enableIPv6 = false;
   };
 
-  systemd.network = {
+  systemd.network = lib.mkIf (amInNetwork "lan") {
 
     networks."10-lan" = {
       enable = true;
