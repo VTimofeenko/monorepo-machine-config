@@ -20,9 +20,7 @@
 */
 { lib, ... }:
 {
-  imports = [
-    ../../fluorine/configuration/experimental-networkd.nix
-  ];
+  imports = [ ];
 
   networking = {
     wireless = {
