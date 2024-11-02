@@ -398,6 +398,7 @@
                     "nitrogen"
                     "fluorine"
                     "helium"
+                    "lanthanum"
                   ]
                   [
                     (map (hostName: {
