@@ -1,4 +1,4 @@
-{ lib, config, ... }:
+{ lib, ... }:
 {
   # Boot
   boot = {
@@ -17,26 +17,25 @@
     extraModulePackages = [ ];
     loader.grub = {
       enable = true;
-      version = 2;
       device = "/dev/sda";
     };
   };
 
   # File systems
   fileSystems."/" = {
-    device = "/dev/disk/by-label/nixos";
+    device = "/dev/disk/by-label/NIXOS";
     fsType = "ext4";
-  };
-
-  # Network
-  networking = {
-    useDHCP = false;
-    interfaces.ens3.useDHCP = true;
+    options = [
+      "defaults"
+      "noatime"
+    ];
   };
 
   # Misc
-  system.stateVersion = "21.11";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  system.stateVersion = "24.05";
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  hardware.cpu.intel.updateMicrocode = lib.mkForce true;
 
   # Imports
+  imports = [ ];
 }
