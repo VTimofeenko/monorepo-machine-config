@@ -15,25 +15,31 @@ in
     enableIPv6 = false;
   };
 
-  systemd.network = lib.mkIf (amInNetwork "lan") {
+  systemd.network =
+    lib.mkIf
+      (
+        amInNetwork "lan" # does not make sense if not in lan
+        && (config.networking.hostName != "hydrogen") # Poor man's "am router, need custom config!"
+      )
+      {
 
-    networks."10-lan" = {
-      enable = true;
-      name = "10-lan";
-      # Default is to match the name of the network
-      matchConfig.Name = lib.mkForce config.systemd.network.links."10-phy-lan".linkConfig.Name;
-      networkConfig = {
-        DHCP = "yes";
-        # This will also disable ipv6 assigning
-        LinkLocalAddressing = "no";
+        networks."10-lan" = {
+          enable = true;
+          name = "10-lan";
+          # Default is to match the name of the network
+          matchConfig.Name = lib.mkForce config.systemd.network.links."10-phy-lan".linkConfig.Name;
+          networkConfig = {
+            DHCP = "yes";
+            # This will also disable ipv6 assigning
+            LinkLocalAddressing = "no";
+          };
+        };
+
+        links."10-phy-lan" = {
+          enable = true;
+          linkConfig.Name = "phy-lan";
+          matchConfig.PermanentMACAddress = (getOwnHostInNetwork "lan").macAddr;
+        };
       };
-    };
-
-    links."10-phy-lan" = {
-      enable = true;
-      linkConfig.Name = "phy-lan";
-      matchConfig.PermanentMACAddress = (getOwnHostInNetwork "lan").macAddr;
-    };
-  };
 
 }
