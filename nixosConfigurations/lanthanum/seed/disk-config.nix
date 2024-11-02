@@ -18,6 +18,7 @@
                 type = "filesystem";
                 format = "ext4";
                 mountpoint = "/";
+                label = "nixos";
                 mountOptions = [
                   "defaults"
                   "noatime"

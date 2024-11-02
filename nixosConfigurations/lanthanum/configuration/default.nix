@@ -23,7 +23,7 @@
 
   # File systems
   fileSystems."/" = {
-    device = "/dev/disk/by-label/NIXOS";
+    device = "/dev/disk/by-label/nixos";
     fsType = "ext4";
     options = [
       "defaults"
