@@ -5,7 +5,7 @@
 */
 { config, pkgs, ... }:
 let
-  hostName = "helium";
+  hostName = "lanthanum";
   stateVersion = "24.05";
 in
 {
