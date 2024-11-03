@@ -36,19 +36,5 @@
         ];
       };
     };
-    networks.srvnet = {
-      # See also man systemd.network
-      matchConfig.Name = "srvnet";
-      address = [
-        "10.100.0.2/24"
-      ];
-      DHCP = "no";
-      gateway = [
-        "10.100.0.1"
-      ];
-      networkConfig = {
-        IPv6AcceptRA = false;
-      };
-    };
   };
 }

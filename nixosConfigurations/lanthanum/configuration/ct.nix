@@ -3,6 +3,13 @@
     autoStart = true;
     privateNetwork = true;
     interfaces = [ "srvnet" ];
+    bindMounts = {
+      wg = {
+        mountPoint = "/wg";
+        isReadOnly = true;
+        hostPath = "/wg";
+      };
+    };
     config =
       {
         config,
@@ -41,6 +48,8 @@
 
         services.resolved.enable = true;
         imports = [ ./experimental-wg-srvnet.nix ];
+
+        # Container-specific networkd config
         systemd.network.netdevs."10-srvnet".wireguardPeers = lib.mkForce [
           {
             wireguardPeerConfig = {
@@ -54,11 +63,27 @@
           }
         ];
 
+        systemd.network.networks.srvnet = {
+          gateway = [ "10.100.0.1" ];
+
+          dns = [
+            "192.168.1.1"
+            "192.168.1.2"
+          ];
+
+          # See also man systemd.network
+          matchConfig.Name = "srvnet";
+          address = [ "10.100.0.2/24" ];
+          DHCP = "no";
+          networkConfig.IPv6AcceptRA = false;
+        };
+
         environment.systemPackages = [
           pkgs.inetutils
           pkgs.nftables
           pkgs.iptables
           pkgs.wireguard-tools
+          pkgs.dig
         ];
 
       };
