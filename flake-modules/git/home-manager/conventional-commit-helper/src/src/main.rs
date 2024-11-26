@@ -19,13 +19,16 @@ struct Args {
     mode: Mode,
 }
 
+/// This is a generic printable thing. The concrete examples would be:
+/// * Commit type
+/// * Commit scope
 #[derive(Debug, Deserialize)]
-struct CommitType {
+struct PrintableEntity {
     name: String,
     description: String,
 }
 
-impl fmt::Display for CommitType {
+impl fmt::Display for PrintableEntity {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}: {}", self.name, self.description)
     }
@@ -39,9 +42,10 @@ fn show_types() {
     }
 }
 
-fn get_types() -> Vec<CommitType> {
+fn get_types() -> Vec<PrintableEntity> {
     let bundled_types_file = include_str!("types.json");
-    let bundled_types_file: Vec<CommitType> = serde_json::from_str(bundled_types_file).unwrap();
+    let bundled_types_file: Vec<PrintableEntity> =
+        serde_json::from_str(bundled_types_file).unwrap();
 
     let am_in_project: bool = env::var("PRJ_ROOT").is_ok();
 
