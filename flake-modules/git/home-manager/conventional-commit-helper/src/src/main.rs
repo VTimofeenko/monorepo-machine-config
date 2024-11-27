@@ -1,12 +1,14 @@
 use clap::{Parser, ValueEnum};
+use std::path::PathBuf;
 
 mod common;
 
 mod types;
-use crate::types::get_types;
+use crate::types::try_get_types_from_repo_at_path;
+
+use self::scopes::try_get_scopes_from_repo_at_path;
 
 mod scopes;
-use crate::scopes::get_scopes;
 
 #[derive(ValueEnum, Clone, Debug)]
 enum Mode {
@@ -24,18 +26,24 @@ struct Args {
 
     #[arg(long)]
     json: bool,
+
+    #[arg(long, default_value = ".")]
+    repo_path: PathBuf,
 }
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     let args = Args::parse();
 
+    // If this raises an error -- it needs to be reported to the user
     let output = match args.mode {
-        Mode::Type => get_types(),
-        Mode::Scope => get_scopes(true),
-    };
+        Mode::Type => try_get_types_from_repo_at_path(args.repo_path),
+        Mode::Scope => try_get_scopes_from_repo_at_path(args.repo_path),
+    }?;
 
     match args.json {
         true => println!("{}", serde_json::to_string(&output).unwrap()),
         false => output.iter().for_each(|x| println!("{}", x)),
     }
+
+    Ok(())
 }
