@@ -1,16 +1,14 @@
 use std::path::Path;
 use std::{env, fs};
 
-use crate::common::PrintableEntity;
+use crate::common::{am_in_project, PrintableEntity};
 
 pub fn get_types() -> Vec<PrintableEntity> {
     let bundled_types_file = include_str!("types.json");
     let bundled_types_file: Vec<PrintableEntity> =
         serde_json::from_str(bundled_types_file).unwrap();
 
-    let am_in_project: bool = env::var("PRJ_ROOT").is_ok();
-
-    return match am_in_project {
+    return match am_in_project() {
         true => {
             let project_commit_type_file_path =
                 &format!("{}/.dev/commit-types", env::var("PRJ_ROOT").unwrap()).to_string();

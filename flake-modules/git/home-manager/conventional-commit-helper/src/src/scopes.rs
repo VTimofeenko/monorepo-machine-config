@@ -5,7 +5,7 @@ use std::env;
 use std::fs;
 use std::path::Path;
 
-use crate::common::PrintableEntity;
+use crate::common::{am_in_project, PrintableEntity};
 
 /// Returns the possible commit scopes.
 /// Possible sources:
@@ -14,9 +14,7 @@ use crate::common::PrintableEntity;
 ///
 /// Note that there is no default list of scopes -- they are per-project by definition.
 pub fn get_scopes(from_git_history: bool) -> Vec<PrintableEntity> {
-    let am_in_project: bool = env::var("PRJ_ROOT").is_ok();
-
-    let per_project_scopes: Vec<PrintableEntity> = match am_in_project {
+    let per_project_scopes: Vec<PrintableEntity> = match am_in_project() {
         true => {
             let project_commit_scope_file_path =
                 &format!("{}/.dev/commit-scopes.json", env::var("PRJ_ROOT").unwrap()).to_string();
