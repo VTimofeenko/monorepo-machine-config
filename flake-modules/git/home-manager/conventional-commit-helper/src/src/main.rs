@@ -2,7 +2,7 @@ use clap::{Parser, ValueEnum};
 use core::fmt;
 use git2::Repository;
 use regex::Regex;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::path::Path;
 use std::{env, fs};
@@ -20,12 +20,15 @@ struct Args {
     ///Mode in which the program runs
     #[clap(value_enum, default_value_t=Mode::Type)]
     mode: Mode,
+
+    #[arg(long)]
+    json: bool,
 }
 
 /// This is a generic printable thing. The concrete examples would be:
 /// * Commit type
 /// * Commit scope
-#[derive(Debug, Deserialize, Clone, Eq, PartialEq, Hash, PartialOrd, Ord)]
+#[derive(Debug, Deserialize, Clone, Eq, PartialEq, Hash, PartialOrd, Ord, Serialize)]
 struct PrintableEntity {
     name: String,
     description: String,
@@ -34,14 +37,6 @@ struct PrintableEntity {
 impl fmt::Display for PrintableEntity {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}: {}", self.name, self.description)
-    }
-}
-
-/// Shows commit types (feat/chore/etc.). Optionally looks for per-repository configuration in
-/// .dev/commit-types. That file should be json-formatted like the bundled types.json
-fn show_types() {
-    for t in get_types() {
-        println!("{}", t)
     }
 }
 
@@ -67,10 +62,6 @@ fn get_types() -> Vec<PrintableEntity> {
         }
         false => bundled_types_file,
     };
-}
-
-fn show_scopes() {
-    get_scopes(true).iter().for_each(|x| println!("{}", x));
 }
 
 /// Returns the possible commit scopes.
@@ -162,10 +153,15 @@ fn get_scopes_from_commit_history() -> Vec<PrintableEntity> {
 fn main() {
     let args = Args::parse();
 
-    match args.mode {
-        Mode::Type => show_types(),
-        Mode::Scope => show_scopes(),
+    let output = match args.mode {
+        Mode::Type => get_types(),
+        Mode::Scope => get_scopes(true),
     };
+
+    match args.json {
+        true => println!("{}", serde_json::to_string(&output).unwrap()),
+        false => output.iter().for_each(|x| println!("{}", x)),
+    }
 }
 
 /// Unit tests for the program
