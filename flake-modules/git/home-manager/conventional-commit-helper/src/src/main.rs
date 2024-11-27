@@ -1,11 +1,12 @@
 use clap::{Parser, ValueEnum};
-use core::fmt;
 use git2::Repository;
 use regex::Regex;
-use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 use std::path::Path;
 use std::{env, fs};
+
+mod common;
+use crate::common::PrintableEntity;
 
 #[derive(ValueEnum, Clone, Debug)]
 enum Mode {
@@ -23,21 +24,6 @@ struct Args {
 
     #[arg(long)]
     json: bool,
-}
-
-/// This is a generic printable thing. The concrete examples would be:
-/// * Commit type
-/// * Commit scope
-#[derive(Debug, Deserialize, Clone, Eq, PartialEq, Hash, PartialOrd, Ord, Serialize)]
-struct PrintableEntity {
-    name: String,
-    description: String,
-}
-
-impl fmt::Display for PrintableEntity {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}: {}", self.name, self.description)
-    }
 }
 
 fn get_types() -> Vec<PrintableEntity> {
