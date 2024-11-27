@@ -3,6 +3,7 @@ use core::fmt;
 use git2::Repository;
 use regex::Regex;
 use serde::Deserialize;
+use std::collections::HashSet;
 use std::path::Path;
 use std::{env, fs};
 
@@ -24,7 +25,7 @@ struct Args {
 /// This is a generic printable thing. The concrete examples would be:
 /// * Commit type
 /// * Commit scope
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Eq, PartialEq, Hash, PartialOrd, Ord)]
 struct PrintableEntity {
     name: String,
     description: String,
@@ -81,7 +82,7 @@ fn show_scopes() {
 fn get_scopes(from_git_history: bool) -> Vec<PrintableEntity> {
     let am_in_project: bool = env::var("PRJ_ROOT").is_ok();
 
-    let per_project_scopes = match am_in_project {
+    let per_project_scopes: Vec<PrintableEntity> = match am_in_project {
         true => {
             let project_commit_scope_file_path =
                 &format!("{}/.dev/commit-scopes.json", env::var("PRJ_ROOT").unwrap()).to_string();
@@ -98,7 +99,22 @@ fn get_scopes(from_git_history: bool) -> Vec<PrintableEntity> {
     };
 
     if from_git_history {
-        [per_project_scopes, get_scopes_from_commit_history()].concat()
+        // Remove scopes if there is already a scope with a description
+        // It might be worth using a hashset for this (turn per_project_scopes into a hashset and
+        // append scopes from commit history), but that would require overriding hashing function
+        // for PrintableEntity which is kinda meh.
+
+        let known_scope_names: Vec<String> =
+            per_project_scopes.iter().map(|x| x.clone().name).collect();
+        let filtered_scopes_from_commit_history = get_scopes_from_commit_history()
+            .iter()
+            .filter(|x| !known_scope_names.contains(&x.name))
+            .cloned()
+            .collect();
+
+        let mut scopes = [per_project_scopes, filtered_scopes_from_commit_history].concat();
+        scopes.sort();
+        scopes
     } else {
         per_project_scopes
     }
@@ -133,7 +149,7 @@ fn get_scopes_from_commit_history() -> Vec<PrintableEntity> {
         .iter()
         .filter_map(|entry| get_scope_from_commit_message(entry.message().unwrap()))
         // dedup by turning it into a hashset
-        .collect::<std::collections::HashSet<String>>()
+        .collect::<HashSet<String>>()
         .iter()
         // Turn into needed structs
         .map(|x| PrintableEntity {
