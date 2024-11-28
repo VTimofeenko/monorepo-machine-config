@@ -87,6 +87,7 @@
                   "-o"
                   "{output-path}"
                   "{input-path}"
+                  "1"
                 ];
               }
               {
