@@ -1,5 +1,6 @@
 use anyhow::{Context, Result};
 use git2::Repository;
+use log::debug;
 use regex::Regex;
 use std::collections::HashSet;
 use std::fs;
@@ -15,19 +16,23 @@ use crate::common::PrintableEntity;
 /// Note that there is no default list of scopes -- they are per-project by definition
 pub fn try_get_scopes_from_repo_at_path<P>(repo_path: P) -> Result<Vec<PrintableEntity>>
 where
-    P: Into<PathBuf> + AsRef<Path>,
+    P: Into<PathBuf> + AsRef<Path> + std::fmt::Debug,
 {
+    debug!("Looking for repository at {:?}...", &repo_path);
     // If discover fails, there's a problem with the repo
     let repo = Repository::discover(repo_path)?;
+    debug!("Success! Found the repo at {:?}", repo.workdir());
 
     // Ok, we have a proper repo
     // Get the list of scopes defined in a special file
+    debug!("Getting the project-specific scopes...");
     let project_commit_scopes: Vec<PrintableEntity> = get_scopes_from_file(
         repo.workdir()
             .expect("Could not find root dir of the repo. Is the repo bare?")
             .join(".dev/commit-scopes.json"),
     )?;
 
+    debug!("Getting the scopes from git history...");
     let commit_scopes_from_history: Vec<PrintableEntity> = get_scopes_from_commit_history(&repo);
 
     // Remove scopes if there is already a scope with a description
@@ -35,6 +40,7 @@ where
     // append scopes from commit history), but that would require overriding hashing function
     // for PrintableEntity which is kinda meh.
 
+    debug!("Merging the scopes from git history with the project-specific ones");
     let known_scope_names: Vec<String> = project_commit_scopes
         .iter()
         .map(|x| x.clone().name)
@@ -48,13 +54,16 @@ where
     let mut scopes = [project_commit_scopes, filtered_scopes_from_commit_history].concat();
     scopes.sort();
 
+    debug!("Success! Returning the final list of scopes");
     Ok(scopes)
 }
 
+/// Retrieves list of scopes from a file
 fn get_scopes_from_file<P>(file_path: P) -> Result<Vec<PrintableEntity>>
 where
     P: Into<PathBuf> + AsRef<Path> + std::fmt::Debug,
 {
+    debug!("Loading the scopes from project file");
     let file_contents = &fs::read_to_string(&file_path)
         .with_context(|| format!("Failed to read {:?}", file_path))?;
     let scopes: Vec<PrintableEntity> = serde_json::from_str(file_contents)?;
@@ -62,6 +71,7 @@ where
     Ok(scopes)
 }
 
+/// Given a single commit message, tries to find a scope in it
 fn get_scope_from_commit_message(message: &str) -> Option<String> {
     // Regex to find the scope
     // Typically scopes are found in the brackets:

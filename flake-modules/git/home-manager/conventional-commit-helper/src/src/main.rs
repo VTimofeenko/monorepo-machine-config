@@ -1,4 +1,5 @@
-use clap::{Parser, ValueEnum};
+use clap::{ArgAction, Parser, ValueEnum};
+use log::debug;
 use std::path::PathBuf;
 
 mod common;
@@ -29,10 +30,21 @@ struct Args {
 
     #[arg(long, default_value = ".")]
     repo_path: PathBuf,
+
+    #[arg(long, action=ArgAction::SetTrue)]
+    debug: bool,
 }
 
 fn main() -> anyhow::Result<()> {
     let args = Args::parse();
+
+    if args.debug {
+        env_logger::Builder::from_default_env()
+            .filter_level(log::LevelFilter::Debug)
+            .init();
+
+        debug!("Launched with args: {:?}", args);
+    }
 
     // If this raises an error -- it needs to be reported to the user
     let output = match args.mode {

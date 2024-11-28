@@ -1,5 +1,6 @@
 use anyhow::{bail, Result};
 use git2::Repository;
+use log::debug;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::PathBuf;
@@ -8,24 +9,29 @@ use crate::common::PrintableEntity;
 
 /// Retrieve repo-specific commit types. Fall back to bundled types.
 pub fn try_get_types_from_repo_at_path(repo_path: PathBuf) -> Result<Vec<PrintableEntity>> {
+    debug!("Looking for repository at {:?}...", &repo_path);
     // If discover fails, just ignore it.
     // In future I might want to distinguish between "program ran without any parameters and
     // repo-path is explicitly specified -- so the user has some expectations"
     if let Ok(repo) = Repository::discover(repo_path) {
+        debug!("Success! Found the repo at {:?}", repo.workdir());
         // Repo exists and is, well, a a git repo
         // Try to get the repo specific commit types.
         // If there are no project-specific commit types (i.e. no file, file is empty) -- fall
         // back.
         // Parsing errors should be bubbled up
         if let Some(project_specific_commit_types) = get_repo_specific_commit_types(repo)? {
+            debug!("Found the repo-specific commit types, returning them");
             return Ok(project_specific_commit_types);
         };
     };
 
+    debug!("Returning only the default commit types");
     Ok(get_default_commit_types())
 }
 
 fn get_default_commit_types() -> Vec<PrintableEntity> {
+    debug!("Retrieving the bundled commit types");
     let bundled_types_file = include_str!("types.json");
     // If bundled commit types are bad -- we have a huge problem, panic.
     let bundled_commit_types: Vec<PrintableEntity> =
@@ -38,8 +44,10 @@ fn get_default_commit_types() -> Vec<PrintableEntity> {
 fn get_repo_specific_commit_types(
     repo: Repository,
 ) -> anyhow::Result<Option<Vec<PrintableEntity>>> {
+    debug!("Trying to get repo-specific commit types");
     let project_root = repo.workdir();
 
+    debug!("Looking for the file with the commit types in the project");
     let project_commit_type_file_path: PathBuf = match project_root {
         Some(y) => y.join(".dev/commit-types.json"),
         None => bail!("Looks like the repository at {:?} is bare", repo.path()),
@@ -53,13 +61,18 @@ fn get_repo_specific_commit_types(
                 let reader = BufReader::new(file);
 
                 // If file exists, can be read but is invalid json -- better tell the user
+                debug!("Found the file, parsing it and returning the types");
                 serde_json::from_reader(reader)?
             }
             // Absence of file is considered OK -- just treat it as "the project has no special
             // types"
-            false => None,
+            false => {
+                debug!("No file found. That's OK, program should return default types.");
+                None
+            }
         };
 
+    debug!("Success! Returning project-specific commit types");
     Ok(project_commit_types)
 }
 
