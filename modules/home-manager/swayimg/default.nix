@@ -31,6 +31,8 @@
           j = "step_down 10";
           k = "step_up 10";
           l = "step_right 10";
+          # Additional zoom alias
+          "Shift+plus" = "zoom +10";
         };
         "keys.gallery" = {
           h = "step_left";
