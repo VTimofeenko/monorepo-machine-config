@@ -1,4 +1,6 @@
 # Home-manager module that configures custom swayimg module
+# Source for bindings:
+# https://github.com/artemsen/swayimg/blob/master/extra/swayimgrc
 {
   nixpkgs-unstable,
   pkgs,
@@ -24,6 +26,11 @@
           n = "next_file";
           p = "prev_file";
           "Shift+Delete" = deleteCmd;
+          # HJKL aliases for navigating within the image
+          h = "step_left 10";
+          j = "step_down 10";
+          k = "step_up 10";
+          l = "step_right 10";
         };
         "keys.gallery" = {
           h = "step_left";
