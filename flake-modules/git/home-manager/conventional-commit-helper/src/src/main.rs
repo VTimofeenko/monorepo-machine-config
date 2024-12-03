@@ -25,14 +25,22 @@ struct Args {
     #[clap(value_enum, default_value_t=Mode::Type)]
     mode: Mode,
 
+    /// Print output in JSON format
     #[arg(long)]
     json: bool,
 
+    /// Path to the non-bare git repository.
     #[arg(long, default_value = ".")]
     repo_path: PathBuf,
 
     #[arg(long, action=ArgAction::SetTrue)]
     debug: bool,
+
+    /// Path to the file containing conventional commit types for the repository.
+    ///
+    /// Can be specified as relative to the repo workdir root (default value)
+    #[arg(long, default_value = ".dev/commit-types.json")]
+    commit_types_file: PathBuf,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -48,7 +56,16 @@ fn main() -> anyhow::Result<()> {
 
     // If this raises an error -- it needs to be reported to the user
     let output = match args.mode {
-        Mode::Type => try_get_types_from_repo_at_path(args.repo_path),
+        Mode::Type => {
+            if args.commit_types_file == PathBuf::from(".dev/commit-types.json") {
+                debug!("Using the default value for commit types path");
+                try_get_types_from_repo_at_path(args.repo_path, None)
+            } else {
+                debug!("Using the provided value for commit types path");
+                try_get_types_from_repo_at_path(args.repo_path, Some(args.commit_types_file))
+            }
+        }
+
         Mode::Scope => try_get_scopes_from_repo_at_path(args.repo_path),
     }?;
 

@@ -1,46 +1,35 @@
 [
   {
-    "name": "feat",
-    "description": "A new feature"
+    "name": "feat", "description": "A new feature"
   },
   {
-    "name": "fix",
-    "description": "A bug fix"
+    "name": "fix", "description": "A bug fix"
   },
   {
-    "name": "docs",
-    "description": "Documentation only changes"
+    "name": "docs", "description": "Documentation only changes"
   },
   {
-    "name": "chore",
-    "description": "Other changes that don't modify src or test files"
+    "name": "chore", "description": "Other changes that don't modify src or test files"
   },
   {
-    "name": "style",
-    "description": "Changes that do not affect the meaning of the code"
+    "name": "style", "description": "Changes that do not affect the meaning of the code"
   },
   {
-    "name": "refactor",
-    "description": "A code change that neither fixes a bug nor adds a feature"
+    "name": "refactor", "description": "A code change that neither fixes a bug nor adds a feature"
   },
   {
-    "name": "build",
-    "description": "Changes that affect the build system or external dependencies"
+    "name": "build", "description": "Changes that affect the build system or external dependencies"
   },
   {
-    "name": "ci",
-    "description": "Changes to CI configuration files and scripts"
+    "name": "ci", "description": "Changes to CI configuration files and scripts"
   },
   {
-    "name": "perf",
-    "description": "A code change that improves performance"
+    "name": "perf", "description": "A code change that improves performance"
   },
   {
-    "name": "revert",
-    "description": "Reverts a previous commit"
+    "name": "revert", "description": "Reverts a previous commit"
   },
   {
-    "name": "test",
-    "description": "Adding missing tests or correcting existing tests"
+    "name": "test", "description": "Adding missing tests or correcting existing tests"
   }
 ]
