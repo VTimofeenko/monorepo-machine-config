@@ -17,6 +17,6 @@ rustPlatform.buildRustPackage {
   inherit name;
   src = ./src;
   version = "1.0.0";
-  cargoHash = "sha256-IiJjOBII2XawfdaY9eVZrGlD7Tm7ivnuq5Zl2usA81g=";
+  cargoHash = "sha256-GhwE7gpkI/9qj6U2kiyxDMVI8IThGmZSZc+1kYlZf6M=";
   meta.mainProgram = name;
 }
