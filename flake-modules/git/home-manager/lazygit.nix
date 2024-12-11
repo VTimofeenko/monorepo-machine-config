@@ -28,7 +28,7 @@ in
       # https://github.com/jesseduffield/lazygit/blob/master/docs/Custom_Command_Keybindings.md
       customCommands = [
         {
-          command = "git commit --message '{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}{{.Form.Breaking}}: {{.Form.Message}}'";
+          command = "git commit --message '{{.Form.Type}}{{ if .Form.Scope }}({{ .Form.Scope }}){{ end }}: {{.Form.Message}}'";
           context = "global";
           description = "Create new conventional commit";
           key = "<c-v>";
