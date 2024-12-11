@@ -53,21 +53,22 @@ in
               type = "input";
               suggestions.command = "cat .dev/scopes";
             }
-            {
-              key = "Breaking";
-              options = [
-                {
-                  name = "no";
-                  value = "";
-                }
-                {
-                  name = "yes";
-                  value = "!";
-                }
-              ];
-              title = "Breaking change";
-              type = "menu";
-            }
+            # Breaking changes are rare -- I'd rather use reword for them
+            # {
+            #   key = "Breaking";
+            #   options = [
+            #     {
+            #       name = "no";
+            #       value = "";
+            #     }
+            #     {
+            #       name = "yes";
+            #       value = "!";
+            #     }
+            #   ];
+            #   title = "Breaking change";
+            #   type = "menu";
+            # }
             {
               initialValue = "";
               key = "Message";
