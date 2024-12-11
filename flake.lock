@@ -77,6 +77,32 @@
         "type": "github"
       }
     },
+    "conventional-commit-helper": {
+      "inputs": {
+        "crane": [
+          "crane"
+        ],
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1733940044,
+        "narHash": "sha256-P0NS4qd0sfgTvtIDpPs75+CmjTgGRMh0FqtzBIqwvqE=",
+        "owner": "VTimofeenko",
+        "repo": "conventional-commit-helper",
+        "rev": "b542c2f5a68ddb96765eb17dfc340e0ea2485e1d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "VTimofeenko",
+        "repo": "conventional-commit-helper",
+        "type": "github"
+      }
+    },
     "crane": {
       "locked": {
         "lastModified": 1732407143,
@@ -588,7 +614,7 @@
     "hostsBlockList": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-TiGB08lTzqJpJbcaST0J/4Lml0+Xu27rGJUJE0RVeHk=",
+        "narHash": "sha256-u0IOhEOJt3/z+sb6D/SS5X4WhuUwLAnbE99h7hc0VNM=",
         "type": "file",
         "url": "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
       },
@@ -1157,6 +1183,7 @@
         "base16": "base16",
         "catppuccin": "catppuccin",
         "color_scheme": "color_scheme",
+        "conventional-commit-helper": "conventional-commit-helper",
         "crane": "crane",
         "data-flake": "data-flake",
         "deploy-rs": "deploy-rs",
