@@ -155,6 +155,8 @@ rec {
       "lua"
       "toml"
       "json"
+      "rs"
+      "py"
     ])
 
     # Debug stuff
