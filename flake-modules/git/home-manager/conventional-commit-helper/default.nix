@@ -8,15 +8,19 @@
 
   Category is separated from description by colon.
 */
-{ rustPlatform, ... }:
+{ rustPlatform, fetchFromGitHub, ... }:
 
 let
-  name = "semantic-commit-type-helper";
+  name = "conventional-commit-helper";
 in
 rustPlatform.buildRustPackage {
   inherit name;
-  src = ./src;
-  version = "1.0.0";
-  cargoHash = "sha256-GhwE7gpkI/9qj6U2kiyxDMVI8IThGmZSZc+1kYlZf6M=";
+  src = fetchFromGitHub {
+    owner = "VTimofeenko";
+    repo = "conventional-commit-helper";
+    rev = "b542c2f5a68ddb96765eb17dfc340e0ea2485e1d";
+    hash = "sha256-P0NS4qd0sfgTvtIDpPs75+CmjTgGRMh0FqtzBIqwvqE=";
+  };
+  cargoHash = "sha256-jO/cYmTTWjrBtFtIRwP+hM19F+6NsyGWuZzaAtSSJkc=";
   meta.mainProgram = name;
 }
