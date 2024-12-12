@@ -1,3 +1,4 @@
+{ conventional-commit-helper-pkg }:
 {
   config,
   lib,
@@ -8,6 +9,9 @@ let
   inherit (lib) getExe;
   inherit (config.my-colortheme.semantic.hex) activeFrameBorder inactiveFrameBorder;
   inherit (config.my-colortheme.raw.hex) fg-main;
+
+  # CLI to help with conventional commit authoring
+  conventional-commit-helper = lib.getExe conventional-commit-helper-pkg;
 in
 {
   programs.lazygit = {
@@ -36,10 +40,7 @@ in
           prompts = [
             {
               key = "Type";
-              command = lib.pipe ./conventional-commit-helper [
-                (lib.flip pkgs.callPackage { })
-                lib.getExe
-              ];
+              command = "${conventional-commit-helper} type";
               filter = "((?P<c_type>[a-z]*):.*)";
               valueFormat = "{{ .c_type }}";
               labelFormat = "{{ .group_1 }}";
@@ -51,7 +52,7 @@ in
               key = "Scope";
               title = "Scope";
               type = "input";
-              suggestions.command = "cat .dev/scopes";
+              suggestions.command = "${conventional-commit-helper} scope --json | ${getExe pkgs.jq} -r '.[] | .name '";
             }
             # Breaking changes are rare -- I'd rather use reword for them
             # {

@@ -1,2 +1,5 @@
 # Flake module that exposes my git configuration as a module
-_: { flake.homeManagerModules.git = import ./home-manager; }
+{ conventional-commit-helper, ... }:
+{
+  flake.homeManagerModules.git = import ./home-manager { inherit conventional-commit-helper; };
+}

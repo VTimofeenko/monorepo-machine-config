@@ -163,6 +163,22 @@
     };
 
     catppuccin.url = "git+https://github.com/VTimofeenko/catppucin-nix?ref=keep-gtk";
+
+    # FIXME: [24.11] drop this in favor of a direct package import through
+    # fetchFromGitHub.
+    # Reason: I want to minimize the amount of inputs in this
+    # flake as this leads to cartesian explosion of inputs in consumers.
+    # The whole sequence of imports (here, flake-module, git home-manager
+    # module) needs to go.
+    # Cannot be done today because this flake is still pinned to 24.05 and the package needs a fresher version
+    conventional-commit-helper = {
+      url = "github:VTimofeenko/conventional-commit-helper";
+      inputs = {
+        nixpkgs.follows = "nixpkgs-unstable";
+        crane.follows = "crane";
+        flake-parts.follows = "flake-parts";
+      };
+    };
   };
   outputs =
     inputs@{ flake-parts, self, ... }:
@@ -180,7 +196,7 @@
           tmuxModule = importApply ./flake-modules/tmux { inherit withSystem self; };
           nvimModule = importApply ./flake-modules/neovim { inherit withSystem self; };
           zshModule = importApply ./flake-modules/zsh { inherit self; };
-          gitModule = importApply ./flake-modules/git;
+          gitModule = importApply ./flake-modules/git { inherit (inputs) conventional-commit-helper; };
           hyprlandHelpersModule = importApply ./flake-modules/hyprland-helpers {
             inherit withSystem lib self;
           };

@@ -1,6 +1,7 @@
 /**
   Home manager module that configures git and related packages.
 */
+{ conventional-commit-helper }:
 {
   pkgs,
   lib,
@@ -8,10 +9,11 @@
 }:
 let
   inherit (lib) getExe;
+  conventional-commit-helper-pkg = conventional-commit-helper.packages.${pkgs.stdenv.system}.default;
 in
 {
   imports = [
-    ./lazygit.nix
+    (import ./lazygit.nix { inherit conventional-commit-helper-pkg; })
   ];
   home.packages = builtins.attrValues { inherit (pkgs) git git-crypt; };
 
