@@ -35,7 +35,6 @@ rec {
     ];
     syu = "systemctl --user";
     ju = "journalctl --user";
-    cde = "cd /etc/nixos";
     lg = "${getExe pkgs.lazygit}";
     # Colorize IP output
     ip = "ip -c";
