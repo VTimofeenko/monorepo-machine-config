@@ -68,7 +68,7 @@ in
   };
 
   nixBuildPackage = {
-    description = "A convenience wrapper around nix-=build. I can never remember this flag.";
+    description = "A convenience wrapper around nix-build. I can never remember this flag.";
     text = # bash
       ''
         nix-build --expr "with import <nixpkgs> {}; callPackage ./$1 {}"
