@@ -36,6 +36,6 @@
     # needed because the user config references /etc stuff
     swaynotificationcenter
   ];
-  services.xserver.gdk-pixbuf.modulePackages = [ pkgs.librsvg ];
+  programs.gdk-pixbuf.modulePackages = [ pkgs.librsvg ];
 }
 # Hyprland config:1 ends here
