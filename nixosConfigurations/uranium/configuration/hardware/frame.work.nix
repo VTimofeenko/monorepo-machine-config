@@ -15,12 +15,14 @@
   ];
   hardware = {
     enableRedistributableFirmware = true; # NOTE: required for wifi to work
-    opengl.extraPackages = builtins.attrValues {
-      inherit (pkgs) rocm-opencl-icd rocm-opencl-runtime;
-      inherit (pkgs.rocmPackages) clr;
-      inherit (pkgs.rocmPackages.clr) icd;
+    graphics = {
+      extraPackages = builtins.attrValues {
+        inherit (pkgs) rocm-opencl-icd rocm-opencl-runtime;
+        inherit (pkgs.rocmPackages) clr;
+        inherit (pkgs.rocmPackages.clr) icd;
+      };
+      driSupport32Bit = true;
     };
-    opengl.driSupport32Bit = true;
 
     # Custom udev rules
     # services.udev.extraRules = ''
