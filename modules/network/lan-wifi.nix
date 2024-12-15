@@ -35,10 +35,8 @@ in
       domains = [ lan.domain ];
       routes = [
         {
-          routeConfig = {
-            Gateway = cctvRouterIP;
-            Destination = cctv.prefix;
-          };
+          Gateway = cctvRouterIP;
+          Destination = cctv.prefix;
         }
       ];
       networkConfig = {
