@@ -16,11 +16,8 @@
   hardware = {
     enableRedistributableFirmware = true; # NOTE: required for wifi to work
     graphics = {
-      extraPackages = builtins.attrValues {
-        inherit (pkgs) rocm-opencl-icd rocm-opencl-runtime;
-        inherit (pkgs.rocmPackages) clr;
-        inherit (pkgs.rocmPackages.clr) icd;
-      };
+
+      extraPackages = [ pkgs.rocmPackages.clr.icd ];
       driSupport32Bit = true;
     };
 
