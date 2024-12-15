@@ -2,8 +2,7 @@
 _: {
   programs.kitty = {
     enable = true;
-    # theme = "Neopolitan";
-    theme = "Modus Vivendi Tinted";
+    themeFile = "Modus_Vivendi_Tinted";
     settings = {
       cursor_blink_interval = 0;
       background_opacity = "0.95";
