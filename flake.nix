@@ -1,9 +1,9 @@
 {
   description = "NixOS and Home Manager configurations for my machines";
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-24.05";
+    nixpkgs.url = "nixpkgs/nixos-24.11";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    home-manager.url = "github:rycee/home-manager/release-24.05";
+    home-manager.url = "github:rycee/home-manager/release-24.11";
     nixpkgs-lib.url = "github:NixOS/nixpkgs/nixos-unstable?dir=lib";
     nur.url = "github:nix-community/NUR";
     nixpkgs-stable.follows = "nixpkgs";
