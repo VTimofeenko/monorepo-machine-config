@@ -16,9 +16,8 @@
   hardware = {
     enableRedistributableFirmware = true; # NOTE: required for wifi to work
     graphics = {
-
       extraPackages = [ pkgs.rocmPackages.clr.icd ];
-      driSupport32Bit = true;
+      enable32Bit = true;
     };
 
     # Custom udev rules
