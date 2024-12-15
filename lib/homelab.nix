@@ -74,7 +74,7 @@
             # Per-host overrides
             # TODO: make more generic
             ++ (lib.optionals (hostData.hostName == "uranium") [
-              nur.nixosModules.nur
+              nur.modules.nixos.default
               ../modules
             ])
             ++ (map (
