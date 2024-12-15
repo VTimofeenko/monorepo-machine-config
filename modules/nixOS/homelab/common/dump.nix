@@ -1,6 +1,5 @@
 # Miscellaneous config setting dump
 _: {
-  sound.enable = false;
   /*
     Keeps the logs only in RAM
 
