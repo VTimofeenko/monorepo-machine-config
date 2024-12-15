@@ -20,10 +20,7 @@
       inherit (pkgs.rocmPackages) clr;
       inherit (pkgs.rocmPackages.clr) icd;
     };
-    opengl = {
-      driSupport = true;
-      driSupport32Bit = true;
-    };
+    opengl.driSupport32Bit = true;
 
     # Custom udev rules
     # services.udev.extraRules = ''
