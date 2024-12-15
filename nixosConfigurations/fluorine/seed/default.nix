@@ -32,7 +32,6 @@
   system.stateVersion = "24.05"; # Did you read the comment?
   users.users.root.openssh.authorizedKeys.keys = config.my-data.settings.SSHKeys;
   nix = {
-    package = pkgs.nixFlakes;
     extraOptions = "experimental-features = nix-command flakes";
     gc = {
       automatic = true;
