@@ -21,17 +21,17 @@ in
       description = "Launch terminal emulator";
       arg = "kitty";
     };
-    "${Control}+Q" = {
-      arg = "leader";
-
-      T = {
-        arg = "other_leader";
-        N = {
-          dispatcher = "exec";
-          arg = "kitty";
-        };
-      };
-    };
+    # Sample mode binding
+    # "${Control}+Q" = {
+    #   arg = "leader";
+    #   T = {
+    #     arg = "other_leader";
+    #     N = {
+    #       dispatcher = "exec";
+    #       arg = "kitty";
+    #     };
+    #   };
+    # };
   };
   imports = [ ./impl.nix ];
 }
