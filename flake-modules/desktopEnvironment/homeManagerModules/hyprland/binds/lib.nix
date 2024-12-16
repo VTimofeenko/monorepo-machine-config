@@ -19,6 +19,7 @@ rec {
   Control = "CTRL";
   Alt = "ALT";
   Meta = Alt;
+  Hyper = "${Shift}+${Control}+${Alt}";
 
   "`" = "grave";
 
