@@ -2,14 +2,15 @@
 {
   selfPkgs,
   selfHMModules,
-  hyprland,
+  selfModules,
   ...
 }:
 {
   imports = [
-    ./greeter.nix # (ref:greeter-import)
-    ../hyprland/system.nix # (ref:hyprland-system-import)
+    # ./greeter.nix # (ref:greeter-import)
+    # ../hyprland/system.nix # (ref:hyprland-system-import)
     ./xremap
+    selfModules.de
   ];
   home-manager.extraSpecialArgs = {
     inherit selfPkgs;
@@ -19,12 +20,13 @@
     { pkgs, ... }:
     {
       imports = [
-        ../hyprland/user.nix # (ref:hyprland-user-import)
-        ./eww # (ref:eww-import)
-        ./notifications.nix # (ref:notifications-de-import)
-        ./wallpaper.nix
-        ./vnc
-        hyprland.homeManagerModules.default
+        # ../hyprland/user.nix # (ref:hyprland-user-import)
+        # ./eww # (ref:eww-import)
+        # ./notifications.nix # (ref:notifications-de-import)
+        # ./wallpaper.nix
+        # ./vnc
+        # hyprland.homeManagerModules.default
+        selfHMModules.de
       ];
       home.packages = builtins.attrValues { inherit (pkgs) wl-clipboard; };
     };
