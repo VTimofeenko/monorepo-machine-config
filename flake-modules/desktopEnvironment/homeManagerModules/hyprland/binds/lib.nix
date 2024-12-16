@@ -2,7 +2,7 @@
 let
   inherit (lib) pipe listToAttrs;
 in
-{
+rec {
   arrowKeys = {
     left = "H";
     down = "J";
@@ -17,6 +17,8 @@ in
   Shift = "SHIFT";
   Super = "SUPER";
   Control = "CTRL";
+  Alt = "ALT";
+  Meta = Alt;
 
   "`" = "grave";
 
