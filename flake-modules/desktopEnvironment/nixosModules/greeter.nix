@@ -18,7 +18,8 @@ in
     (pkgs.writeShellApplication {
       name = "launch-hyprland";
       text = ''
-        systemd-cat --identifier hyprland Hyprland
+        systemctl --user stop graphical-session.target
+        uwsm start hyprland-uwsm.desktop
       '';
     })
   ];

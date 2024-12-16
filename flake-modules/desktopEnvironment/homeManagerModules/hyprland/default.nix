@@ -1,4 +1,4 @@
-_: {
+{ lib, ... }: {
   imports = [
     # ./input.nix
     # ./general.nix
@@ -12,4 +12,7 @@ _: {
     # ./pinentry.nix
   ];
   wayland.windowManager.hyprland.enable = true;
+  wayland.windowManager.hyprland.systemd.enable = lib.mkForce false;
+
+  services.swaync.enable = true;
 }
