@@ -6,6 +6,7 @@
     ./hardware # (ref:uranium-hw-import)
     # TODO: move to a separate module (impl + default)
     ./network-selector.nix
+    ./user-stuff
   ];
   options.myMachines.uranium = {
     network = lib.mkOption {

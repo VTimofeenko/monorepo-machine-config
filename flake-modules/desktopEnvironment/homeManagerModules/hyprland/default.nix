@@ -9,6 +9,7 @@
     # ./windowRules.nix
     # ./gestures.nix
     ./binds
+    ./monitors.nix
     # ./pinentry.nix
   ];
   wayland.windowManager.hyprland.enable = true;
