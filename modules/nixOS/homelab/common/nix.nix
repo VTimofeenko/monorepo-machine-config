@@ -9,7 +9,7 @@ let
 in
 {
   nix = {
-    extraOptions = "experimental-features = nix-command flakes";
+    extraOptions = "experimental-features = nix-command flakes pipe-operators";
     gc = {
       automatic = true;
       dates = "weekly";
