@@ -38,7 +38,7 @@ in
 {
   wayland.windowManager.hyprland = {
     # Setup binds
-    myBinds = lib.traceVal (
+    myBinds =
       defaultWorkspaces
       |> map (wsNum: [
         # Switch workspaces with mainMod + [0-9]
@@ -56,8 +56,7 @@ in
           arg = "previous";
           description = "switch to previous workspace";
         };
-      }
-    );
+      };
 
     settings.binds = {
       # Given two workspaces ("1" and "2")
