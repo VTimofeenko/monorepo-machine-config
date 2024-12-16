@@ -31,4 +31,8 @@ in
         }))
         listToAttrs
       ];
+
+  # Reexport lib for easier consumption by downstram
+  # modules
+  inherit lib;
 }
