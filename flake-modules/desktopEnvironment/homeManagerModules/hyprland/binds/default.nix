@@ -15,7 +15,7 @@ in
 {
   wayland.windowManager.hyprland.settings."$mainMod" = Super;
   wayland.windowManager.hyprland.myBinds = {
-    Q = {
+    Return = {
       mod = mainMod;
       dispatcher = "exec";
       description = "Launch terminal emulator";
