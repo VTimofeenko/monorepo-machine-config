@@ -18,6 +18,8 @@ in
   Super = "SUPER";
   Control = "CTRL";
 
+  "`" = "grave";
+
   LMB = "mouse:272";
   RMB = "mouse:273";
   mainMod = "$mainMod";
