@@ -2,6 +2,7 @@
 let
   moduleList = [
     ./focus-switching.nix
+    ./window-moving.nix
   ];
 
   srvLib = import ../lib.nix { inherit lib; };
