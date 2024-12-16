@@ -33,5 +33,8 @@ in
     #   };
     # };
   };
-  imports = [ ./impl.nix ];
+  imports = [
+    ./impl.nix
+    ./binds
+  ];
 }

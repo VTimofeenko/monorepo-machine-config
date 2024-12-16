@@ -4,6 +4,11 @@ let
 in
 {
   arrowKeys = {
+    left = "H";
+    down = "J";
+    up = "K";
+    right = "L";
+
     H = "l";
     J = "d";
     K = "u";
