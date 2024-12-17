@@ -8,6 +8,7 @@
     # ./layouts.nix
     # ./windowRules.nix
     # ./gestures.nix
+    ./lock.nix
     ./launcher.nix
     ./binds
     ./monitors.nix
