@@ -28,6 +28,7 @@
         };
         overlays = [
           self.overlays.homelab
+          self.overlays.default # Using an overlay is easier than carrying around 'self'
           # docspell-flake.overlays.default # Docspell commands rely on pkgs.docspell-joex, needs overlay
         ];
       };

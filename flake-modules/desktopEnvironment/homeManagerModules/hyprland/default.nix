@@ -15,6 +15,7 @@
     # ./pinentry.nix
     ./terminal.nix
     ./workspaces.nix
+    ./language.nix
   ];
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.systemd.enable = lib.mkForce false;
