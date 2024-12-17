@@ -8,6 +8,8 @@ let
     e = "Emacs";
     # B is for browser
     b = "firefox";
+    # T is for terminal
+    t = "$terminal";
   };
 
 in

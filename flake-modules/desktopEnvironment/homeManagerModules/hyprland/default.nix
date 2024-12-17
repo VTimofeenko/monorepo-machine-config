@@ -11,6 +11,7 @@
     ./binds
     ./monitors.nix
     # ./pinentry.nix
+    ./terminal.nix
     ./workspaces.nix
   ];
   wayland.windowManager.hyprland.enable = true;
