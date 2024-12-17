@@ -3,7 +3,10 @@ let
   moduleList = [
     ./focus-switching.nix
     ./window-moving.nix
-    ./pinned-jumps.nix
+  ];
+
+  moduleFunctionList = [
+    (import ../../../../app-jumps.nix).homeManagerModule
   ];
 
   srvLib = import ../lib.nix { inherit lib; };
@@ -18,4 +21,6 @@ in
   # * I don't need to repeat "myBinds" in all nested modules
   # * I don't need to keep importing the srvLib in every module.
   wayland.windowManager.hyprland.myBinds = moduleList |> (map passLib) |> lib.mkMerge;
+
+  imports = map (f: f { inherit srvLib; }) moduleFunctionList;
 }

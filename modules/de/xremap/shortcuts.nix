@@ -10,44 +10,7 @@ in
 {
   services.xremap.config = {
     virtual_modifiers = [ "F18" ];
-    modmap = [
-      {
-        # Global remap CapsLock to Esc
-        name = "Global";
-        remap = {
-          "CapsLock" = {
-            held = "F18";
-            alone = "Esc";
-            alone_timeout_millis = 250;
-          };
-        };
-      }
-      # This is fun but breaks too much :(
-      # {
-      #   # Map alt-shift-super-ctrl to home row if held
-      #   name = "Add modifier keys to home row";
-      #   remap =
-      #     let
-      #       # NOTE: adds slight lag, maybe increase alone_timeout_millis?
-      #       mkSameKeyHeld = key: held: { "${key}" = { inherit held; alone = key; alone_timeout_millis = 1000; }; };
-      #     in
-      #     lib.attrsets.mergeAttrsList [
-      #       # NOTE: no _L _R aliases work here
-      #       (mkSameKeyHeld "a" "ALT_L")
-      #       (mkSameKeyHeld "s" "SUPER_L")
-      #       (mkSameKeyHeld "d" "SHIFT_L")
-      #       (mkSameKeyHeld "f" "CTRL_L")
-      #     ];
-      # }
-    ];
     keymap = [
-      {
-        name = "Remap hyper key";
-        # NOTE: Needs explicit bindings it seems. Maybe accept F18 as modifier in Hyprland?
-        remap = {
-          "F18-e" = "SHIFT-C-M-SUPER-e";
-        };
-      }
       {
         name = "Bypass remaps";
         remap = {
