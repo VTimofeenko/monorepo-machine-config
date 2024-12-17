@@ -14,7 +14,12 @@ let
     # list of lists. Inner lists represent commands with flags
     lockCmd =
       [
-        # TODO: lang switcher goes here
+        # Forces layout to en
+        [
+          (lib.getExe pkgs.hyprland-switch-lang-on-xremap)
+          "set_en"
+        ]
+        # Locks the screen
         [
           (lib.getExe pkgs.swaylock)
           "--daemonize"
