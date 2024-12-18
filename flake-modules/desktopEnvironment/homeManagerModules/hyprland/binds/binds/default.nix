@@ -3,6 +3,7 @@ let
   moduleList = [
     ./focus-switching.nix
     ./window-moving.nix
+    ./window-control.nix
   ];
 
   moduleFunctionList = [
