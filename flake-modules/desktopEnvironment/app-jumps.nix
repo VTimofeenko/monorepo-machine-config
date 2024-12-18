@@ -10,6 +10,8 @@ let
     b = "firefox";
     # T is for terminal
     t = "$terminal";
+    # TODO: W is for Whiteboard
+    # TODO: S if for scratch?
   };
 
 in
