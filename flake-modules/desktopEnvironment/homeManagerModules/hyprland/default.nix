@@ -6,7 +6,7 @@
     # ./decoration.nix
     # ./animations.nix
     # ./layouts.nix
-    # ./windowRules.nix
+    ./windowRules.nix
     # ./gestures.nix
     ./lock.nix
     ./launcher.nix
