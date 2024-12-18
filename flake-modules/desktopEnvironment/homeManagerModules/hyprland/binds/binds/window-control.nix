@@ -114,7 +114,6 @@ in
       )
     );
 
-  # TODO: window fullscreen/focus
   # TODO: move to scratch?
   # Make window float. Rarely used, so in the "toggle" mode
   # TODO: move the main toggle mode away from here and check how it merges.
@@ -134,4 +133,19 @@ in
       dispatcher = "pin";
     };
   };
+  # Window (F)ullscreen
+  F = {
+    mod = mainMod;
+    dispatcher = "fullscreen";
+    description = "Toggle active window fullscreen";
+  };
+
+  # Window f(O)cus
+  O = {
+    mod = mainMod;
+    dispatcher = "fullscreen";
+    arg = 1;
+    description = "Toggle active window fullscreen";
+  };
+
 }
