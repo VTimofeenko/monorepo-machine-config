@@ -114,7 +114,24 @@ in
       )
     );
 
-  # TODO: make window float
   # TODO: window fullscreen/focus
   # TODO: move to scratch?
+  # Make window float. Rarely used, so in the "toggle" mode
+  # TODO: move the main toggle mode away from here and check how it merges.
+  "${Control}+T" = {
+    mod = mainMod;
+    arg = "toggle";
+    description = "toggle mode";
+
+    # Toggle floating
+    F = {
+      description = "Toggle floating state of current window";
+      dispatcher = "togglefloating";
+    };
+    # Toggle pin
+    P = {
+      description = "Pin current floating window"; # TODO: error reporting if not floating
+      dispatcher = "pin";
+    };
+  };
 }
