@@ -132,6 +132,14 @@ in
       dispatcher = "pin";
     };
   };
+
+  # Kill active window
+  "${Shift}+Q" = {
+    mod = mainMod;
+    dispatcher = "killactive";
+    description = "Kill active window";
+  };
+
   # Window (F)ullscreen
   F = {
     mod = mainMod;
