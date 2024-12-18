@@ -9,7 +9,9 @@ let
     # B is for browser
     b = "firefox";
     # T is for terminal
-    t = "$terminal";
+    # This has to be the class, so there's no simple way to get this. Kitty
+    # just so happens to have same pname and class.
+    t = "kitty";
     # TODO: W is for Whiteboard
     # TODO: S if for scratch?
   };
