@@ -114,7 +114,6 @@ in
       )
     );
 
-  # TODO: move to scratch?
   # Make window float. Rarely used, so in the "toggle" mode
   # TODO: move the main toggle mode away from here and check how it merges.
   "${Control}+T" = {
