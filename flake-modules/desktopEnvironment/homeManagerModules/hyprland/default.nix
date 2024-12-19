@@ -1,4 +1,5 @@
-{ lib, ... }: {
+{ lib, osConfig, ... }:
+{
   imports = [
     # ./input.nix
     # ./general.nix
@@ -18,7 +19,10 @@
     ./language.nix
   ];
   wayland.windowManager.hyprland.enable = true;
-  wayland.windowManager.hyprland.systemd.enable = lib.mkForce false;
+  wayland.windowManager.hyprland.systemd.enable =
+    assert lib.assertMsg osConfig.programs.uwsm.enable
+      "uwsm should be enabled for this setting to work as exxpected";
+    (lib.mkForce false);
 
   services.swaync.enable = true;
 }
