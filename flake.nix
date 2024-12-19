@@ -5,7 +5,13 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     home-manager.url = "github:rycee/home-manager/release-24.11";
     nixpkgs-lib.url = "github:NixOS/nixpkgs/nixos-unstable?dir=lib";
-    nur.url = "github:nix-community/NUR";
+
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+    };
+
     nixpkgs-stable.follows = "nixpkgs";
 
     deploy-rs.url = "github:serokell/deploy-rs";
