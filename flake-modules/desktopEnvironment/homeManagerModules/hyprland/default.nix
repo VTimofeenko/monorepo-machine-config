@@ -1,3 +1,8 @@
+/**
+  General entry point for the desktop environment configuration.
+
+  Home-manager module.
+*/
 { lib, osConfig, ... }:
 {
   imports = [
