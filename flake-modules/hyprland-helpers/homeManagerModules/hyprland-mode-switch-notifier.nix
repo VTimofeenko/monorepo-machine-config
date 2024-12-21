@@ -15,12 +15,13 @@ in
 {
   options.services.hyprland-mode-switch-notifier = {
     enable = mkEnableOption "hyprland mode switch notifications";
+    target = mkOption { default = "hyprland-session.target"; };
   };
   config = mkIf cfg.enable {
     systemd.user.services.hyprland-mode-switch-notifier = {
       Unit = {
         Description = "Notifies user when mode is switched";
-        BindsTo = [ "hyprland-session.target" ];
+        BindsTo = [ cfg.target ];
       };
       Service = {
         ExecStart = "${lib.getExe pkg}";

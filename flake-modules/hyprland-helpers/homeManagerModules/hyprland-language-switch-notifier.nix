@@ -10,17 +10,18 @@ localFlake:
 let
   cfg = config.services.hyprland-language-switch-notifier;
   pkg = localFlake.packages.${pkgs.stdenv.hostPlatform.system}.hyprland-lang-notifier;
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib) mkEnableOption mkIf mkOption;
 in
 {
   options.services.hyprland-language-switch-notifier = {
     enable = mkEnableOption "hyprland language switch notifications";
+    target = mkOption { default = "hyprland-session.target"; };
   };
   config = mkIf cfg.enable {
     systemd.user.services.hyprland-language-switch-notifier = {
       Unit = {
         Description = "Notifies user when language is switched";
-        BindsTo = [ "hyprland-session.target" ];
+        BindsTo = [ cfg.target ];
       };
       Service = {
         ExecStart = "${lib.getExe pkg}";

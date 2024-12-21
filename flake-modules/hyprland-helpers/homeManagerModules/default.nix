@@ -3,7 +3,7 @@ localFlake:
 { lib, config, ... }:
 let
   cfg = config.services.hyprland-helpers;
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib) mkEnableOption mkIf mkOption;
 in
 {
   imports = with localFlake.homeManagerModules; [
@@ -13,12 +13,16 @@ in
   ];
   options.services.hyprland-helpers = {
     enable = mkEnableOption "hyprland mode switch notifications";
+    target = mkOption { default = "hyprland-session.target"; };
   };
   config = mkIf cfg.enable {
-    services = {
-      hyprland-language-switch-notifier.enable = true;
-      hyprland-mode-switch-notifier.enable = true;
-      hyprland-workspace-notifier.enable = true;
+    services = rec {
+      hyprland-language-switch-notifier = {
+        enable = true;
+        inherit (cfg) target;
+      };
+      hyprland-mode-switch-notifier = hyprland-language-switch-notifier;
+      hyprland-workspace-notifier = hyprland-language-switch-notifier;
     };
   };
 }

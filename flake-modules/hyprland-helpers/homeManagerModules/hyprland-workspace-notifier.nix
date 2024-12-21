@@ -12,17 +12,18 @@ let
 
   cfg = config.services.${pkgName};
   pkg = localFlake.packages.${pkgs.stdenv.hostPlatform.system}.${pkgName};
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib) mkEnableOption mkIf mkOption;
 in
 {
   options.services.${pkgName} = {
     enable = mkEnableOption "hyprland workspace change notifications";
+    target = mkOption { default = "hyprland-session.target"; };
   };
   config = mkIf cfg.enable {
     systemd.user.services.${pkgName} = {
       Unit = {
         Description = "Notifies user when the workspace is switched";
-        BindsTo = [ "hyprland-session.target" ];
+        BindsTo = [ cfg.target ];
       };
       Service = {
         ExecStart = "${lib.getExe pkg}";
