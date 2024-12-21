@@ -23,6 +23,8 @@
     myMachines.uranium.network = "wifi-lan";
     # To reset the volatile storage for journald. It breaks user's journald
     services.journald.extraConfig = lib.mkForce "";
+    # a remnant from the past
+    users.groups.uinput.gid = lib.mkForce 988;
   };
 }
 # Uranium specific system:1 ends here
