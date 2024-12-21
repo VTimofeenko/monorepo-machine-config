@@ -27,8 +27,14 @@
         # ./vnc
         # hyprland.homeManagerModules.default
         selfHMModules.de
+        selfHMModules.hyprland-helpers
       ];
       home.packages = builtins.attrValues { inherit (pkgs) wl-clipboard; };
+
+      services.hyprland-helpers = {
+        enable = true;
+        target = "xdg-desktop-autostart.target";
+      };
     };
 }
 # Desktop environment:1 ends here
