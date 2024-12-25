@@ -2,19 +2,12 @@
 # Source for bindings:
 # https://github.com/artemsen/swayimg/blob/master/extra/swayimgrc
 {
-  nixpkgs-unstable,
-  pkgs,
-  ...
-}:
-{
   imports = [
     ./impl.nix
   ];
 
   programs.swayimg = {
     enable = true;
-    # FIXME: [24.11]
-    package = nixpkgs-unstable.legacyPackages.${pkgs.system}.swayimg;
     settings =
       let
         deleteCmd = "exec rm -- '%'; skip_file";
