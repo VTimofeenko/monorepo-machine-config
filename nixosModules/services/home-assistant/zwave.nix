@@ -1,16 +1,11 @@
 {
   config,
   lib,
-  pkgs,
-  nixpkgs-unstable,
   ...
 }:
 let
   srvName = "home-assistant";
   inherit (lib.homelab) getSrvSecret;
-
-  pkgs-unstable = import nixpkgs-unstable { inherit (pkgs) system; };
-
 in
 {
   age.secrets.zwaveSecrets = {
@@ -25,7 +20,6 @@ in
     enable = true;
     serialPort = "/dev/ttyUSB0";
     secretsConfigFile = config.age.secrets.zwaveSecrets.path;
-    package = pkgs-unstable.zwave-js-server;
   };
   # /* Sets up the rules for the USB dongle */
   # services.udev.extraRules = ''

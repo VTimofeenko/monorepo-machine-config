@@ -1,5 +1,4 @@
 {
-  nixpkgs-unstable,
   config,
   pkgs,
   lib,
@@ -13,7 +12,6 @@ let
 
   homeassistantUser = config.systemd.services.home-assistant.serviceConfig.User;
 
-  pkgs-unstable = import nixpkgs-unstable { inherit (pkgs) system; };
 in
 {
   # Secrets
@@ -24,9 +22,6 @@ in
   };
 
   services.home-assistant = {
-    # Using the latest version from unstable
-    package = pkgs-unstable.home-assistant;
-
     enable = true;
     extraComponents = [
       # Components required to complete the onboarding
