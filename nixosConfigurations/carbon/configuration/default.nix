@@ -44,10 +44,6 @@
 
   # Network
   networking.interfaces.wlan0.useDHCP = lib.mkForce true;
-  networking = {
-    wireless.enable = lib.mkForce true;
-    wireless.interfaces = [ "wlan0" ];
-  };
 
   # Misc
   system.stateVersion = "22.11";
