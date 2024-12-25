@@ -21,17 +21,9 @@ in
           ListenPort = listenPort;
         };
         wireguardPeers = [
-          # configuration since nixos-unstable/nixos-24.11
-          # {
-          #   PublicKey = "L4msD0mEG2ctKDtaMJW2y3cs1fT2LBRVV7iVlWZ2nZc=";
-          #   AllowedIPs = [ "10.100.0.2" ];
-          # }
-          # configuration for nixos 24.05
           {
-            wireguardPeerConfig = {
-              PublicKey = "bWhybBMzKIZ2UibkW6i8tz/RzL0CVlmO7Jrt9s/apXc=";
-              AllowedIPs = [ "10.100.0.2" ]; # 2 for now, this is service, not the host
-            };
+            PublicKey = "bWhybBMzKIZ2UibkW6i8tz/RzL0CVlmO7Jrt9s/apXc=";
+            AllowedIPs = [ "10.100.0.2" ];
           }
         ];
       };
