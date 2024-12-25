@@ -71,9 +71,7 @@
           };
 
           # Overrides for broot
-          # FIXME: [24.11]
           broot = {
-            package = nixpkgs-unstable.legacyPackages.${pkgs.stdenv.system}.broot;
             settings.preview_transformers = [
               {
                 input_extensions = [ "pdf" ];
@@ -89,12 +87,6 @@
                   "{input-path}"
                   "1"
                 ];
-              }
-              {
-                input_extensions = [ "json" ];
-                output_extension = "json";
-                mode = "text";
-                command = [ "jq" ];
               }
             ];
           };

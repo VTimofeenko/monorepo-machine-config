@@ -14,6 +14,11 @@ in
   home = {
     inherit (commonSettings) packages;
   };
+
+  imports = [
+    ./broot.nix
+  ];
+
   programs = {
     zsh = {
       enable = true;
@@ -141,12 +146,5 @@ in
       };
     };
 
-    broot = {
-      enable = true;
-      settings = {
-        modal = true;
-        default_flags = "--sort-by-type-dirs-last";
-      };
-    };
   };
 }
