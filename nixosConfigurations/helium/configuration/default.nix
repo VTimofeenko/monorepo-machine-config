@@ -38,6 +38,6 @@
 
   # Imports
   imports = [
-    ./experimental-wg-srvnet.nix
+    # ./experimental-wg-srvnet.nix
   ];
 }
