@@ -22,7 +22,7 @@
     useUserPackages = true;
 
     extraSpecialArgs = {
-      inherit nixpkgs-unstable;
+      inherit nixpkgs-unstable; # Leave in place, just in case I need to propagate it to HM
     };
     users.spacecadet =
       { ... }:
