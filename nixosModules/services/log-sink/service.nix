@@ -44,6 +44,10 @@ in
     };
   };
 
+  # Drop the 'local-fs' require, it leads to unnecessary restarts when nixos switch is done
+  systemd.services.redpanda-setup.requires = lib.mkForce [ "network-online.target" ];
+  systemd.services.redpanda.requires = lib.mkForce [ "network-online.target" ];
+
   # Redpanda needs this to be higher
   boot.kernel.sysctl."fs.aio-max-nr" = 1048576;
 
