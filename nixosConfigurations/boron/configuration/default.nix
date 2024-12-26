@@ -48,12 +48,6 @@
     loader = {
       grub.enable = false;
       generic-extlinux-compatible.enable = true;
-      raspberryPi = {
-        firmwareConfig = ''
-          dtparam=sd_poll_once=on
-          dtoverlay=dwc2,dr_mode=host
-        '';
-      };
     };
   };
 
