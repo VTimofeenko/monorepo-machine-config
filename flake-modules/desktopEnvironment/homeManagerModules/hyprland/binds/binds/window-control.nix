@@ -152,7 +152,7 @@ in
     mod = mainMod;
     dispatcher = "fullscreen";
     arg = 1;
-    description = "Toggle active window fullscreen";
+    description = "Toggle active window focus";
   };
 
 }
