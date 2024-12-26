@@ -26,6 +26,7 @@ _: {
       "kitty_mod+i" = "set_tab_title";
       # Detach current window and ask where to move
       "kitty_mod+d" = "detach_window ask";
+      "cmd+t" = "new_tab";
     };
   };
 }
