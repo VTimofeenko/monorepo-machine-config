@@ -58,15 +58,6 @@
     options = [ "noatime" ];
   };
 
-  # Network
-  networking.interfaces.wlan0.useDHCP = lib.mkForce true;
-  networking = {
-    wireless = {
-      enable = lib.mkForce true;
-      interfaces = [ "wlan0" ];
-    };
-  };
-
   # Misc
   hardware.enableRedistributableFirmware = true;
   system.stateVersion = "22.05";
