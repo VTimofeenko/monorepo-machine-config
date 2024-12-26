@@ -24,6 +24,7 @@ in
   services.home-assistant = {
     enable = true;
     extraComponents = [
+      "isal"
       # Components required to complete the onboarding
       "esphome"
       "met"
