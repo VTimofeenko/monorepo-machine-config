@@ -12,9 +12,9 @@
 let
   # WARN: relies on default home assistant file names
   uiEditableConfigCategories = [
-    "automations"
-    "scenes"
-    "scripts"
+    "automation"
+    "scene"
+    "script"
   ];
   inherit (lib) pipe;
 in
@@ -22,7 +22,7 @@ in
   services.home-assistant.config = pipe uiEditableConfigCategories [
     (map (cat: {
       name = "${cat} ui";
-      value = "!include ${cat}.yaml";
+      value = "!include ${cat}s.yaml";
     }))
     builtins.listToAttrs
   ];
