@@ -33,7 +33,6 @@ in
       "mqtt"
       "dhcp"
       "zha"
-      "apache_kafka" # Streaming the events out
       "wiz"
     ] ++ srvConfig.components;
 
