@@ -11,8 +11,7 @@
           output_extension = "json";
           mode = "text";
           command = [
-            lib.getExe
-            pkgs.jq
+            (lib.getExe pkgs.jq)
           ];
         }
       ];
