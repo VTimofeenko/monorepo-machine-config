@@ -11,6 +11,12 @@
   services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware.nvidia = {
+    # Newest drivers will complain:
+    # NVRM: The NVIDIA GeForce GTX 870M GPU installed in this system is
+    # NVRM:  supported through the NVIDIA 470.xx Legacy drivers. Please
+    # NVRM:  visit http://www.nvidia.com/object/unix.html for more
+    # NVRM:  information.  The 565.77 NVIDIA driver will ignore
+    # NVRM:  this GPU.  Continuing probe...
     package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
 
     modesetting.enable = true;
