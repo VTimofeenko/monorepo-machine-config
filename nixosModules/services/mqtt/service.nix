@@ -1,4 +1,4 @@
-_: {
+{ pkgs, ... }: {
   services.mosquitto = {
     enable = true;
     listeners = [
@@ -10,4 +10,6 @@ _: {
       }
     ];
   };
+
+  environment.systemPackages = [ pkgs.mqttui ];
 }
