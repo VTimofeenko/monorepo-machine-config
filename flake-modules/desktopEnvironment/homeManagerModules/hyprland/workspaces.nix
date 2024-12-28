@@ -56,6 +56,21 @@ in
           arg = "previous";
           description = "switch to previous workspace";
         };
+      }
+      # Add mod+shift+z/x for previous/next ws on same monitor
+      |> lib.mergeAttrs {
+        "${Shift}+Z" = {
+          mod = mainMod;
+          dispatcher = "workspace";
+          arg = "m-1";
+          description = "switch to numerically previous workspace on same monitor";
+        };
+        "${Shift}+X" = {
+          mod = mainMod;
+          dispatcher = "workspace";
+          arg = "m+1";
+          description = "switch to numerically next workspace on same monitor";
+        };
       };
 
     settings.binds = {
