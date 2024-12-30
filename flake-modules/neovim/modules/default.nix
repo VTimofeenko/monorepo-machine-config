@@ -140,10 +140,9 @@ in
           );
       };
 
-      finalPackage = if cfg.withLangServers then pkgBuilder else pkgs.cowsay;
     in
     mkIf cfg.enable {
-      ${outer}.${inner} = [ finalPackage ];
-      programs.myNeovim.package = finalPackage;
+      ${outer}.${inner} = [ pkgBuilder ];
+      programs.myNeovim.package = pkgBuilder;
     };
 }
