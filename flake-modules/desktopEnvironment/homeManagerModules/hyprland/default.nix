@@ -22,6 +22,7 @@
     ./terminal.nix
     ./workspaces.nix
     ./language.nix
+    ./notifications.nix
   ];
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.systemd.enable =
