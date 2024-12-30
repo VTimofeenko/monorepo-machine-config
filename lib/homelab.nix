@@ -71,6 +71,10 @@
               specialArgs.selfModules.my-theme
               specialArgs.selfModules.zsh
               specialArgs.selfModules.tmux
+              specialArgs.selfModules.vim
+              {
+                programs.myNeovim.enable = true;
+              }
             ]
             # Per-host overrides
             # TODO: make more generic
