@@ -64,6 +64,8 @@
           # enable remote_src
           perl -p -i -e 's/^(\s+)# (url.* # REMOTE_SRC$)/\1\2/' $PRJ_ROOT/flake.nix
           echo "✅Switched data flake to remote"
+          # At this point, I will often bump the data-flake input by hand anyway
+          git restore flake.lock
         fi
 
       '';
