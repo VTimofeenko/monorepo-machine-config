@@ -35,25 +35,6 @@ in
           }
         ];
       }
-
-      {
-        id = "day-routine";
-        alias = "Day routine";
-        description = "Actions to be processed at start of day";
-        trigger = [
-          {
-            platform = "time";
-            at = "07:00";
-          }
-        ];
-        action = [
-          {
-            service = "script.day_mode";
-            data = { };
-          }
-        ];
-        mode = "single";
-      }
     ];
   };
 }
