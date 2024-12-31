@@ -54,30 +54,6 @@ in
         ];
         mode = "single";
       }
-
-      {
-        id = "night-routine";
-        alias = "Night routine";
-        description = "Actions to be processed at night";
-        trigger = [
-          {
-            platform = "time";
-            at = "23:00:00";
-          }
-        ];
-        action = [
-          {
-            service = "script.night_mode";
-            data = { };
-          }
-          {
-            service = "script.send_night_notification";
-            data = { };
-          }
-        ];
-        mode = "single";
-      }
-
     ];
   };
 }
