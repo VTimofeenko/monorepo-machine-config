@@ -44,7 +44,7 @@ in
       internal = true;
       readOnly = true;
     };
-    basePackage = mkPackageOption localFlake.inputs.nvim-nightly.packages.${pkgs.system} "default" { };
+    basePackage = mkPackageOption pkgs "neovim-unwrapped" { };
     withLangServers = mkEnableOption "Enable language server plugins";
 
     plugins = mkOption {

@@ -37,10 +37,6 @@
     # TODO: move to proper module in nixpkgs
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1&rev=bd526822deb9ed47c0b51b534817aa8541fff07b";
 
-    nvim-nightly = {
-      url = "github:nix-community/neovim-nightly-overlay?rev=e87be8db9b99173d375a9ba3b4fd3a57aaa7386e";
-    };
-
     # Service that remaps arbitrary keyboard combinations
     xremap-flake = {
       url = "github:xremap/nix-flake";
@@ -288,7 +284,6 @@
                 "my-flake-modules"
                 "hostsBlockList"
                 "data-flake"
-                "nvim-nightly"
                 "nixpkgs"
                 "nixpkgs-unstable"
               ];
