@@ -22,6 +22,8 @@ in
     package = pkgs.nextcloud30;
     hostName = getServiceFqdn srvName;
 
+    configureRedis = true;
+
     config = {
       dbtype = "pgsql";
       dbuser = "nextcloud";
