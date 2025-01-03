@@ -71,6 +71,7 @@ rec {
         htop # system monitoring
         eza # for completions
         spacer
+        tree
         ;
     }
     ++ [
