@@ -23,6 +23,7 @@
     ./workspaces.nix
     ./language.nix
     ./notifications.nix
+    ./screenshot-mode.nix
   ];
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.systemd.enable =
