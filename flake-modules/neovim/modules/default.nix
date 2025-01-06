@@ -119,21 +119,6 @@ in
                   ;
                 # Nix lang server
                 # Overridden to support pipes
-                nil = pkgs-unstable.nil.overrideAttrs (old: rec {
-                  src = pkgs.fetchFromGitHub {
-                    owner = "oxalica";
-                    repo = "nil";
-                    rev = "2e24c9834e3bb5aa2a3701d3713b43a6fb106362";
-                    hash = "sha256-DCIVdlb81Fct2uwzbtnawLBC/U03U2hqx8trqTJB7WA=";
-                  };
-
-                  # overriding cargoHash does not work; this is the way to do it
-                  cargoDeps = old.cargoDeps.overrideAttrs {
-                    name = "nil-vendor.tar.gz";
-                    inherit src;
-                    outputHash = "sha256-FppdLgciTzF6tBZ+07IEzk5wGinsp1XUE7T18DCGvKg=";
-                  };
-                });
               }
             else
               { }

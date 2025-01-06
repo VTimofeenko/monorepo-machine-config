@@ -35,17 +35,6 @@ require("lspconfig").bashls.setup({
 	capabilities = caps,
 	filetypes = { "zsh", "bash", "sh" },
 })
-require("lspconfig").nil_ls.setup({
-	autostart = true,
-	capabilities = caps,
-	settings = {
-		["nil"] = {
-			formatting = {
-				command = { "nixfmt" },
-			},
-		},
-	},
-})
 require("lspconfig").rust_analyzer.setup({
 	autostart = true,
 	capabilities = caps,
