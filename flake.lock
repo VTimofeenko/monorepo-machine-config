@@ -90,11 +90,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1735152683,
-        "narHash": "sha256-N/K8yTOf+vYjmt/vlS88rymOhcqz/NofYvdUMkLjWus=",
+        "lastModified": 1736453941,
+        "narHash": "sha256-GRjXi4yRya4ZLn1FC/ylqMf0hbTgx+SVApxjMJ3JPWg=",
         "owner": "VTimofeenko",
         "repo": "conventional-commit-helper",
-        "rev": "e628c69157e1db8bb6b368839ce14d71156b605e",
+        "rev": "492f932d28e90ff3a399534a2c1e229b75bf1544",
         "type": "github"
       },
       "original": {
