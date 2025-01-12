@@ -416,6 +416,7 @@
                     "fluorine"
                     "helium"
                     "lanthanum"
+                    "neon"
                   ]
                   [
                     (map (hostName: {
