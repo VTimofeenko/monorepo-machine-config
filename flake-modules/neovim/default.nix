@@ -18,37 +18,31 @@
         { pkgs, ... }:
         let
           inherit (pkgs) lib;
+          flakeModuleLib = import ./lib { inherit pkgs lib self; };
         in
-        rec {
-          vimWithLangs = import ./mkPackage.nix {
-            modConfig = {
-              withLangServers = true;
-            };
-            inherit lib pkgs;
-            moduleToEval = self.homeManagerModules.vim;
-          };
-          vim = import ./mkPackage.nix {
-            modConfig = {
-              withLangServers = false;
-            };
-            inherit lib pkgs;
-            moduleToEval = self.homeManagerModules.vim;
-          };
-          nvim = vim;
-          nvimWithLangs = vimWithLangs;
-          neovim = vim;
-          neovimWithLangs = vimWithLangs;
+        # Attrset of package name (as visible to the consumer) and the enum type of package
+        {
+          vim-minimal = "min";
+          vim = "std";
+          vim-with-langs = "max";
         }
+        |> lib.mapAttrs (_: v: flakeModuleLib.mkPackage v)
       );
     };
 
   flake =
     let
       # Both modules are very similar, so just build them using a "mode" flag below
-      moduleBuilder = import ./modules self;
+      moduleBuilder = import ./lib/mk-module.nix;
     in
     {
-      nixosModules.vim = moduleBuilder "nixOS";
-      homeManagerModules.vim = moduleBuilder "homeManager";
+      nixosModules.vim = moduleBuilder {
+        inherit self;
+        mode = "nixOS";
+      };
+      homeManagerModules.vim = moduleBuilder {
+        inherit self;
+        mode = "homeManager";
+      };
     };
 }
