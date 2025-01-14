@@ -75,12 +75,20 @@ in
   };
   config =
     let
-      # neoVimType = (../config |> (it: import it { inherit pkgs lib; })).${cfg.type};
       configFromType = ../config |> (it: import it { inherit pkgs lib; }) |> builtins.getAttr cfg.type;
 
       # TODO: init.lua
+      initLua =
       # 1. Take the base string (depending on the enum val)
+        configFromType.initLua
       # 2. Append from options
+        |> (
+          it:
+          pkgs.writeTextFile {
+            name = "init.lua";
+            text = it;
+          }
+        );
 
       # TODO: plugins:
       # 1. Take the base set (depending on the enum val)
@@ -109,7 +117,7 @@ in
             name = "nvim";
             paths = [ it ];
             buildInputs = [ pkgs.makeWrapper ];
-            postBuild = "wrapProgram $out/bin/nvim --add-flags ''"; # Here be init-lua
+            postBuild = "wrapProgram $out/bin/nvim --add-flags '-u ${initLua}'"; # Here be init-lua
           }
         );
 
