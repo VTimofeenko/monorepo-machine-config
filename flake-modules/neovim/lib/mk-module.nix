@@ -75,7 +75,7 @@ in
   };
   config =
     let
-      configFromType = ../config |> (it: import it { inherit pkgs lib; }) |> builtins.getAttr cfg.type;
+      configFromType = ../config |> (it: import it { inherit pkgs lib self; }) |> builtins.getAttr cfg.type;
 
       # TODO: init.lua
       initLua =

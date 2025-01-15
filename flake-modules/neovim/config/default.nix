@@ -1,13 +1,15 @@
 /**
   Assembles the package configuration
 */
-{ pkgs, lib, ... }:
+{ pkgs, lib, self, ... }:
 let
   processFn =
     _: x:
     x
-    |> lib.fileset.toList
-    |> (map (it: import it { inherit pkgs; }))
+    |> lib.toList
+    |> map lib.fileset.toList
+    |> lib.flatten
+    |> (map (it: import it { inherit pkgs self; }))
     # Maybe: validate that there are no odd attrs in the elements of the list
     # Adjust to expected output
     |> (it: {
@@ -18,5 +20,9 @@ let
 in
 {
   min = ./minimal;
+  std = [
+    ./minimal
+    ./standard
+  ];
 }
 |> builtins.mapAttrs processFn

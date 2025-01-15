@@ -43,15 +43,16 @@ This flake module provides:
 - `hop`
 
 ## Standard set
-- `nvim-web-devicons` icons, auto detected by telescope
-- `cmp_luasnip` completions for snippets
-- `todo-comments`
-- `luasnip`
-- `telescope`
-- `telescope-file-browser`
-- `vim-scratch-plugin`
+- `telescope` to browse things
+    - `telescope-file-browser` to browse files
+    - `nvim-web-devicons` icons, auto detected by telescope
+- `todo-comments` highlights TODO/FIXME/etc.
+- `vim-scratch-plugin` quickly opens a disposable window
+- my color theme tweaks
 
 ## LSPs
+- `luasnip` my snippets
+    - `cmp_luasnip` completions for snippets
 - `cmp-nvim-lsp` LSP completions
 - `fidget-nvim` UI for LSP
 - Treesitter:
