@@ -27,6 +27,10 @@ in
         inactiveBorderColor = [ "#${inactiveFrameBorder}" ];
         optionsTextColor = [ "#${fg-main}" ];
       };
+
+      # Disable update checks
+      update.method = "never";
+
       git.paging.pager = "${getExe pkgs.diff-so-fancy}";
       # Doc:
       # https://github.com/jesseduffield/lazygit/blob/master/docs/Custom_Command_Keybindings.md
