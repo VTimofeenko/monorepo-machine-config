@@ -75,13 +75,14 @@ in
   };
   config =
     let
-      configFromType = ../config |> (it: import it { inherit pkgs lib self; }) |> builtins.getAttr cfg.type;
+      configFromType =
+        ../config |> (it: import it { inherit pkgs lib self; }) |> builtins.getAttr cfg.type;
 
       # TODO: init.lua
       initLua =
-      # 1. Take the base string (depending on the enum val)
+        # 1. Take the base string (depending on the enum val)
         configFromType.initLua
-      # 2. Append from options
+        # 2. Append from options
         |> (
           it:
           pkgs.writeTextFile {
@@ -103,11 +104,18 @@ in
         |> (
           it:
           pkgs.wrapNeovimUnstable it (
-            pkgs.neovimUtils.makeNeovimConfig {
+            (pkgs.neovimUtils.makeNeovimConfig {
               inherit plugins;
               withPython3 = true;
               withRuby = true; # TODO: needed?
-            }
+            })
+            # Add the extra packages
+            |> (x: x // { wrapperArgs = x.wrapperArgs ++ [
+              "--prefix"
+              "PATH"
+              ":"
+              (lib.makeBinPath configFromType.packages)
+            ]; })
           )
         )
         # Produce the package
@@ -117,7 +125,7 @@ in
             name = "nvim";
             paths = [ it ];
             buildInputs = [ pkgs.makeWrapper ];
-            postBuild = "wrapProgram $out/bin/nvim --add-flags '-u ${initLua}'"; # Here be init-lua
+            postBuild = "wrapProgram $out/bin/nvim --add-flags '-u ${initLua}'";
           }
         );
 
