@@ -1,20 +1,22 @@
 {
-  pkgs,
-  lib,
   self,
 }:
 {
   /**
     Produces a module
   */
-  mkModule = moduleType: { };
+  mkModule = mode: import ./mk-module.nix { inherit self mode; };
 
   /**
     This function consumes a module, applies provided config and produces a package.
     This allows me to define the package generation logic in the module.
   */
   mkPackage =
-    pkgType:
+    {
+      pkgType,
+      pkgs,
+      lib,
+    }:
     let
       modToEval = self.homeManagerModules.vim;
       config =
