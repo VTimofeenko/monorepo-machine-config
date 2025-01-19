@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 {
   plugins = [
     pkgs.vimPlugins.nvim-lspconfig
