@@ -26,6 +26,8 @@ let
           ;
       }
     ))
+    # Remove explicitly disabled plugins (i.e. `enabled` attr has to be present and false)
+    |> lib.filter (it: it.enabled or true)
     # Maybe: validate that there are no odd attrs in the elements of the list
     # Adjust to expected output
     |> (it: {
