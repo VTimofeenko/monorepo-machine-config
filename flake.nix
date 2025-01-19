@@ -245,7 +245,18 @@
             ...
           }:
           {
-            overlayAttrs = config.packages;
+            # WARN: There seems to be an odd interaction between crane and flake-parts.
+            # This interaction effectively causes crane to emit packages in weird systems (i686-linux, wasm32-wasi, etc.)
+            # This causes:
+            # 1. Probably slower eval
+            # 2. Noise in the logs (constant 'trace: using non-memoized system ...')
+            # 3. If overlayAttrs is set to {inherit (config) packages } then
+            #    the evaluation may look for legalegacyPackages.`wasm32-wasi`
+            #    which does not exist.
+            # I am setting it to a single package for now; I need to revisit it later
+            overlayAttrs = {
+              inherit (config.packages) hyprland-switch-lang-on-xremap;
+            };
             legacyPackages.homeConfigurations =
               let
                 /*
