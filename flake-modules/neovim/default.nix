@@ -34,6 +34,29 @@
           }
         )
       );
+
+      # This bit adds checks dynamically.
+      # By placing a `.nix` file in the `./checks/` directory, it will be:
+      # 1. Automatically added to `flake.checks`
+      # 2. Be prefixed with `flake-module-neovim-`
+      checks = withSystem system (
+        { pkgs, ... }:
+        let
+          inherit (pkgs) lib;
+        in
+        ./checks
+        |> pkgs.lib.fileset.toList
+        |> map (
+          it:
+          let
+            fileName = it |> builtins.toString |> builtins.baseNameOf |> (lib.replaceStrings [ ".nix" ] [ "" ]);
+          in
+          {
+            "flake-module-neovim-${fileName}" = import it { inherit pkgs self; };
+          }
+        )
+        |> pkgs.lib.mergeAttrsList
+      );
     };
 
   flake =
