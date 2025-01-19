@@ -36,7 +36,7 @@
           {
             programs.myNeovim = {
               enable = true;
-              withLangServers = true;
+              type = "max";
             };
           }
 
