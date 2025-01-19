@@ -37,18 +37,21 @@
     };
 
   flake =
-    let
-      # Both modules are very similar, so just build them using a "mode" flag below
-      inherit (import ./lib { inherit self; }) mkModule;
-    in
+    # For some reason, passing mkModule through lib causes moduleType to become
+    # an attrset that is extremely weird. I think it's flake.parts fault
+    # let
+    #   # Both modules are very similar, so just build them using a "mode" flag below
+    #   # inherit (import ./lib { inherit self; }) mkModule';
+    # in
     {
-      nixosModules.vim = mkModule {
+      nixosModules.vim = import ./lib/mk-module.nix {
         inherit self;
-        mode = "nixOS";
+        moduleType = "nixOS";
       };
-      homeManagerModules.vim = mkModule {
+      homeManagerModules.vim = import ./lib/mk-module.nix {
+        # import ./lib/mk-module.nix {
+        moduleType = "homeManager";
         inherit self;
-        mode = "homeManager";
       };
     };
 }

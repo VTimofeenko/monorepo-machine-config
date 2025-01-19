@@ -2,10 +2,10 @@
   self,
 }:
 {
-  /**
-    Produces a module
-  */
-  mkModule = mode: import ./mk-module.nix { inherit self mode; };
+  # /**
+  #   Produces a module
+  # */
+  # mkModule = moduleType: import ./mk-module.nix { inherit self moduleType; };
 
   /**
     This function consumes a module, applies provided config and produces a package.
@@ -53,5 +53,4 @@
       "myNeovim"
       "finalPackage"
     ];
-
 }

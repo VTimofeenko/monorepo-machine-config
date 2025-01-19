@@ -1,5 +1,10 @@
 # Implementation of the function that produces a [NixOS|Home-manager] module
-{ self, mode, ... }:
+{ self, moduleType, ... }:
+let
+  # Decide which attribute path to set
+  outer = if moduleType == "homeManager" then "home" else "environment";
+  inner = if moduleType == "homeManager" then "packages" else "systemPackages";
+in
 {
   pkgs,
   lib,
@@ -27,9 +32,6 @@ let
     mkOption
     ;
 
-  # Decide which attribute path to set
-  outer = if mode == "homeManager" then "home" else "environment";
-  inner = if mode == "homeManager" then "packages" else "systemPackages";
 in
 {
   options.programs.myNeovim = {
