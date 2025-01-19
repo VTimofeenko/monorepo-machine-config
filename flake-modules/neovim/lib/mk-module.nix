@@ -112,12 +112,18 @@ in
               withRuby = true; # TODO: needed?
             })
             # Add the extra packages
-            |> (x: x // { wrapperArgs = x.wrapperArgs ++ [
-              "--prefix"
-              "PATH"
-              ":"
-              (lib.makeBinPath configFromType.packages)
-            ]; })
+            |> (
+              x:
+              x
+              // {
+                wrapperArgs = x.wrapperArgs ++ [
+                  "--prefix"
+                  "PATH"
+                  ":"
+                  (lib.makeBinPath configFromType.packages)
+                ];
+              }
+            )
           )
         )
         # Produce the package
@@ -135,6 +141,5 @@ in
     mkIf cfg.enable {
       ${outer}.${inner} = [ finalPackage ];
       programs.myNeovim.finalPackage = finalPackage;
-
     };
 }
