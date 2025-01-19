@@ -23,14 +23,14 @@
           {
             "]c",
             function()
-              gs.nav_hunk("next")
+              gs.next_hunk({target = "all"})
             end,
             desc = "Next changed hunk",
           },
           {
             "[c",
             function()
-              gs.nav_hunk("prev")
+              gs.prev_hunk({target = "all"})
             end,
             desc = "Previous changed hunk",
           },
