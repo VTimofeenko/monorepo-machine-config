@@ -18,37 +18,63 @@
         { pkgs, ... }:
         let
           inherit (pkgs) lib;
+          flakeModuleLib = import ./lib { inherit self; };
         in
-        rec {
-          vimWithLangs = import ./mkPackage.nix {
-            modConfig = {
-              withLangServers = true;
-            };
-            inherit lib pkgs;
-            moduleToEval = self.homeManagerModules.vim;
-          };
-          vim = import ./mkPackage.nix {
-            modConfig = {
-              withLangServers = false;
-            };
-            inherit lib pkgs;
-            moduleToEval = self.homeManagerModules.vim;
-          };
-          nvim = vim;
-          nvimWithLangs = vimWithLangs;
-          neovim = vim;
-          neovimWithLangs = vimWithLangs;
+        # Attrset of package name (as visible to the consumer) and the enum type of package
+        {
+          vim-minimal = "min";
+          vim = "std";
+          vim-with-langs = "max";
         }
+        |> lib.mapAttrs (
+          _: it:
+          flakeModuleLib.mkPackage {
+            pkgType = it;
+            inherit pkgs lib;
+          }
+        )
+      );
+
+      # This bit adds checks dynamically.
+      # By placing a `.nix` file in the `./checks/` directory, it will be:
+      # 1. Automatically added to `flake.checks`
+      # 2. Be prefixed with `flake-module-neovim-`
+      checks = withSystem system (
+        { pkgs, ... }:
+        let
+          inherit (pkgs) lib;
+        in
+        ./checks
+        |> pkgs.lib.fileset.toList
+        |> map (
+          it:
+          let
+            fileName = it |> builtins.toString |> builtins.baseNameOf |> (lib.replaceStrings [ ".nix" ] [ "" ]);
+          in
+          {
+            "flake-module-neovim-${fileName}" = import it { inherit pkgs self; };
+          }
+        )
+        |> pkgs.lib.mergeAttrsList
       );
     };
 
   flake =
-    let
-      # Both modules are very similar, so just build them using a "mode" flag below
-      moduleBuilder = import ./modules self;
-    in
+    # For some reason, passing mkModule through lib causes moduleType to become
+    # an attrset that is extremely weird. I think it's flake.parts fault
+    # let
+    #   # Both modules are very similar, so just build them using a "mode" flag below
+    #   # inherit (import ./lib { inherit self; }) mkModule';
+    # in
     {
-      nixosModules.vim = moduleBuilder "nixOS";
-      homeManagerModules.vim = moduleBuilder "homeManager";
+      nixosModules.vim = import ./lib/mk-module.nix {
+        inherit self;
+        moduleType = "nixOS";
+      };
+      homeManagerModules.vim = import ./lib/mk-module.nix {
+        # import ./lib/mk-module.nix {
+        moduleType = "homeManager";
+        inherit self;
+      };
     };
 }

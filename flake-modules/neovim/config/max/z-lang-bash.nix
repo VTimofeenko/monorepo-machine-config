@@ -1,0 +1,27 @@
+/**
+  A simple bash language server setup.
+
+  Includes:
+  - `shfmt` :: to format scripts
+  - `shellcheck` :: to make the editor very angry
+*/
+{ pkgs, lib, ... }:
+{
+  config = ''
+    require("lspconfig").bashls.setup({
+      cmd = { '${lib.getExe pkgs.bash-language-server}', 'start'  },
+      autostart = true,
+      capabilities = caps,
+      single_file_support = true,
+      filetypes = { "zsh", "bash", "sh" },
+      settings = {
+        bashIde = {
+          shfmt = {
+            path = "${lib.getExe pkgs.shfmt}"
+          },
+          shellcheckPath = "${lib.getExe pkgs.shellcheck}"
+        },
+      },
+    })
+  '';
+}
