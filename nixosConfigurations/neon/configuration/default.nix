@@ -47,5 +47,7 @@ in
   hardware.cpu.intel.updateMicrocode = lib.mkForce true;
 
   # Imports
-  imports = [ ];
+  imports = [
+    ./hw-acceleration.nix
+  ];
 }
