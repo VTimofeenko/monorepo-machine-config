@@ -45,6 +45,7 @@ in
   system.stateVersion = "24.11";
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkForce true;
+  systemd.network.links."10-phy-lan".linkConfig.WakeOnLan = "magic";
 
   # Imports
   imports = [
