@@ -15,6 +15,9 @@
     ./windowRules.nix
     # ./gestures.nix
     ./lock.nix
+    ./sound-control.nix
+    ./backlight-control.nix
+    ./on-screen-display.nix
     ./launcher.nix
     ./binds
     ./monitors.nix
