@@ -19,6 +19,7 @@
         ["<C-n>"] = cmp.mapping.select_next_item(),
         ["<C-space>"] = cmp.mapping.complete(),
         ["<C-e>"] = cmp.mapping.close(),
+        ["<Tab>"] = cmp.mapping.select_next_item(),
       }
 
       cmp.setup.cmdline("/", {
