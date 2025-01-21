@@ -16,6 +16,16 @@ let
 in
 {
   wayland.windowManager.hyprland.myBinds = rec {
+    XF86AudioMute = {
+      dispatcher = "exec";
+      description = "Toggle output mute";
+      arg =
+        [
+          "${pkgs.swayosd}/bin/swayosd-client"
+          "--output-volume=mute-toggle"
+        ]
+        |> lib.concatStringsSep " ";
+    };
     XF86AudioLowerVolume = {
       dispatcher = "exec";
       description = "Lower volume";
