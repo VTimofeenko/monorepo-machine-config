@@ -1,5 +1,10 @@
 # A set of settings that are common for both modules
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  self,
+  ...
+}:
 let
   inherit (pkgs.lib)
     getExe
@@ -85,6 +90,9 @@ rec {
         fi
       '')
       (import ./packages/confirm.nix { inherit (pkgs) writeShellApplication; })
+      (pkgs.writeShellScriptBin "vim-minimal" ''
+        ${pkgs.lib.getExe' self.packages.${pkgs.stdenv.system}.vim-minimal "nvim"} "$@"
+      '')
     ];
   additionalOptions =
     [

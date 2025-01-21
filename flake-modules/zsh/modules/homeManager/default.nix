@@ -1,4 +1,5 @@
 # Home manager module that configures zsh
+{ self, ... }:
 {
   pkgs,
   config,
@@ -6,7 +7,7 @@
   ...
 }:
 let
-  commonSettings = import ../common { inherit pkgs config; };
+  commonSettings = import ../common { inherit pkgs config self; };
 
   inherit (config.my-colortheme) raw semantic;
 in

@@ -1,0 +1,111 @@
+# Diffs
+# - Use special slim version of vim to edit the command line
+# - Adjust cwd completion function to keep completing as if in the old directory
+#
+# Taken from:
+# https://raw.githubusercontent.com/zsh-users/zsh/refs/heads/master/Functions/Zle/edit-command-line
+# Last change:
+# f72757ccf30610fe8fdd1ed76d080971f767edaf
+#
+# Edit the command line using your usual editor.
+# Binding this to '!' in the vi command mode map,
+#   autoload -Uz edit-command-line
+#   zle -N edit-command-line
+#   bindkey -M vicmd '!' edit-command-line
+# will give ksh-like behaviour for that key,
+# except that it will handle multi-line buffers properly.
+
+emulate -L zsh
+local left right prebuffer buffer=$BUFFER lbuffer=$LBUFFER
+local TMPSUFFIX=.zsh
+# set up parameters depending on which context we are called from,
+# see below comment for more details
+if (( REGION_ACTIVE == 1 )); then
+  if (( CURSOR < MARK )); then
+    left=$CURSOR right=$MARK
+  else
+    left=$MARK right=$CURSOR
+  fi
+  lbuffer=$lbuffer[++left,-1]
+  buffer=$BUFFER[left,++right]
+elif (( REGION_ACTIVE == 2 )); then
+  local nl=$'\n'
+  if (( CURSOR < MARK )); then
+    left=${${BUFFER[1,CURSOR]}[(I)$nl]}
+    right=${${BUFFER[MARK+1,-1]}[(i)$nl]}
+    (( right += MARK ))
+  else
+    left=${${BUFFER[1,MARK]}[(I)$nl]}
+    right=${${BUFFER[CURSOR+1,-1]}[(i)$nl]}
+    (( right += CURSOR ))
+  fi
+  lbuffer=$lbuffer[++left,-1]
+  if [[ $BUFFER[right] = $nl ]]; then
+    # Keep the newline because "$(<$1)" below trims it
+    (( --right ))
+  fi
+  buffer=$BUFFER[left,right]
+elif (( ! ZLE_RECURSIVE )); then
+  prebuffer=$PREBUFFER
+fi
+
+() {
+  exec </dev/tty
+
+  # Compute the cursor's position in bytes, not characters.
+  setopt localoptions nomultibyte noksharrays
+
+  (( $+zle_bracketed_paste )) && print -r -n - $zle_bracketed_paste[2]
+
+  # Open the editor, placing the cursor at the right place if we know how.
+  local -a editor
+  zstyle -a :zle:$WIDGET editor editor
+  if (( ! $#editor )); then
+    editor=( "${(@Q)${(z)${CMD_EDITOR:-${EDITOR:-vi}}}}" )
+  fi
+  case $editor in
+    (*vim*)
+      integer byteoffset=$(( $#prebuffer + $#lbuffer + 1 ))
+      "${(@)editor}"\
+        -c "normal! ${byteoffset}go" \
+        -c "lua local config = require('cmp').get_config(); for key, value in ipairs(config.sources) do if value.name == 'buffer' then config.sources = { value } break end end; table.insert(config.sources,  { name = 'path', option = { get_cwd = function() return vim.fn.getcwd() end, } } ); require('cmp').setup(config)"\
+        -- $1;;
+    (*emacs*)
+      local lines=( "${(@f):-"$prebuffer$lbuffer"}" )
+      "${(@)editor}" +${#lines}:$((${#lines[-1]} + 1)) $1;;
+    (*) "${(@)editor}" $1;;
+  esac
+
+  (( $+zle_bracketed_paste )) && print -r -n - $zle_bracketed_paste[1]
+
+  # Replace the buffer with the editor output.
+  # avoid drawing a new prompt when we can:
+  # - in recursive-edit, the send-break will just cancel the recursive-edit
+  #   rather than reload the line from print -z so in that case we want to
+  #   just set $BUFFER (unfortunately, recursive-edit doesn't reset CONTEXT
+  #   or PREBUFFER so we have to explicitly handle this case, which overrides
+  #   the following point)
+  # - when we are at PS2 (CONTEXT == cont && ! ZLE_RECURSIVE) we do want the
+  #   break or otherwise the text from PREBUFFER will be inserted twice
+  # - when the region is active, we only want to change the parts of BUFFER
+  #   covered by the region, and any PREBUFFER stays as PREBUFFER
+  # - in all other cases (that I can think of) we also just want to set
+  #   $BUFFER directly.
+  if (( REGION_ACTIVE )); then
+    # adjust the length of the region to the length of the edited text
+    local prelen=$#BUFFER
+    BUFFER[left,right]="$(<$1)"
+    if (( MARK > CURSOR )); then
+      (( MARK += $#BUFFER - prelen ))
+    else
+      (( CURSOR += $#BUFFER - prelen ))
+    fi
+  elif [[ $CONTEXT != cont ]] || (( ZLE_RECURSIVE )); then
+    BUFFER="$(<$1)"
+  else
+    print -Rz - "$(<$1)"
+    zle send-break
+  fi
+
+} =(<<<"$prebuffer$buffer")
+
