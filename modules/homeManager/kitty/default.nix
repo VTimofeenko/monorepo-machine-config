@@ -19,6 +19,7 @@ _: {
       # Make vim the scollback pager to copy back and forth
       # Also see https://github.com/mikesmithgh/kitty-scrollback.nvim
       scrollback_pager = "nvim -c ':lua KITTY_SCROLLBACK(INPUT_LINE_NUMBER, CURSOR_LINE, CURSOR_COLUMN)' - ";
+      font_size = 9;
     };
     keybindings = {
       # Opens a new Kitty window in the current working directory
