@@ -26,7 +26,6 @@ in
       connect-timeout = 5;
       experimental-features = "nix-command flakes";
       warn-dirty = false;
-      auto-optimise-store = false;
     };
     registry =
       {
