@@ -18,6 +18,7 @@ in
 
   imports = [
     ./broot.nix
+    (import ../../config/history.nix { inherit lib pkgs; }).homeManagerModule
   ];
 
   programs = {
@@ -146,6 +147,5 @@ in
         theme = "1337";
       };
     };
-
   };
 }

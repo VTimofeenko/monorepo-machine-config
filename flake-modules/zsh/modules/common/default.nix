@@ -94,21 +94,12 @@ rec {
         ${pkgs.lib.getExe' self.packages.${pkgs.stdenv.system}.vim-minimal "nvim"} "$@"
       '')
     ];
-  additionalOptions =
-    [
-      "INTERACTIVE_COMMENTS" # Bash-style comments in interactive shell
-    ]
-    ++ [
-      "BANG_HIST" # Log !!-like commands
-      "INC_APPEND_HISTORY" # Write to the history file immediately, not when the shell exits.
-      "HIST_VERIFY" # Don't execute immediately upon history expansion.
-      "HIST_FCNTL_LOCK" # enable fcntl syscall for saving history
-    ];
+  additionalOptions = [
+    "INTERACTIVE_COMMENTS" # Bash-style comments in interactive shell
+  ];
   initExtra = concatStringsSep "\n" [
     # Enable all options
     (concatMapStringsSep "\n" (opt: "setopt ${opt}") additionalOptions)
-    # Source default fzf bindings
-    "source ${pkgs.fzf}/share/fzf/key-bindings.zsh"
     ''
       # Word Navigation shortcuts
       bindkey "^A" vi-beginning-of-line
