@@ -55,7 +55,6 @@
         "Opus"
         "Mp3lame"
         "Vorbis"
-        "Vpl"
         "X264"
         "X265"
         "Pic"
