@@ -18,7 +18,7 @@ in
 
   imports = [
     ./broot.nix
-    (import ../../config/history.nix { inherit lib pkgs; }).homeManagerModule
+    (import ../../config { inherit lib pkgs; }).homeManagerModule
   ];
 
   programs = {

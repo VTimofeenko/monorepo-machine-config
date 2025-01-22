@@ -12,7 +12,7 @@ let
 in
 {
   imports = [
-    (import ../../config/history.nix { inherit lib pkgs; }).nixosModule
+    (import ../../config { inherit lib pkgs; }).nixosModule
   ];
 
   programs.zsh = {
