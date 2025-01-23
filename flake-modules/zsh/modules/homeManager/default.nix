@@ -85,13 +85,5 @@ in
             ""
         );
     };
-    # TODO: style bat properly
-    bat = {
-      enable = true;
-      config = {
-        map-syntax = [ "flake.lock:JSON" ];
-        theme = "1337";
-      };
-    };
   };
 }
