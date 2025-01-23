@@ -28,7 +28,6 @@ in
         + concatMapStringsSep "\n" (plugin: "autoload -Uz ${plugin}.zsh && ${plugin}.zsh") list
       )
       + "\n";
-    inherit (commonSettings) shellAliases;
   };
   environment = {
     inherit (commonSettings) variables;

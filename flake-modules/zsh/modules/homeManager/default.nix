@@ -71,7 +71,6 @@ in
           }) list
         );
 
-      inherit (commonSettings) shellAliases;
       initExtra =
         commonSettings.initExtra
         # set SSH_AUTH_SOCK <=> gpg-agent is enabled in home-manager

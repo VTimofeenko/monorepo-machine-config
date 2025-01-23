@@ -13,45 +13,6 @@ let
     ;
 in
 rec {
-  # Shell aliases
-  shellAliases = {
-    e = "$EDITOR";
-    man = "man -P 'nvim +Man!'";
-    nvim = "$EDITOR";
-    vim = "$EDITOR";
-    ls = "${getExe pkgs.eza} -h --group-directories-first --icons=auto";
-    l = "ls";
-    ll = "ls -l";
-    la = "ls -al";
-    ka = "${getExe pkgs.killall}";
-    mkd = "mkdir -pv";
-    ga = "${getExe pkgs.git} add";
-    gau = "ga -u";
-    grep = "grep --color=auto";
-    mv = "mv -v";
-    rm = "${pkgs.coreutils}/bin/rm -id";
-    vidir = "${pkgs.moreutils}/bin/vidir --verbose";
-    ccopy = concatStringsSep " " [
-      "${getExe pkgs.perl} -p -e 'chomp if eof'"
-      "|"
-      (if pkgs.stdenv.isDarwin then "pbcopy" else "${pkgs.wl-clipboard}/bin/wl-copy")
-    ];
-    syu = "systemctl --user";
-    ju = "journalctl --user";
-    lg = "${getExe pkgs.lazygit}";
-    # Colorize IP output
-    ip = "ip -c";
-    # Neat display of all relevant things in lsblk
-    lsblk = "lsblk --topology --fs -o NAME,SIZE,TYPE,LABEL,UUID,FSAVAIL,FSUSE%,MOUNTPOINTS";
-    # Quick nix repl with stable nixpkgs imported
-    nrn = "nix repl -f flake:ns";
-    nrs = "nix repl -f flake:ns";
-    nru = "nix repl -f flake:nu"; # Unstable
-    # Load flake into repl. Try $PRJ_ROOT first, if not found -- fall back to PWD
-    nrlf = ''nix repl --expr "builtins.getFlake \"''${PRJ_ROOT:-$PWD}\""'';
-    poweroff = "confirm poweroff";
-    reboot = "confirm reboot";
-  };
   # InteractiveShellInit?
   # List of shell-only packages
   packages =
