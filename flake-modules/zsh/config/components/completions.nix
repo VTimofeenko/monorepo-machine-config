@@ -2,9 +2,11 @@
   Configures zsh completions.
 
   Features:
-  - Faster shell startup by deferring the load of the completions
   - File preview when completing a file
   - Completion color scheme follows `ls` colors
+
+  TODO: try lazy-loading the `compinit` if the performance hit is too big
+  https://news.ycombinator.com/item?id=40140873
 */
 { pkgs, lib, ... }:
 let
@@ -53,45 +55,17 @@ let
       '';
   };
 
-  # Defers completion loading until the first time the <Tab> key is hit
-  #
-  # Credit: https://news.ycombinator.com/item?id=40140873
-  #
-  # For `compinit` flags:
-  # https://zsh.sourceforge.io/Doc/Release/Completion-System.html#Use-of-compinit
   completionInit = ''
     ZCOMPDUMP_LOCATION="$XDG_CACHE_HOME/zsh/compinit"
     mkdir -p "$(dirname "$ZCOMPDUMP_LOCATION")"
     autoload -Uz compinit
-    lazyload-compinit() {
-        # Some completion files are owned by root which requires passing `-i` to suppress the warning
-        compinit -C -i -d $ZCOMPDUMP_LOCATION
 
-        ${completionStyles |> (lib.concatStringsSep "\n")}
+    compinit -C -i -d $ZCOMPDUMP_LOCATION
 
-        source ${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh
+    ${completionStyles |> (lib.concatStringsSep "\n")}
 
-        # This is removed as zsh-fzf-tab takes over
-        # Rebind the proper completion function to <Tab>
-        # bindkey "^I" expand-or-complete
-        {
-          zcompdump="$XDG_CACHE_HOME/zsh/compinit"
-          # if zcompdump file exists, and we don't have a compiled version or the
-          # dump file is newer than the compiled file, update the bytecode.
-          if [[ -s "$ZCOMPDUMP_LOCATION" && (! -s "''${ZCOMPDUMP_LOCATION}.zwc" || "$ZCOMPDUMP_LOCATION" -nt "''${ZCOMPDUMP_LOCATION}.zwc") ]]; then
-            zcompile "$zcompdump"
-          fi
-        } &!
+    source ${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh
 
-        # pretend we called this directly, instead of the lazy loader
-        zle expand-or-complete
-    }
-
-    # mark the function as a zle widget
-    zle -N lazyload-compinit
-
-    # Bind it to <Tab>
-    bindkey "^I" lazyload-compinit
   '';
 in
 {
