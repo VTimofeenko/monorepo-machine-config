@@ -22,6 +22,9 @@
           shellcheckPath = "${lib.getExe pkgs.shellcheck}"
         },
       },
+      on_attach = function(bufnr)
+        vim.api.nvim_buf_set_keymap(0, 'n', "<localleader><Return>", "<Cmd>!\"%:p\"<CR>", {desc = "Run this file" })
+      end,
     })
   '';
 }
