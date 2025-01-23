@@ -25,6 +25,12 @@
     services.journald.extraConfig = lib.mkForce "";
     # a remnant from the past
     users.groups.uinput.gid = lib.mkForce 988;
+    hardware = {
+      # disable framework kernel module
+      # https://github.com/NixOS/nixos-hardware/issues/1330
+      framework.enableKmod = false;
+    };
   };
+
 }
 # Uranium specific system:1 ends here
