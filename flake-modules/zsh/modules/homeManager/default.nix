@@ -24,7 +24,6 @@ in
   programs = {
     zsh = {
       enable = true;
-      autosuggestion.enable = true;
       # Type directory name -> cd there
       autocd = true;
       # Start in VI insert mode

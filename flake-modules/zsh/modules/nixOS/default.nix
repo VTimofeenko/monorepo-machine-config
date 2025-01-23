@@ -29,8 +29,6 @@ in
       )
       + "\n";
     inherit (commonSettings) shellAliases;
-
-    autosuggestions.enable = true;
   };
   programs.starship.enable = true;
   environment = {
