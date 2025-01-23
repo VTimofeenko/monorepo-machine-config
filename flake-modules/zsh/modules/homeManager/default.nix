@@ -25,7 +25,6 @@ in
     zsh = {
       enable = true;
       autosuggestion.enable = true;
-      enableCompletion = true;
       # Type directory name -> cd there
       autocd = true;
       # Start in VI insert mode
@@ -48,16 +47,6 @@ in
         path = "${config.xdg.dataHome}/zsh/zsh_history"; # unclutter profile
         share = true; # Share history between sessions. On by default, but I want to make sure
       };
-      # initExtraBeforeCompInit # Extra commands that should be added to .zshrc before compinit.
-      # W/A for missing completions
-      # Source: https://github.com/nix-community/home-manager/issues/2562
-      initExtraBeforeCompInit =
-        let
-          profileDir = config.home.profileDirectory;
-        in
-        ''
-          fpath+=("${profileDir}"/share/zsh/site-functions "${profileDir}"/share/zsh/$ZSH_VERSION/functions "${profileDir}"/share/zsh/vendor-completions)
-        '';
       # initExtraFirst # Commands that should be added to top of .zshrc.
       sessionVariables =
         commonSettings.variables
@@ -89,8 +78,7 @@ in
 
       # Plugin configuration
       plugins =
-        commonSettings.packagePlugins
-        ++ (
+        (
           with commonSettings.myPlugins;
           map (name: {
             inherit name;
@@ -107,7 +95,7 @@ in
       };
       syntaxHighlighting.enable = true;
 
-      inherit (commonSettings) shellAliases completionInit;
+      inherit (commonSettings) shellAliases;
       initExtra =
         commonSettings.initExtra
         # set SSH_AUTH_SOCK <=> gpg-agent is enabled in home-manager

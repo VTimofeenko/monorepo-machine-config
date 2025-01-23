@@ -1,0 +1,127 @@
+/**
+  Configures zsh completions.
+
+  Features:
+  - Faster shell startup by deferring the load of the completions
+  - File preview when completing a file
+  - Completion color scheme follows `ls` colors
+*/
+{ pkgs, lib, ... }:
+let
+  completionStyles = [
+    "zstyle ':completion:*:git-checkout:*' sort false" # Disable sort when completing `git checkout`
+    "zstyle ':completion:*:descriptions' format '[%d]'" # Set descriptions format to enable group support
+    "zstyle ':completion:*' list-colors \${(s.:.)LS_COLORS}" # Set list-colors to enable filename colorizing
+    "zstyle ':fzf-tab:complete:cd:*' fzf-preview '${previewers.dir}'" # Preview directory's content with eza when completing `cd`
+    "zstyle ':fzf-tab:complete:$EDITOR:*' fzf-preview '${previewers.dispatcher}'" # Preview file's content with bat when completing vim
+    # Quickly accept suggestion
+    ''
+      zstyle ':fzf-tab:*' fzf-bindings 'space:accept'
+      zstyle ':fzf-tab:*' accept-line enter
+      zstyle ':fzf-tab:*' continuous-trigger space
+    ''
+    # Kill processes
+    ''
+      zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
+      zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
+        '[[ $group == "[process ID]" ]] && ps --pid=$word -o cmd -w -w'
+      zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags --preview-window=down:3:wrap
+    ''
+    # `systemctl` completions
+    "zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'"
+    # Case-insensitive completion
+    ''
+      zstyle ':completion:*' matcher-list \
+        'm:{[:lower:]}={[:upper:]}' \
+        '+r:|[._-]=* r:|=*' \
+        '+l:|=*'
+    ''
+  ];
+
+  # Utilities that will be showing previews of completed objects
+  previewers = rec {
+    dir = "${lib.getExe pkgs.eza} -1 --color=always $realpath";
+    file = "${lib.getExe pkgs.bat} --plain --color=always $realpath";
+    dispatcher =
+      # bash
+      ''
+        if [[ -d $realpath ]]; then
+          ${dir}
+        elif [[ -f $realpath ]]; then
+          ${file}
+        fi
+      '';
+  };
+
+  # Defers completion loading until the first time the <Tab> key is hit
+  #
+  # Credit: https://news.ycombinator.com/item?id=40140873
+  #
+  # For `compinit` flags:
+  # https://zsh.sourceforge.io/Doc/Release/Completion-System.html#Use-of-compinit
+  completionInit = ''
+    ZCOMPDUMP_LOCATION="$XDG_CACHE_HOME/zsh/compinit"
+    mkdir -p "$(dirname "$ZCOMPDUMP_LOCATION")"
+    autoload -Uz compinit
+    lazyload-compinit() {
+        # Some completion files are owned by root which requires passing `-i` to suppress the warning
+        compinit -C -i -d $ZCOMPDUMP_LOCATION
+
+        ${completionStyles |> (lib.concatStringsSep "\n")}
+
+        source ${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh
+
+        # This is removed as zsh-fzf-tab takes over
+        # Rebind the proper completion function to <Tab>
+        # bindkey "^I" expand-or-complete
+        {
+          zcompdump="$XDG_CACHE_HOME/zsh/compinit"
+          # if zcompdump file exists, and we don't have a compiled version or the
+          # dump file is newer than the compiled file, update the bytecode.
+          if [[ -s "$ZCOMPDUMP_LOCATION" && (! -s "''${ZCOMPDUMP_LOCATION}.zwc" || "$ZCOMPDUMP_LOCATION" -nt "''${ZCOMPDUMP_LOCATION}.zwc") ]]; then
+            zcompile "$zcompdump"
+          fi
+        } &!
+
+        # pretend we called this directly, instead of the lazy loader
+        zle expand-or-complete
+    }
+
+    # mark the function as a zle widget
+    zle -N lazyload-compinit
+
+    # Bind it to <Tab>
+    bindkey "^I" lazyload-compinit
+  '';
+in
+{
+  nixosModule =
+    { lib, ... }:
+    {
+      programs.zsh.interactiveShellInit = completionInit;
+      # I am assembling this by hand
+      programs.zsh.enableCompletion = lib.mkForce false;
+
+      # On advice from home manager module
+      environment.pathsToLink = [ "/share/zsh" ];
+
+    };
+  homeManagerModule =
+    { config, ... }:
+    {
+      programs.zsh = {
+        enableCompletion = true;
+        inherit completionInit;
+
+        # W/A for missing completions
+        # Source: https://github.com/nix-community/home-manager/issues/2562
+        initExtraBeforeCompInit =
+          let
+            profileDir = config.home.profileDirectory;
+          in
+          ''
+            fpath+=("${profileDir}"/share/zsh/site-functions "${profileDir}"/share/zsh/$ZSH_VERSION/functions "${profileDir}"/share/zsh/vendor-completions)
+          '';
+      };
+    };
+}

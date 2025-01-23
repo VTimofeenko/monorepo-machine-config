@@ -188,64 +188,7 @@ rec {
       typeset -gA ZSH_HIGHLIGHT_STYLES
       ZSH_HIGHLIGHT_STYLES[comment]='fg=${semantic.comment.number}'
     ''
-    # Allows searching for completion
-    # ''
-    #   zstyle ':completion:*:*:*:default' menu yes select search
-    # ''
-    # fzf-tab config
-    (
-      let
-        previewers = rec {
-          dir = "${getExe pkgs.eza} -1 --color=always $realpath";
-          file = "${getExe pkgs.bat} --plain --color=always $realpath";
-          dispatcher =
-            # bash
-            ''
-              if [[ -d $realpath ]]; then
-                ${dir}
-              elif [[ -f $realpath ]]; then
-                ${file}
-              fi
-            '';
-        };
-      in
-      ''
-        # disable sort when completing `git checkout`
-        zstyle ':completion:*:git-checkout:*' sort false
-        # set descriptions format to enable group support
-        zstyle ':completion:*:descriptions' format '[%d]'
-        # set list-colors to enable filename colorizing
-        zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
-        # preview directory's content with eza when completing cd
-        zstyle ':fzf-tab:complete:cd:*' fzf-preview '${previewers.dir}'
-
-        # preview file's content with bat when completing vim
-        zstyle ':fzf-tab:complete:$EDITOR:*' fzf-preview '${previewers.dispatcher}'
-        # Quickly accept suggestion
-        zstyle ':fzf-tab:*' fzf-bindings 'space:accept'
-        zstyle ':fzf-tab:*' accept-line enter
-        # Kill processes
-        zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
-        zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview \
-          '[[ $group == "[process ID]" ]] && ps --pid=$word -o cmd -w -w'
-        zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags --preview-window=down:3:wrap
-
-        # Systemctl
-        zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
-        # Space to continue completions
-        zstyle ':fzf-tab:*' continuous-trigger space
-
-        # Case-insensitive completion
-        zstyle ':completion:*' matcher-list \
-          'm:{[:lower:]}={[:upper:]}' \
-          '+r:|[._-]=* r:|=*' \
-          '+l:|=*'
-      ''
-    )
   ];
-  completionInit = ''
-    autoload -U compinit && compinit -C -i
-  '';
   myPlugins = {
     baseDir = ./myPlugins;
     list = [
@@ -255,13 +198,6 @@ rec {
       "cursor_mode"
     ];
   };
-  packagePlugins = [
-    rec {
-      name = "fzf-tab";
-      src = "${pkgs.zsh-fzf-tab}/share/fzf-tab";
-      file = "${name}.plugin.zsh";
-    }
-  ];
   variables = {
     EDITOR = "nvim";
     FZF_CTRL_T_COMMAND = "${getExe pkgs.fd} .";

@@ -5,7 +5,16 @@
 */
 { pkgs, lib, ... }:
 let
-  modList = ./components |> lib.fileset.toList |> map (it: import it { inherit pkgs lib; });
+  modList =
+    ./components
+    |> lib.fileset.toList
+    |> map (
+      it:
+      let
+        imported = import it;
+      in
+      if lib.isFunction imported then imported { inherit pkgs lib; } else imported
+    );
 in
 {
   homeManagerModule = {

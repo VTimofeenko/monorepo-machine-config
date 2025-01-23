@@ -20,7 +20,6 @@ in
     enableCompletion = lib.mkForce false;
     interactiveShellInit =
       commonSettings.initExtra
-      + commonSettings.completionInit
       + (
         with commonSettings.myPlugins;
         ''
@@ -28,10 +27,7 @@ in
         ''
         + concatMapStringsSep "\n" (plugin: "autoload -Uz ${plugin}.zsh && ${plugin}.zsh") list
       )
-      + "\n"
-      + (concatMapStringsSep "\n" (
-        plugin: "source ${plugin.src}/${plugin.file}"
-      ) commonSettings.packagePlugins);
+      + "\n";
     inherit (commonSettings) shellAliases;
     syntaxHighlighting = {
       enable = true;
@@ -44,7 +40,4 @@ in
     inherit (commonSettings) variables;
   };
   environment.systemPackages = commonSettings.packages;
-
-  # Add completions
-  environment.pathsToLink = [ "/share/zsh" ];
 }
