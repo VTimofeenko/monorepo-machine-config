@@ -16,7 +16,7 @@ let
   settings = rec {
     histSize = 9999; # Stored in memory during session runtime
     saveHist = histSize; # How many lines to keep in history
-    histFile = "$XDG_STATE_HOME/zsh_history"; # `$XDG_STATE_HOME` is chosen because I treat history as durable
+    histFile = "$XDG_STATE_HOME/zsh/zsh_history"; # `$XDG_STATE_HOME` is chosen because I treat history as durable
     ignorePatterns = [
       "rm *"
       "# *" # I don't care about full-line comments
