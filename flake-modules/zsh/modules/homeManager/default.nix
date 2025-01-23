@@ -18,7 +18,7 @@ in
 
   imports = [
     ./broot.nix
-    (import ../../config { inherit lib pkgs; }).homeManagerModule
+    (import ../../config { inherit lib pkgs self; }).homeManagerModule
   ];
 
   programs = {
@@ -93,7 +93,6 @@ in
         # (V)iew in (V)im
         V = "| vim -R";
       };
-      syntaxHighlighting.enable = true;
 
       inherit (commonSettings) shellAliases;
       initExtra =

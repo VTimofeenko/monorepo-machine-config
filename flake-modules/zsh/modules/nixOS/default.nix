@@ -12,7 +12,7 @@ let
 in
 {
   imports = [
-    (import ../../config { inherit lib pkgs; }).nixosModule
+    (import ../../config { inherit lib pkgs self; }).nixosModule
   ];
 
   programs.zsh = {
@@ -29,9 +29,6 @@ in
       )
       + "\n";
     inherit (commonSettings) shellAliases;
-    syntaxHighlighting = {
-      enable = true;
-    };
 
     autosuggestions.enable = true;
   };

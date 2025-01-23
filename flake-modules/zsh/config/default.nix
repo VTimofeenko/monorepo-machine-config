@@ -3,7 +3,7 @@
 
   This implementation allows individual files to control what aspects of the corresponding module they generate.
 */
-{ pkgs, lib, ... }:
+{ pkgs, lib, self, ... }:
 let
   modList =
     ./components
@@ -13,7 +13,7 @@ let
       let
         imported = import it;
       in
-      if lib.isFunction imported then imported { inherit pkgs lib; } else imported
+      if lib.isFunction imported then imported { inherit pkgs lib self; } else imported
     );
 in
 {

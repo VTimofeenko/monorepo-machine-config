@@ -1,7 +1,6 @@
 # A set of settings that are common for both modules
 {
   pkgs,
-  config,
   self,
   ...
 }:
@@ -12,7 +11,6 @@ let
     concatStringsSep
     pipe
     ;
-  inherit (config.my-colortheme) semantic;
 in
 rec {
   # Shell aliases
@@ -181,12 +179,6 @@ rec {
       }
       zstyle :bracketed-paste-magic paste-init pasteinit
       zstyle :bracketed-paste-magic paste-finish pastefinish
-    ''
-    ''
-      # Source
-      # https://github.com/zsh-users/zsh-syntax-highlighting/issues/359
-      typeset -gA ZSH_HIGHLIGHT_STYLES
-      ZSH_HIGHLIGHT_STYLES[comment]='fg=${semantic.comment.number}'
     ''
   ];
   myPlugins = {
