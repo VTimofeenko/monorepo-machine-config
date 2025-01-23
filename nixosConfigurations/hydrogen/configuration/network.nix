@@ -76,6 +76,7 @@ in
         matchConfig.Name = "${wan.name}";
         networkConfig = {
           DHCP = "yes"; # Enables DHCP Client on this interface
+          DNS = [ lan.dnsServers ]; # Disable getting DNS from upstream.
         };
       };
     };
