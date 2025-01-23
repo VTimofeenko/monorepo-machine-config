@@ -6,7 +6,8 @@ let
     enable = true;
     settings = {
       # Apply the custom command instead of standard directory
-      format = defaultPrompt |> builtins.replaceStrings [ "$directory" ] [ "\${custom.smart_directory} " ];
+      format =
+        defaultPrompt |> builtins.replaceStrings [ "$directory" ] [ "\${custom.smart_directory} " ];
       nix_shell.symbol = " ";
       lua.symbol = " ";
       # When connected over SSH -- show the prompt with just @<hostname> instead of the globe
