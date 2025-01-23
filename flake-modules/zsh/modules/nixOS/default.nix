@@ -30,7 +30,6 @@ in
       + "\n";
     inherit (commonSettings) shellAliases;
   };
-  programs.starship.enable = true;
   environment = {
     inherit (commonSettings) variables;
   };

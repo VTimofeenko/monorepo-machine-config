@@ -114,17 +114,6 @@ in
       nix-direnv.enable = true;
       config.whitelist.prefix = [ "${config.home.homeDirectory}/code" ];
     };
-    starship = {
-      enable = true;
-      enableBashIntegration = false;
-      enableFishIntegration = false;
-      enableIonIntegration = false;
-      enableNushellIntegration = false;
-      settings = {
-        nix_shell.symbol = " ";
-        lua.symbol = " ";
-      };
-    };
     # TODO: style bat properly
     bat = {
       enable = true;
