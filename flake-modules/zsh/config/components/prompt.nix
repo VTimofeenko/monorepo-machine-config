@@ -40,15 +40,21 @@ let
               OUTPUT=":$OUTPUT"
             fi
 
-            # Format the directory part, replacing aliases if needed
-            _PWD=$(pwd)
-            case $_PWD in
-              "$HOME" ) DIR_OUTPUT="~";;
-              * ) DIR_OUTPUT="$_PWD";;
-            esac
+            # If in root of git tree -- then just show the name of the directory
+            if [ -d .git ]; then
+              DIR_OUTPUT=$(pwd | rev | cut -d '/' -f-1 | rev)
 
-            # Keep only last two parts of the path
-            DIR_OUTPUT=$(echo -n "$DIR_OUTPUT" | rev | cut -d '/' -f-2 | rev)
+            else
+              # Format the directory part, replacing aliases if needed
+              _PWD=$(pwd)
+              case $_PWD in
+                "$HOME" ) DIR_OUTPUT="~";;
+                * ) DIR_OUTPUT="$_PWD";;
+              esac
+
+              # Keep only last two parts of the path
+              DIR_OUTPUT=$(echo -n "$DIR_OUTPUT" | rev | cut -d '/' -f-2 | rev)
+            fi
             OUTPUT="$OUTPUT$DIR_OUTPUT"
 
             # Append space
