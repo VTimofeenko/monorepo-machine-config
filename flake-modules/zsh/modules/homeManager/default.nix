@@ -86,13 +86,6 @@ in
           }) list
         );
 
-      shellGlobalAliases = {
-        G = "| rg";
-        C = "| ccopy";
-        # (V)iew in (V)im
-        V = "| vim -R";
-      };
-
       inherit (commonSettings) shellAliases;
       initExtra =
         commonSettings.initExtra
