@@ -8,6 +8,7 @@ let
   modList =
     ./components
     |> lib.fileset.toList
+    |> lib.filter (lib.hasSuffix ".nix")
     |> map (
       it:
       let

@@ -184,7 +184,6 @@ rec {
   myPlugins = {
     baseDir = ./myPlugins;
     list = [
-      "vim-edit"
       "cd-stack"
       "bookmarks"
       "cursor_mode"
