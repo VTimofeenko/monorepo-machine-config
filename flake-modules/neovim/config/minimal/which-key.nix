@@ -29,7 +29,7 @@
         { "<leader>b", desc = "+buffer" },
         { "<leader>b[", "<cmd>bprevious<cr>", desc = "Previous buffer" },
         { "<leader>b]", "<cmd>bnext<cr>", desc = "Next buffer" },
-        --{ "<leader>bb", require("telescope.builtin").buffers, desc = "Buffer selector" },
+        { "<leader>bb", require("telescope.builtin").buffers, desc = "Buffer selector" },
         { "<leader>bd", "<cmd>bd<cr>", desc = "Close buffer" },
       })
     '';
