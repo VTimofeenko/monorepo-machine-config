@@ -17,7 +17,6 @@ in
   };
 
   imports = [
-    ./broot.nix
     (import ../../config { inherit lib pkgs self; }).homeManagerModule
   ];
 
