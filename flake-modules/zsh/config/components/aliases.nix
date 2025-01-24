@@ -48,7 +48,8 @@ let
         grep = "grep --color=auto";
         mv = "mv -v";
         rm = "${pkgs.coreutils}/bin/rm -id";
-        vidir = "${pkgs.moreutils}/bin/vidir --verbose";
+        # Use fast `$CMD_EDITOR` for vidir
+        vidir = "EDITOR=$CMD_EDITOR ${pkgs.moreutils}/bin/vidir --verbose";
         ccopy =
           [
             "${getExe pkgs.perl} -p -e 'chomp if eof'"
