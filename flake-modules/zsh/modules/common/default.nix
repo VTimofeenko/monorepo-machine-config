@@ -139,7 +139,6 @@ rec {
     baseDir = ./myPlugins;
     list = [
       "cd-stack"
-      "bookmarks"
       "cursor_mode"
     ];
   };
