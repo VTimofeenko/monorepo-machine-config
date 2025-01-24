@@ -60,6 +60,7 @@
           end,
           desc = "File browser (look around)",
         },
+        { "<leader>bb", require("telescope.builtin").buffers, desc = "Buffer selector" },
       })
 
     '';
