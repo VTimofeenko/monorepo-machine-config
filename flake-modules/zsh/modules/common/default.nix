@@ -135,13 +135,6 @@ rec {
       zstyle :bracketed-paste-magic paste-finish pastefinish
     ''
   ];
-  myPlugins = {
-    baseDir = ./myPlugins;
-    list = [
-      "cd-stack"
-      "cursor_mode"
-    ];
-  };
   variables = {
     EDITOR = "nvim";
     FZF_CTRL_T_COMMAND = "${getExe pkgs.fd} .";

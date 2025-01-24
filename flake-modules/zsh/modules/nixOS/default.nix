@@ -8,7 +8,6 @@
 }:
 let
   commonSettings = import ../common { inherit pkgs config self; };
-  inherit (lib) concatMapStringsSep;
 in
 {
   imports = [
@@ -20,13 +19,6 @@ in
     enableCompletion = lib.mkForce false;
     interactiveShellInit =
       commonSettings.initExtra
-      + (
-        with commonSettings.myPlugins;
-        ''
-          fpath=(${baseDir} $fpath)
-        ''
-        + concatMapStringsSep "\n" (plugin: "autoload -Uz ${plugin}.zsh && ${plugin}.zsh") list
-      )
       + "\n";
   };
   environment = {

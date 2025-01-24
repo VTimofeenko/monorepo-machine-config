@@ -59,17 +59,6 @@ in
           ];
         };
 
-      # Plugin configuration
-      plugins =
-        (
-          with commonSettings.myPlugins;
-          map (name: {
-            inherit name;
-            file = "${name}.zsh";
-            src = baseDir;
-          }) list
-        );
-
       initExtra =
         commonSettings.initExtra
         # set SSH_AUTH_SOCK <=> gpg-agent is enabled in home-manager
