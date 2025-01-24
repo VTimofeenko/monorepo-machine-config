@@ -9,7 +9,6 @@ let
     getExe
     concatMapStringsSep
     concatStringsSep
-    pipe
     ;
 in
 rec {
@@ -96,12 +95,6 @@ rec {
       autoload -Uz bracketed-paste-magic
       zle -N bracketed-paste bracketed-paste-magic
     ''
-
-    (pipe (import ./functions.nix { inherit pkgs; }) [
-      (builtins.mapAttrs (name: value: "${name}(){${value.text}}")) # Turn into zsh function
-      builtins.attrValues
-      (concatStringsSep "\n")
-    ])
 
     # automatically open files with certain extensions in EDITOR
     (concatMapStringsSep "\n" (ext: "alias -s ${ext}=$EDITOR") [
