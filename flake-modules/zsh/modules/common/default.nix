@@ -71,15 +71,4 @@ rec {
       }
     ''
   ];
-  variables = {
-    EDITOR = "nvim";
-    FZF_CTRL_T_COMMAND = "${getExe pkgs.fd} .";
-    FZF_ALT_C_COMMAND = "${getExe pkgs.fd} -t d .";
-    XDG_CACHE_HOME = "$HOME/.cache";
-    XDG_CONFIG_HOME = "$HOME/.config";
-    XDG_DATA_HOME = "$HOME/.local/share";
-    XDG_STATE_HOME = "$HOME/.local/state";
-    # May be obsoleted by https://github.com/nix-community/home-manager/pull/4713
-    DOTFILES_REPO_LOCATION = "$HOME/code/literate-machine-config";
-  };
 }

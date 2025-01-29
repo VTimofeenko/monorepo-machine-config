@@ -21,7 +21,4 @@ in
       commonSettings.initExtra
       + "\n";
   };
-  environment = {
-    inherit (commonSettings) variables;
-  };
 }
