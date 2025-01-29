@@ -24,5 +24,4 @@ in
   environment = {
     inherit (commonSettings) variables;
   };
-  environment.systemPackages = commonSettings.packages;
 }

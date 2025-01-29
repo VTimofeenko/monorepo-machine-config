@@ -1,7 +1,6 @@
 # A set of settings that are common for both modules
 {
   pkgs,
-  self,
   ...
 }:
 let
@@ -12,46 +11,6 @@ let
     ;
 in
 rec {
-  # InteractiveShellInit?
-  # List of shell-only packages
-  packages =
-    builtins.attrValues {
-      inherit (pkgs)
-        fzf # fuzzy finder. Installed for completions.
-        bat # cat with wings!
-        jq # parsing some JSON
-        direnv # controls environments in projects
-        curl # does not need introduction
-        wget # neither does this
-        fd # find replacement with saner syntax
-        inetutils # a couple of utilities to be kept offline
-        moreutils # a collection of additional tools
-        file # Detects what kind of file is this
-        ripgrep # useful grep replacement
-        lsof # shows file handles
-        dig # quick DNS tester
-        unzip # unpacks archives
-        htop # system monitoring
-        eza # for completions
-        spacer
-        tree
-        ;
-    }
-    ++ [
-      (pkgs.writeShellScriptBin "deploy-local" ''
-        set -euo pipefail
-
-        if [[ $(grep -s ^NAME= /etc/os-release | sed 's/^.*=//') == "NixOS" ]]; then
-          sudo nixos-rebuild switch --flake ''${DOTFILES_REPO_LOCATION}
-        else # Not a NixOS machine
-          home-manager switch --flake ''${DOTFILES_REPO_LOCATION}
-        fi
-      '')
-      (import ./packages/confirm.nix { inherit (pkgs) writeShellApplication; })
-      (pkgs.writeShellScriptBin "vim-minimal" ''
-        ${pkgs.lib.getExe' self.packages.${pkgs.stdenv.system}.vim-minimal "nvim"} "$@"
-      '')
-    ];
   additionalOptions = [
     "INTERACTIVE_COMMENTS" # Bash-style comments in interactive shell
   ];

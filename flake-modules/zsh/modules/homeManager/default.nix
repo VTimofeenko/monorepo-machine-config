@@ -12,10 +12,6 @@ let
   inherit (config.my-colortheme) raw semantic;
 in
 {
-  home = {
-    inherit (commonSettings) packages;
-  };
-
   imports = [
     (import ../../config { inherit lib pkgs self; }).homeManagerModule
   ];
