@@ -23,21 +23,6 @@ in
       defaultKeymap = "viins";
       # Move the dotfiles to .config -- unclutter home dir
       dotDir = ".config/zsh";
-      # History options
-
-      initExtra =
-        commonSettings.initExtra
-        # set SSH_AUTH_SOCK <=> gpg-agent is enabled in home-manager
-        + (
-          if config.services.gpg-agent.enable then
-            ''
-              if [[ -z "$SSH_AUTH_SOCK" ]]; then
-                export SSH_AUTH_SOCK="$(${config.programs.gpg.package}/bin/gpgconf --list-dirs agent-ssh-socket)"
-              fi
-            ''
-          else
-            ""
-        );
     };
   };
 }
