@@ -10,6 +10,14 @@
         { inputs', ... }:
         let
           pkgs = inputs'.nixpkgs.legacyPackages;
+
+          fzfHistorySearch =
+            builtins.readFile ./ipython-fzf.py
+            |> (it: {
+              text = it;
+              name = "ipython-fzf-history";
+            })
+            |> pkgs.writeTextFile;
         in
         {
           ipython = {
@@ -21,9 +29,11 @@
                   python-pkgs.ipython
                   python-pkgs.toolz
                   python-pkgs.rich
+                  python-pkgs.pyfzf
                 ]))
+                pkgs.fzf
               ];
-              text = ''ipython --TerminalInteractiveShell.editing_mode=vi "$@"'';
+              text = ''ipython --TerminalInteractiveShell.editing_mode=vi -i "${fzfHistorySearch}" "$@"'';
             };
           };
         }
