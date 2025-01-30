@@ -23,7 +23,7 @@
                   python-pkgs.rich
                 ]))
               ];
-              text = ''ipython --TerminalInteractiveShell.editing_mode=vi'';
+              text = ''ipython --TerminalInteractiveShell.editing_mode=vi "$@"'';
             };
           };
         }
