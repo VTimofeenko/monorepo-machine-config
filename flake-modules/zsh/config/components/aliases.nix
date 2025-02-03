@@ -12,8 +12,12 @@ let
         nrs = "nix repl -f flake:ns";
         # Quick nix repl with stable nixpkgs imported
         nru = "nix repl -f flake:nu";
-        # Load flake into repl. Try `$PRJ_ROOT` first, if not found -- fall back to `$PWD`
-        nrlf = ''nix repl --expr "builtins.getFlake \"''${PRJ_ROOT:-$PWD}\""'';
+        # Load flake into repl. Try `$PRJ_ROOT` first, if not found -- fall
+        # back to `$PWD`. This is the fast way that uses git to prune unneeded
+        # stuff (like `.direnv`)
+        nrlf = ''nix repl --expr "builtins.getFlake \"git+file:''${PRJ_ROOT:-$PWD}\""'';
+        # This is the slower way that might load extra stuff but is live
+        nrrlf = ''nix repl --expr "builtins.getFlake \"''${PRJ_ROOT:-$PWD}\""'';
       }
       # ls aliases
       {
