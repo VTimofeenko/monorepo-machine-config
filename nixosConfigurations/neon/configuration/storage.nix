@@ -1,5 +1,7 @@
 { pkgs, ... }:
 {
+  boot.kernelParams = [ "libata.force=noncq" ];
+
   fileSystems."/data" = {
     fsType = "btrfs";
     device = "/dev/sda";
