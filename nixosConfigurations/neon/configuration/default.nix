@@ -51,5 +51,7 @@ in
   imports = [
     ./hw-acceleration.nix
     ./storage.nix
+    (lib.localLib.mkMicroVMModules "neodymium")
+    (lib.localLib.mkMicroVMModules "promethium")
   ];
 }
