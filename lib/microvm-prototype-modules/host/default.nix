@@ -11,6 +11,7 @@ microVMName:
 let
   inherit (data-flake.lib) homelab;
 
+  localLibExt = _: _: { localLib = import ../../locallib.nix { inherit lib; }; };
   homelabExt =
     _: _:
     {
@@ -22,7 +23,12 @@ in
 {
   microvm.vms.${microVMName} = {
     # Done to add custom lib functions
-    specialArgs.lib = pkgs.lib.extend (lib.composeManyExtensions [ homelabExt ]); # TODO: may need a more generic function here to pass `localLib` like what the flake does
+    specialArgs.lib = pkgs.lib.extend (
+      lib.composeManyExtensions [
+        homelabExt
+        localLibExt
+      ]
+    ); # TODO: may need a more generic function here to pass `localLib` like what the flake does
 
     # It is highly recommended to share the host's nix-store
     # with the VMs to prevent building huge images.
