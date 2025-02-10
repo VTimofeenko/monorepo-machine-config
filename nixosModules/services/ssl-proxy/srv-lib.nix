@@ -1,15 +1,18 @@
-/**
-  A sketch of what a srvLib for SSL proxy could look like.
-
-  TODO: pass to other modules.
-*/
-{ lib, ... }:
 {
+  /**
+    Produces a module for my default SSL virtual host.
+
+    Implementation notes:
+    I am not necessarily happy about binding `config` and `lib` this way.
+    However, this allows the caller code to be very simple and not bother about
+    importing the resulting module.
+  */
   mkStandardProxyVHost =
     {
       serviceName,
       port,
       config,
+      lib,
     }:
     {
       services.nginx.virtualHosts."${serviceName |> lib.homelab.getServiceFqdn}" = {
@@ -18,7 +21,7 @@
         sslCertificate = config.age.secrets."ssl-cert".path;
         sslCertificateKey = config.age.secrets."ssl-key".path;
         locations."/" = {
-          proxyPass = "http://${lib.homelab.getServiceInnerIP}:${port |> toString}";
+          proxyPass = "http://${serviceName |> lib.homelab.getServiceInnerIP}:${port |> toString}";
           proxyWebsockets = true;
         };
       };

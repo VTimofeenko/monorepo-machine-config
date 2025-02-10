@@ -8,6 +8,7 @@ rec {
 
   monitoring = false; # TODO: implement
   logging = false; # TODO: implement
+  srvLib = import ./srv-lib.nix;
   # Stateless service
   backups = false;
   storage = false;
