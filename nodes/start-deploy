@@ -1,0 +1,3 @@
+while true; do
+read && nix flake update data-flake && ./deploy "$1" && echo "DONE $1"
+done

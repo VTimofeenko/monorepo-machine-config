@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Occasionally useful to locally build the machine before deploying it
+set -euo pipefail
+
+nix build .#nixosConfigurations."${1}".config.system.build.toplevel
+unlink ./result
+

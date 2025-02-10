@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+echo "Locking deploy of ${1}"
+LOCKFILE="$XDG_RUNTIME_DIR/deploy-${1}.lock"
+LOCKFD=99
+
+_lock()             { flock -"$1" $LOCKFD; }
+_no_more_locking()  { _lock u; _lock xn && rm -f "$LOCKFILE"; }
+_prepare_locking()  { eval "exec $LOCKFD>\"$LOCKFILE\""; trap _no_more_locking EXIT; }
+
+
+# ON START
+_prepare_locking
+
+# PUBLIC
+exlock_now()        { _lock xn; }  # obtain an exclusive lock immediately or fail
+exlock()            { _lock x; }   # obtain an exclusive lock
+shlock()            { _lock s; }   # obtain a shared lock
+unlock()            { _lock u; }   # drop a lock
+
+### BEGIN OF SCRIPT ###
+
+# Simplest example is avoiding running multiple instances of script.
+exlock_now || (echo "Cannot acquire lock" && exit 1)
+
+/nix/store/hirl3b9qmgifjm5ai7c0fzx4gjcz7kjy-deploy-rs-0.1.0/bin/deploy -s /home/spacecadet/code/literate-machine-config#${1} && /nix/store/23nz5mjk3dj7027byc6g5avx3mfwwnqm-libnotify-0.8.3/bin/notify-send "${1} deployed" -i object-select || /nix/store/23nz5mjk3dj7027byc6g5avx3mfwwnqm-libnotify-0.8.3/bin/notify-send "${1} deployment failed" -i window-close
