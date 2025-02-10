@@ -517,6 +517,25 @@
                 description = "Template for a sample check with home-manager.";
               };
             };
+
+            serviceModules =
+              # find all directories with 'manifest.nix'
+              lib.fileset.fileFilter (file: file.name == "manifest.nix") ./.
+              |> lib.fileset.toList
+              # Turn the directories into strings
+              |> map toString
+              # Remove manifest.nix
+              |> map (lib.removeSuffix "/manifest.nix")
+              # Get the directory
+              |> map (builtins.match "^.*/services/(.*)")
+              # Every directory can have one and only one manifest.nix file, so this is fine
+              |> map lib.head
+              # Turn the directories into imports
+              |> map (it: {
+                "${it}" = import (./nixosModules/services + "/${it}/manifest.nix");
+              })
+              # Assemble the attrset of modules
+              |> lib.mergeAttrsList;
           };
       }
     );
