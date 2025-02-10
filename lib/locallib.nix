@@ -87,4 +87,6 @@ in
       reverseList
       (concatStringsSep ".")
     ];
+
+  mkMicroVMModules = import ./microvm-prototype-modules;
 }

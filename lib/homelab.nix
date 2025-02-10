@@ -82,6 +82,7 @@
               nur.modules.nixos.default
               ../modules
             ])
+            ++ (lib.optionals (hostData.hostName == "neon") [ self.inputs.microvm.nixosModules.host ])
             ++ (map (
               module: ../nixosModules/services + "/${module}"
             ) data-flake.data.hosts.all.${hostName}.modulesAt.public) # NOTE: Needs default.nix in the service directory
