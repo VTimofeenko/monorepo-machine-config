@@ -37,7 +37,5 @@
   hardware.cpu.intel.updateMicrocode = lib.mkForce true;
 
   # Imports
-  imports = [
-    # ./experimental-wg-srvnet.nix
-  ];
+  imports = [ ];
 }
