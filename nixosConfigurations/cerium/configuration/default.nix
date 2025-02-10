@@ -35,5 +35,7 @@
   hardware.cpu.intel.updateMicrocode = lib.mkForce true;
   networking.interfaces.ens3.useDHCP = true;
   # Imports
-  imports = [ ];
+  imports = [
+    ./experimental-iscsi.nix
+  ];
 }
