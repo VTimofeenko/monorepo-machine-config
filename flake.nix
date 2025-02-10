@@ -180,6 +180,13 @@
         flake-parts.follows = "flake-parts";
       };
     };
+
+    microvm = {
+      url = "github:astro/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
+    impermanence.url = "github:nix-community/impermanence";
   };
   outputs =
     inputs@{ flake-parts, self, ... }:
