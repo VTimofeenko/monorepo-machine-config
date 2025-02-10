@@ -11,7 +11,7 @@ in
       matchConfig.Name = lib.mkForce "phy-lan";
       networkConfig = {
         DHCP = "no";
-        Address = [ "${lib.homelab.getOwnIpInNetwork "lan" |> lib.traceVal }/24" ]; # TODO: remove traceVal
+        Address = [ "${lib.homelab.getOwnIpInNetwork "lan" }/24" ];
         Gateway = lan.settings.defaultGateway;
         DNS = lan.dnsServers;
         # This will also disable IPv6 assigning
