@@ -68,6 +68,8 @@ in
           # DNSSEC = "yes";
           # DNSOverTLS = "no";
           LinkLocalAddressing = "no";
+          DNSDefaultRoute = true;
+          Domains = [ lib.homelab.getSettings.publicDomainName ];
         };
       };
       "99-wan" = {
@@ -77,6 +79,7 @@ in
         networkConfig = {
           DHCP = "yes"; # Enables DHCP Client on this interface
           DNS = [ lan.dnsServers ]; # Disable getting DNS from upstream.
+          DNSDefaultRoute = false;
         };
       };
     };
