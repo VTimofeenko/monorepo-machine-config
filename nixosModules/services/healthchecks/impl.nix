@@ -87,11 +87,7 @@ in
 
     # Network stuff
     port = srvConfig.proxyPort;
-    listenAddress =
-      assert lib.assertMsg (
-        srv.networkAccess == [ "client" ]
-      ) "This service should only listen on client backbone network.";
-      getOwnIpInNetwork "client";
+    listenAddress = getOwnIpInNetwork "backbone-inner";
   };
 
   # Storage

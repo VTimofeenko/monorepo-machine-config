@@ -1,9 +1,14 @@
-# NOTE: This should be later used as an example "client net" generating firewall function
 { lib, ... }:
 let
   srvName = "healthchecks";
   inherit (lib.homelab) getServiceConfig;
 in
 {
-  networking.firewall.interfaces."client".allowedTCPPorts = [ (getServiceConfig srvName).proxyPort ];
+  networking.firewall.extraInputRules =
+    [
+      ''ip saddr ${lib.homelab.getHostIpInNetwork "fluorine" "backbone-inner"}'' # TODO: parameterize this as the global SSL proxy
+      ''tcp dport ${(getServiceConfig srvName).proxyPort |> toString} accept''
+    ]
+    |> builtins.concatStringsSep " ";
+
 }

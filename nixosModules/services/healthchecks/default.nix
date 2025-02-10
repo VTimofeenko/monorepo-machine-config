@@ -1,6 +1,3 @@
-_: {
-  imports = [
-    ./impl.nix
-    ./firewall.nix
-  ];
+{
+  imports = (import ./manifest.nix).module;
 }
