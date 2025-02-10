@@ -12,7 +12,6 @@ let
   inherit (lib.homelab)
     getServiceConfig
     getService
-    getNetwork
     getOwnIpInNetwork
     ;
 
@@ -20,20 +19,15 @@ let
   thisSrv = getService srvName;
   thisSrvConfig = getServiceConfig "dns";
 
-  clientNetViewName = "wg_client_network";
-
-  inherit (import ./lib.nix) mkARecord;
-  client = getNetwork "client";
-
   inherit (my-data.networks) zones;
   selfPkgs' = selfPkgs.${pkgs.system};
 in
 {
 
   imports = [
-    ./service/acl.nix
-    ./service/performance.nix
-    ./service/reverse.nix
+    ./functional/performance.nix
+    ./functional/reverse.nix
+    ./functional/client-view.nix
   ];
 
   services.unbound = {
@@ -51,9 +45,6 @@ in
           ++ (map (zone: ''"${zone}" always_null'') thisSrvConfig.customBlocklist); # Reply 0.0.0.0 for these hosts
         domain-insecure = zones;
         include = "${selfPkgs'.hostsBlockList}";
-
-        # Serve specific records to client network
-        access-control-view = [ "${client.settings.clientSubNet}.1/24 ${clientNetViewName}" ];
 
         # Other settings
         cache-max-ttl = 86400;
@@ -105,18 +96,6 @@ in
         log-local-actions = "no";
       };
 
-      view = [
-        {
-          name = clientNetViewName;
-          local-zone = [ ''"${my-data.settings.publicDomainName}." static'' ];
-          # NOTE: originally I had the idea of doing something like
-          # $SRV_NAME > CNAME $HOST_NAME
-          # $HOST_NAME gets resolved to 192.168 for LAN, $CLIENT_IP for client
-          # Unfortunately it does not work, see https://github.com/NLnetLabs/unbound/issues/747
-          local-data = lib.attrsets.mapAttrsToList (k: v: ''"${mkARecord k v}"'') thisSrvConfig.clientView;
-          view-first = "yes";
-        }
-      ];
       # Ask NSD for data on entries in the custom zones
       stub-zone = map (zone: {
         name = zone;

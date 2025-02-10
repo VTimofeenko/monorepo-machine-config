@@ -1,8 +1,4 @@
-_: {
-  imports = [
-    ./unbound.nix
-    ./firewall.nix
-    ./logging.nix
-    ./monitoring.nix
-  ];
+# Shim to load the manifest
+{
+  imports = (import ./manifest.nix).default;
 }
