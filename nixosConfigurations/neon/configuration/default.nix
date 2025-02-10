@@ -50,5 +50,6 @@ in
   # Imports
   imports = [
     ./hw-acceleration.nix
+    ./storage.nix
   ];
 }
