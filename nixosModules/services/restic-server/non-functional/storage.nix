@@ -1,5 +1,11 @@
-# Source: https://discourse.nixos.org/t/configure-iscsi/50773/5
-{ lib, pkgs, ... }:
+/**
+  Mounts iSCSI LUN to store the restic repos.
+
+  Using this needs impure configuration on NAS side.
+
+  Source: https://discourse.nixos.org/t/configure-iscsi/50773/5
+*/
+{ lib, pkgs, config, ... }:
 
 let
   IP = "nas" |> lib.flip lib.homelab.getHostIpInNetwork "lan";
@@ -34,12 +40,15 @@ in
     wantedBy = [ "multi-user.target" ];
   };
 
-  fileSystems."/mnt" = {
+  fileSystems."${config.services.restic.server.dataDir}" = {
     device = "/dev/disk/by-path/ip-${IP}:3260-iscsi-iqn.2000-01.com.synology:nas.default-target.c332d8ce746-lun-1-part1";
     fsType = "ext4";
     options = [
       "_netdev"
       "nofail"
+      "noatime"
     ];
   };
+
+  systemd.services.restic-rest-server.unitConfig.RequiresMountsFor = [ config.services.restic.server.dataDir ];
 }
