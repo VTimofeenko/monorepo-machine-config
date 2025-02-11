@@ -5,7 +5,7 @@ rec {
   default = [
     module
     ingress.impl
-    # storage.impl
+    storage.impl
     ./non-functional/ssl.nix
     ./non-functional/bkp.nix
     ./non-functional/network.nix

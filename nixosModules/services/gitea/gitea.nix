@@ -1,16 +1,10 @@
-{ config, lib, ... }:
+{ lib, ... }:
 let
   inherit (lib.homelab) getOwnIpInNetwork getServiceFqdn;
-  inherit (lib.localLib) mkCryptTab mkLuksMount;
 
   srvName = "gitea";
   srvFqdn = getServiceFqdn srvName;
   ownIP = getOwnIpInNetwork "lan";
-
-  luks = {
-    device_name = "gitea_data";
-    UUID = "fdcc8af6-7b4e-443d-b10d-0cd23c412dee";
-  };
 in
 {
   # Service configuration
@@ -47,17 +41,5 @@ in
       CapabilityBoundingSet = lib.mkForce "CAP_NET_BIND_SERVICE";
       PrivateUsers = lib.mkForce false;
     };
-
-    # Needed for LUKS mount
-    unitConfig.RequiresMountsFor = lib.mkOptionDefault [ config.services.gitea.stateDir ];
   };
-
-  # LUKS setup
-  environment.etc."crypttab".text = mkCryptTab { inherit (luks) device_name UUID; };
-  systemd.mounts = [
-    (mkLuksMount {
-      inherit (luks) device_name;
-      target = config.services.gitea.stateDir;
-    })
-  ];
 }
