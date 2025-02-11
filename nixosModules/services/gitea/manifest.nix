@@ -26,7 +26,7 @@ rec {
     impl = ./non-functional/storage.nix;
   };
   backups = rec {
-    enable = false;
+    enable = true;
     schedule = "daily";
     paths = [ "/var/lib/gitea" ];
     impl =
