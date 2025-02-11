@@ -27,10 +27,9 @@ rec {
     impl = ./non-functional/storage.nix;
   };
   backups = rec {
-    # FIXME: implement
     enable = false;
     schedule = "daily";
-    paths = [ ];
+    paths = [ "/var/lib/gitea" ];
     impl =
       if enable then import ./non-functional/backups.nix { inherit paths schedule serviceName; } else { };
     # TODO: remote!
