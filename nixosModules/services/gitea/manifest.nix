@@ -8,7 +8,6 @@ rec {
     storage.impl
     ./non-functional/ssl.nix
     ./non-functional/bkp.nix
-    ./non-functional/network.nix
     backups.impl
   ];
   module = ./gitea.nix;
