@@ -3,6 +3,7 @@ rec {
     module
     ingress.impl
     storage.impl
+    monitoring.impl
   ];
   module = ./impl.nix;
   ingress = {
