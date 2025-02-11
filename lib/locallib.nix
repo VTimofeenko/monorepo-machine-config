@@ -91,4 +91,14 @@ in
   mkMicroVMModules = import ./microvm-prototype-modules;
 
   mkHealthCheckModules = import ./healthchecks-systemd-module;
+
+  /**
+    Interface to produce backup modules for a service.
+
+    Implementation note:
+
+    `mkBkp` is a function that, when called, passes its arguments to the function
+    defined in the imported file. This, in turn, produces a dynamic module.
+  */
+  mkBkp = lib.modules.importApply ./mk-bkp.nix;
 }
