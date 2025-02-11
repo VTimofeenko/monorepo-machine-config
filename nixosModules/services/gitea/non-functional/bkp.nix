@@ -32,12 +32,12 @@ in
           checkId = (getServiceBackups srvName).local.HCGUID;
         in
         {
-          OnFailure = "ping-healthchecks@${checkId}:failure.service";
-          OnSuccess = "ping-healthchecks@${checkId}:success.service";
-          Wants = "ping-healthchecks@${checkId}:start.service";
+          OnFailure = "ping-healthchecks-old@${checkId}:failure.service";
+          OnSuccess = "ping-healthchecks-old@${checkId}:success.service";
+          Wants = "ping-healthchecks-old@${checkId}:start.service";
         };
 
-      "ping-healthchecks@" = {
+      "ping-healthchecks-old@" = {
         serviceConfig.ExecStart =
           let
             ping-hc = pkgs.writeShellApplication {
