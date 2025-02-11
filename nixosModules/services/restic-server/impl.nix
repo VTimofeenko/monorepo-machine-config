@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   services.restic.server = {
     enable = true;
@@ -8,4 +8,7 @@
       "${config.age.secrets.restic-server-htpasswd.path}"
     ];
   };
+
+  # Needed for testing/examining backups
+  environment.systemPackages = [ pkgs.restic ];
 }
