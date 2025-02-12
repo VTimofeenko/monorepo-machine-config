@@ -1,10 +1,14 @@
 /**
   Function that produces a module implementing backups.
+
+  If the `localDB` variable is true, restic will perform a local database dump
+  and back it up too.
 */
 {
   paths,
   exclude ? [ ],
-  schedule,
+  schedule ? "daily",
+  localDB ? false, # If set to true, adds `pg_dumpall` script to backup the result of the DB dump
   serviceName,
 }:
 {
@@ -22,7 +26,17 @@ in
     "${serviceName}-localbackup" = {
       initialize = true;
       passwordFile = config.age.secrets."${serviceName}-bkp-password".path;
-      inherit paths exclude;
+      inherit exclude;
+      paths =
+        paths ++ (lib.optional localDB "/run/restic-backups-${serviceName}-localbackup/pg_dumpall.sql");
+
+      # This is a bit brittle as it hardcodes paths
+      backupPrepareCommand =
+        if localDB then
+          ''/run/wrappers/bin/sudo -u postgres '/run/current-system/sw/bin/pg_dumpall' > "$RUNTIME_DIRECTORY/pg_dumpall.sql"''
+        else
+          null; # As the default
+
       repository = "rest:https://${lib.homelab.getServiceFqdn "restic-server"}/${hostName}/${serviceName}";
       timerConfig.OnCalendar = schedule;
       package = (
