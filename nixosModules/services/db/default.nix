@@ -1,1 +1,6 @@
-_: { imports = [ ./postgresql.nix ]; }
+{
+  imports = [
+    ./postgresql.nix
+    (import ./manifest.nix).backups.impl
+  ];
+}
