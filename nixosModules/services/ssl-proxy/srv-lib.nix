@@ -13,6 +13,7 @@
       port,
       config,
       lib,
+      extraConfig ? "", # As default services.nginx.virtualHosts.<name>.extraConfig
     }:
     {
       services.nginx.virtualHosts."${serviceName |> lib.homelab.getServiceFqdn}" = {
@@ -24,6 +25,7 @@
           proxyPass = "http://${serviceName |> lib.homelab.getServiceInnerIP}:${port |> toString}";
           proxyWebsockets = true;
         };
+        inherit extraConfig;
       };
     };
 }
