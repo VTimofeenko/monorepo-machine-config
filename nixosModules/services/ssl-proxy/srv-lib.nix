@@ -14,6 +14,7 @@
       config,
       lib,
       extraConfig ? "", # As default services.nginx.virtualHosts.<name>.extraConfig
+      onlyHumans ? false,
     }:
     {
       services.nginx.virtualHosts."${serviceName |> lib.homelab.getServiceFqdn}" = {
@@ -25,7 +26,15 @@
           proxyPass = "http://${serviceName |> lib.homelab.getServiceInnerIP}:${port |> toString}";
           proxyWebsockets = true;
         };
-        inherit extraConfig;
+        extraConfig = ''
+          ${lib.optionalString onlyHumans (
+            lib.homelab.getHumanIPs
+            |> map (x: "allow ${x};") # construct allow directives in nginx
+            |> lib.concatStringsSep "\n" # turn into a string
+          )}
+          ${extraConfig}
+          ${lib.optionalString onlyHumans "deny all;"}
+        '';
       };
     };
 }
