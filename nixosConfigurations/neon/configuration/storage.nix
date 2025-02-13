@@ -4,7 +4,7 @@
 
   fileSystems."/data" = {
     fsType = "btrfs";
-    device = "/dev/sda";
+    device = "/dev/disk/by-uuid/8cc1e2d2-1ff9-4145-bbac-74a3056a242f";
     options = [
       "defaults"
       "noatime"
