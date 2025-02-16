@@ -22,9 +22,6 @@ in
         persist = true;
         type = "memfile";
       };
-      renew-timer = 1000;
-      rebind-timer = 2000;
-      valid-lifetime = 4000;
       subnet4 = [
         {
           id = 1;
@@ -62,4 +59,7 @@ in
       ];
     };
   };
+
+  # Construct imports from `./functional` directory by auto-including all files
+  imports = ./functional |> lib.fileset.fileFilter (file: file.hasExt "nix") |> lib.fileset.toList;
 }
