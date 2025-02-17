@@ -10,7 +10,7 @@ in
 {
   services.homepage-dashboard = {
     enable = true;
-    inherit (srvCfg) bookmarks settings services;
+    inherit (srvCfg) bookmarks settings;
   };
 
   systemd.services.homepage-dashboard = {
