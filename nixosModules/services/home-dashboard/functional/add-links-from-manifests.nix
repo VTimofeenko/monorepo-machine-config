@@ -12,16 +12,20 @@
     |> lib.filterAttrs (_: value: value |> builtins.hasAttr "dashboard")
     # The general format at this point is:
     # `service-foo = { category = "bar"; links = [ { { path = "/"; description = "baz"; icon = "foz"; name = "qux"; }}] }`
-    #
-    # Idea: let the groups merge later?
     |> lib.mapAttrs (
-      name: value: {
-        "${value.dashboard.category}" =
-          value.dashboard.links
+      name: value:
+      let
+        # Some dashboard attrsets are functions
+        # TODO: Maybe refactor manifests as functions in general?
+        dashboard = if lib.isFunction value.dashboard then value.dashboard { inherit lib; } else value.dashboard;
+      in
+      {
+        "${dashboard.category}" =
+          dashboard.links
           |> map (it: {
             "${it.name}" = {
               description = "${it.description or ""}";
-              href = "https://${lib.homelab.getServiceFqdn name}${it.path or "/"}";
+              href = it.absoluteURL or "https://${lib.homelab.getServiceFqdn name}${it.path or "/"}";
               # Get the icon, but fallback to `selfhosted` icon
               icon = "https://${lib.homelab.getServiceFqdn "filedump"}/dashboard-icons/png/${
                 if it |> builtins.hasAttr "icon" then "${it.icon}.png" else "selfhosted.png"
