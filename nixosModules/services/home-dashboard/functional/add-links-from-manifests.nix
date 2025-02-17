@@ -22,7 +22,10 @@
             "${it.name}" = {
               description = "${it.description or ""}";
               href = "https://${lib.homelab.getServiceFqdn name}${it.path or "/"}";
-              icon = "https://${lib.homelab.getServiceFqdn "filedump"}/dashboard-icons/png/${it.icon}.png";
+              # Get the icon, but fallback to `selfhosted` icon
+              icon = "https://${lib.homelab.getServiceFqdn "filedump"}/dashboard-icons/png/${
+                if it |> builtins.hasAttr "icon" then "${it.icon}.png" else "selfhosted.png"
+              }";
             };
           });
       }
