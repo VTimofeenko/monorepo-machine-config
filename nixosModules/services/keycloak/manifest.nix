@@ -33,4 +33,15 @@ rec {
       if enable then import ./non-functional/backups.nix { inherit paths schedule serviceName; } else { };
     # TODO: remote!
   };
+
+  dashboard = {
+    category = "Admin";
+    links = [
+      {
+        description = "SSO";
+        icon = "keycloak";
+        name = "Keycloak";
+      }
+    ];
+  };
 }

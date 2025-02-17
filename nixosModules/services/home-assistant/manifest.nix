@@ -33,4 +33,15 @@ rec {
       if enable then import ./non-functional/backups.nix { inherit paths schedule serviceName; } else { };
     # TODO: remote!
   };
+
+  dashboard = {
+    category = "Home";
+    links = [
+      {
+        description = "The brains of the smart home";
+        icon = "home-assistant";
+        name = "Home assistant";
+      }
+    ];
+  };
 }

@@ -14,4 +14,15 @@ rec {
   # Stateless service
   backups = false;
   storage = false;
+
+  dashboard = {
+    category = "Admin";
+    links = [
+      {
+        description = "Periodic ping reporting (backups, network check, etc.)";
+        icon = "healthchecks";
+        name = "Healthchecks";
+      }
+    ];
+  };
 }

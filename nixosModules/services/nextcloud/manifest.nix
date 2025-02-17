@@ -32,4 +32,14 @@ rec {
       if enable then { lib, ... }: lib.localLib.mkBkp { inherit paths exclude serviceName; } else { };
     # TODO: remote!
   };
+
+  dashboard = {
+    category = "Home";
+    links = [
+      {
+        icon = "nextcloud";
+        name = "Nextcloud";
+      }
+    ];
+  };
 }
