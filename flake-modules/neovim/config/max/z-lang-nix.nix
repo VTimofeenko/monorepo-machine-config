@@ -209,7 +209,7 @@ in
         s("assertMsg", {
           t({ "assert lib.assertMsg " }),
           i(1),
-          t({ "\"" }),
+          t({ "pred \"" }),
           i(2),
           t({ "\";" }),
           i(3),
