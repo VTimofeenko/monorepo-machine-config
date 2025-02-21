@@ -17,7 +17,6 @@
     - (let .. in)
     - (if then else)
 
-  TODO: add trivial common builder templates
   TODO: add assertIf/assertMsg shortcuts
   TODO: Add {pkgs,lib,...} template
   TODO: add hover data for common functions (maybe source from devdocs or noogle?)
