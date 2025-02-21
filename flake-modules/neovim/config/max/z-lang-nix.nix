@@ -17,7 +17,6 @@
     - (let .. in)
     - (if then else)
 
-  TODO: Add {pkgs,lib,...} template
   TODO: add hover data for common functions (maybe source from devdocs or noogle?)
 */
 {
@@ -214,6 +213,9 @@ in
           i(2),
           t({ "\";" }),
           i(3),
+        }),
+        s("{ pkgs, lib, config, ... }:", {
+          t({ "{ pkgs, lib, config, ... }:" }),
         }),
       }, {
         key = "nix",
