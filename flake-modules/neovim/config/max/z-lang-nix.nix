@@ -17,7 +17,6 @@
     - (let .. in)
     - (if then else)
 
-  TODO: add assertIf/assertMsg shortcuts
   TODO: Add {pkgs,lib,...} template
   TODO: add hover data for common functions (maybe source from devdocs or noogle?)
 */
@@ -207,6 +206,14 @@ in
           t({ "];", "", "\ttext =" }),
           i(3),
           t({ "}" }),
+        }),
+        s("assertMsg", {
+          t({ "assert lib.assertMsg " }),
+          i(1),
+          t({ "\"" }),
+          i(2),
+          t({ "\";" }),
+          i(3),
         }),
       }, {
         key = "nix",
