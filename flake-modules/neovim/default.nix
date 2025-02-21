@@ -25,6 +25,7 @@
           vim-minimal = "min";
           vim = "std";
           vim-with-langs = "max";
+          vim-max = "max";
         }
         |> lib.mapAttrs (
           _: it:
