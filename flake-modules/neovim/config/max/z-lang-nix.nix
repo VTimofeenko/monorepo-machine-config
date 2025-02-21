@@ -193,12 +193,6 @@ in
           i(1),
           t({ " */" }),
         }),
-        -- Multiline string
-        s("'''", {
-          t({ "''' ", "" }), -- This adds a newline. Alternative -- use luasnip's fmt
-          i(1),
-          t({ "'''" }),
-        }),
         s("inherit", {
           t({ "inherit (" }),
           i(1),
