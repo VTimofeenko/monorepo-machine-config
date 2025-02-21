@@ -200,6 +200,15 @@ in
           i(2),
           t({ ";" }),
         }),
+        s("writeShellApplication", {
+          t({ "writeShellApplication {", "\tname = " }),
+          i(1),
+          t({ ";", "", "\truntimeInputs = [" }),
+          i(2),
+          t({ "];", "", "\ttext =" }),
+          i(3),
+          t({ "}" }),
+        }),
       }, {
         key = "nix",
       })
