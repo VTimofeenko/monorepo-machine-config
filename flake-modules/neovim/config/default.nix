@@ -13,6 +13,7 @@ let
     _: x:
     x
     |> lib.toList
+    |> map (lib.fileset.fileFilter (file: file.hasExt "nix"))
     |> map lib.fileset.toList
     |> lib.flatten
     |> (map (
