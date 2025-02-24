@@ -12,7 +12,6 @@
 */
 {
   pkgs,
-  lib,
   nixos-hardware,
   ...
 }:
@@ -41,34 +40,6 @@
     pkgs.pciutils
     # `vainfo` lives here
     pkgs.libva-utils
-    # This ffmpeg build has `av1_qsv` which allows for fast transcoding on ARC
-    (pkgs.ffmpeg.override (
-      # Override is constructed by turning a list of flags into an attrset (`["foo"] => { withFoo = true; }`)
-      [
-        # https://www.reddit.com/r/IntelArc/comments/1at6gk0/comment/kv8zaus/
-        "Drm"
-        "GPL"
-        "Aom"
-        "Dav1d"
-        "FdkAac"
-        "Freetype"
-        "Opus"
-        "Mp3lame"
-        "Vorbis"
-        "X264"
-        "X265"
-        "Pic"
-        "Unfree" # This part is disabled
-        "RuntimeCPUDetection"
-        "Vaapi"
-        # https://trac.ffmpeg.org/wiki/Hardware/QuickSync
-        "Vpl"
-      ]
-      |> map (it: {
-        "with${it}" = true;
-      })
-      |> lib.mergeAttrsList
-    ))
     # for `intel_gpu_top`
     pkgs.intel-gpu-tools
   ];
