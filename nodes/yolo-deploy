@@ -4,6 +4,5 @@ set -euo pipefail
 /nix/store/hirl3b9qmgifjm5ai7c0fzx4gjcz7kjy-deploy-rs-0.1.0/bin/deploy --skip-checks \
     ".#${1}" \
     --debug-logs \
-    --auto-rollback false \
-    --magic-rollback false
+    --auto-rollback false
 
