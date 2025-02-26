@@ -41,5 +41,8 @@
     )
     # Add components of this service
     ++ (lib.fileset.fileFilter (file: file.hasExt "nix") ./functional |> lib.fileset.toList)
-    ++ [ ./listen-address.nix ];
+    ++ [
+      ./listen-address.nix
+      ./utils.nix
+    ];
 }
