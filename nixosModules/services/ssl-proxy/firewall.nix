@@ -1,6 +1,7 @@
 { lib, ... }:
 let
   allowedTCPPorts = [
+    22 # TODO: get this value from nginx streams?
     80
     443
   ];

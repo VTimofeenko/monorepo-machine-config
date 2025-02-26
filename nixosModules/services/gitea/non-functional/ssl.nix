@@ -1,47 +1,39 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  self,
+  ...
+}:
 let
-  inherit (config) my-data;
-  inherit (lib.homelab) getServiceConfig;
-  inherit (getServiceConfig srvName) heatmapToken;
-  srvName = "gitea";
+  serviceName = "gitea";
 in
 {
-  age.secrets."ssl-cert" = {
-    file = my-data.lib.getSrvSecret "ssl-terminator" "cert";
-    owner = config.services.nginx.user;
-    inherit (config.services.nginx) group;
-  };
-  age.secrets."ssl-key" = {
-    file = my-data.lib.getSrvSecret "ssl-terminator" "private-key";
-    owner = config.services.nginx.user;
-    inherit (config.services.nginx) group;
-  };
-
-  services.nginx = {
-    enable = true;
-    recommendedProxySettings = true;
-    virtualHosts.${(my-data.lib.getService srvName).fqdn} = {
-      forceSSL = true;
-      sslCertificate = config.age.secrets."ssl-cert".path;
-      sslCertificateKey = config.age.secrets."ssl-key".path;
-      extraConfig = ''
-        proxy_buffering off;
-      '';
-      locations."/" = {
-        proxyPass = "http://localhost:${toString config.services.gitea.settings.server.HTTP_PORT}";
-        proxyWebsockets = true;
-      };
-      locations."/api/v1/users/spacecadet/heatmap" = {
-        proxyPass = "http://localhost:${toString config.services.gitea.settings.server.HTTP_PORT}/api/v1/users/spacecadet/heatmap";
-        extraConfig = ''
-          proxy_set_header Authorization "${heatmapToken}";
-        '';
-      };
-    };
-  };
-
-  networking.firewall.allowedTCPPorts = [
-    80
-    443
+  # Standard SSL proxy for web interface
+  imports = [
+    (self.serviceModules.ssl-proxy.srvLib.mkStandardProxyVHost {
+      port = config.services.gitea.settings.server.HTTP_PORT;
+      inherit config lib serviceName;
+    })
   ];
+
+  # Add heatmap proxy token
+  services.nginx.virtualHosts.${lib.homelab.getServiceFqdn serviceName}.locations."/api/v1/users/spacecadet/heatmap" =
+    {
+      proxyPass = "http://localhost:${toString config.services.gitea.settings.server.HTTP_PORT}/api/v1/users/spacecadet/heatmap";
+      extraConfig = ''
+        proxy_set_header Authorization "${(lib.homelab.getServiceConfig serviceName).heatmapToken}";
+      '';
+    };
+
+  # Proxy ssh
+  services.nginx.streamConfig = ''
+    server {
+      ${
+        config.services.homelab.ssl-proxy.listenAddresses
+        |> map (it: "listen ${it}:22;")
+        |> lib.concatLines
+      }
+      proxy_pass ${serviceName |> lib.homelab.getServiceInnerIP}:22;
+    }
+  '';
 }

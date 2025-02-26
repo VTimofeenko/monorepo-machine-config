@@ -6,7 +6,6 @@ rec {
     module
     ingress.impl
     storage.impl
-    ./non-functional/ssl.nix
     ./non-functional/bkp.nix
     backups.impl
   ];
@@ -14,7 +13,7 @@ rec {
 
   ingress = {
     impl = ./non-functional/firewall.nix;
-    # sslProxyConfig = ./non-functional/ssl.nix; # TODO: move to SSL proxy
+    sslProxyConfig = ./non-functional/ssl.nix;
   };
 
   monitoring = {
