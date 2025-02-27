@@ -37,4 +37,44 @@
         '';
       };
     };
+
+  /**
+    Produces standard firewall rules for the local service to accept traffic from
+    the SSL proxy.
+
+    Takes the local `ports` which should be a list of
+    `{ port = 1234; protocol = "udp|tcp"; }`.
+
+    Also takes `lib` to bind the functions.
+  */
+  mkBackboneInnerFirewallRules =
+    { lib, ports }:
+    {
+      # The validation is done by nftables, no need to make an extra check
+      networking.firewall.extraInputRules =
+        ports
+        # Parse ports coming in as just int. If so -- reconstruct attrset.
+        # Otherwise leave the value be and let if fail later if needed.
+        |> map (
+          it:
+          if lib.isInt it then
+            {
+              port = it;
+              protocol = "tcp";
+            }
+          else
+            it
+        )
+        # Construct the firewall rules
+        |> map (
+          it:
+          [
+            ''iifname "backbone-inner"''
+            ''ip saddr ${lib.homelab.getSSLProxyIP}''
+            ''${it.protocol} dport ${it.port |> toString} accept''
+          ]
+          |> builtins.concatStringsSep " "
+        )
+        |> lib.concatLines;
+    };
 }
