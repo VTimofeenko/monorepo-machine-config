@@ -34,9 +34,6 @@
       flake = false;
     };
 
-    # TODO: move to proper module in nixpkgs
-    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1&rev=bd526822deb9ed47c0b51b534817aa8541fff07b";
-
     # Service that remaps arbitrary keyboard combinations
     xremap-flake = {
       url = "github:xremap/nix-flake";
