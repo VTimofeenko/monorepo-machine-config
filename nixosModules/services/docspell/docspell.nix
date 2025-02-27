@@ -67,10 +67,6 @@ in
 
       package = docspell-packages.docspell-restserver;
 
-      bind = {
-        address = "localhost";
-        port = 7880;
-      };
       inherit (serviceConfig) auth admin-endpoint openid;
 
       inherit full-text-search;
