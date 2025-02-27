@@ -111,14 +111,21 @@ in
 
     # The package override ensures that the service has access to the SSH key
     # when it's running
-    package = (
-      ''
-        ${lib.getExe pkgs.restic} \
-          -o sftp.args="-i $CREDENTIALS_DIRECTORY/rsync-net-ssh-key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
-          $@
-      ''
-      |> pkgs.writeShellScriptBin "restic"
-    );
+    package =
+      let
+        userKnownHostsFile =
+          lib.homelab.getServiceConfig "rsync-net"
+          |> builtins.getAttr "knownFingerPrint"
+          |> pkgs.writeText "rsync-net-fingerprint";
+      in
+      (
+        ''
+          ${lib.getExe pkgs.restic} \
+            -o sftp.args="-i $CREDENTIALS_DIRECTORY/rsync-net-ssh-key -o UserKnownHostsFile=${userKnownHostsFile}" \
+            $@
+        ''
+        |> pkgs.writeShellScriptBin "restic"
+      );
     initialize = true;
     passwordFile = config.age.secrets."${serviceName}-bkp-password".path;
   };
