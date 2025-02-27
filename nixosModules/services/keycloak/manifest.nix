@@ -25,12 +25,17 @@ rec {
   storage = false;
   backups = rec {
     enable = true;
-    schedule = "daily";
     # The paths are calculated dynamically here
     paths = [ ];
     impl =
-      # if enable then { lib, ... }: lib.localLib.mkBkp { inherit paths schedule serviceName; } else { };
-      if enable then import ./non-functional/backups.nix { inherit paths schedule serviceName; } else { };
+      if enable then
+        { lib, ... }:
+        lib.localLib.mkBkp {
+          inherit paths serviceName;
+          localDB = true;
+        }
+      else
+        { };
     # TODO: remote!
   };
 

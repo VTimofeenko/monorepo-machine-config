@@ -30,8 +30,13 @@ rec {
     schedule = "daily";
     paths = [ "/var/lib/hass" ];
     impl =
-      if enable then import ./non-functional/backups.nix { inherit paths schedule serviceName; } else { };
-    # TODO: remote!
+      if enable then
+        { lib, ... }:
+        lib.localLib.mkBkp {
+          inherit paths serviceName;
+        }
+      else
+        { };
   };
 
   dashboard = {
