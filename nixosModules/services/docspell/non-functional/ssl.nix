@@ -11,5 +11,6 @@ self.serviceModules.ssl-proxy.srvLib.mkStandardProxyVHost {
   extraConfig = ''
     client_max_body_size 100M;
   '';
+  onlyHumans = true;
   inherit config lib;
 }
