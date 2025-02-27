@@ -85,4 +85,6 @@ in
       #   };
     };
   };
+
+  imports = lib.localLib.mkImportsFromDir ./functional;
 }

@@ -10,6 +10,7 @@
       inherit lib;
       ports = [
         config.services.docspell-restserver.bind.port
+        8002 # file manager port
       ];
     })
   ];

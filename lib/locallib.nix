@@ -101,4 +101,10 @@ in
     defined in the imported file. This, in turn, produces a dynamic module.
   */
   mkBkp = lib.modules.importApply ./mk-bkp.nix;
+
+  # Construct imports from specified directory directory by auto-including all files
+  mkImportsFromDir =
+    path:
+    path |> lib.fileset.fileFilter (file: file.hasExt "nix") |> lib.fileset.toList;
+
 }
