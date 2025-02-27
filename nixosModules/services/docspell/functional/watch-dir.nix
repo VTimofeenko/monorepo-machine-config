@@ -4,9 +4,9 @@
   This module implements the actual file manager service.
 
   TODO:
-  1. set up _a_ watch-dir
-  2. Add to SSL proxy
-  3. Make sure the files start existing when uploaded
+  1. [X] set up _a_ watch-dir
+  2. [X] Add to SSL proxy
+  3. [X] Make sure the files start existing when uploaded
   4. Add periodic `dsc`? Check docker file. It will need to use the same state directory
   5. Add to dashboard
 */
