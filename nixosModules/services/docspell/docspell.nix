@@ -2,6 +2,7 @@
   pkgs,
   lib,
   docspell-flake,
+  config,
   ...
 }:
 let
@@ -35,6 +36,9 @@ in
 
       scheduler.pool-size = 1;
 
+      # Joex likes to sleep on the job. Let's wake it up more often.
+      scheduler.wakeup-period = "1 minute";
+
       inherit (serviceConfig) jdbc;
       inherit full-text-search;
 
@@ -64,6 +68,8 @@ in
       enable = true;
 
       base-url = "https://${srv.fqdn}";
+
+      internal-url = "http://${config.services.docspell-restserver.bind.address}:${config.services.docspell-restserver.bind.port |> toString}";
 
       package = docspell-packages.docspell-restserver;
 
