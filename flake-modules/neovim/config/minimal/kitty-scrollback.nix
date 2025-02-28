@@ -11,9 +11,8 @@
 
   # Changes
 
-  I usually don't care about ending up in the precise location where my cursor
-  was. When opening the buffer, the vim cursor should end up before the last
-  executed command.
+  Rather than accepting input line from kitty, this pager just jumps to the
+  last non-empty line.
 */
 _: {
   config =
@@ -45,8 +44,11 @@ _: {
           local group = vim.api.nvim_create_augroup('kitty+page', {clear = true})
 
           local setCursor = function()
-              -- Jump to the end and then back two paragraphs
-              vim.api.nvim_command("normal! G{{")
+              local last_line = vim.fn.line("$")
+              while last_line > 1 and vim.fn.getline(last_line):match("^%s*$") do
+                last_line = last_line - 1
+              end
+              vim.api.nvim_win_set_cursor(0, { last_line, 0 })
           end
 
         vim.api.nvim_create_autocmd('ModeChanged', {
