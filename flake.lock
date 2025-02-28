@@ -316,18 +316,14 @@
         ]
       },
       "locked": {
-        "lastModified": 1723981694,
-        "narHash": "sha256-O4qJWZfX55/yhS0DzgU08Y7fqHERoi5aru9oyriRFGQ=",
-        "owner": "eikek",
-        "repo": "docspell",
-        "rev": "6d0ebe2f073d9aa78844c200521fb69592ba1226",
-        "type": "github"
+        "lastModified": 1740694267,
+        "narHash": "sha256-18+aOsUFSZZHBuaS4mawJpdrrgyAny3m/hf1w3bgqck=",
+        "path": "/home/spacecadet/code/forks/docspell/",
+        "type": "path"
       },
       "original": {
-        "owner": "eikek",
-        "ref": "v0.42.0",
-        "repo": "docspell",
-        "type": "github"
+        "path": "/home/spacecadet/code/forks/docspell/",
+        "type": "path"
       }
     },
     "emacs-elisp-autofmt": {
