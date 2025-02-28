@@ -105,6 +105,9 @@ in
   # Construct imports from specified directory directory by auto-including all files
   mkImportsFromDir =
     path:
-    path |> lib.fileset.fileFilter (file: file.hasExt "nix") |> lib.fileset.toList;
+    if builtins.pathExists path then
+      path |> lib.fileset.fileFilter (file: file.hasExt "nix") |> lib.fileset.toList
+    else
+      [ ];
 
 }
