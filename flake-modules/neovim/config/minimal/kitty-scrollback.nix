@@ -1,55 +1,87 @@
+/**
+  Neovim function that implements a scrollback reader for kitty.
+
+  Inspired by
+
+  https://gist.github.com/galaxia4Eva/9e91c4f275554b4bd844b6feece16b3d?permalink_comment_id=5267474#gistcomment-5267474
+
+  Much more advanced version:
+
+  https://github.com/mikesmithgh/kitty-scrollback.nvim
+
+  # Changes
+
+  I usually don't care about ending up in the precise location where my cursor
+  was. When opening the buffer, the vim cursor should end up before the last
+  executed command.
+*/
 _: {
   config =
     # lua
     ''
-      -- Apply these settings if invoked as a pager for the last command in kitty
-      KITTY_SCROLLBACK = function(INPUT_LINE_NUMBER, CURSOR_LINE, CURSOR_COLUMN)
-        vim.opt.encoding = "utf-8"
-        vim.opt.compatible = false
-        -- Looks like this is needed to not wrap end lines?
-        vim.opt.number = false
-        vim.opt.relativenumber = false
-        vim.opt.termguicolors = true
-        vim.opt.showmode = false
-        vim.opt.ruler = false
-        vim.opt.laststatus = 0
-        vim.opt.showcmd = false
-        vim.opt.scrollback = 1000
-        local term_buf = vim.api.nvim_create_buf(true, false)
-        local term_io = vim.api.nvim_open_term(term_buf, {})
-        vim.api.nvim_buf_set_keymap(term_buf, "n", "q", "<Cmd>q<CR>", {})
-        local group = vim.api.nvim_create_augroup("kitty+page", {})
+      KITTY_SCROLLBACK = function()
+          vim.opt.encoding='utf-8'
+          -- Prevent auto-centering on click
+          vim.opt.scrolloff = 0
+          vim.opt.compatible = false
+          vim.opt.number = false
+          vim.opt.relativenumber = false
+          vim.opt.termguicolors = true
+          vim.opt.showmode = false
+          vim.opt.ruler = false
+          vim.opt.signcolumn=no
+          vim.opt.showtabline=0
+          vim.opt.laststatus = 0
+          vim.o.cmdheight = 0
+          vim.opt.showcmd = false
+          vim.opt.scrollback = 100000
+          vim.opt.clipboard:append('unnamedplus')
+          local term_buf = vim.api.nvim_create_buf(true, false)
+          local term_io = vim.api.nvim_open_term(term_buf, {})
+          -- Map 'q' to first yank the visual selection (if any), which makes the copy selection work, and then quit.
+          vim.api.nvim_buf_set_keymap(term_buf, 'v', 'q', 'y<Cmd>qa!<CR>', { })
+          -- Regular quit mapping for normal mode
+          vim.api.nvim_buf_set_keymap(term_buf, 'n', 'q', '<Cmd>qa!<CR>', { })
+          local group = vim.api.nvim_create_augroup('kitty+page', {clear = true})
 
-        vim.api.nvim_create_autocmd("ModeChanged", {
+          local setCursor = function()
+              -- Jump to the end and then back two paragraphs
+              vim.api.nvim_command("normal! G{{")
+          end
+
+        vim.api.nvim_create_autocmd('ModeChanged', {
           group = group,
           buffer = term_buf,
-          command = "stopinsert",
-        })
-
-        vim.api.nvim_create_autocmd("VimEnter", {
-          group = group,
-          pattern = "*",
-          once = true,
-          callback = function(ev)
-            local current_win = vim.fn.win_getid()
-            for _, line in ipairs(vim.api.nvim_buf_get_lines(ev.buf, 0, -1, false)) do
-              vim.api.nvim_chan_send(term_io, line)
-              vim.api.nvim_chan_send(term_io, "\r\n")
-            end
-            -- Debug
-            --print("kitty sent:", INPUT_LINE_NUMBER, CURSOR_LINE, CURSOR_COLUMN)
-            vim.api.nvim_win_set_buf(current_win, term_buf)
-            vim.api.nvim_buf_delete(ev.buf, { force = true })
-            -- Jump to the end of file
-            -- Usually ctrl+shift+g does CURSOR_COLUMN=0, CURSOR_LINE=0
-            if CURSOR_LINE == 0 then
-              -- Jump to the very end, return to previous non-empty char
-              -- This also serves as a fallback behavior
-              vim.api.nvim_command("normal! G{")
-            else
-              vim.api.nvim_win_set_cursor(0, { CURSOR_LINE + 1, CURSOR_COLUMN })
+          callback = function()
+            local mode = vim.fn.mode()
+            if mode == 't' then
+              vim.cmd.stopinsert()
+              vim.schedule(setCursor)
             end
           end,
+        })
+
+        vim.api.nvim_create_autocmd('VimEnter', {
+          group = group,
+          pattern = '*',
+          once = true,
+          callback = function(ev)
+              local current_win = vim.fn.win_getid()
+              -- Instead of sending lines individually, concatenate them.
+              local main_lines = vim.api.nvim_buf_get_lines(ev.buf, 0, -2, false)
+              local content = table.concat(main_lines, '\r\n')
+              vim.api.nvim_chan_send(term_io, content .. '\r\n')
+
+              -- Process the last line separately (without trailing \r\n)
+              local last_line = vim.api.nvim_buf_get_lines(ev.buf, -2, -1, false)[1]
+              if last_line then
+                  vim.api.nvim_chan_send(term_io, last_line)
+              end
+              vim.api.nvim_win_set_buf(current_win, term_buf)
+              vim.api.nvim_buf_delete(ev.buf, { force = true } )
+              -- Use vim.defer_fn to make sure the terminal has time to process the content and the buffer is ready.
+              vim.defer_fn(setCursor, 10)
+          end
         })
       end
     '';
