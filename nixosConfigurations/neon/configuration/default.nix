@@ -54,4 +54,6 @@ in
     (lib.localLib.mkMicroVMModules "neodymium")
     (lib.localLib.mkMicroVMModules "promethium")
   ];
+
+  microvm.vms.promethium.config.microvm.mem = 2049;
 }
