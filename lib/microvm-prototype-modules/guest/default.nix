@@ -44,6 +44,7 @@ microVMName:
       pkgs.lsof
       pkgs.inetutils
       pkgs.nftables
+      pkgs.vim
     ];
   };
 }
