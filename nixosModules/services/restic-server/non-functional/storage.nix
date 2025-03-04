@@ -23,7 +23,7 @@ in
 
   boot.kernelModules = [ "iscsi_tcp" ];
 
-  systemd.services.iscsi-login-lingames = {
+  systemd.services.iscsi-login-restic = {
     description = "Login to iSCSI target ${IQN}";
     after = [
       "network.target"
