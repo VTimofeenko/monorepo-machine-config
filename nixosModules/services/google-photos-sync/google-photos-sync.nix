@@ -56,7 +56,7 @@ in
 
   systemd.timers.${srvName} = {
     timerConfig = {
-      OnCalendar = "*-*-* 08:00:00,14:00:00,18:00:00,23:00:00"; # Doing this too often triggers 429 errors, this seems like a reasonable compromise
+      OnCalendar = "*-*-* 08,14,18,23:00"; # Doing this too often triggers 429 errors, this seems like a reasonable compromise
       Persistent = true;
     };
     wantedBy = [ "timers.target" ];
