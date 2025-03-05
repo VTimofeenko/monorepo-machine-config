@@ -30,7 +30,6 @@ rec {
     exclude = [ "appdata_ochcggcdayyl/preview" ];
     impl =
       if enable then { lib, ... }: lib.localLib.mkBkp { inherit paths exclude serviceName; } else { };
-    # TODO: remote!
   };
 
   dashboard = {
