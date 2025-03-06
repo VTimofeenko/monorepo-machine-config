@@ -25,6 +25,13 @@ let
           "BasedOnStyles" = "Vale, write-good, Readability";
           "write-good.E-Prime" = "NO"; # This is a bit arbitrary
           "Vale.Spelling" = "NO"; # Harper does this already
+          # I am not smart enough to know what these mean. These checks are
+          # very angry at me.
+          "Readability.FleschReadingEase" = "NO";
+          "Readability.FleschKincaid" = "NO";
+          "Readability.SMOG" = "NO";
+          "Readability.ColemanLiau" = "NO";
+          "Readability.LIX" = "NO";
         };
       };
       globalSection = {
