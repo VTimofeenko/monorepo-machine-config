@@ -12,7 +12,7 @@ rec {
   backups = rec {
     enable = true;
     schedule = "daily";
-    paths = [ "/var/lib/google-photos-sync/data" ];
+    paths = [ "/var/lib/google-photos-sync" ];
     impl =
       if enable then { lib, ... }: lib.localLib.mkBkp { inherit paths serviceName; } else { };
   };
