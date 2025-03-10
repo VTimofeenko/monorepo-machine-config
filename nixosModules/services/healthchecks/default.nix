@@ -1,3 +1,3 @@
 {
-  imports = (import ./manifest.nix).module;
+  imports = (import ./manifest.nix).default;
 }
