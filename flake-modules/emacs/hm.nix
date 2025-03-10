@@ -3,7 +3,7 @@
 { pkgs, lib, ... }:
 let
   selfPkgs' = selfPkgs.${pkgs.system};
-  emacs-with-flags = pkgs.emacs29.override {
+  emacs-with-flags = pkgs.emacs30.override {
     withNativeCompilation = true;
     withSQLite3 = true;
     withTreeSitter = true;
