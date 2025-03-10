@@ -16,7 +16,7 @@ rec {
     impl =
       if enable then { lib, ... }: lib.localLib.mkBkp { inherit paths serviceName; } else { };
   };
-  ingress = false;
+  # ingress = false;
   monitoring = false;
   logging = false;
   storage = false;
