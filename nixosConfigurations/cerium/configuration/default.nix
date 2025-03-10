@@ -34,6 +34,8 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkForce true;
   networking.interfaces.ens3.useDHCP = true;
+  services.qemuGuest.enable = true;
+
   # Imports
   imports = [ ];
 }
