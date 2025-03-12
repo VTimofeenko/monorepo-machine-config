@@ -142,10 +142,6 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    nitrocli = {
-      url = "github:d-e-s-o/nitrocli?dir=contrib/nix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
 
     docspell-flake = {
       # url = "github:eikek/docspell?ref=v0.42.0";
@@ -337,11 +333,6 @@
                 inherit pkgs;
                 src = inputs.hostsBlockList;
               };
-              /*
-                Nitrocli pinned to more current nixpkgs to save on rebuilding.
-                  Needed occasionally so not part of the world.
-              */
-              nitrocli = inputs'.nitrocli.packages.default;
               # Package with some services icons
               dashboard-icons = import ./packages/dashboard-icons/package.nix {
                 inherit (pkgs) stdenv fetchFromGitHub;
