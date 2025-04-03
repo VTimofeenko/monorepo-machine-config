@@ -49,6 +49,8 @@ let
       {
         ka = "${getExe pkgs.killall}";
         cdg = "cd $(git rev-parse --show-toplevel)";
+        # Create a temporary directory and change into it
+        cdtmp = "cd $(mktemp -d)";
         mkd = "mkdir -pv";
         grep = "grep --color=auto";
         mv = "mv -v";
