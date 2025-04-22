@@ -73,3 +73,5 @@
 (package! org-ql)
 
 (package! org-ai)
+
+(package! org-fancy-priorities)
