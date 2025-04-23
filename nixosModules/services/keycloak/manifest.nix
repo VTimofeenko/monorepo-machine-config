@@ -36,7 +36,6 @@ rec {
         }
       else
         { };
-    # TODO: remote!
   };
 
   dashboard = {
