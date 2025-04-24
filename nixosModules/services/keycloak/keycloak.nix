@@ -1,5 +1,7 @@
 /**
-  Sandbox keycloak
+  Note: keycloak needs some SSL certificate to work. The one from
+  `ssl-terminator` works for now, but later I might just switch to self-signed
+  one.
 */
 { config, ... }:
 let
@@ -22,7 +24,6 @@ in
 
     settings = {
       hostname = service.fqdn;
-      # set proxy to edge maybe?
     };
     database.passwordFile = config.age.secrets."keycloakDbPassword".path;
   };

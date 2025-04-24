@@ -2,20 +2,17 @@ let
   serviceName = "keycloak";
 in
 rec {
-  # TODO: rework
   default = [
     module
     ingress.impl
-    storage.impl
-    ./non-functional/ssl.nix
-    ./non-functional/bkp.nix
+    # storage.impl
     backups.impl
   ];
-  module = ./gitea.nix;
+  module = ./keycloak.nix;
 
   ingress = {
     impl = ./non-functional/firewall.nix;
-    # sslProxyConfig = ./non-functional/ssl.nix; # TODO: move to SSL proxy?
+    sslProxyConfig = ./non-functional/ssl.nix;
   };
 
   # TODO: implement
