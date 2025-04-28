@@ -12,11 +12,11 @@
     Both are using live versions so that pipe syntax is supported
 
   - Treesitter support for nested strings (hmts-nvim) allows highlighting, say, bash strings inside nix strings
-  - Formatting using nix-rfc-style-format
+  - Formatting using `nix-rfc-style-format`
   - Snippets:
-    - (let .. in)
-    - (if then else)
-    - Common module arguments ({ pkgs, lib, config, ... }:})
+    - `let .. in`
+    - `if then else`
+    - Common module arguments `{ pkgs, lib, config, ... }:`
     - `writeShellApplication` with args
 
   TODO: add hover data for common functions (maybe source from devdocs or noogle?)
@@ -74,7 +74,7 @@ let
       || (pkgVersion.patch != cmpVersion.patch)
     ) "${package.name} override is for older version. Probably worth revisiting" x;
 
-  # nilLive is an override for nil that should support pipes
+  # `nilLive` is an override for nil that should support pipes
   nilLive = traceIfNewerThan pkgs.nil "2024-08-06" (
     pkgs.nil.overrideAttrs (old: rec {
       src = pkgs.fetchFromGitHub {
@@ -84,7 +84,7 @@ let
         hash = "sha256-DCIVdlb81Fct2uwzbtnawLBC/U03U2hqx8trqTJB7WA=";
       };
 
-      # overriding cargoHash does not work; this is the way to do it
+      # Overriding `cargoHash` does not work; this is the way to do it
       cargoDeps = old.cargoDeps.overrideAttrs {
         name = "nil-vendor.tar.gz";
         inherit src;
@@ -140,7 +140,7 @@ in
                   #
                   # FIXME: create a fake homeConfigurations output in the vim flake module for this
                   assert builtins.hasAttr "deck" self.outputs.legacyPackages.${pkgs.stdenv.system}.homeConfigurations;
-                  # \" around flakeRef is load bearing
+                  # `\"` around flakeRef is load bearing
                   ''expr = "(builtins.getFlake \"${flakeRef}\").outputs.legacyPackages.${pkgs.stdenv.system}.homeConfigurations.deck.options"''
                 }
               },
@@ -210,7 +210,7 @@ in
         key = "nix",
       })
     ''
-    # This is a small file opener utility. If 'gF' is pressed while on a
+    # This is a small file opener utility. If '`gF`' is pressed while on a
     # directory, vim will assume that I meant to open `default.nix` in that
     # directory
     ''
