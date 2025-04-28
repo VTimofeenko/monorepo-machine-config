@@ -74,19 +74,6 @@ let
       || (pkgVersion.patch != cmpVersion.patch)
     ) "${package.name} override is for older version. Probably worth revisiting" x;
 
-  # nixdLive is an override for nixd that should fix 100% CPU when pipe is used.
-  nixdLive = traceIfNewerThan pkgs.nixd "2.5.1" (
-    pkgs.nixd.overrideAttrs (old: {
-      version = "2.5.1-override";
-      src = pkgs.fetchFromGitHub {
-        owner = "nix-community";
-        repo = "nixd";
-        rev = "2c25600cb9c91bc06fe8676c044814dc30435274";
-        hash = "sha256-Zc9+nD0NldxeibfbPJHv1tBF7y9oWkiDczYQvsfBF/w=";
-      };
-    })
-  );
-
   # nilLive is an override for nil that should support pipes
   nilLive = traceIfNewerThan pkgs.nil "2024-08-06" (
     pkgs.nil.overrideAttrs (old: rec {
@@ -135,7 +122,7 @@ in
       })
 
       require("lspconfig").nixd.setup({
-        cmd = { "${lib.getExe nixdLive}" },
+        cmd = { "${lib.getExe pkgs.nixd}" },
         autostart = true,
         capabilities = caps,
         settings = {
