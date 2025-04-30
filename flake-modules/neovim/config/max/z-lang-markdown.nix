@@ -94,7 +94,14 @@ in
     ''
     ''
       require("lspconfig").harper_ls.setup({
-        cmd = { "${pkgs-unstable.harper}/bin/harper-ls", "--stdio" }
+        cmd = { "${pkgs-unstable.harper}/bin/harper-ls", "--stdio" },
+        settings = {
+          ["harper-ls"] = {
+            linters = {
+              ToDoHyphen = false,
+            }
+          }
+        }
       })
     ''
     ''
