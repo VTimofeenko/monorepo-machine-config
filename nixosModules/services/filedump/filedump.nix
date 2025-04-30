@@ -1,4 +1,3 @@
-# NixOS module to configure filedump
 {
   lib,
   config,
@@ -6,6 +5,7 @@
   ...
 }:
 let
+  srvName = "filedump";
   cfg = config.services.myFiledump;
 
   misc-icons = pkgs.stdenv.mkDerivation {
@@ -41,4 +41,28 @@ in
     "L+ ${cfg.dir}/${cfg.dashboard-icons} - - - - ${pkgs.dashboard-icons}"
     "L+ ${cfg.dir}/misc-icons - - - - ${misc-icons}/share/icons"
   ];
+
+
+  config.services.nginx = {
+    enable = true;
+    recommendedProxySettings = true;
+    virtualHosts.${(lib.homelab.getService srvName).fqdn} = {
+      forceSSL = false;
+      extraConfig = ''
+        proxy_buffering off;
+      '';
+      locations."/" = {
+        extraConfig = ''
+          autoindex on;
+        '';
+        root = config.services.myFiledump.dir;
+      };
+      locations."~ /${config.services.myFiledump.dashboard-icons}/png" = {
+        extraConfig = ''
+          error_page 404 /${config.services.myFiledump.dashboard-icons}/png/nginx.png;
+        '';
+        root = config.services.myFiledump.dir;
+      };
+    };
+  };
 }

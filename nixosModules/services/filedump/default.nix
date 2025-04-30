@@ -1,6 +1,4 @@
-_: {
-  imports = [
-    ./ssl.nix
-    ./filedump.nix
-  ];
+# Shim to load the manifest
+{
+  imports = (import ./manifest.nix).default;
 }
