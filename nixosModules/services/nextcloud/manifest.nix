@@ -2,21 +2,22 @@ let
   serviceName = "nextcloud";
 in
 rec {
-  # TODO: rework
   default = [
-    # module
+    module
+    # storage.impl
     ingress.impl
-    storage.impl
-    ./non-functional/ssl.nix
-    ./non-functional/bkp.nix
     backups.impl
   ];
-  # module = ./gitea.nix;
+  module = ./. + "/${serviceName}.nix";
 
-  ingress = {
-    # impl = ./non-functional/firewall.nix;
-    # sslProxyConfig = ./non-functional/ssl.nix; # TODO: move to SSL proxy?
-  };
+  ingress =
+    let
+      port = 80;
+    in
+    {
+      impl = import ./non-functional/firewall.nix { inherit port serviceName; };
+      sslProxyConfig = import ./non-functional/ssl.nix { inherit port serviceName; };
+    };
 
   # TODO: implement
   monitoring = false;

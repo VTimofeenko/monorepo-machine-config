@@ -1,7 +1,3 @@
-_: {
-  imports = [
-    ./nextcloud.nix
-    ./ssl.nix
-    (import ./manifest.nix).backups.impl
-  ];
+{
+  imports = (import ./manifest.nix).default;
 }
