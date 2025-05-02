@@ -42,11 +42,6 @@ in
 
     config = {
       default_config = { };
-      http = {
-        server_host = "127.0.0.1";
-        trusted_proxies = [ "127.0.0.1" ];
-        use_x_forwarded_for = true;
-      };
       homeassistant = {
         media_dirs.recordings = "/var/lib/hass/media/recordings";
         time_zone = config.time.timeZone;
@@ -57,7 +52,5 @@ in
   };
 
   # Additional config
-  imports = [
-    ./allow-ui-object-editing.nix
-  ];
+  imports = lib.localLib.mkImportsFromDir ./functional;
 }

@@ -5,26 +5,26 @@ rec {
   default = [
     module
     ingress.impl
-    storage.impl
-    ./non-functional/ssl.nix
-    ./non-functional/bkp.nix
     backups.impl
+    monitoring.impl
   ];
-  module = ./gitea.nix;
+  module = ./home-assistant.nix;
 
-  ingress = {
-    impl = ./non-functional/ssl.nix; # This file contains both SSL proxy and firewall
-    # sslProxyConfig = ./non-functional/ssl.nix; # TODO: move to SSL proxy
-  };
+  ingress =
+    let
+      port = 8123; # Taken from `server_port`
+    in
+    {
+      impl = import ./non-functional/firewall.nix { inherit port serviceName; };
+      sslProxyConfig = import ./non-functional/ssl.nix { inherit port serviceName; };
+    };
 
   monitoring = {
     # TODO: implement here
     impl = ./non-functional/monitoring.nix;
   };
   logging = false; # TODO: implement
-  storage = {
-    impl = ./non-functional/storage.nix;
-  };
+
   backups = rec {
     enable = true;
     schedule = "daily";
@@ -49,4 +49,6 @@ rec {
       }
     ];
   };
+
+  storage = false; # Stateless
 }
