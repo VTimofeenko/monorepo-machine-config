@@ -9,7 +9,6 @@
 */
 { lib, config, ... }:
 let
-  srvName = "dns";
   inherit (import ../lib.nix) mkARecord;
   clientNetViewName = "wg_client_network";
   client = lib.homelab.getNetwork "client";
