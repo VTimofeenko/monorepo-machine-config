@@ -1,3 +1,6 @@
+let
+  serviceName = "restic-server";
+in
 rec {
   default = [
     module
@@ -6,10 +9,14 @@ rec {
     monitoring.impl
   ];
   module = ./impl.nix;
-  ingress = {
-    impl = ./non-functional/firewall.nix;
-    sslProxyConfig = ./non-functional/ssl.nix;
-  };
+  ingress =
+    let
+      port = 8080;
+    in
+    {
+      impl = import ./non-functional/firewall.nix { inherit port; };
+      sslProxyConfig = import ./non-functional/ssl.nix { inherit port serviceName; };
+    };
 
   monitoring = {
     # TODO: implement

@@ -1,3 +1,4 @@
+{ port, serviceName, ... }:
 {
   config,
   lib,
@@ -5,11 +6,14 @@
   ...
 }:
 self.serviceModules.ssl-proxy.srvLib.mkStandardProxyVHost {
-  serviceName = "restic-server";
-  port = 8080;
+  inherit
+    serviceName
+    port
+    config
+    lib
+    ;
   # Restic deals with big files
   extraConfig = ''
     client_max_body_size 500M;
   '';
-  inherit config lib;
 }
