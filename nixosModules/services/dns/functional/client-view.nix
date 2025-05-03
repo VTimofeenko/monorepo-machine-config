@@ -29,8 +29,13 @@ in
         |> lib.filterAttrs (_: v: v.networkAccess == [ "backbone" ]) # Find services marked as "available only over backbone"
         |> builtins.attrValues
         |> builtins.catAttrs "fqdn" # Extract FQDN
-        |> map (it: ''"${mkARecord it (lib.homelab.getHostIpInNetwork "fluorine" "backbone")}"'') # TODO: parameterize
-      ;
+        # For all SSL proxy hosts, construct an A record
+        |> map (
+          it:
+          lib.homelab.getSettings.sslProxyHosts
+          |> map (it': ''"${mkARecord it (lib.homelab.getHostIpInNetwork it' "backbone")}"'')
+        )
+        |> lib.flatten;
       view-first = "yes";
     }
   ];
