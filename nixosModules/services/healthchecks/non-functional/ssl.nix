@@ -1,3 +1,4 @@
+{ port, serviceName, ... }:
 {
   config,
   lib,
@@ -5,7 +6,10 @@
   ...
 }:
 self.serviceModules.ssl-proxy.srvLib.mkStandardProxyVHost {
-  serviceName = "healthchecks";
-  port = 8000;
-  inherit config lib;
+  inherit
+    serviceName
+    port
+    config
+    lib
+    ;
 }

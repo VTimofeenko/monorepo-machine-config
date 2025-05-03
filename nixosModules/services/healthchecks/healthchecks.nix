@@ -6,16 +6,11 @@
 }:
 let
   srvName = "healthchecks";
-  srv = getService srvName;
-  srvConfig = getServiceConfig srvName;
   fqdn = getServiceFqdn srvName;
 
   inherit (lib.homelab)
-    getService
     getServiceFqdn
     getSrvSecret
-    getServiceConfig
-    getOwnIpInNetwork
     ;
 in
 {
@@ -84,10 +79,6 @@ in
       VICTOROPS_ENABLED = "False";
       ZULIP_ENABLED = "False";
     };
-
-    # Network stuff
-    port = srvConfig.proxyPort;
-    listenAddress = getOwnIpInNetwork "backbone-inner";
   };
 
   # Storage

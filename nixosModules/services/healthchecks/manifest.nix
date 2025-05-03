@@ -1,13 +1,20 @@
+let
+  serviceName = "healthchecks";
+in
 rec {
   default = [
     module
     ingress.internal
   ];
-  module = ./impl.nix;
-  ingress = {
-    internal = ./firewall.nix;
-    sslProxyConfig = ./ssl.nix;
-  };
+  module = ./. + "${serviceName}.nix";
+  ingress =
+    let
+      port = 8000;
+    in
+    {
+      impl = import ./non-functional/firewall.nix { inherit port; };
+      sslProxyConfig = import ./non-functional/ssl.nix { inherit port serviceName; };
+    };
 
   monitoring = false; # TODO: implement
   logging = false; # TODO: implement
