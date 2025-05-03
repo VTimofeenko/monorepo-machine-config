@@ -24,20 +24,14 @@ in
       name = clientNetViewName;
       local-zone = [ ''"${lib.homelab.getSettings.publicDomainName}." static'' ];
       local-data =
-        # Assemble stuff from nickel
-        (
-          (lib.homelab.getServiceConfig srvName).clientView
-          |> lib.attrsets.mapAttrsToList (k: v: ''"${mkARecord k v}"'')
-        )
         # Add nix-computed services on the backbone
-        ++ (
-          my-data.services.all
-          |> lib.filterAttrs (_: lib.hasAttr "networkAccess") # Get only attributes with networkAccess
-          |> lib.filterAttrs (_: v: v.networkAccess == [ "backbone" ]) # Find services marked as "available only over backbone"
-          |> builtins.attrValues
-          |> builtins.catAttrs "fqdn" # Extract FQDN
-          |> map (it: ''"${mkARecord it (lib.homelab.getHostIpInNetwork "fluorine" "backbone")}"'') # TODO: parameterize
-        );
+        my-data.services.all
+        |> lib.filterAttrs (_: lib.hasAttr "networkAccess") # Get only attributes with networkAccess
+        |> lib.filterAttrs (_: v: v.networkAccess == [ "backbone" ]) # Find services marked as "available only over backbone"
+        |> builtins.attrValues
+        |> builtins.catAttrs "fqdn" # Extract FQDN
+        |> map (it: ''"${mkARecord it (lib.homelab.getHostIpInNetwork "fluorine" "backbone")}"'') # TODO: parameterize
+      ;
       view-first = "yes";
     }
   ];
