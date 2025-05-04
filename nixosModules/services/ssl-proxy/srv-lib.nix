@@ -70,7 +70,7 @@
           it:
           [
             ''iifname "backbone-inner"''
-            ''ip saddr ${lib.homelab.getSSLProxyIP}''
+            ''ip saddr { ${lib.homelab.getSSLProxyIPs |> lib.concatStringsSep ", "} }''
             ''${it.protocol} dport ${it.port |> toString} accept''
           ]
           |> builtins.concatStringsSep " "
