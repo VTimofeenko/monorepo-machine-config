@@ -1,14 +1,22 @@
+let
+  serviceName = "tt-rss";
+in
 rec {
   default = [
     module
     ingress.impl
   ];
-  module = ./tt-rss.nix;
+  module = ./. + "${serviceName}.nix";
 
-  ingress = {
-    impl = ./non-functional/firewall.nix;
-    sslProxyConfig = ./non-functional/ssl.nix;
-  };
+  ingress =
+    let
+      port = 80;
+    in
+    {
+      impl = ./non-functional/firewall.nix;
+      sslProxyConfig = ./non-functional/ssl.nix;
+    }
+    |> builtins.mapAttrs (_: v: import v { inherit port serviceName; });
 
   dashboard = {
     category = "Media";
