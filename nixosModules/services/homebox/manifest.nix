@@ -9,10 +9,15 @@ rec {
   ];
   module = ./homebox.nix;
 
-  ingress = {
-    impl = ./non-functional/firewall.nix;
-    sslProxyConfig = ./non-functional/ssl.nix;
-  };
+  ingress =
+    let
+      port = 7745;
+    in
+    {
+      impl = ./non-functional/firewall.nix;
+      sslProxyConfig = ./non-functional/ssl.nix;
+    }
+    |> builtins.mapAttrs (_: v: import v { inherit port serviceName; });
 
   # TODO: implement
   monitoring = false;

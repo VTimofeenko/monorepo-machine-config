@@ -1,3 +1,4 @@
+{ port, serviceName }:
 {
   config,
   lib,
@@ -5,8 +6,6 @@
   ...
 }:
 self.serviceModules.ssl-proxy.srvLib.mkStandardProxyVHost {
-  serviceName = "homebox";
-  port = 7745;
+  inherit port serviceName config lib;
   onlyHumans = true;
-  inherit config lib;
 }
