@@ -11,10 +11,16 @@ rec {
   ];
   module = ./gitea.nix;
 
-  ingress = {
-    impl = ./non-functional/firewall.nix;
-    sslProxyConfig = ./non-functional/ssl.nix;
-  };
+  ingress =
+    let
+      sshPort = 22;
+      webPort = 3000;
+    in
+    {
+      impl = ./non-functional/firewall.nix;
+      sslProxyConfig = ./non-functional/ssl.nix;
+    }
+    |> builtins.mapAttrs (_: v: import v { inherit sshPort webPort serviceName; });
 
   monitoring = {
     # TODO: implement here

@@ -1,17 +1,20 @@
 {
+  serviceName,
+  sshPort,
+  webPort,
+  ...
+}:
+{
   config,
   lib,
   self,
   ...
 }:
-let
-  serviceName = "gitea";
-in
 {
   # Standard SSL proxy for web interface
   imports = [
     (self.serviceModules.ssl-proxy.srvLib.mkStandardProxyVHost {
-      port = config.services.gitea.settings.server.HTTP_PORT;
+      port = webPort;
       inherit config lib serviceName;
     })
   ];
@@ -30,10 +33,10 @@ in
     server {
       ${
         config.services.homelab.ssl-proxy.listenAddresses
-        |> map (it: "listen ${it}:22;")
+        |> map (it: "listen ${it}:${sshPort |> toString};")
         |> lib.concatLines
       }
-      proxy_pass ${serviceName |> lib.homelab.getServiceInnerIP}:22;
+      proxy_pass ${serviceName |> lib.homelab.getServiceInnerIP}:${sshPort |> toString};
     }
   '';
 }
