@@ -6,7 +6,7 @@ rec {
     module
     ingress.impl
   ];
-  module = ./. + "${serviceName}.nix";
+  module = ./. + "/${serviceName}.nix";
 
   ingress =
     let
