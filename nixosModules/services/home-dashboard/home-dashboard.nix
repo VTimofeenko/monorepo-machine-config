@@ -15,8 +15,10 @@ in
 
   systemd.services.homepage-dashboard = {
     serviceConfig = {
-      # Use LoadCredential to inject the secrets into systemd unit. Works with DynamicUser which is what homepage-dashboard service uses.
-      LoadCredential = lib.mapAttrsFlatten (
+      # Inject credentials for services so widgets work.
+      #
+      # Uses `LoadCredential` to inject the secrets into systemd unit. Works
+      # with `DynamicUser` which is what homepage-dashboard service uses.
         name: _: "${name}:${config.age.secrets.${name}.path}"
       ) srv.secrets;
     };
