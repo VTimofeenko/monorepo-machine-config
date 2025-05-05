@@ -1,7 +1,8 @@
 {
   fetchurl,
+  stdenv,
 }:
-{
+stdenv.mkDerivation {
   name = "misc-icons";
   src = fetchurl {
     url = "https://downloads.filestash.app/brand/logo_white.svg";
