@@ -333,10 +333,6 @@
                 inherit pkgs;
                 src = inputs.hostsBlockList;
               };
-              # Package with some services icons
-              dashboard-icons = import ./packages/dashboard-icons/package.nix {
-                inherit (pkgs) stdenv fetchFromGitHub;
-              };
               # Desktop icons
               arcticons = import ./packages/arcticons/package.nix {
                 inherit (pkgs)
