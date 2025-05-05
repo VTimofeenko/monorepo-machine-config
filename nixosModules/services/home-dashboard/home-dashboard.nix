@@ -19,7 +19,7 @@ in
       #
       # Uses `LoadCredential` to inject the secrets into systemd unit. Works
       # with `DynamicUser` which is what homepage-dashboard service uses.
-      LoadCredential = lib.mapAttrs lib.mapAttrsToList (
+      LoadCredential = lib.mapAttrsToList (
         name: _: "${name}:${config.age.secrets.${name}.path}"
       ) srv.secrets;
     };
