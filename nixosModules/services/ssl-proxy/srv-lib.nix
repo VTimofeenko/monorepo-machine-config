@@ -1,21 +1,29 @@
-{
+rec {
   /**
-    Produces a module for my default SSL virtual host.
+    Dynamic function to generate implementation for a proxy for all kinds of services.
 
     Implementation notes:
     I am not necessarily happy about binding `config` and `lib` this way.
     However, this allows the caller code to be very simple and not bother about
     importing the resulting module.
   */
-  mkStandardProxyVHost =
+  _mkProxyVhostInner =
+    netName:
     {
       serviceName,
       port,
       config,
       lib,
-      extraConfig ? "", # As default services.nginx.virtualHosts.<name>.extraConfig
+      extraConfig ? "", # As default `services.nginx.virtualHosts.<name>.extraConfig`
       onlyHumans ? false,
+      protocol ? "http",
     }:
+    let
+      ipLookupFuncs = {
+        lan = lib.homelab.getServiceIP;
+        backbone-inner = lib.homelab.getServiceInnerIP;
+      };
+    in
     {
       services.nginx.virtualHosts."${serviceName |> lib.homelab.getServiceFqdn}" = {
         forceSSL = true;
@@ -23,7 +31,7 @@
         sslCertificate = config.age.secrets."ssl-cert".path;
         sslCertificateKey = config.age.secrets."ssl-key".path;
         locations."/" = {
-          proxyPass = "http://${serviceName |> lib.homelab.getServiceInnerIP}:${port |> toString}";
+          proxyPass = "${protocol}://${serviceName |> ipLookupFuncs."${netName}"}:${port |> toString}";
           proxyWebsockets = true;
         };
         extraConfig = ''
@@ -37,6 +45,12 @@
         '';
       };
     };
+
+  /**
+    Produces a module for my default SSL virtual host.
+  */
+  mkStandardProxyVHost = _mkProxyVhostInner "backbone-inner";
+  mkLANProxyVHost = _mkProxyVhostInner "lan";
 
   /**
     Produces standard firewall rules for the local service to accept traffic from
@@ -53,7 +67,7 @@
       # The validation is done by nftables, no need to make an extra check
       networking.firewall.extraInputRules =
         ports
-        # Parse ports coming in as just int. If so -- reconstruct attrset.
+        # Parse ports coming in as just int. If so – reconstruct attrset.
         # Otherwise leave the value be and let if fail later if needed.
         |> map (
           it:
