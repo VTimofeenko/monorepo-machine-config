@@ -33,5 +33,5 @@ in
   # Add homepage-dashboard specific secrets to `agenix`
   age.secrets = builtins.mapAttrs (name: _: { file = getSrvSecret srvName name; }) srv.secrets;
 
-  imports = ./functional |> lib.fileset.fileFilter (file: file.hasExt "nix") |> lib.fileset.toList;
+  imports = lib.localLib.mkImportsFromDir ./functional;
 }
