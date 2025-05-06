@@ -16,12 +16,15 @@ let
         {
           format-command = "${lib.getExe self.packages.${pkgs.system}.python-formatter} -";
           format-stdin = true;
-          # lint-stdin = true;
-          # lint-after-open = true;
-          # lint-on-save = true;
-          # lint-formats = [
-          #   "%f:%l %m"
-          # ];
+
+          lint-command = "${lib.getExe self.packages.${pkgs.system}.python-linter} -";
+          lint-stdin = true;
+          lint-after-open = true;
+          lint-ignore-exit-code = true;
+          lint-on-save = true;
+          lint-formats = [
+            "%f:%l:%c: %m"
+          ];
         }
       ];
     }
