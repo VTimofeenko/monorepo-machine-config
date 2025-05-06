@@ -31,6 +31,20 @@
                   "$@"
             '';
           };
+
+          python-linter = pkgs.writeShellApplication {
+            name = "python-linter";
+
+            runtimeInputs = [ pkgs.ruff ];
+
+            text = ''
+              ruff check\
+                    --config ${ruffConfig} \
+                    --quiet \
+                    --preview \
+                    "$@"
+            '';
+          };
         }
       );
 
