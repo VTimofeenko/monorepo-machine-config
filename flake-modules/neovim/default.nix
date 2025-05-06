@@ -3,9 +3,9 @@
 
   It provides outputs for:
 
-  - base neovim package with some plugins
+  - Base neovim package with some plugins
   - neovim package with language servers
-  - nixOS module for installing neovim
+  - NixOS module for installing neovim
   - home-manager module for installing neovim
 */
 { withSystem, self }:
@@ -61,19 +61,20 @@
     };
 
   flake =
-    # For some reason, passing mkModule through lib causes moduleType to become
+    # For some reason, passing `mkModule` through lib causes `moduleType` to become
     # an attrset that is extremely weird. I think it's flake.parts fault
+    # ```
     # let
     #   # Both modules are very similar, so just build them using a "mode" flag below
     #   # inherit (import ./lib { inherit self; }) mkModule';
     # in
+    # ```
     {
       nixosModules.vim = import ./lib/mk-module.nix {
         inherit self;
         moduleType = "nixOS";
       };
       homeManagerModules.vim = import ./lib/mk-module.nix {
-        # import ./lib/mk-module.nix {
         moduleType = "homeManager";
         inherit self;
       };
