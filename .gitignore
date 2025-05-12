@@ -5,3 +5,5 @@ target/
 flake-modules/vim/packages/lua/lua/.luarc.json
 .pre-commit-config.yaml
 .nixos-test-history
+.aider*
+.env
