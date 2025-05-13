@@ -6,6 +6,7 @@ microVMName:
   pkgs,
   lib,
   data-flake,
+  self,
   ...
 }:
 let
@@ -29,6 +30,7 @@ in
         localLibExt
       ]
     ); # TODO: may need a more generic function here to pass `localLib` like what the flake does
+    specialArgs.self = self;
 
     # It is highly recommended to share the host's nix-store
     # with the VMs to prevent building huge images.
