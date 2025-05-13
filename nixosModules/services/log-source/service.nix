@@ -51,6 +51,8 @@ in
               + lib.concatMapStringsSep "\n" networkToRecords [
                 "lan"
                 "client"
+                "backbone"
+                "backbone-inner"
               ];
           };
           encoding.type = "csv";
