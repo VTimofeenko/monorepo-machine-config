@@ -20,7 +20,7 @@ rec {
     }:
     let
       ipLookupFuncs = {
-        lan = lib.homelab.getServiceIP;
+        lan = _: lib.homelab.getHostIpInNetwork (lib.homelab.getService serviceName).onHost "lan";
         backbone-inner = lib.homelab.getServiceInnerIP;
       };
     in
