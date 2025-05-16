@@ -1,0 +1,13 @@
+[project]
+name = "nopt-parser"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "click>=8.1.7",
+    "rich>=13.8.1",
+    "toolz>=0.12.1",
+]
+[project.scripts]
+nopt-parser = "nopt_parser:_main"

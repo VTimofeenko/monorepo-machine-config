@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, self, ... }:
 let
   settings.packages =
     (builtins.attrValues {
@@ -55,6 +55,26 @@ let
           pkgs.writeShellApplication {
             name = "confirm";
             text = it;
+          }
+        )
+      )
+      # Wrapper around `nixos-option` from unstable that allows printing per-host options.
+      (
+        # bash
+        ''
+          OPTION_PATH=$1
+          TGT_HOSTNAME=''${2:-$(hostname)}
+          nixos-option --flake "''${DOTFILES_REPO_LOCATION}#''${TGT_HOSTNAME}" "''${OPTION_PATH}" | nopt-parser
+        ''
+        |> (
+          it:
+          pkgs.writeShellApplication {
+            name = "nopt";
+            text = it;
+            runtimeInputs = [
+              self.inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.system}.nixos-option
+              (pkgs.callPackage ../packages/nopt-parser/package.nix { })
+            ];
           }
         )
       )
