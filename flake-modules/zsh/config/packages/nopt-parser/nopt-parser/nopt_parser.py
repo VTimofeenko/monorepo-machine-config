@@ -81,4 +81,3 @@ def _main(json, full):
 
 if __name__ == "__main__":
     _main()
-
