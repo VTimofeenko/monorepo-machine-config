@@ -19,16 +19,20 @@
           python-formatter = pkgs.writeShellApplication {
             name = "python-formatter";
 
-            runtimeInputs = [ pkgs.ruff ];
+            runtimeInputs = [
+              pkgs.ruff
+              pkgs.black
+            ];
 
             text = ''
-              ruff check\
-                  --config ${ruffConfig} \
-                  --fix \
-                  --preview \
-                  --quiet \
-                  --exit-zero `# it can keep complaining to stderr, but should not fail. EFM uses zero exit code to apply the change` \
-                  "$@"
+              black --line-length 120 "$@" |
+                ruff check\
+                    --config ${ruffConfig} \
+                    --fix \
+                    --preview \
+                    --quiet \
+                    --exit-zero `# it can keep complaining to stderr, but should not fail. EFM uses zero exit code to apply the change` \
+                    -
             '';
           };
 
