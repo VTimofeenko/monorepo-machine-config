@@ -75,3 +75,5 @@
 (package! org-ai)
 
 (package! org-fancy-priorities)
+
+(package! org-transclusion)
