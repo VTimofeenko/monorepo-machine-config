@@ -24,11 +24,7 @@ let
 in
 {
 
-  imports = [
-    ./functional/performance.nix
-    ./functional/reverse.nix
-    ./functional/client-view.nix
-  ];
+  imports = lib.localLib.mkImportsFromDir ./functional;
 
   services.unbound = {
     enable = true;
