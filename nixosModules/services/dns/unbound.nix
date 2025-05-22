@@ -1,9 +1,7 @@
 # Module that configures Unbound for recursive DNS, DNSSEC and caching
 {
   config,
-  selfPkgs,
   lib,
-  pkgs,
   ...
 }:
 let
@@ -20,7 +18,6 @@ let
   thisSrvConfig = getServiceConfig "dns";
 
   inherit (my-data.networks) zones;
-  selfPkgs' = selfPkgs.${pkgs.system};
 in
 {
 
@@ -40,7 +37,6 @@ in
           (map (zone: ''"${zone}" nodefault'') zones) # forces unbound not to proxy DNS requests for these hosts
           ++ (map (zone: ''"${zone}" always_null'') thisSrvConfig.customBlocklist); # Reply 0.0.0.0 for these hosts
         domain-insecure = zones;
-        include = "${selfPkgs'.hostsBlockList}";
 
         # Other settings
         cache-max-ttl = 86400;

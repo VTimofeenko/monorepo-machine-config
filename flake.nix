@@ -126,11 +126,6 @@
         nixpkgs-terraform-providers-bin.follows = "stub-flake";
       };
     };
-    # Source for DNS block
-    hostsBlockList = {
-      flake = false;
-      url = "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts";
-    };
     # Empty flake
     stub-flake.url = "github:VTimofeenko/stub-flake"; # A completely empty flake
     # Source for org-excalidraw converter for emacs
@@ -292,7 +287,6 @@
             bumpInputs = {
               changingInputs = [
                 "my-flake-modules"
-                "hostsBlockList"
                 "data-flake"
                 "nixpkgs"
                 "nixpkgs-unstable"
@@ -330,10 +324,6 @@
               };
 
             packages = {
-              hostsBlockList = import ./packages/hostsBlockList {
-                inherit pkgs;
-                src = inputs.hostsBlockList;
-              };
               # Desktop icons
               arcticons = import ./packages/arcticons/package.nix {
                 inherit (pkgs)

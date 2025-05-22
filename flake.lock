@@ -522,18 +522,6 @@
         "type": "github"
       }
     },
-    "hostsBlockList": {
-      "flake": false,
-      "locked": {
-        "narHash": "sha256-6M/IErOjoo8YB3VNgkBj9dX6997GbjuChZtWnLTvA1Y=",
-        "type": "file",
-        "url": "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
-      },
-      "original": {
-        "type": "file",
-        "url": "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
-      }
-    },
     "impermanence": {
       "locked": {
         "lastModified": 1737831083,
@@ -875,7 +863,6 @@
         "docspell-flake": "docspell-flake",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
-        "hostsBlockList": "hostsBlockList",
         "impermanence": "impermanence",
         "kroki-src": "kroki-src",
         "microvm": "microvm",
