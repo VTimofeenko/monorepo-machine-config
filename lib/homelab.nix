@@ -89,7 +89,9 @@
           ;
         }
       ];
-      inherit specialArgs;
+      specialArgs = specialArgs // {
+        pkgs-unstable = self.inputs.nixpkgs-unstable.legacyPackages.${hostData.system};
+      };
     };
   /*
     Returns attrset in format expected by deploy-rs.
