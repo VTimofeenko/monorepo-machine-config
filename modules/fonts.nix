@@ -1,9 +1,10 @@
 { pkgs, ... }:
 {
   fonts = {
-    packages = builtins.attrValues { inherit (pkgs) roboto twitter-color-emoji font-awesome; } ++ [
-      (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
-    ];
+    packages = builtins.attrValues {
+      inherit (pkgs) roboto twitter-color-emoji font-awesome;
+      inherit (pkgs.nerd-fonts) jetbrains-mono;
+    };
     fontconfig = {
       defaultFonts = {
         monospace = [ "JetBrainsMono Nerd Font" ];
