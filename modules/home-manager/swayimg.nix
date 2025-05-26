@@ -2,10 +2,6 @@
 # Source for bindings:
 # https://github.com/artemsen/swayimg/blob/master/extra/swayimgrc
 {
-  imports = [
-    ./impl.nix
-  ];
-
   programs.swayimg = {
     enable = true;
     settings =

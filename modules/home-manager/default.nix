@@ -6,7 +6,7 @@
     ./zathura # (ref:zathura-hm-import)
     ./packages.nix # (ref:packages-hm-import)
     ./media.nix # (ref:media-hm-import)
-    ./swayimg
+    ./swayimg.nix
 
     ../homeManager
     ./file-associations.nix
