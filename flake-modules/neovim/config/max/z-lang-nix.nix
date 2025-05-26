@@ -84,11 +84,10 @@ let
         hash = "sha256-DCIVdlb81Fct2uwzbtnawLBC/U03U2hqx8trqTJB7WA=";
       };
 
-      # Overriding `cargoHash` does not work; this is the way to do it
-      cargoDeps = old.cargoDeps.overrideAttrs {
+      cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
         name = "nil-vendor.tar.gz";
         inherit src;
-        outputHash = "sha256-FppdLgciTzF6tBZ+07IEzk5wGinsp1XUE7T18DCGvKg=";
+        hash = "sha256-Q4wBZtX77v8CjivCtyw4PdRe4OZbW00iLgExusbHbqc=";
       };
     })
   );
