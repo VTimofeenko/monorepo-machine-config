@@ -89,13 +89,14 @@ in
 
         # W/A for missing completions
         # Source: https://github.com/nix-community/home-manager/issues/2562
-        initExtraBeforeCompInit =
+        initContent =
           let
             profileDir = config.home.profileDirectory;
           in
           ''
             fpath+=("${profileDir}"/share/zsh/site-functions "${profileDir}"/share/zsh/$ZSH_VERSION/functions "${profileDir}"/share/zsh/vendor-completions)
-          '';
+          ''
+          |> lib.mkOrder 550;
       };
     };
 }

@@ -82,6 +82,6 @@ in
     programs.zsh.interactiveShellInit = init;
   };
   homeManagerModule = {
-    programs.zsh.initExtra = init;
+    programs.zsh.initContent = init;
   };
 }

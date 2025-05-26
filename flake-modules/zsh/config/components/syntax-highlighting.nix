@@ -26,7 +26,7 @@ in
   };
   homeManagerModule = {
     programs.zsh = {
-      initExtra = init;
+      initContent = init;
       syntaxHighlighting.enable = true;
     };
   };

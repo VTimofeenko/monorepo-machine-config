@@ -77,7 +77,7 @@ in
   homeManagerModule = {
     programs.zsh = {
       enable = true;
-      initExtra = init;
+      initContent = init;
       # Start in VI insert mode
       defaultKeymap = "viins";
       # Move the dotfiles to `~/.config` -- unclutter home directory
