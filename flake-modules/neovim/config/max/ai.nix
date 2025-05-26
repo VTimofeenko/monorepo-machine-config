@@ -2,7 +2,7 @@
   Simple aider setup in neovim. Needs passing the API key in the environment.
 */
 {
-  pkgs-unstable,
+  pkgs,
   ...
 }:
 let
@@ -16,7 +16,7 @@ let
   ];
 in
 {
-  plugin = pkgs-unstable.vimPlugins.aider-nvim;
+  plugin = pkgs.vimPlugins.aider-nvim;
   config =
     # lua
     ''
