@@ -1,5 +1,4 @@
-# [[file:../../../new_project.org::*Kitty][Kitty:1]]
-_: {
+{
   programs.kitty = {
     enable = true;
     themeFile = "Modus_Vivendi_Tinted";
@@ -32,4 +31,3 @@ _: {
     };
   };
 }
-# Kitty:1 ends here
