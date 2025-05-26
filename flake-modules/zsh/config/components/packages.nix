@@ -1,4 +1,4 @@
-{ pkgs, self, ... }:
+{ pkgs, ... }:
 let
   settings.packages =
     (builtins.attrValues {
@@ -58,7 +58,7 @@ let
           }
         )
       )
-      # Wrapper around `nixos-option` from unstable that allows printing per-host options.
+      # Wrapper around `nixos-option` that allows printing per-host options.
       (
         # bash
         ''
@@ -72,7 +72,7 @@ let
             name = "nopt";
             text = it;
             runtimeInputs = [
-              self.inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.system}.nixos-option
+              pkgs.nixos-option
               (pkgs.callPackage ../packages/nopt-parser/package.nix { })
             ];
           }
