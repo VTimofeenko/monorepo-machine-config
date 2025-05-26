@@ -20,6 +20,7 @@ _: {
       # Also see https://github.com/mikesmithgh/kitty-scrollback.nvim
       scrollback_pager = "nvim -R -M -c ':lua KITTY_SCROLLBACK()' - ";
       font_size = 9;
+      cursor_trail = 1;
     };
     keybindings = {
       # Opens a new Kitty window in the current working directory
