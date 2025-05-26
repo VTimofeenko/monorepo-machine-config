@@ -3,13 +3,13 @@
 
   Features:
 
-  - Harper :: helps find typos in markdown and programming comments
-  - Vale :: helps with writing prose a bit better. It requires some out of band
+  - `Harper` :: helps find typos in Markdown and programming comments
+  - `Vale` :: helps with writing prose a bit better. It requires some out of band
     configuration by running `vale sync` with appropriate env config.
-  - Markdownlint (running as LSP through EFM) :: makes the MD more uniform
-  - marksman :: detects broken links
-  - markdown-nvim :: used for navigation and for working with MD lists
-  - mdsh :: to execute embedded shell scripts
+  - `Markdownlint` (running as LSP through `EFM`) :: makes the Markdown more uniform
+  - `marksman` :: detects broken links
+  - `markdown-nvim` :: used for navigation and for working with Markdown lists
+  - `mdsh` :: to execute embedded shell scripts
 */
 {
   pkgs,
