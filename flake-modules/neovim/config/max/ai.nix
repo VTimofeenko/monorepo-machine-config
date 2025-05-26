@@ -1,5 +1,5 @@
 /**
-  Simple aider setup in neovim. Needs passing the API key in the environment.
+  Simple Aider setup in neovim. Needs passing the API key in the environment.
 */
 {
   pkgs,
