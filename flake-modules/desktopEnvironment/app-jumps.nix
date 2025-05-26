@@ -66,7 +66,7 @@ in
         lib.nameValuePair "${Hyper}+${name}" {
           mod = mainMod;
           dispatcher = "focuswindow";
-          arg = "^(${value})$";
+          arg = "class:^(${value})$";
           description = "Focus '${value}' window";
         }
       ) appMap;
