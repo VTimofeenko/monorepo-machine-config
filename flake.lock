@@ -211,15 +211,14 @@
         ],
         "treefmt-nix": [
           "treefmt-nix"
-        ],
-        "wg-namespace-flake": "wg-namespace-flake"
+        ]
       },
       "locked": {
-        "lastModified": 1747265760,
-        "narHash": "sha256-5Yn0fIJtXoGVgW+ZTLyx04H7r/JpnSlhGrkl1tzWxDA=",
+        "lastModified": 1748281921,
+        "narHash": "sha256-CsXVhnSvwevQsOMcoKszRnX5Nx2W+qRCpAojQG2yf+U=",
         "ref": "refs/heads/master",
-        "rev": "5744b2622ec73956458bd3eeac47ae62d6d24e13",
-        "revCount": 1014,
+        "rev": "78c9038cd21ea42038be30de2f95238ce4fa7318",
+        "revCount": 1022,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git"
       },
@@ -1041,27 +1040,6 @@
         "owner": "mtth",
         "repo": "scratch.vim",
         "type": "github"
-      }
-    },
-    "wg-namespace-flake": {
-      "inputs": {
-        "nixpkgs": [
-          "data-flake",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1668060489,
-        "narHash": "sha256-8GLPHJV0iMS8d4lEUP+v4p2IqRKGWDJwsP96+mm0fHw=",
-        "ref": "refs/heads/master",
-        "rev": "956d80aae5f7871bdcfa3946c175985c211d8498",
-        "revCount": 12,
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/wireguard-namespace-flake.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/wireguard-namespace-flake.git"
       }
     },
     "xremap": {
