@@ -45,5 +45,7 @@ _: {
       -- Escape -> clear search highlight
       vim.api.nvim_set_keymap("n", "<ESC>", ":noh<CR>", { noremap = true, silent = true })
 
+      -- Display diagnostics as virtual lines
+      vim.diagnostic.config({ virtual_lines = true })
     '';
 }
