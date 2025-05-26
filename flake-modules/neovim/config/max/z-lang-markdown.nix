@@ -14,7 +14,6 @@
 {
   pkgs,
   lib,
-  pkgs-unstable,
   ...
 }:
 let
@@ -94,7 +93,7 @@ in
     ''
     ''
       require("lspconfig").harper_ls.setup({
-        cmd = { "${pkgs-unstable.harper}/bin/harper-ls", "--stdio" },
+        cmd = { "${lib.getExe pkgs.harper}", "--stdio" },
         settings = {
           ["harper-ls"] = {
             linters = {
