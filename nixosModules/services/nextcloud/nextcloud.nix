@@ -19,7 +19,7 @@ in
   # Service configuration
   services.nextcloud = {
     enable = true;
-    package = pkgs.nextcloud30;
+    package = pkgs.nextcloud31;
     hostName = getServiceFqdn srvName;
 
     configureRedis = true;
