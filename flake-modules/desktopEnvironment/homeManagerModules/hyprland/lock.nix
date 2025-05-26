@@ -4,6 +4,7 @@
 {
   pkgs,
   lib,
+  selfPkgs,
   osConfig,
   ...
 }:
@@ -16,7 +17,7 @@ let
       [
         # Forces layout to en
         [
-          (lib.getExe pkgs.hyprland-switch-lang-on-xremap)
+          (lib.getExe selfPkgs.${pkgs.system}.hyprland-switch-lang-on-xremap)
           "set_en"
         ]
         # Locks the screen

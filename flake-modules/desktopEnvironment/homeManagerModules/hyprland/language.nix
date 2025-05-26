@@ -12,7 +12,7 @@
   By default it cycles the layouts, but it also has set_en flag (used in
   locking) which sets English layout when the session is locked.
 */
-{ pkgs, lib, ... }:
+{ pkgs, lib, selfPkgs, ... }:
 {
   wayland.windowManager.hyprland.settings = {
     # Sets all keyboard layouts on all input devices
@@ -35,6 +35,6 @@
     mod = "$mainMod";
     dispatcher = "exec";
     description = "Switch to next input language";
-    arg = lib.getExe pkgs.hyprland-switch-lang-on-xremap;
+    arg = lib.getExe selfPkgs.${pkgs.system}.hyprland-switch-lang-on-xremap;
   };
 }
