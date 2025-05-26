@@ -214,11 +214,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1748294717,
-        "narHash": "sha256-4KXWzIPwygFcee27pNxMgp/xhz0FFRJ7CAkeg79pTAI=",
+        "lastModified": 1748295263,
+        "narHash": "sha256-clrVlSFS94qtPLVfsSt+riMOF8ODfe01y3uAl/7rIPY=",
         "ref": "refs/heads/master",
-        "rev": "5ef57dd0b4bd3ef41f041f123ed65fb729a4a690",
-        "revCount": 1025,
+        "rev": "df52eb532284c80a6a3fc6aac1438449b8f540fb",
+        "revCount": 1027,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git"
       },
