@@ -10,15 +10,15 @@ let
   bat = {
     enable = true;
   };
-  mod = {
+  mod = mode: {
     programs =
       {
         inherit bat;
       }
-      |> lib.recursiveUpdate { bat.settings = batSettings; };
+      |> lib.recursiveUpdate { bat.${if mode == "nixos" then "settings" else "config"} = batSettings; };
   };
 in
 {
-  nixosModule = mod;
-  homeManagerModule = mod;
+  nixosModule = mod "nixos";
+  homeManagerModule = mod "home";
 }
