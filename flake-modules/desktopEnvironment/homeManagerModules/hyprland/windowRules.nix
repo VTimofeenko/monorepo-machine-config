@@ -5,7 +5,7 @@
 let
   settings.flyOut = {
     classes = [
-      "pinentry-qt"
+      "org.gnupg.pinentry-qt"
       "xdg-desktop-portal-gtk"
     ];
     titles = [ "Open File" ];
