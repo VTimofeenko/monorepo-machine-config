@@ -31,6 +31,7 @@ let
           "Readability.SMOG" = "NO";
           "Readability.ColemanLiau" = "NO";
           "Readability.LIX" = "NO";
+          "Readability.GunningFog" = "NO";
         };
       };
       globalSection = {
