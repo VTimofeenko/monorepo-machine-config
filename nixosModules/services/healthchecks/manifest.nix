@@ -4,7 +4,7 @@ in
 rec {
   default = [
     module
-    ingress.internal
+    ingress.impl
   ];
   module = ./. + "${serviceName}.nix";
   ingress =
