@@ -1,4 +1,4 @@
-{ port, ... }:
+{ port, serviceName, ... }:
 {
   lib,
   self,
@@ -11,4 +11,6 @@
       ports = [ port ];
     })
   ];
+
+  services.homepage-dashboard.allowedHosts = lib.homelab.getServiceFqdn serviceName;
 }
