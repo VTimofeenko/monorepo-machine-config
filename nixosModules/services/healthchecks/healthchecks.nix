@@ -95,4 +95,9 @@ in
       requiredBy = upholds;
     }
   ];
+
+  imports = [
+    ./fix-401010-pydantic-error.nix
+
+  ];
 }
