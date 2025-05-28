@@ -13,4 +13,8 @@
       ];
     })
   ];
+
+  # Default ("::") fails with
+  # java.nio.channels.UnsupportedAddressTypeException
+  services.keycloak.settings.http-host = "0.0.0.0";
 }
