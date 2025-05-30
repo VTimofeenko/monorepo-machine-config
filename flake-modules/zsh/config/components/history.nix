@@ -22,6 +22,11 @@ let
       "# *" # I don't care about full-line comments
       "k" # standalone "k" is usually mistyped up arrow
       "l[alsh]#( *)" # Ignore ls commands
+      "dig *" # I usually don't care about DNS lookups later
+      "kill *"
+      "chmod *"
+      "file *"
+      "realpath *"
     ];
   };
 
