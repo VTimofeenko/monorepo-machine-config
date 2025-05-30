@@ -15,7 +15,9 @@ in
   imports = [
     (import ./lazygit.nix { inherit conventional-commit-helper-pkg; })
   ];
-  home.packages = builtins.attrValues { inherit (pkgs) git git-crypt; };
+  home.packages = builtins.attrValues { inherit (pkgs) git git-crypt; } ++ [
+    conventional-commit-helper-pkg
+  ];
 
   # Directory where local overrides can be places
   xdg.configFile."git/local.d/.keep".source = builtins.toFile "keep" "";
