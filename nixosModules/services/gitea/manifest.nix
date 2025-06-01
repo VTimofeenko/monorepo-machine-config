@@ -6,7 +6,6 @@ rec {
     module
     ingress.impl
     storage.impl
-    ./non-functional/bkp.nix
     backups.impl
   ];
   module = ./gitea.nix;
