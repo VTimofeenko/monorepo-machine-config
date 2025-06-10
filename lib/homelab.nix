@@ -114,7 +114,7 @@
       deployPkgs = import nixpkgs {
         inherit system;
         overlays = [
-          deploy-rs.overlay
+          deploy-rs.overlays.default
           (_: super: {
             deploy-rs = {
               inherit (pkgs) deploy-rs;
