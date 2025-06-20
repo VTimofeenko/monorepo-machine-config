@@ -8,7 +8,10 @@ let
       "org.gnupg.pinentry-qt"
       "xdg-desktop-portal-gtk"
     ];
-    titles = [ "Open File" ];
+    titles = [
+      "Open File"
+      ".*wants to save" # Odd brave's behavior
+    ];
     tagName = "flyout";
   };
 
