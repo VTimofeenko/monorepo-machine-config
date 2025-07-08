@@ -1,6 +1,7 @@
 let
   serviceName = "log-concentrator";
   vectorPort = 6000;
+  syslogPort = 514;
 in
 rec {
   default = [
@@ -15,7 +16,13 @@ rec {
     {
       impl = ./non-functional/firewall.nix;
     }
-    |> builtins.mapAttrs (_: v: import v { servicePort = vectorPort; inherit serviceName; });
+    |> builtins.mapAttrs (
+      _: v:
+      import v {
+        servicePort = vectorPort;
+        inherit serviceName syslogPort;
+      }
+    );
 
   monitoring = {
     # TODO: implement

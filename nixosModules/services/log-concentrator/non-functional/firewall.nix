@@ -1,5 +1,7 @@
-{ servicePort, ... }:
+{ servicePort, syslogPort, ... }:
 {
+  config,
+  lib,
   ...
 }:
 {
@@ -13,5 +15,11 @@
 
   networking.firewall.extraInputRules = ''
     iifname "backbone-inner" tcp dport ${servicePort |> toString} accept
+    iifname "phy-lan" ip saddr ${
+      config.homelab.services.log-concentrator.rsyncClients
+      |> map (lib.homelab.hosts.getIPInNetwork "lan")
+      |> lib.concatStringsSep ", "
+      |> (it: "{ ${it} }")
+    } udp dport ${syslogPort |> toString} accept
   '';
 }
