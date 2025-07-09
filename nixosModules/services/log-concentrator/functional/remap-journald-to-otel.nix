@@ -64,8 +64,8 @@
             },
             "Attributes": {
                 "syslog": {
-                    "facility": .FACILITY || null,
                     "version": .VERSION || null,
+                    "facility": .SYSLOG_IDENTIFIER || null,
                     "procid": .PROCID || null,
                 },
             },
