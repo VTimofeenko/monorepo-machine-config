@@ -11,5 +11,6 @@ _: {
     ./time.nix
     ./resolved.nix
     ./networkd.nix
+    ./ship-logs.nix
   ];
 }

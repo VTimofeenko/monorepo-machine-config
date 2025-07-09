@@ -1,8 +1,3 @@
-/**
-  Quick implementation of the new log shipper.
-
-  Experimental phase will last while I figure out the data model and filtering rules.
-*/
 { lib, ... }:
 {
   services.vector = {

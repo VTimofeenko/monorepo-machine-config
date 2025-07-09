@@ -76,7 +76,6 @@
     ./interrupt-disable.nix
     ./hw-acceleration.nix
     ./network.nix
-    ./experimmental-vector-ship.nix
   ];
 
   # Hardware acceleration
