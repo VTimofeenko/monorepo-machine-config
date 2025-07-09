@@ -5,7 +5,7 @@
 let
   batSettings = {
     map-syntax = [ "flake.lock:JSON" ];
-    theme = "Visual Studio Dark+"; # This looks OK with my terminal
+    theme = "TwoDark"; # This looks OK with my terminal
   };
   bat = {
     enable = true;
