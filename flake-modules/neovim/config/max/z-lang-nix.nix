@@ -3,15 +3,15 @@
 
   Features:
   - Two LSPs:
-    - nixd :: nixd uses standard parser. I am using it mostly for lib functions and options completions
-    - nil :: I am using nil for code action and completions
+    - `nixd` :: `nixd` uses standard parser. I am using it mostly for lib functions and options completions
+    - `nil` :: I am using nil for code action and completions
 
       Full set of features:
       https://github.com/oxalica/nil/blob/main/docs/features.md#cli-features
 
     Both are using live versions so that pipe syntax is supported
 
-  - Treesitter support for nested strings (hmts-nvim) allows highlighting, say, bash strings inside nix strings
+  - Treesitter support for nested strings (`hmts-nvim`) allows highlighting, say, bash strings inside nix strings
   - Formatting using `nix-rfc-style-format`
   - Snippets:
     - `let .. in`
@@ -28,7 +28,7 @@
   ...
 }:
 let
-  # Flakeref is used so that nixd does not evaluate the changing flake over and over
+  # Flakeref is used so that `nixd` does not evaluate the changing flake over and over
   # Upside: much faster startup
   #
   # Downside: relies on the config being pushed, so
@@ -139,7 +139,7 @@ in
                   #
                   # FIXME: create a fake homeConfigurations output in the vim flake module for this
                   assert builtins.hasAttr "deck" self.outputs.legacyPackages.${pkgs.stdenv.system}.homeConfigurations;
-                  # `\"` around flakeRef is load bearing
+                  # `\"` around `flakeRef` is load bearing
                   ''expr = "(builtins.getFlake \"${flakeRef}\").outputs.legacyPackages.${pkgs.stdenv.system}.homeConfigurations.deck.options"''
                 }
               },
