@@ -1,16 +1,11 @@
-{ lib, ... }:
-let
-  inherit (lib.homelab) getOwnIpInNetwork;
-in
 {
   services.ntpd-rs = {
     enable = true;
     useNetworkingTimeServers = true;
     settings = {
       server = [
-        {
-          listen = "${getOwnIpInNetwork "lan"}:123";
-        }
+        # Listen on all addresses, let `./firewall.nix` deal with it
+        { listen = "0.0.0.0:123"; }
       ];
     };
     metrics.enable = true;
