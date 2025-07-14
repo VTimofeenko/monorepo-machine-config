@@ -9,7 +9,6 @@
     nur = {
       url = "github:nix-community/NUR";
       inputs.flake-parts.follows = "flake-parts";
-      inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
     nixpkgs-stable.follows = "nixpkgs";
