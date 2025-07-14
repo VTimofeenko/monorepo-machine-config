@@ -25,6 +25,7 @@
   pkgs,
   lib,
   self,
+  pkgs-unstable,
   ...
 }:
 let
@@ -43,54 +44,38 @@ let
 
     Helps keeping overrides to a minimum by alerting me if an override may be obsolete.
   */
-  traceIfNewerThan =
-    package: targetVersion: x:
-    let
-      mkVerAttrset =
-        y:
-        [
-          "major"
-          "minor"
-          "patch"
-        ]
-        |> map (it: {
-          name = it;
-          value = lib.versions."${it}";
-        })
-        |> builtins.listToAttrs
-        |> lib.mapAttrs (
-          n: v:
-          let
-            version = y.version or y;
-          in
-          v version
-        );
-      pkgVersion = mkVerAttrset package;
-      cmpVersion = mkVerAttrset targetVersion;
-    in
-    lib.traceIf (
-      (pkgVersion.major > cmpVersion.major)
-      || (pkgVersion.minor > cmpVersion.minor)
-      || (pkgVersion.patch != cmpVersion.patch)
-    ) "${package.name} override is for older version. Probably worth revisiting" x;
-
-  # `nilLive` is an override for nil that should support pipes
-  nilLive = traceIfNewerThan pkgs.nil "2024-08-06" (
-    pkgs.nil.overrideAttrs (old: rec {
-      src = pkgs.fetchFromGitHub {
-        owner = "oxalica";
-        repo = "nil";
-        rev = "2e24c9834e3bb5aa2a3701d3713b43a6fb106362";
-        hash = "sha256-DCIVdlb81Fct2uwzbtnawLBC/U03U2hqx8trqTJB7WA=";
-      };
-
-      cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
-        name = "nil-vendor.tar.gz";
-        inherit src;
-        hash = "sha256-Q4wBZtX77v8CjivCtyw4PdRe4OZbW00iLgExusbHbqc=";
-      };
-    })
-  );
+  # ```
+  # traceIfNewerThan =
+  #   package: targetVersion: x:
+  #   let
+  #     mkVerAttrset =
+  #       y:
+  #       [
+  #         "major"
+  #         "minor"
+  #         "patch"
+  #       ]
+  #       |> map (it: {
+  #         name = it;
+  #         value = lib.versions."${it}";
+  #       })
+  #       |> builtins.listToAttrs
+  #       |> lib.mapAttrs (
+  #         n: v:
+  #         let
+  #           version = y.version or y;
+  #         in
+  #         v version
+  #       );
+  #     pkgVersion = mkVerAttrset package;
+  #     cmpVersion = mkVerAttrset targetVersion;
+  #   in
+  #   lib.traceIf (
+  #     (pkgVersion.major > cmpVersion.major)
+  #     || (pkgVersion.minor > cmpVersion.minor)
+  #     || (pkgVersion.patch != cmpVersion.patch)
+  #   ) "${package.name} override is for older version. Probably worth revisiting" x;
+  # ```
 
 in
 {
@@ -104,7 +89,7 @@ in
     # LSP Configs
     ''
       require("lspconfig").nil_ls.setup({
-        cmd = { "${lib.getExe nilLive}" },
+        cmd = { "${lib.getExe pkgs-unstable.nil}" },
         autostart = true,
         capabilities = caps,
         settings = {
