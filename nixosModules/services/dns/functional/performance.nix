@@ -4,6 +4,7 @@
 _:
 let
   msg-cache-size' = 100;
+  bufSizeMB = 8;
 in
 {
   services.unbound.settings.server = rec {
@@ -19,7 +20,11 @@ in
     rrset-cache-size = "${toString (msg-cache-size' * 2)}m";
     msg-cache-size = "${toString msg-cache-size'}m";
 
-    so-rcvbuf = "8m";
+    so-rcvbuf = "${bufSizeMB |> toString}m";
     so-sndbuf = so-rcvbuf;
   };
+
+  # Set the `sysctl` values
+  boot.kernel.sysctl."net.core.rmem_max" = bufSizeMB * 1024 * 1024;
+  boot.kernel.sysctl."net.core.wmem_max" = bufSizeMB * 1024 * 1024;
 }
