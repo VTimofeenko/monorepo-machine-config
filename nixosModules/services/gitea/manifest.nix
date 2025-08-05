@@ -33,8 +33,23 @@ rec {
     enable = true;
     schedule = "daily";
     paths = [ "/var/lib/gitea" ];
+    exclude = [
+      "/var/lib/gitea/dump"
+      "/var/lib/gitea/tmp"
+    ];
     impl =
-      if enable then import ./non-functional/backups.nix { inherit paths schedule serviceName; } else { };
+      if enable then
+        { lib, ... }:
+        lib.localLib.mkBkp {
+          inherit
+            paths
+            serviceName
+            schedule
+            exclude
+            ;
+        }
+      else
+        { };
   };
   dashboard = {
     category = "Dev";
