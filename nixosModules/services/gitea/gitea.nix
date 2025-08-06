@@ -24,7 +24,8 @@ in
         REGISTER_MANUAL_CONFIRM = true;
       };
     };
-    # Needed for backups
-    dump.enable = true;
   };
+  imports = [
+    ./non-functional/dumps.nix
+  ];
 }
