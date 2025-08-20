@@ -3,19 +3,11 @@ let
   inherit (lib.homelab)
     getNetwork
     getOwnIpInNetwork
-    getService
-    getHostIpInNetwork
     ;
   lan = getNetwork "lan";
 
   ownIP = getOwnIpInNetwork "lan";
 
-  cctv = getNetwork "cctv";
-
-  cctvRouterIP = lib.pipe (getService "cctv-router") [
-    (builtins.getAttr "onHost") # -> "uranium"
-    (lib.flip getHostIpInNetwork "lan")
-  ];
 in
 {
   networking = {
@@ -33,12 +25,15 @@ in
       dns = lan.dnsServers;
       # Search domain goes here
       domains = [ lan.domain ];
-      routes = [
-        {
-          Gateway = cctvRouterIP;
-          Destination = cctv.prefix;
-        }
-      ];
+      # Sample custom route
+      # ```
+      # routes = [
+      #   {
+      #     Gateway = cctvRouterIP;
+      #     Destination = cctv.prefix;
+      #   }
+      # ];
+      # ```
       networkConfig = {
         Address = [ "${ownIP}${lan.settings.netmask}" ];
         Gateway = lan.settings.defaultGateway;
