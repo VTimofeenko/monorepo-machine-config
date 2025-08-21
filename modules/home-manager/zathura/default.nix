@@ -1,12 +1,11 @@
-# [[file:../../../new_project.org::*Zathura][Zathura:1]]
 # Home-manager module for Zathura
-_: {
+{
   programs.zathura = {
     enable = true;
     options = {
       # Allows zathura to use system clipboard
       selection-clipboard = "clipboard";
+      database = "sqlite";
     };
   };
 }
-# Zathura:1 ends here
