@@ -38,5 +38,7 @@
   services.qemuGuest.enable = true;
 
   # Imports
-  imports = [ ];
+  imports = [
+    ./tailscale.nix
+  ];
 }

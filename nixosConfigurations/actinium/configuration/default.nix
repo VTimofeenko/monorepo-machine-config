@@ -37,5 +37,6 @@
   # Imports
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
+    ./tailscale.nix
   ];
 }
