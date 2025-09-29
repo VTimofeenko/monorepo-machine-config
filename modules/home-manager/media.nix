@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, nixpkgs-unstable, ... }:
 {
   programs.mpv = {
     enable = true;
@@ -15,7 +15,11 @@
       save-position-on-quit = true;
     };
   };
-  programs.yt-dlp.enable = true;
+
+  programs.yt-dlp = {
+    enable = true;
+    package = nixpkgs-unstable.legacyPackages.${pkgs.system}.yt-dlp;
+  };
 
   # Local image editing and organizing
   home.packages = [
