@@ -5,5 +5,6 @@
     ./scanner.nix
     ./printer.nix
     ./keyboard.nix
+    ./flipper.nix
   ];
 }
