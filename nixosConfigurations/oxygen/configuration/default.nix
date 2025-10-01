@@ -3,7 +3,6 @@
 */
 {
   pkgs,
-  config,
   lib,
   nixos-hardware,
   ...
@@ -28,9 +27,7 @@
     kernelModules = [
       "kvm-intel"
       "wl"
-      "b43" # Needed for broadcom
     ];
-    extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
   };
 
   # File systems
