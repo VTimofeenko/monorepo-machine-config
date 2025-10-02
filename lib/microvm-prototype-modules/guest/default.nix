@@ -18,6 +18,9 @@ microVMName:
       data-flake.nixosModules.${microVMName}
       ./management.nix
       ./network.nix
+
+      # TODO: Revisit this, maybe add more modules
+      ../../../modules/nixOS/homelab/common/ship-logs.nix
     ];
 
     # Secrets setup
