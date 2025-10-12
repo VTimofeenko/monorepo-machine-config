@@ -26,9 +26,7 @@
             procMacro = {
               enable = true,
             },
-            checkOnSave = {
-              command = "clippy",
-            },
+            checkOnSave = true,
           },
         },
       })
