@@ -19,6 +19,7 @@
         { "<localleader>a", vim.lsp.buf.code_action, desc = "LSP code actions" },
         { "<localleader>f", vim.lsp.buf.format, desc = "LSP format" },
         { "<localleader>t", require("telescope.builtin").treesitter, desc = "Treesitter symbols" },
+        { "<leader>Ti", function() vim.diagnostic.enable(not vim.diagnostic.is_enabled()) end, desc = "Toggle diagnostics" },
       })
 
       wk.add({
