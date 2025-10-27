@@ -6,6 +6,7 @@
   ];
 
   services.xremap = {
+    enable = true;
     withWlroots = true;
     userName = "spacecadet";
     serviceMode = "user";
