@@ -10,6 +10,10 @@ in
 {
   nix = {
     extraOptions = "experimental-features = nix-command flakes pipe-operators";
+
+    # Higher download buffer size
+    settings.download-buffer-size = 1048576000; # 1GB
+
     gc = {
       automatic = true;
       dates = "weekly";
