@@ -1,4 +1,3 @@
-# [[file:../../../new_project.org::*Xremap][Xremap:1]]
 { xremap-flake, ... }:
 {
   imports = [
@@ -13,4 +12,3 @@
     watch = true;
   };
 }
-# Xremap:1 ends here
