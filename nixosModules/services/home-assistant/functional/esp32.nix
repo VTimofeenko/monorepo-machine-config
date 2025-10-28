@@ -8,13 +8,16 @@
     downloaded by esphome was not executable. I fixed it by `chown` everything
     in `/var/lib/private/esphome` to `esphome:esphome`
 */
-{ lib, config, pkgs-unstable, ... }:
+{
+  lib,
+  config,
+  ...
+}:
 {
   services.home-assistant.extraComponents = [ "esphome" ];
 
   services.esphome = {
     enable = true;
-    package = pkgs-unstable.esphome;
     allowedDevices = [
       "/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0"
       "/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_7C:2C:67:42:CD:C8-if00"
