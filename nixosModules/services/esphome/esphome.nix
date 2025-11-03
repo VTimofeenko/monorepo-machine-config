@@ -1,7 +1,4 @@
 /**
-  Simple esphome service config. Service authentication is to be done through
-  an SSH tunnel.
-
   Some notes:
 
   - When just deployed – all installs were failing because `g++` binary
@@ -14,8 +11,6 @@
   ...
 }:
 {
-  services.home-assistant.extraComponents = [ "esphome" ];
-
   services.esphome = {
     enable = true;
     allowedDevices = [
