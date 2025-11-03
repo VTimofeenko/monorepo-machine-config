@@ -5,6 +5,7 @@ rec {
   default = [
     module
     ingress.impl
+    backups.impl
   ];
   module = ./. + "/${serviceName}.nix";
 
@@ -20,10 +21,10 @@ rec {
   monitoring = false; # TODO: implement
   logging = false; # TODO: implement
 
-  backups = rec { # TODO: implement
+  backups = rec {
     enable = true;
     schedule = "daily";
-    paths = [  ];
+    paths = [ "/var/lib/esphome/*.yaml" ];
     impl =
       if enable then
         { lib, ... }:
