@@ -61,30 +61,29 @@
           };
         }
         {
-          imports =
-            [
-              ../modules/nixOS/homelab/common
+          imports = [
+            ../modules/nixOS/homelab/common
 
-              data-flake.nixosModules.${hostName}
+            data-flake.nixosModules.${hostName}
 
-              specialArgs.selfModules.my-theme
-              specialArgs.selfModules.zsh
-              specialArgs.selfModules.tmux
-              specialArgs.selfModules.vim
-              {
-                programs.myNeovim.enable = true;
-              }
-            ]
-            # Per-host overrides
-            # TODO: make more generic
-            ++ (lib.optionals (hostData.hostName == "uranium") [
-              nur.modules.nixos.default
-              ../modules
-            ])
-            ++ (lib.optionals (hostData.hostName == "neon") [ self.inputs.microvm.nixosModules.host ])
-            ++ (map (
-              module: ../nixosModules/services + "/${module}"
-            ) data-flake.data.hosts.all.${hostName}.modulesAt.public) # NOTE: Needs default.nix in the service directory
+            specialArgs.selfModules.my-theme
+            specialArgs.selfModules.zsh
+            specialArgs.selfModules.tmux
+            specialArgs.selfModules.vim
+            {
+              programs.myNeovim.enable = true;
+            }
+          ]
+          # Per-host overrides
+          # TODO: make more generic
+          ++ (lib.optionals (hostData.hostName == "uranium") [
+            nur.modules.nixos.default
+            ../modules
+          ])
+          ++ (lib.optionals (hostData.hostName == "neon") [ self.inputs.microvm.nixosModules.host ])
+          ++ (map (
+            module: ../nixosModules/services + "/${module}"
+          ) data-flake.data.hosts.all.${hostName}.modulesAt.public) # NOTE: Needs default.nix in the service directory
           ;
         }
       ];
