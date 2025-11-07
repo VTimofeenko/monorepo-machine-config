@@ -1,13 +1,13 @@
 /**
   A simple rust_analyzer language server setup.
 */
-{ pkgs, lib, ... }:
+{ pkgs-unstable, lib, ... }:
 {
   config =
     # lua
     ''
       require("lspconfig").rust_analyzer.setup({
-        cmd = { "${lib.getExe pkgs.rust-analyzer}"},
+        cmd = { "${lib.getExe pkgs-unstable.rust-analyzer}"},
         autostart = true,
         capabilities = caps,
         settings = {
