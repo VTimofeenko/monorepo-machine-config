@@ -56,4 +56,6 @@ in
       logVerbosity = "DEBUG";
     };
   };
+
+  systemd.services.hddfancontrol-harddrives.serviceConfig.Restart = "on-failure";
 }
