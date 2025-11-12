@@ -50,6 +50,7 @@ in
       comment = scheme.color7,
       foundTextBg = scheme.color11,
       foundTextFg = scheme.color0,
+      levelOK = scheme.color2,
     }
     |> std.record.map (fun colorName colorValue => colorValue |> std.record.update "origName" colorValue.name |> std.record.update "name" colorName),
 }
