@@ -1,7 +1,3 @@
-_: {
-  imports = [
-    ./alertmanager.nix
-    ./ssl.nix
-    ./firewall.nix
-  ];
+{
+  imports = (import ./manifest.nix).default;
 }

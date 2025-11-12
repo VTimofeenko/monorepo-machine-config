@@ -12,7 +12,6 @@ in
 
   services.prometheus.alertmanager = {
     enable = true;
-    listenAddress = getServiceIP srvName;
     configuration = {
       route = {
         group_wait = "10s";
