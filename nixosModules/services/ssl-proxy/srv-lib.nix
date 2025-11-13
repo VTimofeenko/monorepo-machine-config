@@ -31,10 +31,11 @@ rec {
         sslCertificate = config.age.secrets."ssl-cert".path;
         sslCertificateKey = config.age.secrets."ssl-key".path;
         locations."/" = {
-          proxyPass = "${protocol}://${serviceName |> ipLookupFuncs."${netName}"}:${port |> toString}";
+          proxyPass = "$srv_upstream";
           proxyWebsockets = true;
         };
         extraConfig = ''
+          set $srv_upstream "${protocol}://${serviceName |> ipLookupFuncs."${netName}"}:${port |> toString}";
           ${lib.optionalString onlyHumans (
             lib.homelab.getHumanIPs
             |> map (x: "allow ${x};") # construct allow directives in nginx
@@ -90,5 +91,33 @@ rec {
           |> builtins.concatStringsSep " "
         )
         |> lib.concatLines;
+    };
+
+  /**
+    Produces a module that when imported, allows `prometheus` service and
+    only that service to access a specific web path.
+  */
+  mkMetricsPathAllowOnlyPrometheus =
+    {
+      serviceName,
+      metricsPath,
+      # In case metrics are served by a separate process
+      lib,
+    }:
+    let
+      prometheusIP =
+        "prometheus" |> lib.homelab.getServiceHost |> lib.flip lib.homelab.getHostIpInNetwork "lan";
+    in
+    {
+      services.nginx.virtualHosts."${
+        serviceName |> lib.homelab.getServiceFqdn
+      }".locations.${metricsPath} =
+        {
+          proxyPass = "$srv_upstream";
+          extraConfig = ''
+            allow ${prometheusIP};
+            deny all;
+          '';
+        };
     };
 }

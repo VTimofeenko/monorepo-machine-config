@@ -26,18 +26,36 @@
   };
 
   imports =
+    let
+      serviceManifests =
+        # Collect the service manifests from data-flake
+        data-flake.serviceModules
+        # Add manifests from self
+        |> lib.mergeAttrs self.serviceModules;
+    in
+    # This code constructs the virtual host configurations for the services
     (
-      # Collect the service modules from data-flake and self and construct the
-      # virtual hosts
-      data-flake.serviceModules
-      # Add serviceModules from self
-      |> lib.mergeAttrs self.serviceModules
+      # construct the virtual hosts
+      serviceManifests
       # Only interested in modules with 'ingress'
       |> lib.filterAttrs (_: builtins.hasAttr "ingress")
-      # Only want ones that declare some sort of sslProxyConfig
+      # Only want ones that declare some sort of `sslProxyConfig`
       |> lib.filterAttrs (_: value: builtins.hasAttr "sslProxyConfig" value.ingress)
-      # Extract the sslProxyConfig module
+      # Extract the `sslProxyConfig` module
       |> lib.mapAttrsToList (_: value: value.ingress.sslProxyConfig)
+    )
+    # Create dedicated paths for metrics
+    ++ (
+      serviceManifests
+      |> lib.filterAttrs (_: v: v.observability.metrics.enable or false)
+      |> lib.mapAttrsToList (
+        serviceName: srvManifest:
+        (import ./srv-lib.nix).mkMetricsPathAllowOnlyPrometheus {
+          inherit serviceName lib;
+          metricsPath = srvManifest.observability.metrics.path;
+          # TODO: implement `metricsProxyPass` for services that may serve metrics from different ports
+        }
+      )
     )
     # Add components of this service
     ++ (lib.fileset.fileFilter (file: file.hasExt "nix") ./functional |> lib.fileset.toList)
