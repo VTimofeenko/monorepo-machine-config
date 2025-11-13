@@ -7,7 +7,8 @@ rec {
     ingress.impl
     storage.impl
     backups.impl
-  ];
+  ]
+  ++ observability.impl;
   module = ./gitea.nix;
 
   ingress =
@@ -20,6 +21,16 @@ rec {
       sslProxyConfig = ./non-functional/ssl.nix;
     }
     |> builtins.mapAttrs (_: v: import v { inherit sshPort webPort serviceName; });
+
+  observability = rec {
+    enable = true;
+    impl = if enable then [ metrics.impl ] else [ ];
+    metrics = rec {
+      enable = true;
+      path = "/metrics";
+      impl = if enable then import ./non-functional/observability/metrics/impl.nix else { };
+    };
+  };
 
   monitoring = {
     # TODO: implement here
