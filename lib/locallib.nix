@@ -110,4 +110,26 @@ in
     else
       [ ];
 
+  /**
+    Capitalizes first letter of the string.
+
+    # Type
+
+    ```
+    uppercase :: String -> String
+    ```
+
+    # Examples
+    ```nix
+    uppercase "foo"
+    => "Foo"
+    ```
+  */
+  uppercase =
+    str:
+    let
+      firstLetter = builtins.substring 0 1 str;
+      remainder = builtins.substring 1 (str |> builtins.stringLength) str;
+    in
+    (firstLetter |> lib.toUpper) + remainder;
 }
