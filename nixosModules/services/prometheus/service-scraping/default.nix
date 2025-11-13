@@ -81,4 +81,8 @@ in
   ) scrapeSecrets;
 
   services.prometheus.checkConfig = "syntax-only"; # bearer_token_file does not work with this
+
+  imports = [
+    ./gather-services-from-manifests.nix
+  ];
 }
