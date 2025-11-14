@@ -2,6 +2,7 @@ let
   serviceName = "log-concentrator";
   vectorPort = 6000;
   syslogPort = 514;
+  accessLogConcentratorPort = 9514;
 in
 rec {
   default = [
@@ -20,7 +21,7 @@ rec {
       _: v:
       import v {
         servicePort = vectorPort;
-        inherit serviceName syslogPort;
+        inherit serviceName syslogPort accessLogConcentratorPort;
       }
     );
 

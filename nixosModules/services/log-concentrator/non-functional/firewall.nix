@@ -1,4 +1,9 @@
-{ servicePort, syslogPort, ... }:
+{
+  servicePort,
+  syslogPort,
+  accessLogConcentratorPort,
+  ...
+}:
 {
   config,
   lib,
@@ -21,5 +26,8 @@
       |> lib.concatStringsSep ", "
       |> (it: "{ ${it} }")
     } udp dport ${syslogPort |> toString} accept
+    iifname "backbone-inner" ip saddr ${"ssl-proxy" |> lib.homelab.getServiceInnerIP} tcp dport ${
+      accessLogConcentratorPort |> toString
+    } accept comment "Allow log shipper to deposit access logs from the ssl proxy"
   '';
 }
