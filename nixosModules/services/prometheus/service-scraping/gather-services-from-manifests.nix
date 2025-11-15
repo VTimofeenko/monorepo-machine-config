@@ -23,15 +23,27 @@ in
     # I might need to also disable if v.observability.enable is false...
     |> lib.filterAttrs (_: v: v.observability.metrics.enable or false)
     |> lib.mapAttrsToList (
-      srvName: manifest: {
+      srvName: manifest:
+      let
+        # Decide whether the metrics endpoint is part of the service or there's a separate exporter
+        metricsPartOfService = !manifest.observability.metrics ? "port";
+      in
+      {
         job_name = "${srvName}-srv-scrape";
         scrape_interval = "30s";
-        scheme = "https";
+        scheme = if metricsPartOfService then "https" else "http";
         metrics_path = manifest.observability.metrics.path;
 
         static_configs = [
           {
-            targets = srvName |> lib.homelab.getServiceFqdn |> lib.singleton;
+            targets =
+              (
+                if metricsPartOfService then
+                  srvName |> lib.homelab.getServiceFqdn
+                else
+                  (srvName |> lib.homelab.getServiceInnerIP) + ":${toString manifest.observability.metrics.port}"
+              )
+              |> lib.singleton;
           }
         ];
 

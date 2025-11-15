@@ -48,6 +48,8 @@
     ++ (
       serviceManifests
       |> lib.filterAttrs (_: v: v.observability.metrics.enable or false)
+      # Exclude ones with "`addr`" specified – those have custom listeners
+      |> lib.filterAttrs (_: v: !v.observability.metrics ? "port")
       |> lib.mapAttrsToList (
         serviceName: srvManifest:
         (import ./srv-lib.nix).mkMetricsPathAllowOnlyPrometheus {
