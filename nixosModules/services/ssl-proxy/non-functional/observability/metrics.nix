@@ -2,6 +2,9 @@
   Sets up a vector instance to extract upstream logs and show them as metrics and in a structured format.:
 */
 { lib, ... }:
+let
+  vectorListenerPort = 9000;
+in
 {
   # Set up the log format for the access log
   services.nginx.commonHttpConfig = ''
@@ -25,6 +28,8 @@
         '"upstream_connect_time": "$upstream_connect_time",'
         '"upstream_header_time": "$upstream_header_time"'
     '}';
+
+    access_log syslog:server=localhost:${vectorListenerPort |> toString},nohostname vector_json;
   '';
 
   # Local vector instance that will remap the access log and/or ship it for processing
@@ -34,7 +39,7 @@
     settings = {
       sources.nginx-log-listener = {
         type = "syslog";
-        address = "0.0.0.0:9000";
+        address = "0.0.0.0:${vectorListenerPort |> toString}";
         mode = "udp"; # `nginx` can only send logs over UDP.
       };
 
