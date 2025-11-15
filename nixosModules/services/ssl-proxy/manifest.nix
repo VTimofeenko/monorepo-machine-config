@@ -11,7 +11,7 @@ rec {
       enable = true;
       path = "/metrics";
       port = 9598;
-      impl = if enable then import ./non-functional/observability/metrics.nix else { };
+      impl = if enable then import ./non-functional/observability/metrics.nix { inherit port; } else { };
     };
   };
   module = ./service.nix;

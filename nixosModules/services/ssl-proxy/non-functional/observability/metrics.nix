@@ -1,6 +1,7 @@
 /**
   Sets up a vector instance to extract upstream logs and show them as metrics and in a structured format.:
 */
+{ port }:
 { lib, ... }:
 let
   vectorListenerPort = 9000;
@@ -64,6 +65,89 @@ in
         inputs = [ "parse-nginx-log" ];
         address = "${lib.homelab.services.getInnerIP "log-concentrator"}:9514";
       };
+
+      # Turn the logs into metrics
+      transforms.nginx-enrich = {
+        type = "remap";
+        inputs = [ "parse-nginx-log" ];
+        source =
+          # vrl
+          ''
+            .upstream_status, err = to_int(.upstream_status)
+            if err != null {
+              log("Failed to parse upstream_status: " + .upstream_status ?? "", level: "error")
+              # Set a default so later logic doesn't fail
+              .upstream_status = 0
+            }
+
+            .upstream_response_time, err = to_float(.upstream_response_time)
+            if err != null {
+              log("Failed to parse upstream_response_time: " + .upstream_response_time ?? "", level: "error")
+            }
+
+            .upstream_connect_time, err = to_float(.upstream_connect_time)
+            if err != null {
+              log("Failed to parse upstream_connect_time: " + .upstream_connect_time ?? "", level: "error")
+            }
+
+            .upstream_header_time, err = to_float(.upstream_header_time)
+            if err != null {
+              log("Failed to parse upstream_header_time: " + .upstream_header_time ?? "", level: "error")
+            }
+
+            # --- Enrichment ---
+            # Add a convenient label based on the (now integer) upstream_status
+            if .upstream_status >= 500 {
+              .upstream_result_type = "5xx_server_error"
+            } else if .upstream_status >= 400 {
+              .upstream_result_type = "4xx_client_error"
+            } else if .upstream_status >= 200 || (status == 301 && .upstream_status == 0) {
+              # 301 status with 0 upstream means nginx did the redirect
+              .upstream_result_type = "2xx_3xx_success"
+            } else {
+              # This will catch status 0 or other NGINX-side errors (like 502s)
+              # where the upstream never provided a status.
+              .upstream_result_type = "nginx_error_or_other"
+            }
+
+          '';
+      };
+
+      transforms.nginx-metrics = {
+        type = "log_to_metric";
+        inputs = [ "nginx-enrich" ];
+        metrics = [
+          {
+            type = "counter";
+            name = "nginx_http_requests_total";
+            namespace = "ssl_proxy";
+            description = "Total number of HTTP requests";
+            field = "domain";
+            increment_by_value = false;
+            tags = {
+              domain = "{{ domain }}";
+              upstream = "{{ upstream_name }}";
+              method = "{{ request_method }}";
+              status = "{{ status }}";
+              upstream_status = "{{ upstream_status }}";
+              result = "{{ upstream_result_type }}";
+            };
+          }
+        ];
+      };
+
+      sinks.prometheus-exporter = {
+        type = "prometheus_exporter";
+        inputs = [ "nginx-metrics" ];
+        address = "0.0.0.0:${port |> toString}";
+      };
     };
   };
+
+  # Allow firewall
+  networking.firewall.extraInputRules = ''
+    iifname "backbone-inner" ip saddr ${
+      "prometheus" |> lib.homelab.getServiceInnerIP
+    } tcp dport ${port |> toString} accept comment "Allow prometheus to scrape metrics"
+  '';
 }
