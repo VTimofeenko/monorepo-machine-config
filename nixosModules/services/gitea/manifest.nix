@@ -36,21 +36,7 @@ rec {
     };
     alerts = {
       enable = true;
-      Emergency = [ ];
-      Alert = [
-        # service availability
-        {
-          title = "service down";
-          query = "up{job=\"gitea-srv-scrape\"}";
-        }
-        # disk almost full
-        {
-          title = "disk almost full";
-          query = "(vector(0) and on() (((node_filesystem_avail_bytes{mountpoint=\"/var/lib/gitea\"} * 100) / node_filesystem_size_bytes{mountpoint=\"/var/lib/gitea\"}) < 10)) or on() vector(1)";
-        }
-        # TODO: (needs nginx metrics) error rate over X for a period
-        # TODO: (needs new DB) query duration
-      ];
+      grafanaImpl = import ./non-functional/observability/alerts.nix { inherit serviceName; };
     };
   };
 
