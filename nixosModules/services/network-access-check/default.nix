@@ -2,7 +2,6 @@
 let
   inherit (lib.homelab) getServiceConfig getServiceFqdn;
   srvName = "network-access-check";
-  UUID = (getServiceConfig srvName).HCGUID;
 in
 {
   systemd = {
@@ -20,6 +19,7 @@ in
       script =
         let
           curl = lib.getExe' pkgs.curl "curl";
+          baseUrl = "https://${getServiceFqdn "healthchecks"}/ping/${(getServiceConfig "healthchecks").pingKey}";
         in
         # bash
         ''
@@ -28,7 +28,7 @@ in
                 --show-error --silent `#show error <=> it fails` \
                 --max-time 10 \
                 --retry 3 \
-                "https://${getServiceFqdn "healthchecks"}/ping/${UUID}"
+                "${baseUrl}/${srvName}?create=1"
         '';
     };
   };
