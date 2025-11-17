@@ -12,7 +12,7 @@ in
       networkConfig = {
         DHCP = "no";
         Address = [ "${lib.homelab.getOwnIpInNetwork "lan" }/24" ];
-        Gateway = lan.settings.defaultGateway;
+        Gateway = lan.settings.defaultGateway.address;
         DNS = lan.dnsServers;
         # This will also disable IPv6 assigning
         LinkLocalAddressing = "no";
