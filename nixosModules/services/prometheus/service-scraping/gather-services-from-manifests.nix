@@ -26,7 +26,8 @@ in
       srvName: manifest:
       let
         # Decide whether the metrics endpoint is part of the service or there's a separate exporter
-        metricsPartOfService = !manifest.observability.metrics ? "port";
+        metricsPartOfService =
+          !(manifest.observability.metrics ? "port" || manifest.observability.metrics ? "ports");
       in
       {
         job_name = "${srvName}-srv-scrape";
@@ -38,12 +39,18 @@ in
           {
             targets =
               (
+                # Metrics part of the service
                 if metricsPartOfService then
                   srvName |> lib.homelab.getServiceFqdn
-                else
+                # Single port for a single exporter
+                else if manifest.observability.metrics |> builtins.hasAttr "port" then
                   (srvName |> lib.homelab.getServiceInnerIP) + ":${toString manifest.observability.metrics.port}"
+                # Multiple exporters
+                else
+                  manifest.observability.metrics.ports
+                  |> map (it: "${srvName |> lib.homelab.getServiceInnerIP}:${toString it}")
               )
-              |> lib.singleton;
+              |> lib.toList;
           }
         ];
 
