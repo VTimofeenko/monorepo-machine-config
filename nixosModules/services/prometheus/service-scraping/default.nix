@@ -44,7 +44,7 @@ in
               (
                 x:
                 let
-                  ipAddress = getHostIpInNetwork v.onHost "monitoring";
+                  ipAddress = getHostIpInNetwork v.onHost "backbone-inner";
                   # Try to retrieve the port from service monitoring; fall back to config
                   scrapePort =
                     (getServiceMonitoring srvName).scrapePort

@@ -1,4 +1,25 @@
-{
+let
+  serviceName = "prometheus";
+in
+rec {
+  default = [
+    module
+    ingress.impl
+    backups.impl
+  ];
+
+  module = ./service.nix;
+
+  ingress =
+    let
+      port = 9090;
+    in
+    {
+      impl = ./non-functional/firewall.nix;
+      sslProxyConfig = ./non-functional/ssl.nix;
+    }
+    |> builtins.mapAttrs (_: v: import v { inherit port serviceName; });
+
   dashboard = {
     category = "Admin";
     links = [
@@ -9,5 +30,12 @@
       }
     ];
   };
+
+  # Backups disabled, TODO: data to be replicated
+  backups = rec {
+    enable = false;
+    impl = if enable then { lib, ... }: lib.localLib.mkBkp { inherit serviceName; } else { };
+  };
+
   srvLib = import ./srv-lib.nix;
 }

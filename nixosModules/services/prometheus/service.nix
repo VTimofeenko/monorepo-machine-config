@@ -1,16 +1,15 @@
 { lib, config, ... }:
 let
   srvName = "prometheus";
-  inherit (lib.homelab) getServiceIP;
 in
 {
   services.prometheus = {
     enable = true;
     retentionTime = "120d";
-    listenAddress = getServiceIP srvName;
   };
 
   # Mounts
+  # TODO: move to storage.impl
   systemd = {
     # Reconstruct the workdir
     services.prometheus.unitConfig.RequiresMountsFor = [
