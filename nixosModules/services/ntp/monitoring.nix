@@ -9,7 +9,7 @@ in
   services.ntpd-rs.settings.observability.metrics-exporter-listen =
     assert lib.assertMsg config.services.ntpd-rs.enable "ntpd-rs needs to be enabled";
     assert lib.assertMsg config.services.ntpd-rs.metrics.enable "ntpd-rs metrics need to be enabled";
-    "${getOwnIpInNetwork "monitoring"}:${toString scrapePort}";
+    "${getOwnIpInNetwork "backbone-inner"}:${toString scrapePort}";
 
-  networking.firewall.interfaces.monitoring.allowedTCPPorts = lib.singleton scrapePort;
+  networking.firewall.interfaces.backbone-inner.allowedTCPPorts = lib.singleton scrapePort;
 }

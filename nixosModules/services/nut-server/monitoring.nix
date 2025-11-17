@@ -13,7 +13,7 @@ in
     enable =
       assert config.power.ups.mode == "netserver";
       true;
-    listenAddress = getOwnIpInNetwork "monitoring";
+    listenAddress = getOwnIpInNetwork "backbone-inner";
     openFirewall = lib.mkForce false;
 
     # Exporter-specific services

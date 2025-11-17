@@ -11,7 +11,7 @@ in
     enable =
       assert config.services.kea.dhcp4.enable;
       true;
-    listenAddress = getOwnIpInNetwork "monitoring";
+    listenAddress = getOwnIpInNetwork "backbone-inner";
     openFirewall = lib.mkForce false;
     targets = [
       config.services.kea.dhcp4.settings.control-socket.socket-name

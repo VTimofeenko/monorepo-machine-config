@@ -14,7 +14,7 @@ in
         assert config.services.unbound.enable;
         true;
       unbound.host = "unix:///run/unbound/unbound.socket";
-      listenAddress = getOwnIpInNetwork "monitoring";
+      listenAddress = getOwnIpInNetwork "backbone-inner";
       openFirewall = lib.mkForce false;
     };
   };
