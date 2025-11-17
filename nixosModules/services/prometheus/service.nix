@@ -1,38 +1,13 @@
 { lib, config, ... }:
 let
   srvName = "prometheus";
-  inherit (lib) pipe;
-  inherit (lib.homelab) getServiceConfig getServiceIP;
-  inherit (getServiceConfig "prometheus") exporters;
+  inherit (lib.homelab) getServiceIP;
 in
 {
   services.prometheus = {
     enable = true;
     retentionTime = "120d";
     listenAddress = getServiceIP srvName;
-    scrapeConfigs = pipe exporters [
-      (map (x: {
-        job_name = x;
-        scrape_interval = "30s";
-        static_configs =
-          lib.homelab.getService "monitoring-source"
-          |> builtins.getAttr "onHosts"
-          |> map (nodeName: {
-            targets =
-              let
-                hostName =
-                  if lib.homelab.isInNetwork nodeName "monitoring" then
-                    lib.homelab.getHostIpInNetwork nodeName "monitoring"
-                  else
-                    lib.homelab.getHostIpInNetwork nodeName "backbone-inner";
-              in
-              [
-                "${hostName}:${config.services.prometheus.exporters.${x}.port |> toString}"
-              ];
-            labels.alias = "${nodeName}.home.arpa";
-          });
-      }))
-    ];
   };
 
   # Mounts
@@ -54,5 +29,6 @@ in
     ./synology
     ./service-scraping
     ./healthchecks-scraping.nix
-  ];
+  ]
+  ++ lib.localLib.mkImportsFromDir ./functional;
 }
