@@ -12,15 +12,15 @@
     network = lib.mkOption {
       description = "Which network to use";
       type = lib.types.enum [
-        "wifi-lan"
+        "phy-lan"
         "eth"
         "adhoc-wifi"
       ];
-      default = "wifi-lan";
+      default = "phy-lan";
     };
   };
   config = {
-    myMachines.uranium.network = "wifi-lan";
+    myMachines.uranium.network = "phy-lan";
     # To reset the volatile storage for journald. It breaks user's journald
     services.journald.extraConfig = lib.mkForce "";
     # a remnant from the past
