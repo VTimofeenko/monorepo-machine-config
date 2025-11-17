@@ -9,4 +9,5 @@
       }
     ];
   };
+  srvLib = import ./srv-lib.nix;
 }

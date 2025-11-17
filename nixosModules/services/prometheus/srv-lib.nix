@@ -1,0 +1,35 @@
+{
+  /**
+    Produce a standard firewall rule that allows Prometheus to scrape metrics.
+  */
+  mkBackboneInnerFirewallRules =
+    { lib, ports }:
+    {
+      # The validation is done by nftables, no need to make an extra check
+      networking.firewall.extraInputRules =
+        ports
+        # Parse ports coming in as just int. If so – reconstruct attrset.
+        # Otherwise leave the value be and let if fail later if needed.
+        |> map (
+          it:
+          if lib.isInt it then
+            {
+              port = it;
+              protocol = "tcp";
+            }
+          else
+            it
+        )
+        # Construct the firewall rules
+        |> map (
+          it:
+          [
+            ''iifname "backbone-inner"''
+            ''ip saddr { ${"prometheus" |> lib.homelab.getServiceInnerIP} }''
+            ''${it.protocol} dport ${it.port |> toString} accept''
+          ]
+          |> builtins.concatStringsSep " "
+        )
+        |> lib.concatLines;
+    };
+}
