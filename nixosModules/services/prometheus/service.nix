@@ -2,7 +2,7 @@
 let
   srvName = "prometheus";
   inherit (lib) pipe;
-  inherit (lib.homelab) getHostInNetwork getServiceConfig getServiceIP;
+  inherit (lib.homelab) getServiceConfig getServiceIP;
   inherit (getServiceConfig "prometheus") exporters;
 in
 {
@@ -14,16 +14,23 @@ in
       (map (x: {
         job_name = x;
         scrape_interval = "30s";
-        static_configs = pipe config.my-data.services.all.monitoring-source.onHosts [
-          (map (nodeName: {
-            targets = [
-              "${(getHostInNetwork nodeName "monitoring").fqdn}:${
-                toString config.services.prometheus.exporters.${x}.port
-              }"
-            ];
+        static_configs =
+          lib.homelab.getService "monitoring-source"
+          |> builtins.getAttr "onHosts"
+          |> map (nodeName: {
+            targets =
+              let
+                hostName =
+                  if lib.homelab.isInNetwork nodeName "monitoring" then
+                    lib.homelab.getHostIpInNetwork nodeName "monitoring"
+                  else
+                    lib.homelab.getHostIpInNetwork nodeName "backbone-inner";
+              in
+              [
+                "${hostName}:${config.services.prometheus.exporters.${x}.port |> toString}"
+              ];
             labels.alias = "${nodeName}.home.arpa";
-          }))
-        ];
+          });
       }))
     ];
   };
