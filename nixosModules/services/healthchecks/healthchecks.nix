@@ -81,21 +81,6 @@ in
     };
   };
 
-  # Storage
-  systemd.mounts = [
-    rec {
-      description = "Data mount for ${srvName}";
-      where = config.services.healthchecks.dataDir;
-      what = "/dev/disk/by-label/srv-${srvName}";
-      options = "noatime";
-
-      # Ordering
-      upholds = [ "healthchecks.service" ];
-      before = upholds;
-      requiredBy = upholds;
-    }
-  ];
-
   imports = [
     ./fix-401010-pydantic-error.nix
 
