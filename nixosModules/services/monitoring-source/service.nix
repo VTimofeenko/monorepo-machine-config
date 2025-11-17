@@ -2,7 +2,11 @@
 let
   inherit (lib) pipe;
   inherit (lib.homelab) getServiceConfig;
-  listenAddress = lib.homelab.getOwnIpInNetwork "monitoring";
+  listenAddress =
+    if lib.homelab.amInNetwork "monitoring" then
+      lib.homelab.getOwnIpInNetwork "monitoring"
+    else
+      lib.homelab.getOwnIpInNetwork "backbone-inner";
   inherit (getServiceConfig "prometheus") exporters;
 in
 {
