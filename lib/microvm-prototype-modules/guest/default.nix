@@ -21,7 +21,14 @@ microVMName:
 
       # TODO: Revisit this, maybe add more modules
       ../../../modules/nixOS/homelab/common/ship-logs.nix
-    ];
+    ]
+    # Add public modules
+    # TODO: refactor. This is a bit clunky and effectively reimplements what is
+    # done for the nodes
+    ++ (
+      (lib.homelab.getHost microVMName).modulesAt.public
+      |> map (it: ../../../nixosModules/services + "/${it}")
+    );
 
     # Secrets setup
     age.identityPaths = [ "/persist/etc/ssh/ssh_host_ed25519_key" ];
