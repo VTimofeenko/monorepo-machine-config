@@ -25,6 +25,10 @@ rec {
       impl = if enable then ./non-functional/metrics.nix else { };
       port = 9167;
     };
+    alerts = {
+      enable = true;
+      grafanaImpl = import ./non-functional/alerts.nix;
+    };
     logging = {
       impl = ./non-functional/logging.nix;
     };
