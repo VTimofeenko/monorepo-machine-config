@@ -19,12 +19,6 @@ in
       inherit description;
     };
 
-    upsd.listen = [
-      {
-        address = lib.homelab.getServiceIP srvName;
-      }
-    ];
-
     users = {
       # Upsmon makes the following distinction between users:
       # * primary = "UPS is connected to this machine, shut it down last"

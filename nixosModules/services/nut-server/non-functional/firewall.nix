@@ -17,4 +17,9 @@ in
     tcp dport ${toString (getServiceConfig srvName).port} ip saddr { ${nftConcat clientIPs}} accept comment "NUT traffic"
   '';
 
+  power.ups.upsd.listen = [
+    {
+      address = lib.homelab.getServiceIP srvName;
+    }
+  ];
 }

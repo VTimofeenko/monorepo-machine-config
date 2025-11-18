@@ -1,15 +1,16 @@
 {
   config,
   lib,
+  self,
   ...
 }:
 let
-  inherit (lib.homelab) getOwnIpInNetwork getServiceMonitoring getServiceFqdn;
+  inherit (lib.homelab) getOwnIpInNetwork getServiceFqdn;
 
   srvName = "nut-server";
 in
 {
-  services.prometheus.exporters.${(getServiceMonitoring srvName).exporterNixOption} = {
+  services.prometheus.exporters.nut = {
     enable =
       assert config.power.ups.mode == "netserver";
       true;
@@ -31,4 +32,11 @@ in
       "ups.test.result"
     ];
   };
+
+  imports = [
+    (self.serviceModules.prometheus.srvLib.mkBackboneInnerFirewallRules {
+      inherit lib;
+      ports = config.services.prometheus.exporters.nut.port;
+    })
+  ];
 }
