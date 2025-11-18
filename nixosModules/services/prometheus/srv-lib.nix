@@ -8,6 +8,8 @@
       # The validation is done by nftables, no need to make an extra check
       networking.firewall.extraInputRules =
         ports
+        # Turn into list just in case, so callers don't need to bother.
+        |> lib.toList
         # Parse ports coming in as just int. If so – reconstruct attrset.
         # Otherwise leave the value be and let if fail later if needed.
         |> map (
