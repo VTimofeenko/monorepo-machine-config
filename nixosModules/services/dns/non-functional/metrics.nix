@@ -1,7 +1,9 @@
-{ config, lib, ... }:
-let
-  inherit (lib.homelab) getOwnIpInNetwork;
-in
+{
+  config,
+  lib,
+  self,
+  ...
+}:
 {
   services = {
     # Needed settings for stats
@@ -14,8 +16,15 @@ in
         assert config.services.unbound.enable;
         true;
       unbound.host = "unix:///run/unbound/unbound.socket";
-      listenAddress = getOwnIpInNetwork "backbone-inner";
+      listenAddress = lib.homelab.getOwnIpInNetwork "backbone-inner";
       openFirewall = lib.mkForce false;
     };
   };
+
+  imports = [
+    (self.serviceModules.prometheus.srvLib.mkBackboneInnerFirewallRules {
+      inherit lib;
+      ports = config.services.prometheus.exporters.unbound.port;
+    })
+  ];
 }

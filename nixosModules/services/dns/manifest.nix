@@ -4,25 +4,32 @@
 rec {
   default = [
     module
-    monitoring.impl
-    logging.impl
-  ] ++ (ingress |> builtins.attrValues);
+  ]
+  ++ (ingress |> builtins.attrValues)
+  ++ observability.impl;
   module = ./unbound.nix;
-
-  monitoring = {
-    impl = ./non-functional/monitoring.nix;
-  };
-
-  logging = {
-    impl = ./non-functional/logging.nix;
-  };
 
   ingress = {
     firewall = ./non-functional/firewall.nix;
     acl = ./non-functional/acl.nix;
   };
 
+  observability = rec {
+    enable = true;
+    impl = [
+      metrics.impl
+      logging.impl
+    ];
+    metrics = rec {
+      enable = true;
+      impl = if enable then ./non-functional/metrics.nix else { };
+      port = 9167;
+    };
+    logging = {
+      impl = ./non-functional/logging.nix;
+    };
+  };
+
   backups = false; # Stateless
   storage = false; # Stateless
 }
-
