@@ -25,11 +25,7 @@
         |> map (nodeName: {
           targets =
             let
-              hostName =
-                if lib.homelab.isInNetwork nodeName "monitoring" then
-                  lib.homelab.getHostIpInNetwork nodeName "monitoring"
-                else
-                  lib.homelab.getHostIpInNetwork nodeName "backbone-inner";
+              hostName = lib.homelab.getHostIpInNetwork nodeName "backbone-inner";
             in
             [
               "${hostName}:${it.exporterPort |> toString}"

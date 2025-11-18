@@ -18,6 +18,4 @@ in
       openFirewall = lib.mkForce false;
     };
   };
-
-  networking.firewall.interfaces.monitoring.allowedTCPPorts = lib.singleton config.services.prometheus.exporters.unbound.port;
 }
