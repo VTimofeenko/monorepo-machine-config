@@ -2,13 +2,21 @@ rec {
   default = [
     module
     ingress.firewall
-    monitoring.impl
+    observability.metrics.impl
   ];
   module = ./kea.nix;
   ingress.firewall = ./firewall.nix;
 
   storage = false; # Stateless
   backups = false; # Stateless
-  monitoring.impl = ./monitoring.nix;
+  observability = {
+    enable = true;
+    metrics = rec {
+      enable = true;
+      impl = if enable then ./non-functional/metrics.nix else { };
+      path = "/";
+      port = 9547;
+    };
+  };
   logging = false; # TODO
 }
