@@ -9,6 +9,7 @@
   exclude ? [ ],
   schedule ? "daily",
   localDB ? false, # If set to true, adds `pg_dumpall` script to backup the result of the DB dump
+  localOnly ? false, # If set to true, do not store backups remotely
   serviceName,
 }:
 {
@@ -33,12 +34,12 @@ in
     "${serviceName}-localbackup" = {
       inherit exclude paths;
       timerConfig.OnCalendar = schedule;
-      # If localDB is set, dynamicFilesFrom will list the dump
+      # If `localDB` is set, `dynamicFilesFrom` will list the dump
       dynamicFilesFrom =
         if localDB then "ls $RUNTIME_DIRECTORY/pg_dumpall.sql" else null # Option default
       ;
       backupPrepareCommand =
-        # Dump the database if localDB is true.
+        # Dump the database if `localDB` is true.
         #
         # I only use PostgreSQL in my homelab, so there's no need to handle
         # anything else
@@ -77,7 +78,8 @@ in
       ];
     };
   };
-
+}
+// lib.optionalAttrs (!localOnly) {
   /**
     Remote backup is done to rsync.net by default. The implementation is
     largely the same as local backup, except for special handling of the SSH
@@ -88,14 +90,14 @@ in
   */
   services.restic.backups."${serviceName}-rsync-net-backup" = {
     inherit exclude paths;
-    # If localDB is set, dynamicFilesFrom will list the dump
+    # If `localDB` is set, `dynamicFilesFrom` will list the dump
     dynamicFilesFrom =
       if localDB then "ls $RUNTIME_DIRECTORY/pg_dumpall.sql" else null # Option default
     ;
     repository = "sftp:${(lib.homelab.getService "rsync-net").settings.sftpConnectString}:${serviceName}";
     timerConfig.OnCalendar = schedule;
     backupPrepareCommand =
-      # Dump the database if localDB is true.
+      # Dump the database if `localDB` is true.
       #
       # I only use PostgreSQL in my homelab, so there's no need to handle
       # anything else
