@@ -33,24 +33,35 @@ in
         job_name = "${srvName}-srv-scrape";
         scrape_interval = "30s";
         scheme = if metricsPartOfService then "https" else "http";
-        metrics_path = manifest.observability.metrics.path;
+        metrics_path = manifest.observability.metrics.path or "/metrics";
 
         static_configs = [
           {
             targets =
-              (
-                # Metrics part of the service
-                if metricsPartOfService then
-                  srvName |> lib.homelab.getServiceFqdn
-                # Single port for a single exporter
-                else if manifest.observability.metrics |> builtins.hasAttr "port" then
-                  (srvName |> lib.homelab.getServiceInnerIP) + ":${toString manifest.observability.metrics.port}"
-                # Multiple exporters
-                else
-                  manifest.observability.metrics.ports
-                  |> map (it: "${srvName |> lib.homelab.getServiceInnerIP}:${toString it}")
-              )
-              |> lib.toList;
+              # DNS is a multi-instance service, needs special treatment
+              if srvName == "dns" then
+                [
+                  "dns_1"
+                  "dns_2"
+                ]
+                |> map (
+                  it: "${it |> lib.homelab.getServiceInnerIP}:${toString manifest.observability.metrics.port}"
+                )
+              else
+                (
+                  # Metrics part of the service
+                  if metricsPartOfService then
+                    srvName |> lib.homelab.getServiceFqdn
+                  # Single port for a single exporter
+                  else if manifest.observability.metrics |> builtins.hasAttr "port" then
+
+                    (srvName |> lib.homelab.getServiceInnerIP) + ":${toString manifest.observability.metrics.port}"
+                  # Multiple exporters
+                  else
+                    manifest.observability.metrics.ports
+                    |> map (it: "${srvName |> lib.homelab.getServiceInnerIP}:${toString it}")
+                )
+                |> lib.toList;
           }
         ];
 
