@@ -5,6 +5,7 @@ rec {
   default = [
     module
     ingress.impl
+    backups.impl
   ];
   module = ./. + "/${serviceName}.nix";
   ingress =
@@ -18,9 +19,13 @@ rec {
 
   monitoring = false; # TODO: implement
   logging = false; # TODO: implement
-  # Stateless service
-  backups = false;
   storage = false;
+
+  backups = rec {
+    enable = false; # FIXME: enable once network is fixed
+    paths = [ "/var/lib/healthchecks" ];
+    impl = if enable then { lib, ... }: lib.localLib.mkBkp { inherit paths serviceName; localOnly = true; } else { };
+  };
 
   dashboard = {
     category = "Admin";
