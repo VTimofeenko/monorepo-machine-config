@@ -17,14 +17,32 @@ rec {
       sslProxyConfig = import ./non-functional/ssl.nix { inherit port serviceName; };
     };
 
-  monitoring = false; # TODO: implement
-  logging = false; # TODO: implement
-  storage = false;
+  observability = {
+    enable = true;
+
+    metrics = {
+      enable = true;
+      path =  lib: (lib.homelab.getServiceConfig serviceName).metricsURL;
+    };
+
+    alerts = {
+      enable = true;
+      grafanaImpl = import ./non-functional/alerts.nix;
+    };
+  };
 
   backups = rec {
     enable = false; # FIXME: enable once network is fixed
     paths = [ "/var/lib/healthchecks" ];
-    impl = if enable then { lib, ... }: lib.localLib.mkBkp { inherit paths serviceName; localOnly = true; } else { };
+    impl =
+      if enable then
+        { lib, ... }:
+        lib.localLib.mkBkp {
+          inherit paths serviceName;
+          localOnly = true;
+        }
+      else
+        { };
   };
 
   dashboard = {

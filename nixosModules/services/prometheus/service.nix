@@ -27,7 +27,6 @@ in
   imports = [
     ./synology
     ./service-scraping
-    ./healthchecks-scraping.nix
   ]
   ++ lib.localLib.mkImportsFromDir ./functional;
 }
