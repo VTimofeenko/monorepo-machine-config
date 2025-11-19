@@ -27,6 +27,9 @@ in
 
     so-rcvbuf = "${bufSizeMB |> toString}m";
     so-sndbuf = so-rcvbuf;
+
+    prefetch = "yes";
+    prefetch-key = "yes";
   };
 
   # Set the `sysctl` values
