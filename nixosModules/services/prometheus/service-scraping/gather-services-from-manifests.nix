@@ -33,7 +33,9 @@ in
         job_name = "${srvName}-srv-scrape";
         scrape_interval = "30s";
         scheme = if metricsPartOfService then "https" else "http";
-        metrics_path = manifest.observability.metrics.path or "/metrics";
+        metrics_path =
+          (manifest.observability.metrics.path or "/metrics")
+          |> (it: if builtins.isFunction it then it lib else it);
 
         static_configs = [
           {

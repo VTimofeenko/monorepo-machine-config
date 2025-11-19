@@ -54,7 +54,8 @@
         serviceName: srvManifest:
         (import ./srv-lib.nix).mkMetricsPathAllowOnlyPrometheus {
           inherit serviceName lib;
-          metricsPath = srvManifest.observability.metrics.path;
+          metricsPath =
+            srvManifest.observability.metrics.path |> (it: if lib.isFunction it then it lib else it);
           # TODO: implement `metricsProxyPass` for services that may serve metrics from different ports
         }
       )
