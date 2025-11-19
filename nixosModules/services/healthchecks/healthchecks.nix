@@ -48,6 +48,8 @@ in
           SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
           CSRF_ALLOWED_ORIGINS = ["https://${fqdn}"]
           CORS_ORIGINS_WHITELIST = ["https://${fqdn}"]
+          REMOTE_USER_HEADER = "HTTP_X_EMAIL"
+          AUTHENTICATION_BACKENDS = ["hc.accounts.backends.CustomHeaderBackend"]
         '';
 
         # Override this to make sure that proper localSettings is passed

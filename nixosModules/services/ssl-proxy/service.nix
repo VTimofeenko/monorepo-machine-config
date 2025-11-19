@@ -64,5 +64,6 @@
     ++ [
       ./listen-address.nix
       ./utils.nix
+      ./oauth2-proxy-config
     ];
 }
