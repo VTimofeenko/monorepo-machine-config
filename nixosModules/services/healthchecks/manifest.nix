@@ -22,7 +22,7 @@ rec {
 
     metrics = {
       enable = true;
-      path =  lib: (lib.homelab.getServiceConfig serviceName).metricsURL;
+      path = lib: (lib.homelab.getServiceConfig serviceName).metricsURL;
     };
 
     alerts = {
