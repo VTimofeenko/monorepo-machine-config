@@ -27,7 +27,7 @@ rec {
 
     alerts = {
       enable = true;
-      grafanaImpl = import ./non-functional/alerts.nix;
+      grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
     };
   };
 
