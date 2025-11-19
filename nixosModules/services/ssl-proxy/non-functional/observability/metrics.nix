@@ -101,7 +101,7 @@ in
               .upstream_result_type = "5xx_server_error"
             } else if .upstream_status >= 400 {
               .upstream_result_type = "4xx_client_error"
-            } else if .upstream_status >= 200 || (.status == 301 && .upstream_status == 0) || .upstream_status == 101 {
+            } else if .upstream_status >= 200 || (.status == 301 && .upstream_status == 0) || .upstream_status == 101 || (.status >= 300) {
               # 301 status with 0 upstream means nginx did the redirect
               .upstream_result_type = "2xx_3xx_success"
             } else {
