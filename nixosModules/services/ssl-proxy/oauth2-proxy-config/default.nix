@@ -66,15 +66,4 @@ in
     sslCertificate = config.age.secrets."ssl-cert".path;
     sslCertificateKey = config.age.secrets."ssl-key".path;
   };
-
-  services.nginx.virtualHosts."healthchecks.srv.vtimofeenko.com" = {
-
-            # locations."@redirectToAuth2ProxyLogin" = lib.mkForce {
-            #   return = "307 https://healthchecks.srv.vtimofeenko.com/oauth2/start?rd=$scheme://$host$request_uri";
-            #   extraConfig = ''
-            #     auth_request off;
-            #   '';
-            # };
-
-  };
 }
