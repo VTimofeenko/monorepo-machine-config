@@ -4,9 +4,10 @@
   Docs:
   https://github.com/alexbakker/alertmanager-ntfy
 */
-{ lib, ... }:
+{ lib, data-flake, ... }:
 let
   address = "127.0.0.1:8000";
+  settings.priorityCutoff = data-flake.serviceModules.grafana.srvLib.constants.severityNumMap.Error;
 in
 {
   services.prometheus.alertmanager-ntfy = {
@@ -17,8 +18,9 @@ in
         baseurl = "https://${lib.homelab.getServiceFqdn "ntfy-sh"}";
         notification = {
           topic = "homelab-alerts";
-          # I don't generally want notifications to ring here
-          priority = "default";
+          priority = ''
+            labels._alertLevelNum > ${toString settings.priorityCutoff} ? "default" : "low"
+          '';
           tags = [
             {
               tag = "+1";
