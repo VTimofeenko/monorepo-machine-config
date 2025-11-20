@@ -1,3 +1,9 @@
+/**
+  Set up `alertmanager-ntfy` to send `Alertmanager` alerts to `ntfy-sh` instance.
+
+  Docs:
+  https://github.com/alexbakker/alertmanager-ntfy
+*/
 { lib, ... }:
 let
   address = "127.0.0.1:8000";
