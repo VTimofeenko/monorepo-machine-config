@@ -3,14 +3,13 @@
 {
   Emergency = [
     {
-      # Ersatz check for network connectivity
       title = "Scrape is down";
       query = "up{job=\"${serviceName}-srv-scrape\"}";
+      description = "Cannot retrieve healthchecks status. Check network connection.";
     }
   ];
   Alert = [
     {
-      # Sudden spike in proxy errors
       title = "Spike in proxy errors";
       query = "(vector(0) and on() (irate(ssl_proxy_nginx_http_requests_total{domain=\"${
         serviceName |> lib.homelab.getServiceFqdn
