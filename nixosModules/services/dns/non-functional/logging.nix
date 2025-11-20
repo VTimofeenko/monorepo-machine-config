@@ -16,6 +16,9 @@ in
     unbound = {
       # Enable dnstap support
       package = pkgs.unbound-full;
+
+      settings.server.log-servfail = "yes";
+
       # Dnstap logging for unbound
       # https://unbound.docs.nlnetlabs.nl/en/latest/manpages/unbound.conf.html#dnstap-logging-options
       settings.dnstap = {
