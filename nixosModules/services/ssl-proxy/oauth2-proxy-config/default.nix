@@ -5,6 +5,7 @@
 let
   srvName = "oauth2-proxy";
   secretName = "${srvName}-client-secret";
+  domainPart = lib.homelab.getSettings.publicDomainName;
 in
 {
   services.oauth2-proxy = {
@@ -20,7 +21,7 @@ in
     cookie = {
       secret = (lib.homelab.getServiceConfig srvName).cookie;
       secure = true;
-      domain = ".srv.vtimofeenko.com";
+      domain = ".${domainPart}";
       httpOnly = true;
     };
 
@@ -28,7 +29,7 @@ in
       "oidc-issuer-url" = "https://${"keycloak" |> lib.homelab.getServiceFqdn}/realms/master";
 
       "set-xauthrequest" = "true";
-      "whitelist-domain" = ".srv.vtimofeenko.com";
+      "whitelist-domain" = ".${domainPart}";
 
       # Optional: If you want to verify email domains
       "email-domain" = "*";
