@@ -40,6 +40,13 @@ in
       matchConfig.Name = lib.mkForce "wan";
       address = "${hostConfig.ipAddress}/${hostConfig.netmask}" |> lib.toList;
       gateway = hostConfig.gateway |> lib.toList;
+      dns =
+        (lib.homelab.getServiceConfig "dns")
+        |> builtins.getAttr "upstream"
+        # At this point the upstreams come in format [ "123.456.789.123@<port>#<domain>"];
+        # Systemd needs it in a different format, 123.456.789.123:<port>#<domain>
+        # Naive approach: replace "@" with ":"
+        |> map (builtins.replaceStrings [ "@" ] [ ":" ]);
       networkConfig = {
         DHCP = "no";
         # This will also disable IPv6 assigning
