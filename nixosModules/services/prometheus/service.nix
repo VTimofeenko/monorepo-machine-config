@@ -1,27 +1,8 @@
-{ lib, config, ... }:
-let
-  srvName = "prometheus";
-in
+{ lib, ... }:
 {
   services.prometheus = {
     enable = true;
     retentionTime = "120d";
-  };
-
-  # Mounts
-  # TODO: move to storage.impl
-  systemd = {
-    # Reconstruct the workdir
-    services.prometheus.unitConfig.RequiresMountsFor = [
-      "/var/lib/${config.services.prometheus.stateDir}"
-    ];
-    mounts = [
-      {
-        what = "/dev/disk/by-label/${srvName}";
-        where = "/var/lib/${config.services.prometheus.stateDir}";
-        options = "noatime";
-      }
-    ];
   };
 
   imports = [

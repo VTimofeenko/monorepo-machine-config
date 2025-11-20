@@ -6,6 +6,7 @@ rec {
     module
     ingress.impl
     backups.impl
+    storage.impl
   ];
 
   module = ./service.nix;
@@ -36,6 +37,8 @@ rec {
     enable = false;
     impl = if enable then { lib, ... }: lib.localLib.mkBkp { inherit serviceName; } else { };
   };
+
+  storage.impl = ./non-functional/storage.nix;
 
   srvLib = import ./srv-lib.nix;
 }
