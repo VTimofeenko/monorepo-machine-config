@@ -21,6 +21,22 @@ rec {
     }
     |> builtins.mapAttrs (_: v: import v { inherit port serviceName; });
 
+  observability = {
+    enable = true;
+    metrics = {
+      enable = true;
+      path = "/metrics";
+    };
+    logging = {
+      enable = false;
+      systemdUnit = "prometheus.service";
+    };
+    alerts = {
+      enable = true;
+      grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
+    };
+  };
+
   dashboard = {
     category = "Admin";
     links = [
