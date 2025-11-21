@@ -75,30 +75,38 @@ in
           ''
             .status, err = to_int(.status)
             if err != null {
-              log("Failed to parse status: " + .status ?? "", level: "error")
+              log("Failed to parse status: " + err, level: "error")
               # Set a default so later logic doesn't fail
               .status = 0
             }
-            .upstream_status, err = to_int(.upstream_status)
-            if err != null {
-              log("Failed to parse upstream_status: " + .upstream_status ?? "", level: "error")
+
+            .upstream_status = string(.upstream_status) ?? ""
+            if is_empty(.upstream_status) {
               # Set a default so later logic doesn't fail
               .upstream_status = 0
+              # This also indicates that upstream response, connect and header times are empty
+              .upstream_response_time = 0
+              .upstream_connect_time = 0
+              .upstream_header_time = 0
+            }
+            .upstream_status, err = to_int(.upstream_status)
+            if err != null {
+              log("Failed to parse upstream_status: " + err, level: "info", rate_limit_secs: 0)
             }
 
             .upstream_response_time, err = to_float(.upstream_response_time)
             if err != null {
-              log("Failed to parse upstream_response_time: " + .upstream_response_time ?? "", level: "error")
+              log("Failed to parse upstream_response_time: " + err, level: "info", rate_limit_secs: 0)
             }
 
             .upstream_connect_time, err = to_float(.upstream_connect_time)
             if err != null {
-              log("Failed to parse upstream_connect_time: " + .upstream_connect_time ?? "", level: "error")
+              log("Failed to parse upstream_connect_time: " + err, level: "info", rate_limit_secs: 0)
             }
 
             .upstream_header_time, err = to_float(.upstream_header_time)
             if err != null {
-              log("Failed to parse upstream_header_time: " + .upstream_header_time ?? "", level: "error")
+              log("Failed to parse upstream_header_time: " + err, level: "info", rate_limit_secs: 0)
             }
 
             # --- Enrichment ---
