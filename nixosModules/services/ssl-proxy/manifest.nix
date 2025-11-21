@@ -13,6 +13,17 @@ rec {
       port = 9598;
       impl = if enable then import ./non-functional/observability/metrics.nix { inherit port; } else { };
     };
+    alerts = {
+      enable = true;
+      grafanaImpl = {
+        Alert = [
+          {
+            title = "Scrape is down";
+            query = "up{job=\"ssl-proxy-srv-scrape\"}";
+          }
+        ];
+      };
+    };
   };
   module = ./service.nix;
   ingress.internal = ./firewall.nix;
