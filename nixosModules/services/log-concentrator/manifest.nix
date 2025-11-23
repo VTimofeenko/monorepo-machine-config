@@ -8,9 +8,9 @@ rec {
   default = [
     module
     ingress.impl
-    # storage.impl
-    # backups.impl
-  ];
+  ]
+  ++ observability.impl;
+
   module = ./. + "/${serviceName}.nix";
 
   ingress =
@@ -25,8 +25,14 @@ rec {
       }
     );
 
-  monitoring = {
-    # TODO: implement
+  observability = rec {
+    enable = true;
+    impl = [ metrics.impl ];
+    metrics = rec {
+      enable = true;
+      impl = if enable then import ./non-functional/metrics.nix { inherit port; } else { };
+      port = 8087;
+    };
   };
   logging = false; # TODO: implement
   storage = {
