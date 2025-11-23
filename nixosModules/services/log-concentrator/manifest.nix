@@ -37,8 +37,8 @@ rec {
       enable = false;
       grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
     };
+    logging.enable = false;
   };
-  logging = false; # TODO: implement
   storage = {
     # TODO: implement
   };
