@@ -33,6 +33,10 @@ rec {
       impl = if enable then import ./non-functional/metrics.nix { inherit port; } else { };
       port = 8087;
     };
+    alerts = {
+      enable = false;
+      grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
+    };
   };
   logging = false; # TODO: implement
   storage = {
