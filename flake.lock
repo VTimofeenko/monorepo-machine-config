@@ -215,11 +215,11 @@
         "wg-namespace-flake": "wg-namespace-flake"
       },
       "locked": {
-        "lastModified": 1763946125,
-        "narHash": "sha256-NDB6eG6oa9EnjgR1UaVCRgrF0Xu3TgYsWDLOCy0+WDs=",
+        "lastModified": 1764038027,
+        "narHash": "sha256-q4x2T9qgmbTKOkIRtBu9Ldy6Oe9dzBav3bsmCfADbbM=",
         "ref": "refs/heads/master",
-        "rev": "39c4de8f44586be901c67110c573d706a69d1159",
-        "revCount": 1150,
+        "rev": "6bcdf921dd6735cf4bc0323e3abbe2df626bb92a",
+        "revCount": 1159,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git"
       },
@@ -822,29 +822,6 @@
         "type": "github"
       }
     },
-    "redpanda-flake": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs-unstable"
-        ],
-        "pre-commit-hooks": [
-          "pre-commit-hooks-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1724936594,
-        "narHash": "sha256-xJJoiuRDatwcxTYJ2t4CCUeg1iTqfaFzNeMx6r7WwWw=",
-        "owner": "fornybar",
-        "repo": "redpanda.nix",
-        "rev": "8d6637a975b64c7ce8bd8de1169d15fb509ad8f4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "fornybar",
-        "repo": "redpanda.nix",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -873,7 +850,6 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nur": "nur",
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
-        "redpanda-flake": "redpanda-flake",
         "stub-flake": "stub-flake",
         "treefmt-nix": "treefmt-nix",
         "vim-scratch-plugin": "vim-scratch-plugin",
