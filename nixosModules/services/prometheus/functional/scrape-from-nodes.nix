@@ -30,7 +30,10 @@
             [
               "${hostName}:${it.exporterPort |> toString}"
             ];
-          labels.alias = "${nodeName}.home.arpa";
+          labels = {
+            alias = "${nodeName}.home.arpa";
+            host = nodeName;
+          };
         });
     });
 }

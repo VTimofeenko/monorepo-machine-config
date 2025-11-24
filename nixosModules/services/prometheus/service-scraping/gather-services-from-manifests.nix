@@ -37,35 +37,30 @@ in
           (manifest.observability.metrics.path or "/metrics")
           |> (it: if builtins.isFunction it then it lib else it);
 
-        static_configs = [
-          {
-            targets =
-              # DNS is a multi-instance service, needs special treatment
+        static_configs =
+          let
+            srvScrapeTargets =
               if srvName == "dns" then
                 [
                   "dns_1"
                   "dns_2"
                 ]
-                |> map (
-                  it: "${it |> lib.homelab.getServiceInnerIP}:${toString manifest.observability.metrics.port}"
-                )
               else
-                (
-                  # Metrics part of the service
-                  if metricsPartOfService then
-                    srvName |> lib.homelab.getServiceFqdn
-                  # Single port for a single exporter
-                  else if manifest.observability.metrics |> builtins.hasAttr "port" then
-
-                    (srvName |> lib.homelab.getServiceInnerIP) + ":${toString manifest.observability.metrics.port}"
-                  # Multiple exporters
-                  else
-                    manifest.observability.metrics.ports
-                    |> map (it: "${srvName |> lib.homelab.getServiceInnerIP}:${toString it}")
-                )
-                |> lib.toList;
-          }
-        ];
+                srvName |> lib.toList;
+          in
+          srvScrapeTargets
+          |> map (it: {
+            targets =
+              if metricsPartOfService then
+                (it |> lib.homelab.getServiceFqdn) |> lib.toList
+              else
+                let
+                  # Cast single port as a list to simplify code later
+                  ports = (manifest.observability.metrics.port or manifest.observability.metrics.ports) |> lib.toList;
+                in
+                map (port: "${it |> lib.homelab.getServiceInnerIP}:${toString port}") ports;
+            labels.host = it |> lib.homelab.getServiceHost;
+          });
 
         # TODO: this is effectively a one-off constant
         bearer_token = (lib.homelab.getServiceConfig srvName).metricsToken or null;
