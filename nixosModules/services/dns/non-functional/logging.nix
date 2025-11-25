@@ -58,36 +58,7 @@ in
             socket_path = ""; # fake, but needed for schema
           };
         };
-        transforms.add_hostname_to_dnstap_data = {
-          type = "remap";
-          inputs = [ "local-dnstap" ];
-          source = ''
-            sourceAddress, err = get(value: . , path: ["sourceAddress"] )
-            if err != null {
-              log("Unable to find sourceAddress: " + err, level: "error")
-            } else {
-              row = get_enrichment_table_record("my-data", {"ip" : sourceAddress}, ["hostname"]).hostname ?? "Unknown"
-
-              .matched_name = row
-            }
-
-            # Extract the query
-            # Usually there is one for the message types I am interested in
-            # More robust way would be to do like a pluck or catAttrs, but YOLO
-            .my_query = .responseData.question[0].domainName
-            .my_answer = .responseData.answers[0].rData
-          '';
-        };
         sinks = {
-          dnstap-sink = {
-            type = "kafka";
-            inputs = [ "add_hostname_to_dnstap_data" ];
-            encoding.codec = "json";
-
-            bootstrap_servers = "10.5.0.7:9092";
-            topic = loggingConfig.topicName;
-          };
-
           dnstap-new-sink = {
             type = "vector";
             inputs = [ "local-dnstap" ];

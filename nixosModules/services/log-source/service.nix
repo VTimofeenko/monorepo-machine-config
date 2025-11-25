@@ -2,69 +2,23 @@
   Config for log shipping, implemented using vector.dev.
 */
 {
-  config,
-  pkgs,
-  lib,
   ...
 }:
-let
-  inherit (config) my-data;
-  inherit (lib.homelab) getServiceConfig;
-
-  srvName = "log-sink";
-  srvConfig = getServiceConfig srvName;
-in
 {
   services.vector = {
     enable = true;
     settings = {
       sources = {
-        local-journal = {
-          type = "journald";
-          # exclude_matches._SYSTEMD_UNIT
-        };
+        local-journal.type = "journald";
         local-journal-nixos = {
           type = "journald";
-          include_matches = {
-            SYSLOG_IDENTIFIER = [ "nixos" ];
-          };
+          include_matches.SYSLOG_IDENTIFIER = [ "nixos" ];
         };
       };
-      # This table allows looking up IPs in the dataset and matching them to hostnames.
-      enrichment_tables.my-data = {
-        type = "file";
-        file = {
-          path = pkgs.writeTextFile {
-            name = "my-ip-to-hostname-data.csv";
-            text =
-              let
-                networkToRecords =
-                  netName:
-                  lib.pipe my-data.networks.${netName}.hostsInNetwork [
-                    (lib.mapAttrsToList (name: value: "${name},${value.ipAddress}"))
-                    (builtins.concatStringsSep "\n")
-                  ];
-              in
-              ''
-                hostname,ip
-              ''
-              + lib.concatMapStringsSep "\n" networkToRecords [
-                "lan"
-                "client"
-                "backbone"
-                "backbone-inner"
-              ];
-          };
-          encoding.type = "csv";
-          schema = {
-            hostname = "string";
-            ip = "string";
-          };
-        };
-      };
-
-      # This transformation parses nixos switch events in journald
-      # and emits filtered data with the target version and status
+      /**
+        This transformation parses NixOS switch events in journald
+         and emits filtered data with the target version and status
+      */
       transforms.parse-nixos-events = {
         type = "remap";
         inputs = [ "local-journal-nixos" ];
@@ -95,24 +49,7 @@ in
             .status = status
           '';
       };
-
-      sinks = rec {
-        log-sink = {
-          type = "kafka";
-          inputs = [ "local-journal" ];
-          encoding.codec = "json";
-
-          # bootstrap_servers = "${service.fqdn}:9092"; # TODO: fix the network resolution in this vpn
-          bootstrap_servers = "10.5.0.7:9092";
-          topic = srvConfig.logTopic;
-        };
-        log-nixos-version-history = log-sink // {
-          inputs = [ "parse-nixos-events" ];
-          topic = srvConfig.deploymentsTopic;
-        };
-      };
     };
     journaldAccess = true;
   };
-
 }

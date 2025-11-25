@@ -143,12 +143,6 @@
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
-    redpanda-flake = {
-      url = "github:fornybar/redpanda.nix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-      inputs.pre-commit-hooks.follows = "pre-commit-hooks-nix";
-    };
-
     catppuccin.url = "git+https://github.com/VTimofeenko/catppucin-nix?ref=keep-gtk";
 
     # FIXME: [24.11] drop this in favor of a direct package import through
