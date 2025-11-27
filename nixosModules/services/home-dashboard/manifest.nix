@@ -19,8 +19,14 @@ rec {
       sslProxyConfig = import ./non-functional/ssl.nix { inherit port serviceName; };
     };
 
-  # monitoring = false
-  # logging = false
+  observability = {
+    enable = true;
+    alerts = rec {
+      enable = true;
+      grafanaImpl = if enable then import ./non-functional/alerts.nix { inherit serviceName; } else { };
+    };
+  };
+
   backups = false; # Stateless
   storage = false; # Stateless
 }

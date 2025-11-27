@@ -43,7 +43,12 @@ rec {
       }
     ];
   };
-  # monitoring = false TODO
-  # logging = false TODO
+  observability = {
+    enable = true;
+    alerts = rec {
+      enable = true;
+      grafanaImpl = if enable then import ./non-functional/alerts.nix { inherit serviceName; } else { };
+    };
+  };
   backups = false; # TODO
 }
