@@ -8,6 +8,5 @@
         { listen = "0.0.0.0:123"; }
       ];
     };
-    metrics.enable = true;
   };
 }

@@ -1,7 +1,4 @@
-_: {
-  imports = [
-    ./service.nix
-    ./firewall.nix
-    ./monitoring.nix
-  ];
+# Shim to load the manifest
+{
+  imports = (import ./manifest.nix).default;
 }
