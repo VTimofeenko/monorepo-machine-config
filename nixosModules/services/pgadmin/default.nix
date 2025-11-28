@@ -1,6 +1,3 @@
-_: {
-  imports = [
-    ./ssl.nix
-    ./pgadmin.nix
-  ];
+{
+  imports = (import ./manifest.nix).default;
 }

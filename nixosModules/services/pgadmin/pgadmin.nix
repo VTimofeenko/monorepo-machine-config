@@ -3,9 +3,7 @@ let
 
   inherit (lib.homelab)
     getSettings
-    getService
     getSrvSecret
-    getHostInNetwork
     ;
   srvName = "pgadmin";
 in
@@ -26,17 +24,6 @@ in
       file = getSrvSecret srvName "pgadmin-password";
       owner = config.systemd.services.pgadmin.serviceConfig.User;
       group = config.systemd.services.pgadmin.serviceConfig.User;
-    };
-  };
-
-  # Allow access only from nginx
-  systemd.services.pgadmin = {
-    serviceConfig = {
-      IPAddressDeny = "any";
-      IPAddressAllow = [
-        (getHostInNetwork (getService "db").onHost "db").ipAddress
-        "localhost"
-      ];
     };
   };
 }
