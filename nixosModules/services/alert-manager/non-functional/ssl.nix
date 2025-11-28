@@ -15,7 +15,7 @@
       port = servicePort;
       inherit config lib serviceName;
       onlyHumans = true;
-      extraConfig = "allow ${lib.homelab.getServiceIP "grafana"};\n";
+      extraConfig = "allow ${lib.homelab.services.getLANIP "grafana"};\n";
     })
   ];
 }
