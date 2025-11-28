@@ -19,6 +19,14 @@ rec {
     }
     |> builtins.mapAttrs (_: v: import v { inherit port serviceName; });
 
+  observability = {
+    enable = true;
+    alerts = rec {
+      enable = true;
+      grafanaImpl = if enable then import ./non-functional/alerts.nix { inherit serviceName; } else { };
+    };
+  };
+
   dashboard = {
     category = "Admin";
     links = [
