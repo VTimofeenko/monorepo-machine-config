@@ -2,8 +2,8 @@ rec {
   default = [
     module
     ingress.firewall
-  ]
-  ++ observability.metrics.impl;
+    observability.metrics.impl
+  ];
   module = ./service.nix;
 
   ingress.firewall = import ./non-functional/firewall.nix;
@@ -12,7 +12,7 @@ rec {
     enable = true;
     metrics = rec {
       enable = true;
-      impl = if enable then ./non-functional/metrics.nix else { };
+      impl = if enable then import ./non-functional/metrics.nix { inherit port; } else { };
       port = 9975;
       path = "/";
     };
