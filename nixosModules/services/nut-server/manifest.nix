@@ -1,6 +1,9 @@
 /**
   Manifest for the NUT server.
 */
+let
+  serviceName = "nut-server";
+in
 rec {
   default = [
     module
@@ -22,6 +25,10 @@ rec {
       impl = if enable then ./non-functional/metrics.nix else { };
       port = 9199;
       path = "/ups_metrics";
+    };
+    alerts = {
+      enable = true;
+      grafanaImpl = if enable then import ./non-functional/alerts.nix { inherit serviceName; } else { };
     };
 
     logging.enable = false;
