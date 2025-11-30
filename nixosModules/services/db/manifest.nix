@@ -37,6 +37,5 @@ rec {
         }
       else
         { };
-    # TODO: remote!
   };
 }
