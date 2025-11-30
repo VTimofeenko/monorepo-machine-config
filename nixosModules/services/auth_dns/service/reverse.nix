@@ -45,14 +45,15 @@ in
         data = ''
           $ORIGIN ${name}.
           $TTL 86400
-          @ IN SOA ns.example.com. admin.example.com. (
-              2024071001 ; Serial
+          @ IN SOA ns1.home.arpa. admin.home.arpa. (
+              2024071012 ; Serial
               3600       ; Refresh
               900        ; Retry
               1209600    ; Expire
               86400 )    ; Minimum TTL
 
-              IN NS ns.example.com.
+          @ IN NS ns1.home.arpa.
+          @ IN NS ns2.home.arpa.
 
           ${concatStringsSep "\n" value}
 
