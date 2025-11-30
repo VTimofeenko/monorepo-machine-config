@@ -8,18 +8,9 @@
 
 let
   inherit (lib.homelab) getNetwork getOwnIpInNetwork getSrvSecret;
-  inherit (lib.localLib) mkCryptTab mkLuksMount;
-
-  # srvName = "db";
-  # service = my-data.lib.getService srvName;
 
   dbNet = getNetwork "db";
   mgmtNet = getNetwork "mgmt";
-
-  luks = {
-    device_name = "luks_db";
-    UUID = "1e4cc767-a3f7-4990-9398-27670aed1a29";
-  };
 in
 {
   # Secrets
@@ -95,16 +86,4 @@ in
         "nextcloud"
         "docspell"
       ]; # TODO: Generate these in data-flake
-
-  # LUKS setup
-  systemd.services.postgresql.unitConfig.RequiresMountsFor = lib.mkOptionDefault [
-    config.services.postgresql.dataDir
-  ];
-  environment.etc."crypttab".text = mkCryptTab { inherit (luks) device_name UUID; };
-  systemd.mounts = [
-    (mkLuksMount {
-      inherit (luks) device_name;
-      target = config.services.postgresql.dataDir;
-    })
-  ];
 }

@@ -5,7 +5,7 @@ rec {
   default = [
     module
     ingress.impl
-    # storage.impl
+    storage.impl
     backups.impl
     observability.metrics.impl
   ];
@@ -26,8 +26,7 @@ rec {
     logging.enable = false;
   };
 
-  # TODO: refactor
-  storage = false;
+  storage.impl = import ./non-functional/storage.nix;
   backups = rec {
     enable = true;
     paths = [ ];
