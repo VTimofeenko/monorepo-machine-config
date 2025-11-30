@@ -2,32 +2,36 @@ let
   serviceName = "db";
 in
 rec {
-  # TODO: rework
   default = [
-    # module
+    module
     ingress.impl
-    storage.impl
-    ./non-functional/ssl.nix
-    ./non-functional/bkp.nix
+    # storage.impl
     backups.impl
+    observability.metrics.impl
   ];
-  # module = ./gitea.nix;
+  module = ./postgresql.nix;
 
   ingress = {
-    # impl = ./non-functional/firewall.nix;
-    # sslProxyConfig = ./non-functional/ssl.nix; # TODO: move to SSL proxy?
+    impl = ./non-functional/firewall.nix;
   };
 
-  # TODO: implement
-  monitoring = false;
-  # TODO: implement
+  observability = {
+    enable = true;
+    metrics = rec {
+      enable = true;
+      impl = if enable then import ./non-functional/metrics.nix { inherit port; } else { };
+      port = 9187;
+    };
+
+    logging.enable = false;
+  };
+
   logging = false;
   # TODO: refactor
   storage = false;
   backups = rec {
     enable = true;
     paths = [ ];
-    # Miniflux stores stuff in the local database
     impl =
       if enable then
         { lib, ... }:

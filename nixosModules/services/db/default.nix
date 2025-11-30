@@ -1,6 +1,3 @@
 {
-  imports = [
-    ./postgresql.nix
-    (import ./manifest.nix).backups.impl
-  ];
+  imports = (import ./manifest.nix).default;
 }
