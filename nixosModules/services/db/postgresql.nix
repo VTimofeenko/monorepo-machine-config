@@ -92,7 +92,6 @@ in
         };
       })
       [
-        "tt_rss"
         "nextcloud"
         "docspell"
       ]; # TODO: Generate these in data-flake

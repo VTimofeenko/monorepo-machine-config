@@ -26,7 +26,6 @@ rec {
     logging.enable = false;
   };
 
-  logging = false;
   # TODO: refactor
   storage = false;
   backups = rec {
