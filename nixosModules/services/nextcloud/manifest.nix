@@ -7,6 +7,7 @@ rec {
     # storage.impl
     ingress.impl
     backups.impl
+    observability.metrics.impl
   ];
   module = ./. + "/${serviceName}.nix";
 
@@ -19,12 +20,19 @@ rec {
       sslProxyConfig = import ./non-functional/ssl.nix { inherit port serviceName; };
     };
 
-  # TODO: implement
-  monitoring = false;
-  # TODO: implement
-  logging = false;
-  # TODO: refactor
-  storage = false;
+  observability = {
+    enable = true;
+    metrics = rec {
+      enable = true;
+      impl = if enable then import ./non-functional/metrics.nix { inherit port; } else { };
+      port = 9205;
+    };
+    alerts = rec {
+      enable = true;
+      grafanaImpl = if enable then import ./non-functional/alerts.nix { inherit serviceName; } else { };
+    };
+  };
+
   backups = rec {
     enable = true;
     paths = [ "/var/lib/nextcloud" ];

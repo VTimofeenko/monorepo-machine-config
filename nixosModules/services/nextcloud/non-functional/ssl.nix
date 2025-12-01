@@ -14,6 +14,8 @@ self.serviceModules.ssl-proxy.srvLib.mkStandardProxyVHost {
     ;
   extraConfig = ''
     client_max_body_size 500M;
+    # Required for exporter
+    allow ${serviceName |> lib.homelab.getServiceHost |> lib.homelab.hosts.getIPInNetwork "lan"};
   '';
   onlyHumans = true;
 }

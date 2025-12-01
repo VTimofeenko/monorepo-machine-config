@@ -1,0 +1,27 @@
+{
+  port,
+  ...
+}:
+{
+  self,
+  lib,
+  config,
+  ...
+}:
+{
+  age.secrets."nextcloud-exporter-token".owner = config.services.prometheus.exporters.nextcloud.user;
+
+  services.prometheus.exporters.nextcloud = {
+    enable = true;
+    inherit port;
+    tokenFile = config.age.secrets."nextcloud-exporter-token".path;
+    openFirewall = lib.mkForce false;
+    url = "nextcloud" |> lib.homelab.getServiceFQDN |> (it: "https://${it}");
+  };
+
+  imports = [
+    (self.serviceModules.prometheus.srvLib.mkBackboneInnerFirewallRules {
+      inherit lib port;
+    })
+  ];
+}
