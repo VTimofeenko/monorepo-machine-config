@@ -33,9 +33,21 @@ rec {
         locations."/" = {
           proxyPass = "$srv_upstream";
           proxyWebsockets = true;
+          extraConfig = /* nginx */ ''
+            add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+            add_header X-XSS-Protection "1; mode=block" always;
+            add_header X-Frame-Options "SAMEORIGIN" always;
+            add_header X-Content-Type-Options "nosniff" always;
+          '';
         };
-        extraConfig = ''
+        extraConfig = /* nginx */ ''
+          add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+          add_header X-XSS-Protection "1; mode=block" always;
+          add_header X-Frame-Options "SAMEORIGIN" always;
+          add_header X-Content-Type-Options "nosniff" always;
+
           set $srv_upstream "${protocol}://${serviceName |> ipLookupFuncs."${netName}"}:${port |> toString}";
+
           ${lib.optionalString onlyHumans (
             lib.homelab.getHumanIPs
             |> map (x: "allow ${x};") # construct allow directives in nginx
