@@ -7,6 +7,7 @@ rec {
     ingress.impl
     # storage.impl
     backups.impl
+    observability.metrics.impl
   ];
   module = ./keycloak.nix;
 
@@ -15,10 +16,18 @@ rec {
     sslProxyConfig = ./non-functional/ssl.nix;
   };
 
-  # TODO: implement
-  monitoring = false;
-  # TODO: implement
-  logging = false;
+  observability = {
+    enable = true;
+    metrics = rec {
+      enable = true;
+      impl = if enable then import ./non-functional/metrics.nix { inherit port; } else { };
+      port = 9000;
+    };
+    alerts = rec {
+      enable = true;
+      grafanaImpl = if enable then import ./non-functional/alerts.nix { inherit serviceName; } else { };
+    };
+  };
   storage = false;
   backups = rec {
     enable = true;

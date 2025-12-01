@@ -1,19 +1,19 @@
 /**
-  Note: keycloak needs some SSL certificate to work. The one from
+  Note: Keycloak needs some SSL certificate to work. The one from
   `ssl-terminator` works for now, but later I might just switch to self-signed
   one.
 */
-{ config, ... }:
+{ config, lib, ... }:
 let
-  inherit (config) my-data;
   srvName = "keycloak";
-  service = my-data.lib.getService srvName;
+  service = lib.homelab.getService srvName;
+  inherit (lib.homelab) getSrvSecret;
 in
 {
   age.secrets = {
-    "ssl-cert".file = my-data.lib.getSrvSecret "ssl-terminator" "cert";
-    "ssl-key".file = my-data.lib.getSrvSecret "ssl-terminator" "private-key";
-    "keycloakDbPassword".file = my-data.lib.getSrvSecret srvName "dbPasswordFile";
+    "ssl-cert".file = getSrvSecret "ssl-terminator" "cert";
+    "ssl-key".file = getSrvSecret "ssl-terminator" "private-key";
+    "keycloakDbPassword".file = getSrvSecret srvName "dbPasswordFile";
   };
 
   services.keycloak = {
