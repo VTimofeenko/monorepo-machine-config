@@ -22,7 +22,10 @@ rec {
       impl = if enable then import ./non-functional/metrics.nix { inherit port; } else { };
       port = 9187;
     };
-
+    alerts = rec {
+      enable = true;
+      grafanaImpl = if enable then import ./non-functional/alerts.nix { inherit serviceName; } else { };
+    };
     logging.enable = false;
   };
 
