@@ -11,12 +11,12 @@
       addVector = true;
     }
     {
-      title = "UPS battery needs replacement";
+      title = "battery needs replacement";
       query = "network_ups_tools_ups_status{flag=\"RB\"} > 0";
       addVector = true;
     }
     {
-      title = "UPS has low remaining runtime";
+      title = "low remaining runtime";
       query = "network_ups_tools_battery_runtime < 300";
       addVector = true;
     }
