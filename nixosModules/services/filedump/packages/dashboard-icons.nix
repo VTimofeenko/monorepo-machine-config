@@ -6,10 +6,10 @@ stdenv.mkDerivation {
   name = "Dashboard-icons";
 
   src = fetchFromGitHub {
-    owner = "walkxcode";
-    repo = "Dashboard-Icons";
-    rev = "3249c1d5a15bfd81b401a73d97443c3edcf31d59";
-    hash = "sha256-ATACFCJln2UJrUpibYrQXSbXuCIwuYdnbjKMvNN71no=";
+    owner = "homarr-labs";
+    repo = "dashboard-icons";
+    rev = "f29af6c5d79a03faab6818a8bc53c2b2064d5956";
+    hash = "sha256-SY2s1vhS44YztAywsdZ4wxLdl8Yi86SDd00U6ARqe94=";
   };
 
   dontBuild = true;
@@ -25,6 +25,6 @@ stdenv.mkDerivation {
 
   meta = {
     description = "A set of dashboard icons";
-    homepage = "https://github.com/walkxcode/Dashboard-Icons";
+    homepage = "https://github.com/homarr-labs/dashboard-icons";
   };
 }
