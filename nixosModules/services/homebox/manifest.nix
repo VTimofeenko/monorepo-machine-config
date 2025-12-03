@@ -19,10 +19,6 @@ rec {
     }
     |> builtins.mapAttrs (_: v: import v { inherit port serviceName; });
 
-  # TODO: implement
-  monitoring = false;
-  # TODO: implement
-  logging = false;
   backups = rec {
     enable = true;
     schedule = "daily";
@@ -35,7 +31,6 @@ rec {
         }
       else
         { };
-    # TODO: remote!
   };
   dashboard = {
     category = "Home";
