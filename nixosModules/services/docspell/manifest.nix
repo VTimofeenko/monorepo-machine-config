@@ -8,6 +8,13 @@ rec {
   ];
   module = ./docspell.nix;
 
+  observability = {
+    enable = true;
+    alerts = rec {
+      enable = true;
+      grafanaImpl = if enable then import ./non-functional/alerts.nix { inherit serviceName; } else { };
+    };
+  };
   dashboard =
     { lib, ... }:
     {
