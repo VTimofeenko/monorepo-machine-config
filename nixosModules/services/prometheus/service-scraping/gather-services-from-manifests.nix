@@ -14,7 +14,7 @@ let
     # Collect the service manifests from data-flake
     data-flake.serviceModules
     # Add manifests from self
-    |> lib.mergeAttrs self.serviceModules;
+    |> lib.recursiveUpdate self.serviceModules;
 in
 {
   services.prometheus.scrapeConfigs =
