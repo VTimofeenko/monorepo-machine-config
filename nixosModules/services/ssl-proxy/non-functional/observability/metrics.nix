@@ -81,7 +81,7 @@ in
             }
 
             .upstream_status = string(.upstream_status) ?? ""
-            if is_empty(.upstream_status) {
+            if is_empty(.upstream_status) || (.upstream_status == "-") {
               # Set a default so later logic doesn't fail
               .upstream_status = 0
               # This also indicates that upstream response, connect and header times are empty
