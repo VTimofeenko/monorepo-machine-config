@@ -6,7 +6,7 @@ rec {
     module
     ingress.impl
     storage.impl
-    monitoring.impl
+    observability.metrics.impl
   ];
   module = ./impl.nix;
   ingress =
@@ -18,11 +18,18 @@ rec {
       sslProxyConfig = import ./non-functional/ssl.nix { inherit port serviceName; };
     };
 
-  monitoring = {
-    # TODO: implement
-    impl = ./non-functional/monitoring.nix;
+  observability = {
+    enable = true;
+    metrics = rec {
+      enable = true;
+      impl = if enable then import ./non-functional/metrics.nix else { };
+    };
+    alerts = rec {
+      enable = true;
+      grafanaImpl = if enable then import ./non-functional/alerts.nix else { };
+    };
   };
-  logging = false; # TODO: implement
+
   storage = {
     impl = ./non-functional/storage.nix;
   };

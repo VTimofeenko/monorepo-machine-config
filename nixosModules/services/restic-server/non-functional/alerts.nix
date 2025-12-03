@@ -1,0 +1,3 @@
+{
+  # standard proxy alerts
+}
