@@ -8,12 +8,14 @@
     }
     {
       title = "disk almost full";
+      description = "Free disk space < 10%";
       query =
         let
-          label = "mountpoint=\"/var/lib/nextcloud\"";
+          label = "mountpoint=~\"/var/lib/nextcloud.*\", host=\"${
+            serviceName |> lib.homelab.getServiceHost
+          }\"";
         in
-        "(vector(0) and on() (((node_filesystem_avail_bytes{${label}} * 100) / node_filesystem_size_bytes{${label}}) < 10)) or on() vector(1)";
-      description = "Free disk space < 10%";
+        "(((node_filesystem_avail_bytes{${label}} * 100) / node_filesystem_size_bytes{${label}}) < 10)";
       addVector = true;
     }
   ];
