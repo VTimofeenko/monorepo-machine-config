@@ -34,7 +34,7 @@ rec {
       port = 8087;
     };
     alerts = {
-      enable = false;
+      enable = true;
       grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
     };
     logging.enable = false;
