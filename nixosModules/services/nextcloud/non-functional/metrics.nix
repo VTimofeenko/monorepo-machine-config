@@ -9,6 +9,9 @@
   ...
 }:
 {
+  services.nextcloud.settings.loglevel = 1;
+  services.nextcloud.settings.log_type_audit = "syslog";
+
   age.secrets."nextcloud-exporter-token".owner = config.services.prometheus.exporters.nextcloud.user;
 
   services.prometheus.exporters.nextcloud = {
