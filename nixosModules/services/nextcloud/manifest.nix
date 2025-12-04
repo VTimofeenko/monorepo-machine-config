@@ -4,7 +4,7 @@ in
 rec {
   default = [
     module
-    # storage.impl
+    storage.impl
     ingress.impl
     backups.impl
     observability.metrics.impl
@@ -50,4 +50,6 @@ rec {
       }
     ];
   };
+
+  storage.impl = import ./non-functional/storage.nix;
 }
