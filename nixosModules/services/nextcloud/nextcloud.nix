@@ -40,6 +40,8 @@ in
     secretFile = config.age.secrets.nextcloudSecrets.path;
   };
 
+  imports = lib.localLib.mkImportsFromDir ./functional;
+
   # Secrets
   age.secrets =
     let
