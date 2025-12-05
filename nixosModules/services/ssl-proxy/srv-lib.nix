@@ -17,6 +17,7 @@ rec {
       extraConfig ? "", # As default `services.nginx.virtualHosts.<name>.extraConfig`
       onlyHumans ? false,
       protocol ? "http",
+      allowiFrame ? false,
     }:
     let
       ipLookupFuncs = {
@@ -36,14 +37,18 @@ rec {
           extraConfig = /* nginx */ ''
             add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
             add_header X-XSS-Protection "1; mode=block" always;
-            add_header X-Frame-Options "SAMEORIGIN" always;
             add_header X-Content-Type-Options "nosniff" always;
+            ${
+              (lib.optionalString (!allowiFrame) ''
+                add_header X-Frame-Options "SAMEORIGIN" always;
+              '')
+            }
           '';
         };
         extraConfig = /* nginx */ ''
           add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
           add_header X-XSS-Protection "1; mode=block" always;
-          add_header X-Frame-Options "SAMEORIGIN" always;
+          ${(lib.optionalString (!allowiFrame) ''add_header X-Frame-Options "SAMEORIGIN" always;'')}
           add_header X-Content-Type-Options "nosniff" always;
 
           set $srv_upstream "${protocol}://${serviceName |> ipLookupFuncs."${netName}"}:${port |> toString}";

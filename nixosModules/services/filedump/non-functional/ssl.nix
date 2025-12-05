@@ -6,5 +6,11 @@
   ...
 }:
 self.serviceModules.ssl-proxy.srvLib.mkStandardProxyVHost {
-  inherit config lib port serviceName;
+  inherit
+    config
+    lib
+    port
+    serviceName
+    ;
+  allowiFrame = true;
 }
