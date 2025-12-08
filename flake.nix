@@ -401,6 +401,7 @@
                     "helium"
                     "lanthanum"
                     "neon"
+                    "sodium"
                   ]
                   [
                     (map (hostName: {
