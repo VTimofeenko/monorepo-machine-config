@@ -23,6 +23,7 @@ in
             pkgs.python3Packages.flask
             pkgs.python3Packages.python-escpos
             pkgs.python3Packages.pyusb
+            pkgs.python3Packages.pillow
           ];
           flakeIgnore = [ "E501" ];
         } ./source.py)

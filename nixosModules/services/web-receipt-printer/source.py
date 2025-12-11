@@ -5,6 +5,7 @@ import tempfile
 
 from escpos.printer import Usb
 from flask import Flask, jsonify, render_template_string, request
+from PIL import Image
 
 app = Flask(__name__)
 
@@ -83,10 +84,36 @@ def _print_image(image_path):
         p.set(align="center", bold=True, double_height=True, width=2)
         p.text("IMAGE\n")
         p.set(align="center")
+
+        resized_image_path = image_path
+        temp_file_created = False
+
         try:
-            p.image(image_path)
+            img = Image.open(image_path)
+            width, height = img.size
+
+            # Constraint: Image width cannot be more than 512 pixels
+            if width > 512:
+                new_width = 512
+                new_height = int((new_width / width) * height)
+                img = img.resize((new_width, new_height), Image.LANCZOS)
+
+                # Save resized image to a new temporary file
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_resized:
+                    img.save(temp_resized.name)
+                    resized_image_path = temp_resized.name
+                temp_file_created = True
+
+            p.image(resized_image_path)
+
         except Exception as e:
             p.text(f"Image Error: {e}\n")
+        finally:
+            if temp_file_created:
+                try:
+                    os.remove(resized_image_path)
+                except Exception:
+                    pass
 
         p.text("\n")
         p.cut()  # Cut the paper
