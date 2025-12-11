@@ -31,13 +31,6 @@
     };
   };
 
-  # File systems
-  fileSystems."/" = {
-    device = "/dev/disk/by-label/NIXOS_SD";
-    fsType = "ext4";
-    options = [ "noatime" ];
-  };
-
   # Misc
   system.stateVersion = "25.05";
 
@@ -46,6 +39,7 @@
   # Imports
   imports = [
     nixos-hardware.nixosModules.raspberry-pi-3
+    ./impermanence.nix
   ];
 
   networking.wireless.extraConfig = ''
