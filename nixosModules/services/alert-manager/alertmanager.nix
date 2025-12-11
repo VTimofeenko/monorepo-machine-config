@@ -23,8 +23,10 @@ in
     [
       {
         route = {
-          group_wait = "10s";
-          group_interval = "30s";
+          # This config should prevent notification spam
+          group_by = [ "grafana_folder" ];
+          group_wait = "30s";
+          group_interval = "1m";
           repeat_interval = "4h";
           receiver = defaultReceiver;
         };
