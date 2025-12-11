@@ -18,7 +18,7 @@ in
 
   services.zwave-js = {
     enable = true;
-    serialPort = "/dev/ttyUSB0";
+    serialPort = "/dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_516009E5-if00-port0";
     secretsConfigFile = config.age.secrets.zwaveSecrets.path;
   };
   # /* Sets up the rules for the USB dongle */
