@@ -1,6 +1,7 @@
 """Simple website that allows printing stuff on the thermal printer."""
 
 import os
+import tempfile
 
 from escpos.printer import Usb
 from flask import Flask, jsonify, render_template_string, request
@@ -61,7 +62,7 @@ def _print_qr(content):
         p.text("QR CODE\n")
         p.set(align="center")
         try:
-            p.qr(content, size=10)
+            p.qr(content, size=5)
         except Exception:
             # Fallback if qr is not supported/configured properly, or print text
             p.text(f"QR Error: Could not print QR for {content}\n")
@@ -70,6 +71,27 @@ def _print_qr(content):
         p.cut()  # Cut the paper
         p.close()
         return "Printed QR code successfully!"
+    else:
+        return "Error: Could not find printer."
+
+
+def _print_image(image_path):
+    p = get_printer()
+    if p:
+        # PRINTING LOGIC
+        p.text("\n")  # Spacing
+        p.set(align="center", bold=True, double_height=True, width=2)
+        p.text("IMAGE\n")
+        p.set(align="center")
+        try:
+            p.image(image_path)
+        except Exception as e:
+            p.text(f"Image Error: {e}\n")
+
+        p.text("\n")
+        p.cut()  # Cut the paper
+        p.close()
+        return "Printed image successfully!"
     else:
         return "Error: Could not find printer."
 
@@ -94,7 +116,7 @@ def print_text():
 def print_qr_api():
     """Serve the print QR API."""
     data = request.get_json(silent=True)
-    # Support '`content`', '`url`', or '`text`'
+    # Support 'content', 'url', or 'text'
     content = data.get("content") or data.get("url") or data.get("text")
     if not content:
         return jsonify({"error": "Missing 'content', 'url', or 'text' field in JSON body"}), 400
@@ -105,6 +127,72 @@ def print_qr_api():
         return jsonify({"error": message}), 500
 
     return jsonify({"message": message}), 200
+
+
+@app.route("/api/image", methods=["POST"])
+def print_image_api():
+    """Serve the print image API."""
+    if "image" not in request.files:
+        return jsonify({"error": "No image part in the request"}), 400
+
+    file = request.files["image"]
+    if file.filename == "":
+        return jsonify({"error": "No selected file"}), 400
+
+    if file:
+        # Save to temp file
+        with tempfile.NamedTemporaryFile(delete=False) as temp:
+            file.save(temp.name)
+            temp_path = temp.name
+
+        message = _print_image(temp_path)
+
+        # Cleanup
+        try:
+            os.remove(temp_path)
+        except Exception:
+            pass
+
+        if message.startswith("Error"):
+            return jsonify({"error": message}), 500
+
+        return jsonify({"message": message}), 200
+
+
+@app.route("/image", methods=["GET", "POST"])
+def image_index():
+    """Serve '/image' page."""
+    message = ""
+    if request.method == "POST":
+        if "image" in request.files:
+            file = request.files["image"]
+            if file.filename != "":
+                with tempfile.NamedTemporaryFile(delete=False) as temp:
+                    file.save(temp.name)
+                    temp_path = temp.name
+
+                message = _print_image(temp_path)
+
+                try:
+                    os.remove(temp_path)
+                except Exception:
+                    pass
+
+    html = """
+    <!doctype html>
+    <html style="font-family: sans-serif; text-align: center; padding: 50px;">
+      <h1>Image Printer</h1>
+      <a href="/">Go to Text Printer</a> | <a href="/qr">Go to QR Printer</a>
+      <br><br>
+      <form method="post" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" style="padding: 10px;">
+        <br><br>
+        <button type="submit" style="padding: 10px 20px; font-size: 1.2em;">PRINT IMAGE</button>
+      </form>
+      <p style="color: green;">{{ message }}</p>
+    </html>
+    """
+    return render_template_string(html, message=message)
 
 
 @app.route("/qr", methods=["GET", "POST"])
@@ -120,7 +208,7 @@ def qr_index():
     <!doctype html>
     <html style="font-family: sans-serif; text-align: center; padding: 50px;">
       <h1>QR Code Printer</h1>
-      <a href="/">Go to Text Printer</a>
+      <a href="/">Go to Text Printer</a> | <a href="/image">Go to Image Printer</a>
       <br><br>
       <form method="post">
         <input type="text" name="content" placeholder="URL or Text" style="width: 300px; padding: 10px;">
@@ -147,7 +235,7 @@ def index():
     <!doctype html>
     <html style="font-family: sans-serif; text-align: center; padding: 50px;">
       <h1>Receipt Printer</h1>
-      <a href="/qr">Go to QR Printer</a>
+      <a href="/qr">Go to QR Printer</a> | <a href="/image">Go to Image Printer</a>
       <br><br>
       <form method="post">
         <textarea name="note" rows="5" cols="30" placeholder="Type your note here..."></textarea>
