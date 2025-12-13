@@ -43,6 +43,10 @@ in
 
     Apparently for `pwmconfig` to see this fan, the bios must have the speed
     set to maximum.
+
+    One thing to note is that the `/sys/class/hwmon/hwmon*` numbering depends
+    on the order of the kernel modules. Better point `hddfancontrol` at the
+    target of `readlink -f` which will point to the actual device.
   */
   boot.kernelModules = [ "nct6775" ];
   services.hddfancontrol = {
@@ -51,7 +55,7 @@ in
     settings.harddrives = {
       disks = disks |> builtins.attrValues |> map (x: "/dev/disk/by-uuid/${x}");
       pwmPaths = [
-        "/sys/class/hwmon/hwmon6/pwm1:255:0"
+        "/sys/devices/platform/nct6775.656/hwmon/hwmon1/pwm1:255:0"
       ];
       logVerbosity = "DEBUG";
     };
