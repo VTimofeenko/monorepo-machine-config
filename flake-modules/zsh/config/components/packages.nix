@@ -78,6 +78,40 @@ let
           }
         )
       )
+      # Bubblewrap wrapper around Gemini cli that fetches latest version
+      (
+        pkgs.writeTextFile rec {
+          name = "bwrap-gemini";
+          text = /* bash */ ''
+            #!/usr/bin/env -S nix shell github:NixOS/nixpkgs#gemini-cli nu#bubblewrap --command bash
+            if [ "$(pwd)" = "$HOME" ]; then
+                echo "Error: Running from \$HOME would expose your files via the /work bind."
+                echo "Please cd into a specific project directory before running."
+                exit 1
+            fi
+
+            bwrap \
+              --ro-bind /usr /usr \
+              --ro-bind /run /run \
+              --ro-bind /nix /nix \
+              --ro-bind /etc /etc \
+              --proc /proc \
+              --dev /dev \
+              --tmpfs /tmp \
+              --unshare-all \
+              --share-net \
+              --die-with-parent \
+              --new-session \
+              --bind "$HOME/.gemini" /homeless-shelter/.gemini \
+              --setenv HOME /homeless-shelter \
+              --bind "$(pwd)" /work \
+              --chdir /work \
+              gemini
+          '';
+          executable = true;
+          destination = "/bin/${name}";
+        }
+      )
     ];
 in
 {
