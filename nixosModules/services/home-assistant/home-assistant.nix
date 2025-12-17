@@ -35,6 +35,7 @@ in
       "dhcp"
       "zha"
       "wiz"
+      "ntfy"
     ] ++ srvConfig.components;
 
     # Build custom components. { } does not pass deps which is OK for now
