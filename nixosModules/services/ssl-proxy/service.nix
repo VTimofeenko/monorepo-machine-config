@@ -31,16 +31,15 @@
         # Collect the service manifests from data-flake
         data-flake.serviceModules
         # Add manifests from self
-        |> lib.mergeAttrs self.serviceModules;
+        |> lib.mergeAttrs self.serviceModules
+        # Only interested in modules with 'ingress'
+        |> lib.filterAttrs (_: builtins.hasAttr "ingress")
+        # Only want ones that declare some sort of `sslProxyConfig`
+        |> lib.filterAttrs (_: value: builtins.hasAttr "sslProxyConfig" value.ingress);
     in
     # This code constructs the virtual host configurations for the services
     (
-      # construct the virtual hosts
       serviceManifests
-      # Only interested in modules with 'ingress'
-      |> lib.filterAttrs (_: builtins.hasAttr "ingress")
-      # Only want ones that declare some sort of `sslProxyConfig`
-      |> lib.filterAttrs (_: value: builtins.hasAttr "sslProxyConfig" value.ingress)
       # Extract the `sslProxyConfig` module
       |> lib.mapAttrsToList (_: value: value.ingress.sslProxyConfig)
     )
@@ -55,7 +54,8 @@
         (import ./srv-lib.nix).mkMetricsPathAllowOnlyPrometheus {
           inherit serviceName lib;
           metricsPath =
-            (srvManifest.observability.metrics.path or "/metrics") |> (it: if lib.isFunction it then it lib else it);
+            (srvManifest.observability.metrics.path or "/metrics")
+            |> (it: if lib.isFunction it then it lib else it);
         }
       )
     )
