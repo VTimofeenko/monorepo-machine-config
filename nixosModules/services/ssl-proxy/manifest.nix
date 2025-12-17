@@ -32,14 +32,7 @@ rec {
     };
     alerts = {
       enable = true;
-      grafanaImpl = {
-        Alert = [
-          {
-            title = "Scrape is down";
-            query = "up{job=\"ssl-proxy-srv-scrape\"}";
-          }
-        ];
-      };
+      grafanaImpl = if enable then import ./non-functional/alerts.nix { inherit serviceName; } else { };
     };
   };
   module = ./service.nix;
