@@ -36,17 +36,19 @@ def get_printer():
         return None
 
 
-def _print_text(text_to_print):
+def _print_text(text_to_print, print_wrapper=True):
     p = get_printer()
     if p:
         # PRINTING LOGIC
         p.text("\n")  # Spacing
-        p.set(align="center", bold=True, double_height=True, width=2)
-        p.text("TINY NOTE\n")
-        p.set(align="left")
-        p.text("--------------------------------\n")
+        if print_wrapper:
+            p.set(align="center", bold=True, double_height=True, width=2)
+            p.text("TINY NOTE\n")
+            p.set(align="left")
+            p.text("--------------------------------\n")
         p.text(f"{text_to_print}\n")
-        p.text("--------------------------------\n")
+        if print_wrapper:
+            p.text("--------------------------------\n")
         p.cut()  # Cut the paper
         p.close()
         return "Printed successfully!"
@@ -54,13 +56,14 @@ def _print_text(text_to_print):
         return "Error: Could not find printer."
 
 
-def _print_qr(content):
+def _print_qr(content, print_wrapper=True):
     p = get_printer()
     if p:
         # PRINTING LOGIC
         p.text("\n")  # Spacing
-        p.set(align="center", bold=True, double_height=True, width=2)
-        p.text("QR CODE\n")
+        if print_wrapper:
+            p.set(align="center", bold=True, double_height=True, width=2)
+            p.text("QR CODE\n")
         p.set(align="center")
         try:
             p.qr(content, size=5)
@@ -76,13 +79,14 @@ def _print_qr(content):
         return "Error: Could not find printer."
 
 
-def _print_image(image_path):
+def _print_image(image_path, print_wrapper=True):
     p = get_printer()
     if p:
         # PRINTING LOGIC
         p.text("\n")  # Spacing
-        p.set(align="center", bold=True, double_height=True, width=2)
-        p.text("IMAGE\n")
+        if print_wrapper:
+            p.set(align="center", bold=True, double_height=True, width=2)
+            p.text("IMAGE\n")
         p.set(align="center")
 
         resized_image_path = image_path
@@ -193,12 +197,13 @@ def image_index():
     if request.method == "POST":
         if "image" in request.files:
             file = request.files["image"]
+            print_wrapper = "wrapper" in request.form
             if file.filename != "":
                 with tempfile.NamedTemporaryFile(delete=False) as temp:
                     file.save(temp.name)
                     temp_path = temp.name
 
-                message = _print_image(temp_path)
+                message = _print_image(temp_path, print_wrapper=print_wrapper)
 
                 try:
                     os.remove(temp_path)
@@ -214,6 +219,8 @@ def image_index():
       <form method="post" enctype="multipart/form-data">
         <input type="file" name="image" accept="image/*" style="padding: 10px;">
         <br><br>
+        <label><input type="checkbox" name="wrapper" checked> Include Header</label>
+        <br><br>
         <button type="submit" style="padding: 10px 20px; font-size: 1.2em;">PRINT IMAGE</button>
       </form>
       <p style="color: green;">{{ message }}</p>
@@ -228,8 +235,9 @@ def qr_index():
     message = ""
     if request.method == "POST":
         content = request.form.get("content")
+        print_wrapper = "wrapper" in request.form
         if content:
-            message = _print_qr(content)
+            message = _print_qr(content, print_wrapper=print_wrapper)
 
     html = """
     <!doctype html>
@@ -239,6 +247,8 @@ def qr_index():
       <br><br>
       <form method="post">
         <input type="text" name="content" placeholder="URL or Text" style="width: 300px; padding: 10px;">
+        <br><br>
+        <label><input type="checkbox" name="wrapper" checked> Include Header</label>
         <br><br>
         <button type="submit" style="padding: 10px 20px; font-size: 1.2em;">PRINT QR</button>
       </form>
@@ -254,8 +264,9 @@ def index():
     message = ""
     if request.method == "POST":
         text_to_print = request.form.get("note")
+        print_wrapper = "wrapper" in request.form
         if text_to_print:
-            message = _print_text(text_to_print)
+            message = _print_text(text_to_print, print_wrapper=print_wrapper)
 
     # Simple HTML interface
     html = """
@@ -266,6 +277,8 @@ def index():
       <br><br>
       <form method="post">
         <textarea name="note" rows="5" cols="30" placeholder="Type your note here..."></textarea>
+        <br><br>
+        <label><input type="checkbox" name="wrapper" checked> Include Header/Lines</label>
         <br><br>
         <button type="submit" style="padding: 10px 20px; font-size: 1.2em;">PRINT</button>
       </form>
