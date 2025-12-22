@@ -10,7 +10,12 @@
   receivers = [
     {
       name = rcvName;
-      webhook_configs = [ { url = "http://${address}/hook"; } ];
+      webhook_configs = [
+        {
+          url = "http://${address}/hook";
+          max_alerts = 3;
+        }
+      ];
     }
   ];
 }
