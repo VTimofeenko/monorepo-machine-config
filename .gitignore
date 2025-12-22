@@ -7,3 +7,7 @@ flake-modules/vim/packages/lua/lua/.luarc.json
 .nixos-test-history
 .aider*
 .env
+
+# Ignore templates' flake.lock so it gets generated whenever the template is
+# instantiated
+templates/*/flake.lock

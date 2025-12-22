@@ -484,6 +484,10 @@
                 path = ./templates/sample-check;
                 description = "Template for a sample check with home-manager.";
               };
+              rust-general-proj = {
+                path = ./templates/rust-general-proj;
+                description = "Rust project template";
+              };
             };
 
             serviceModules =
