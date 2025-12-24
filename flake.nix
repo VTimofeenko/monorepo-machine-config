@@ -488,6 +488,10 @@
                 path = ./templates/rust-general-proj;
                 description = "Rust project template";
               };
+              python-general-proj = {
+                path = ./templates/python-general-proj;
+                description = "Python project template";
+              };
               nix-run-uv = {
                 path = ./templates/nix-run-sample;
                 description = "A sample `nix run` with uv";
