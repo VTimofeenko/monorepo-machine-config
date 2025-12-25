@@ -106,7 +106,7 @@ let
               --setenv HOME /homeless-shelter \
               --bind "$(pwd)" /work \
               --chdir /work \
-              gemini
+              gemini "$@"
           '';
           executable = true;
           destination = "/bin/${name}";
