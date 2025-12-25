@@ -38,6 +38,14 @@
         defaultNetwork.settings.dns_enabled = true; # Required for containers under podman-compose to be able to talk to each other.
       };
     };
+
+    users.users.spacecadet.extraGroups = [ "podman" ];
+    boot.kernelParams = [
+      "amdgpu.mes=0" # Disable the Micro Engine Scheduler
+      "amdgpu.vm_update_mode=3" # Force VM updates to CPU to improve recovery success
+      "amdgpu.gpu_recovery=1" # Ensure the driver explicitly attempts recovery on hang
+      "amdgpu.dcdebugmask=0x10" # Optional: Disable Panel Self Refresh (Prevents DE flickers/hangs)
+    ];
   };
 
 }
