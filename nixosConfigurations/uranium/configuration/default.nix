@@ -30,6 +30,14 @@
       # https://github.com/NixOS/nixos-hardware/issues/1330
       framework.enableKmod = false;
     };
+    virtualisation = {
+      containers.enable = true;
+      podman = {
+        enable = true;
+        dockerCompat = true;
+        defaultNetwork.settings.dns_enabled = true; # Required for containers under podman-compose to be able to talk to each other.
+      };
+    };
   };
 
 }
