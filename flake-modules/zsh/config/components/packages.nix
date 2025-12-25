@@ -83,7 +83,7 @@ let
         pkgs.writeTextFile rec {
           name = "bwrap-gemini";
           text = /* bash */ ''
-            #!/usr/bin/env -S nix shell github:NixOS/nixpkgs#gemini-cli nu#bubblewrap --command bash
+            #!/usr/bin/env -S nix shell github:NixOS/nixpkgs?ref=nixos-unstable#gemini-cli nu#bubblewrap --command bash
             if [ "$(pwd)" = "$HOME" ]; then
                 echo "Error: Running from \$HOME would expose your files via the /work bind."
                 echo "Please cd into a specific project directory before running."
