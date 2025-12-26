@@ -108,9 +108,9 @@
   };
 
   # Power button handling
-  services.logind = {
-    powerKey = "suspend";
-    powerKeyLongPress = "poweroff";
+  services.logind.settings.Login = {
+    HandlePowerKey = "suspend";
+    HandlePowerKeyLongPress = "poweroff";
   };
 }
 # Uranium specific hardware:1 ends here

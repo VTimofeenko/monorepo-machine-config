@@ -29,5 +29,5 @@
   # Cross-compilation setup
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   # Fixes some annoying services that won't quit
-  services.logind.killUserProcesses = true;
+  services.logind.settings.Login.KillUserProcesses = true;
 }
