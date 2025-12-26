@@ -74,14 +74,16 @@ in
       interactiveShellInit = init;
     };
   };
-  homeManagerModule = {
-    programs.zsh = {
-      enable = true;
-      initContent = init;
-      # Start in VI insert mode
-      defaultKeymap = "viins";
-      # Move the dotfiles to `~/.config` -- unclutter home directory
-      dotDir = ".config/zsh";
+  homeManagerModule =
+    { config, ... }:
+    {
+      programs.zsh = {
+        enable = true;
+        initContent = init;
+        # Start in VI insert mode
+        defaultKeymap = "viins";
+        # Move the dotfiles to `~/.config` -- unclutter home directory
+        dotDir = "${config.xdg.configHome}/zsh";
+      };
     };
-  };
 }
