@@ -16,6 +16,7 @@ in
 {
   programs.lazygit = {
     enable = true;
+    enableZshIntegration = false;
     settings = {
       gui.theme = {
         selectedLineBgColor = [ "#${inactiveFrameBorder}" ];
