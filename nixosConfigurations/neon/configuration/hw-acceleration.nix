@@ -21,7 +21,6 @@
     intel-media-driver
     intel-ocl
     vpl-gpu-rt
-    intel-media-sdk
     intel-compute-runtime
     intel-vaapi-driver
   ];
