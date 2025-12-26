@@ -25,7 +25,6 @@
         config = {
           allowUnfree = true;
           nvidia.acceptLicense = true;
-          permittedInsecurePackages = [ "python3.12-ecdsa-0.19.1" ]; # FIXME: [25.11]
         };
         overlays = [
           # docspell-flake.overlays.default # Docspell commands rely on pkgs.docspell-joex, needs overlay
