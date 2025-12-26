@@ -82,8 +82,5 @@ in
       # Main use case -- switch back and forth using mod+grave
       allow_workspace_cycles = true;
     };
-
-    # Mouse swipe = swipe workspace. Occasionally I use it.
-    settings.gestures.workspace_swipe = true;
   };
 }
