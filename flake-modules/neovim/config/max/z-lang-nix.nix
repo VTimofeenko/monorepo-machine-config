@@ -88,35 +88,36 @@ in
   config = [
     # LSP Configs
     ''
-      require("lspconfig").nil_ls.setup({
-        cmd = { "${lib.getExe pkgs-unstable.nil}" },
-        autostart = true,
-        capabilities = caps,
-        settings = {
-          ["nil"] = {
-            formatting = {
-              command = { "${lib.getExe pkgs.nixfmt-rfc-style}" },
-            },
-            flake = {
-              autoEvalInputs = true,
-              autoArchive = true,
-            },
+    vim.lsp.config.nil_ls = {
+      cmd = { "${lib.getExe pkgs-unstable.nil}" },
+      autostart = true,
+      capabilities = caps,
+      settings = {
+        ["nil"] = {
+          formatting = {
+            command = { "${lib.getExe pkgs.nixfmt-rfc-style}" },
+          },
+          flake = {
+            autoEvalInputs = true,
+            autoArchive = true,
           },
         },
-      })
+      },
+    }
+    vim.lsp.enable('nil_ls')
 
-      require("lspconfig").nixd.setup({
-        cmd = { "${lib.getExe pkgs.nixd}" },
-        autostart = true,
-        capabilities = caps,
-        settings = {
-          ["nixd"] = {
-            nixpkgs = {
-              expr = "import (builtins.getFlake \"${flakeRef}\").inputs.nixpkgs { }",
-            },
-            options = {
-              home_manager = {
-                ${
+    vim.lsp.config.nixd = {
+      cmd = { "${lib.getExe pkgs.nixd}" },
+      autostart = true,
+      capabilities = caps,
+      settings = {
+        ["nixd"] = {
+          nixpkgs = {
+            expr = "import (builtins.getFlake \"${flakeRef}\").inputs.nixpkgs { }",
+          },
+          options = {
+            home_manager = {
+              ${
                   # This parameter needs a nix path to an attribute set
                   # containing homeConfigurations.
                   # I am reusing this flake's output. This is not ideal as it
@@ -131,7 +132,8 @@ in
             },
           },
         },
-      })
+      }
+      vim.lsp.enable('nixd')
     ''
     ''
       ls.add_snippets("nix", {

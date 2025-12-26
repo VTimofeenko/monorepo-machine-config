@@ -7,8 +7,8 @@
 */
 { pkgs, lib, ... }:
 {
-  config = ''
-    require("lspconfig").bashls.setup({
+  config = /* Lua */ ''
+    vim.lsp.config.bashls = {
       cmd = { '${lib.getExe pkgs.bash-language-server}', 'start'  },
       autostart = true,
       capabilities = caps,
@@ -25,6 +25,7 @@
       on_attach = function(bufnr)
         vim.api.nvim_buf_set_keymap(0, 'n', "<localleader><Return>", "<Cmd>!\"%:p\"<CR>", {desc = "Run this file" })
       end,
-    })
+    }
+    vim.lsp.enable('bashls')
   '';
 }

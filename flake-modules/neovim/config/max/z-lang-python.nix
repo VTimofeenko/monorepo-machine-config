@@ -31,12 +31,13 @@ let
     |> (pkgs.formats.yaml { }).generate "efm-config.yaml";
 in
 {
-  config = # lua
+  config = # Lua
     ''
-      require("lspconfig").efm.setup{
+      vim.lsp.config.efm = {
         cmd = { "${lib.getExe pkgs.efm-langserver}", "-c", "${efmPythonConfig}" },
         settings = {},
         filetypes = {"python"},
       }
+      vim.lsp.enable('efm')
     '';
 }

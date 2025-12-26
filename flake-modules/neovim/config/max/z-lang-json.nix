@@ -13,9 +13,9 @@
     pkgs.vimPlugins.SchemaStore-nvim
   ];
   config =
-    # lua
+    # Lua
     ''
-    require("lspconfig").jsonls.setup({
+    vim.lsp.config.jsonls = {
       cmd = { '${pkgs.vscode-langservers-extracted}/bin/vscode-json-language-server', '--stdio'  },
       settings = {
         json = {
@@ -27,7 +27,8 @@
           validate = { enable = true, },
         },
       },
-    })
+    }
+    vim.lsp.enable('jsonls')
   '';
   extraPackages = [ pkgs.jq ];
 }

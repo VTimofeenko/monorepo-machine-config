@@ -88,12 +88,13 @@ in
 
   config = [
     ''
-      require("lspconfig").marksman.setup({
+      vim.lsp.config.marksman = {
         cmd = { "${lib.getExe pkgs.marksman}", "server" }
-      })
+      }
+      vim.lsp.enable('marksman')
     ''
     ''
-      require("lspconfig").harper_ls.setup({
+      vim.lsp.config.harper_ls = {
         cmd = { "${lib.getExe pkgs.harper}", "--stdio" },
         settings = {
           ["harper-ls"] = {
@@ -102,20 +103,22 @@ in
             }
           }
         }
-      })
+      }
+      vim.lsp.enable('harper_ls')
     ''
     ''
       -- see
       vim.env.VALE_CONFIG_PATH = "${valeConfig}"
       vim.env.VALE_STYLES_PATH = vim.env.XDG_DATA_HOME .. "/vale/styles"
-      require("lspconfig").vale_ls.setup({
+      vim.lsp.config.vale_ls = {
         cmd = { "${lib.getExe pkgs.vale-ls}" },
         init_options = {
             installVale = false,
             configPath = "${valeConfig}",
             syncOnStartup = false,
         }
-      })
+      }
+      vim.lsp.enable('vale_ls')
     ''
     ''
       vim.api.nvim_create_autocmd("FileType", {
@@ -140,7 +143,7 @@ in
 
     # efm-langserver for markdown
     ''
-      require("lspconfig").efm.setup{
+      vim.lsp.config.efm = {
         cmd = { "${lib.getExe pkgs.efm-langserver}", "-c", "${efmMdConfig}" },
         settings = {},
         filetypes = { "markdown" },
@@ -148,6 +151,7 @@ in
           vim.api.nvim_buf_set_keymap(0, 'n', "<localleader><S-F>", "<Cmd>!${markdownlintCli} --fix %<CR>", { desc = "Attempt to fix the file using markdownlint" })
         end,
       }
+      vim.lsp.enable('efm')
     ''
   ];
 }

@@ -19,11 +19,11 @@
   config = [
     # LSP configuration
     ''
-      require("lspconfig").nickel_ls.setup({
-        cmd = { '${lib.getExe pkgs-unstable.nls}' },
-        autostart = true,
-      })
-
+    vim.lsp.config.nickel_ls = {
+      cmd = { '${lib.getExe pkgs-unstable.nls}' },
+      autostart = true,
+    }
+    vim.lsp.enable('nickel_ls')
     ''
     # nickel templates for luasnip
     ''

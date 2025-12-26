@@ -4,31 +4,32 @@
 { pkgs-unstable, lib, ... }:
 {
   config =
-    # lua
+    # Lua
     ''
-      require("lspconfig").rust_analyzer.setup({
-        cmd = { "${lib.getExe pkgs-unstable.rust-analyzer}"},
-        autostart = true,
-        capabilities = caps,
-        settings = {
-          ["rust-analyzer"] = {
-            imports = {
-              granularity = {
-                group = "module",
-              },
-              prefix = "self",
+    vim.lsp.config.rust_analyzer = {
+      cmd = { "${lib.getExe pkgs-unstable.rust-analyzer}"},
+      autostart = true,
+      capabilities = caps,
+      settings = {
+        ["rust-analyzer"] = {
+          imports = {
+            granularity = {
+              group = "module",
             },
-            cargo = {
-              buildScripts = {
-                enable = true,
-              },
-            },
-            procMacro = {
+            prefix = "self",
+          },
+          cargo = {
+            buildScripts = {
               enable = true,
             },
-            checkOnSave = true,
           },
+          procMacro = {
+            enable = true,
+          },
+          checkOnSave = true,
         },
-      })
+      },
+    }
+    vim.lsp.enable('rust_analyzer')
     '';
 }

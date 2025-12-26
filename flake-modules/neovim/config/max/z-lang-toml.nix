@@ -11,10 +11,11 @@
     pkgs.vimPlugins.SchemaStore-nvim
   ];
   config =
-    # lua
+    # Lua
     ''
-      require("lspconfig").taplo.setup({
-        cmd = { "${lib.getExe pkgs.taplo}", "lsp", "stdio" },
-      })
+    vim.lsp.config.taplo = {
+      cmd = { "${lib.getExe pkgs.taplo}", "lsp", "stdio" },
+    }
+    vim.lsp.enable('taplo')
     '';
 }
