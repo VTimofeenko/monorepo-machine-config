@@ -28,6 +28,8 @@ in
     };
     settings = getServiceConfig srvName // {
       overwriteprotocol = "https";
+      mail_smtpauth = true;
+      mail_smtpport = 465;
     };
 
     secretFile = config.age.secrets.nextcloudSecrets.path;
