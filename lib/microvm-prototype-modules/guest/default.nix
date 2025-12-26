@@ -37,6 +37,12 @@ microVMName:
     fileSystems."/persist".neededForBoot = lib.mkForce true;
     environment.persistence."/persist".directories = [ "/var/lib/nixos" ];
 
+    swapDevices = [
+      {
+        device = "/persist/swapfile";
+        size = 1024;
+      }
+    ];
     microvm.shares = [
       {
         source = "/vms/${microVMName}";
