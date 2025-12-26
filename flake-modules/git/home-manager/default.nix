@@ -25,19 +25,23 @@ in
     git = {
       enable = true;
 
-      aliases = {
+      settings.alias = {
         ci = "commit";
         st = "status";
         co = "checkout";
         rv = "remote --verbose";
         unstage = "reset HEAD --";
-        # NOTE: Needs findutils xargs for -L1 argument
+        # NOTE: Needs `findutils`' `xargs` for `-L1` argument
         pushall = "!git remote | ${pkgs.findutils}/bin/xargs -L1 git push --all";
         branch-note = "!git config branch.$(git symbolic-ref --short HEAD).note $( if [ $# -gt 0 ]; then $1; fi)";
         dft = "difftool --tool=difftastic";
       };
-      userEmail = "id@vtimofeenko.com";
-      userName = "Vladimir Timofeenko";
+
+      settings.user = {
+        email = "id@vtimofeenko.com";
+        name = "Vladimir Timofeenko";
+      };
+
       ignores = [
         # Vim swap files
         "*.swp"
@@ -46,13 +50,13 @@ in
         # where envrc stores its stuff
         ".direnv/"
       ];
-      extraConfig = {
+      settings = {
         url."https://github.com/".insteadOf = [
           "gh:"
           "github:"
         ];
         "difftool \"difftastic\"".cmd = ''${getExe pkgs.difftastic} "$LOCAL" "$REMOTE"'';
-        difftool.prompt = false; # Disables 'launch $TOOLNAME' prompt
+        difftool.prompt = false; # Disables 'launch `$TOOLNAME`' prompt
 
         # Adds diffs to the commits window
         commit.verbose = true;
