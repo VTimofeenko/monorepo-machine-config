@@ -8,7 +8,7 @@ in
   services.greetd = {
     enable = true;
     settings.default_session = {
-      command = "${getExe pkgs.greetd.tuigreet} --time --cmd ${getExe pkgs.zsh}"; # Shell only by default
+      command = "${getExe pkgs.tuigreet} --time --cmd ${getExe pkgs.zsh}"; # Shell only by default
     };
   };
 
