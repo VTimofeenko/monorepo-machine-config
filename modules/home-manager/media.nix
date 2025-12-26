@@ -18,7 +18,7 @@
 
   programs.yt-dlp = {
     enable = true;
-    package = nixpkgs-unstable.legacyPackages.${pkgs.system}.yt-dlp;
+    package = nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.yt-dlp;
   };
 
   # Local image editing and organizing

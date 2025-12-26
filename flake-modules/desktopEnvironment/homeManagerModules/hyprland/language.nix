@@ -35,6 +35,6 @@
     mod = "$mainMod";
     dispatcher = "exec";
     description = "Switch to next input language";
-    arg = lib.getExe selfPkgs.${pkgs.system}.hyprland-switch-lang-on-xremap;
+    arg = lib.getExe selfPkgs.${pkgs.stdenv.hostPlatform.system}.hyprland-switch-lang-on-xremap;
   };
 }

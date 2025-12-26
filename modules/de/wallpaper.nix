@@ -1,7 +1,7 @@
 # Home-manager module for swww
 { nixpkgs-unstable, pkgs, ... }:
 let
-  pkgs-unstable = nixpkgs-unstable.legacyPackages.${pkgs.system};
+  pkgs-unstable = nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
   target = "graphical-session.target";
 in
 {

@@ -17,7 +17,7 @@ let
       [
         # Forces layout to en
         [
-          (lib.getExe selfPkgs.${pkgs.system}.hyprland-switch-lang-on-xremap)
+          (lib.getExe selfPkgs.${pkgs.stdenv.hostPlatform.system}.hyprland-switch-lang-on-xremap)
           "set_en"
         ]
         # Locks the screen

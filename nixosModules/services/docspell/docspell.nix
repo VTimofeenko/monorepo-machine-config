@@ -18,7 +18,7 @@ let
     postgresql.use-default-connection = true;
   };
 
-  docspell-packages = docspell-flake.packages.${pkgs.system};
+  docspell-packages = docspell-flake.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   services = {

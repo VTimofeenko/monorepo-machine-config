@@ -7,7 +7,7 @@
     nodes.machine =
       { pkgs, ... }:
       {
-        environment.systemPackages = [ self.packages.${pkgs.system}.python-formatter ];
+        environment.systemPackages = [ self.packages.${pkgs.stdenv.hostPlatform.system}.python-formatter ];
       };
 
     testScript =

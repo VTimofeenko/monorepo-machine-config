@@ -14,10 +14,10 @@ let
       root-markers = [ ".git/" ];
       languages.python = [
         {
-          format-command = "${lib.getExe self.packages.${pkgs.system}.python-formatter} -";
+          format-command = "${lib.getExe self.packages.${pkgs.stdenv.hostPlatform.system}.python-formatter} -";
           format-stdin = true;
 
-          lint-command = "${lib.getExe self.packages.${pkgs.system}.python-linter} -";
+          lint-command = "${lib.getExe self.packages.${pkgs.stdenv.hostPlatform.system}.python-linter} -";
           lint-stdin = true;
           lint-after-open = true;
           lint-ignore-exit-code = true;

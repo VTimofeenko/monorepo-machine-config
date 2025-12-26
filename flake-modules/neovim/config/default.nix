@@ -8,7 +8,7 @@
   ...
 }:
 let
-  pkgs-unstable = self.inputs.nixpkgs-unstable.legacyPackages.${pkgs.system};
+  pkgs-unstable = self.inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
   processFn =
     _: x:
     x
