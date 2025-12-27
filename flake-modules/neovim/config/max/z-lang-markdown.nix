@@ -116,7 +116,8 @@ in
             installVale = false,
             configPath = "${valeConfig}",
             syncOnStartup = false,
-        }
+        },
+        filetypes = { "asciidoc", "markdown", "text" },
       }
       vim.lsp.enable('vale_ls')
     ''
