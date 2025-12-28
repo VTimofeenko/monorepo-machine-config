@@ -17,6 +17,10 @@ in
 
     configureRedis = true;
 
+    phpOptions = {
+      "opcache.interned_strings_buffer" = "16";
+    };
+
     config = {
       dbtype = "pgsql";
       dbuser = "nextcloud";
