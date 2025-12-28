@@ -30,6 +30,7 @@ in
       allow_local_remote_servers = true;
       overwriteprotocol = "https";
       trusted_proxies = lib.homelab.getSSLProxyIPs;
+      maintenance_window_start = 10; # In UTC, = 2 AM PST
     };
 
     secretFile = config.age.secrets.nextcloudSecrets.path;
