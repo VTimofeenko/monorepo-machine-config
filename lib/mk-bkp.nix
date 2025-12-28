@@ -20,6 +20,18 @@
 }:
 let
   inherit (config.networking) hostName;
+
+  dumpScript =
+    if localDB then
+      ''
+        ${pkgs.util-linux}/bin/logger "Starting DB dump for ${serviceName}"
+        ${lib.getExe pkgs.sudo} -u postgres ${config.services.postgresql.package}/bin/pg_dumpall | ${lib.getExe pkgs.gzip} > "$RUNTIME_DIRECTORY/pg_dumpall.sql.gz"
+        ${pkgs.util-linux}/bin/logger "DB dump done"
+      ''
+    else
+      null;
+
+  dumpFile = if localDB then "pg_dumpall.sql.gz" else null;
 in
 {
   imports = [
@@ -37,23 +49,9 @@ in
           inherit exclude paths;
           timerConfig.OnCalendar = schedule;
           # If `localDB` is set, `dynamicFilesFrom` will list the dump
-          dynamicFilesFrom =
-            if localDB then "ls $RUNTIME_DIRECTORY/pg_dumpall.sql" else null # Option default
-          ;
-          backupPrepareCommand =
-            # Dump the database if `localDB` is true.
-            #
-            # I only use PostgreSQL in my homelab, so there's no need to handle
-            # anything else
-            if localDB then
-              ''
-                /run/current-system/sw/bin/logger "Starting DB dump"
-                /run/wrappers/bin/sudo -u postgres '/run/current-system/sw/bin/pg_dumpall' > "$RUNTIME_DIRECTORY/pg_dumpall.sql"
-                /run/current-system/sw/bin/logger "DB dump done:"
-                /run/current-system/sw/bin/logger "$(ls $RUNTIME_DIRECTORY)"
-              ''
-            else
-              null; # As the default
+          dynamicFilesFrom = if localDB then "ls $RUNTIME_DIRECTORY/${dumpFile}" else null;
+
+          backupPrepareCommand = dumpScript;
 
           repository = "rest:https://${lib.homelab.getServiceFqdn "restic-server"}/${hostName}/${serviceName}";
           package = (
@@ -92,26 +90,14 @@ in
       */
       services.restic.backups."${serviceName}-rsync-net-backup" = {
         inherit exclude paths;
+
         # If `localDB` is set, `dynamicFilesFrom` will list the dump
-        dynamicFilesFrom =
-          if localDB then "ls $RUNTIME_DIRECTORY/pg_dumpall.sql" else null # Option default
-        ;
+        dynamicFilesFrom = if localDB then "ls $RUNTIME_DIRECTORY/${dumpFile}" else null;
+
         repository = "sftp:${(lib.homelab.getService "rsync-net").settings.sftpConnectString}:${serviceName}";
         timerConfig.OnCalendar = schedule;
-        backupPrepareCommand =
-          # Dump the database if `localDB` is true.
-          #
-          # I only use PostgreSQL in my homelab, so there's no need to handle
-          # anything else
-          if localDB then
-            ''
-              /run/current-system/sw/bin/logger "Starting DB dump"
-              /run/wrappers/bin/sudo -u postgres '/run/current-system/sw/bin/pg_dumpall' > "$RUNTIME_DIRECTORY/pg_dumpall.sql"
-              /run/current-system/sw/bin/logger "DB dump done:"
-              /run/current-system/sw/bin/logger "$(ls $RUNTIME_DIRECTORY)"
-            ''
-          else
-            null; # As the default
+
+        backupPrepareCommand = dumpScript;
 
         # The package override ensures that the service has access to the SSH key
         # when it's running
@@ -144,3 +130,4 @@ in
     })
   ];
 }
+
