@@ -35,6 +35,7 @@ in
       overwriteprotocol = "https";
       trusted_proxies = lib.homelab.getSSLProxyIPs;
       maintenance_window_start = 10; # In UTC, = 2 AM PST
+      default_phone_region = "US";
     };
 
     secretFile = config.age.secrets.nextcloudSecrets.path;
