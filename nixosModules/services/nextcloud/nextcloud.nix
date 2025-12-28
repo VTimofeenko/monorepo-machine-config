@@ -29,6 +29,7 @@ in
     settings = {
       allow_local_remote_servers = true;
       overwriteprotocol = "https";
+      trusted_proxies = lib.homelab.getSSLProxyIPs;
     };
 
     secretFile = config.age.secrets.nextcloudSecrets.path;
