@@ -21,6 +21,13 @@
 let
   inherit (config.networking) hostName;
 
+  # Define retention policy
+  pruneOpts = [
+    "--keep-daily 7"
+    "--keep-weekly 4"
+    "--keep-monthly 6"
+  ];
+
   dumpScript =
     if localDB then
       ''
@@ -46,7 +53,7 @@ in
       */
       services.restic.backups = {
         "${serviceName}-localbackup" = {
-          inherit exclude paths;
+          inherit exclude paths pruneOpts;
           timerConfig.OnCalendar = schedule;
           # If `localDB` is set, `dynamicFilesFrom` will list the dump
           dynamicFilesFrom = if localDB then "ls $RUNTIME_DIRECTORY/${dumpFile}" else null;
@@ -89,7 +96,7 @@ in
         https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html#sftp
       */
       services.restic.backups."${serviceName}-rsync-net-backup" = {
-        inherit exclude paths;
+        inherit exclude paths pruneOpts;
 
         # If `localDB` is set, `dynamicFilesFrom` will list the dump
         dynamicFilesFrom = if localDB then "ls $RUNTIME_DIRECTORY/${dumpFile}" else null;
