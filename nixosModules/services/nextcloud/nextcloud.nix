@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (lib.homelab) getServiceConfig getServiceFqdn getSrvSecret;
+  inherit (lib.homelab) getServiceFqdn getSrvSecret;
   srvName = "nextcloud";
 in
 {
@@ -26,10 +26,9 @@ in
       adminuser = "root";
       adminpassFile = config.age.secrets.adminpassFile.path;
     };
-    settings = getServiceConfig srvName // {
+    settings = {
+      allow_local_remote_servers = true;
       overwriteprotocol = "https";
-      mail_smtpauth = true;
-      mail_smtpport = 465;
     };
 
     secretFile = config.age.secrets.nextcloudSecrets.path;
@@ -59,6 +58,4 @@ in
         group = nextcloudUsr;
       };
     };
-
-  # LUKS setup
 }
