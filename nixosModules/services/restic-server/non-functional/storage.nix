@@ -5,7 +5,12 @@
 
   Source: https://discourse.nixos.org/t/configure-iscsi/50773/5
 */
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 
 let
   IP = "nas" |> lib.flip lib.homelab.getHostIpInNetwork "lan";
@@ -31,11 +36,13 @@ in
     ];
     wants = [ "iscsid.service" ];
     serviceConfig = {
+      Type = "oneshot";
       ExecStartPre = "${pkgs.openiscsi}/bin/iscsiadm -m discovery -t sendtargets -p ${IP}";
       ExecStart = "${pkgs.openiscsi}/bin/iscsiadm -m node -T ${IQN} -p ${IP} --login";
       ExecStop = "${pkgs.openiscsi}/bin/iscsiadm -m node -T ${IQN} -p ${IP} --logout";
       Restart = "on-failure";
       RemainAfterExit = true;
+      SuccessExitStatus = 15; # `ISCSI_ERR_SESS_EXISTS`, so that restarts are considered OK.
     };
     wantedBy = [ "multi-user.target" ];
   };
@@ -50,5 +57,7 @@ in
     ];
   };
 
-  systemd.services.restic-rest-server.unitConfig.RequiresMountsFor = [ config.services.restic.server.dataDir ];
+  systemd.services.restic-rest-server.unitConfig.RequiresMountsFor = [
+    config.services.restic.server.dataDir
+  ];
 }
