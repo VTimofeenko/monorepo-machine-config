@@ -7,55 +7,22 @@
 */
 {
   lib,
-  pkgs,
   config,
   ...
 }:
 
 let
-  IP = "nas" |> lib.flip lib.homelab.getHostIpInNetwork "lan";
   IQN = "iqn.2000-01.com.synology:nas.default-target.c332d8ce746";
 in
 {
-  services.openiscsi = {
-    enable = true;
-    name = "iqn.2024-09.com.nixos:my-nixos-initiator";
-    discoverPortal = IP;
-  };
-  environment.systemPackages = [
-    pkgs.openiscsi
+  imports = [
+    (lib.localLib.mkIscsi {
+      targetIqn = IQN;
+      mountPoint = config.services.restic.server.dataDir;
+      part = 1;
+      initiatorName = "iqn.2024-09.com.nixos:my-nixos-initiator";
+    })
   ];
-
-  boot.kernelModules = [ "iscsi_tcp" ];
-
-  systemd.services.iscsi-login-restic = {
-    description = "Login to iSCSI target ${IQN}";
-    after = [
-      "network.target"
-      "iscsid.service"
-    ];
-    wants = [ "iscsid.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStartPre = "${pkgs.openiscsi}/bin/iscsiadm -m discovery -t sendtargets -p ${IP}";
-      ExecStart = "${pkgs.openiscsi}/bin/iscsiadm -m node -T ${IQN} -p ${IP} --login";
-      ExecStop = "${pkgs.openiscsi}/bin/iscsiadm -m node -T ${IQN} -p ${IP} --logout";
-      Restart = "on-failure";
-      RemainAfterExit = true;
-      SuccessExitStatus = 15; # `ISCSI_ERR_SESS_EXISTS`, so that restarts are considered OK.
-    };
-    wantedBy = [ "multi-user.target" ];
-  };
-
-  fileSystems."${config.services.restic.server.dataDir}" = {
-    device = "/dev/disk/by-path/ip-${IP}:3260-iscsi-iqn.2000-01.com.synology:nas.default-target.c332d8ce746-lun-1-part1";
-    fsType = "ext4";
-    options = [
-      "_netdev"
-      "nofail"
-      "noatime"
-    ];
-  };
 
   systemd.services.restic-rest-server.unitConfig.RequiresMountsFor = [
     config.services.restic.server.dataDir

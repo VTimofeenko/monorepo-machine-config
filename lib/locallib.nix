@@ -102,6 +102,8 @@ in
   */
   mkBkp = lib.modules.importApply ./mk-bkp.nix;
 
+  mkIscsi = lib.modules.importApply ./mk-iscsi.nix;
+
   # Construct imports from specified directory directory by auto-including all files
   mkImportsFromDir =
     path:
