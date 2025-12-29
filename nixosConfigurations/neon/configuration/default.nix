@@ -56,4 +56,5 @@ in
   ];
 
   microvm.vms.promethium.config.microvm.mem = 2049;
+  microvm.vms.neodymium.config.microvm.mem = 1024;
 }
