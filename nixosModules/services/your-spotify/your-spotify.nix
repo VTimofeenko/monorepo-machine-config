@@ -9,9 +9,7 @@ let
 in
 {
   services.your_spotify = {
-    # FIXME: Restore this service when I start running `mongodb` on a host that
-    # supports AVX. Think about using `mongodb-ce` to avoid compilation.
-    enable = false;
+    enable = true;
     enableLocalDB = true;
 
     settings.SPOTIFY_PUBLIC =
@@ -19,4 +17,19 @@ in
     spotifySecretFile = config.age.secrets."${serviceName}-spotify-secret".path;
   };
 
+  services.mongodb = {
+    enable = true;
+    package = pkgs.mongodb-ce;
+    dbpath = "/var/lib/mongodb";
+    extraConfig = ''
+      storage:
+        wiredTiger:
+          engineConfig:
+            cacheSizeGB: 0.25
+      operationProfiling:
+        mode: off
+    '';
+  };
+
+  environment.systemPackages = [ pkgs.mongodb-tools ];
 }
