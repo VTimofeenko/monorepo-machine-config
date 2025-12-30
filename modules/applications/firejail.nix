@@ -1,4 +1,4 @@
-# [[file:../../new_project.org::*Firejail][Firejail:1]]
+/** Creates firejailed desktop shortcuts. */
 { pkgs, lib, ... }:
 {
   programs.firejail.enable = true;
@@ -12,7 +12,7 @@
       profile = "${pkgs.firejail}/etc/firejail/telegram.profile";
     };
   };
-  # Firejail-specific desktop shortcuts
+
   home-manager.users.spacecadet = _: {
     xdg.desktopEntries = {
       thunderbird = {
@@ -45,4 +45,3 @@
     };
   };
 }
-# Firejail:1 ends here
