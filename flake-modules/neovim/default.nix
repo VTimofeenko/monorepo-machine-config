@@ -22,15 +22,17 @@
         in
         # Attrset of package name (as visible to the consumer) and the enum type of package
         {
-          vim-minimal = "min";
-          vim = "std";
-          vim-with-langs = "max";
-          vim-max = "max";
+          vim-minimal = { type = "min"; };
+          vim = { type = "std"; };
+          vim-with-langs = { type = "max"; };
+          vim-max = { type = "max"; };
+          vim-lazy = { type = "max"; lazy = true; };
         }
         |> lib.mapAttrs (
           _: it:
           flakeModuleLib.mkPackage {
-            pkgType = it;
+            pkgType = it.type;
+            cfg = if it.lazy or false then { programs.myNeovim.lazy = true; } else { };
             inherit pkgs lib;
           }
         )

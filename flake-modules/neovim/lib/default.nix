@@ -16,6 +16,7 @@
       pkgType,
       pkgs,
       lib,
+      cfg ? { },
     }:
     let
       modToEval = self.homeManagerModules.vim;
@@ -36,7 +37,7 @@
         # Get only the config from the result
         |> builtins.getAttr "config"
         # Apply the package type to the config
-        |> lib.flip lib.recursiveUpdate { programs.myNeovim.type = pkgType; };
+        |> lib.flip lib.recursiveUpdate ({ programs.myNeovim.type = pkgType; } // cfg);
     in
     # Treat the module as a function and apply it to get the value of the package
     # Take the module

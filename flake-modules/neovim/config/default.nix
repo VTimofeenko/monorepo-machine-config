@@ -32,6 +32,8 @@ let
     # Maybe: validate that there are no odd attrs in the elements of the list
     # Adjust to expected output
     |> (it: {
+      # Pass through the raw modules for advanced usage (e.g. lazy loading)
+      modules = it;
       # Get either "plugin" attr or "plugins"
       plugins = (it |> builtins.catAttrs "plugin") ++ (it |> builtins.catAttrs "plugins" |> lib.flatten);
       initLua = it |> builtins.catAttrs "config" |> lib.flatten |> lib.concatStringsSep "\n";
