@@ -1,5 +1,5 @@
 /**
-  Python configuration for neovim.
+  Python configuration for Neovim.
 */
 {
   pkgs,
