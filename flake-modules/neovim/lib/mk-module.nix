@@ -109,7 +109,7 @@ in
             (pkgs.neovimUtils.makeNeovimConfig {
               inherit plugins;
               withPython3 = true;
-              withRuby = true; # TODO: needed?
+              withRuby = false;
             })
             # Add the extra packages
             |> (
