@@ -143,6 +143,7 @@ in
     ''
 
     # efm-langserver for markdown
+    # TODO: fix, conflicts with python
     ''
       vim.lsp.config.efm = {
         cmd = { "${lib.getExe pkgs.efm-langserver}", "-c", "${efmMdConfig}" },
