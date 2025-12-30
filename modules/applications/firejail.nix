@@ -8,7 +8,7 @@
       profile = "${pkgs.firejail}/etc/firejail/thunderbird.profile";
     };
     telegram-desktop = {
-      executable = "${lib.getBin pkgs.telegram-desktop}/bin/telegram-desktop";
+      executable = lib.getExe pkgs.telegram-desktop;
       profile = "${pkgs.firejail}/etc/firejail/telegram.profile";
     };
   };
