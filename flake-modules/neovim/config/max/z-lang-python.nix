@@ -33,11 +33,23 @@ in
 {
   config = # Lua
     ''
-      vim.lsp.config.efm = {
+      -- Register a custom efm instance for python to avoid conflicts
+      local configs = require 'lspconfig.configs'
+      if not configs.efm_python then
+        configs.efm_python = {
+          default_config = {
+            cmd = { "${lib.getExe pkgs.efm-langserver}", "-c", "${efmPythonConfig}" },
+            root_dir = require('lspconfig').util.root_pattern(".git", "."),
+            filetypes = { "python" },
+          }
+        }
+      end
+
+      vim.lsp.config.efm_python = {
         cmd = { "${lib.getExe pkgs.efm-langserver}", "-c", "${efmPythonConfig}" },
         settings = {},
         filetypes = {"python"},
       }
-      vim.lsp.enable('efm')
+      vim.lsp.enable('efm_python')
     '';
 }

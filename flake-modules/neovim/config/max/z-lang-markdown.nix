@@ -143,9 +143,20 @@ in
     ''
 
     # efm-langserver for markdown
-    # TODO: fix, conflicts with python
     ''
-      vim.lsp.config.efm = {
+      -- Register a custom efm instance for markdown to avoid conflicts
+      local configs = require 'lspconfig.configs'
+      if not configs.efm_markdown then
+        configs.efm_markdown = {
+          default_config = {
+            cmd = { "${lib.getExe pkgs.efm-langserver}", "-c", "${efmMdConfig}" },
+            root_dir = require('lspconfig').util.root_pattern(".git", "."),
+            filetypes = { "markdown" },
+          }
+        }
+      end
+
+      vim.lsp.config.efm_markdown = {
         cmd = { "${lib.getExe pkgs.efm-langserver}", "-c", "${efmMdConfig}" },
         settings = {},
         filetypes = { "markdown" },
@@ -153,7 +164,7 @@ in
           vim.api.nvim_buf_set_keymap(0, 'n', "<localleader><S-F>", "<Cmd>!${markdownlintCli} --fix %<CR>", { desc = "Attempt to fix the file using markdownlint" })
         end,
       }
-      vim.lsp.enable('efm')
+      vim.lsp.enable('efm_markdown')
     ''
   ];
 }
