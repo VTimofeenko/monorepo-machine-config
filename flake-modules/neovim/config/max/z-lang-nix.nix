@@ -207,9 +207,8 @@ in
         local file_path = word_under_cursor
 
         if vim.bo.filetype == "nix" then
-          -- Remove the trailing ';' if present
-          -- TODO: maybe <cfile> would take care of removing extra symbols?
-          word_under_cursor = word_under_cursor:gsub(";$", "")
+          -- <cfile> handles removing extra symbols like trailing ';'
+          word_under_cursor = vim.fn.expand("<cfile>")
           file_path = vim.fn.expand("%:p:h") .. "/" .. word_under_cursor
         end
 
