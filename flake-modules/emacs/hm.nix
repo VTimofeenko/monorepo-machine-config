@@ -51,6 +51,7 @@ in
               sqlite # org roam
               lua-language-server # lua LSP
               graphviz # dot for roam
+              beancount-language-server
               ;
             # inherit (pkgs.python311Packages) grip; # markdown previews
             inherit (pkgs.nodePackages) bash-language-server; # sh LSP
