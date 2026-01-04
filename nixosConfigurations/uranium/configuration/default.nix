@@ -7,6 +7,7 @@
     # TODO: move to a separate module (impl + default)
     ./network-selector.nix
     ./user-stuff
+    ./rtl.nix
   ];
   options.myMachines.uranium = {
     network = lib.mkOption {
