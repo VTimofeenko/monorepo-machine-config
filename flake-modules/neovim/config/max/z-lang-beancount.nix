@@ -9,6 +9,9 @@
       cmd = { '${lib.getExe pkgs.beancount-language-server}', '--stdio'  },
       single_file_support = true,
       filetypes = { "beancount", "bean"},
+      init_options = {
+        journal_file = vim.fn.findfile("journal.beancount", ".;"),
+      },
     }
     vim.api.nvim_create_autocmd("FileType", {
       pattern = "beancount",
