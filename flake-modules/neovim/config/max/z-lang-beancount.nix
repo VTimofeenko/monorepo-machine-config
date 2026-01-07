@@ -10,6 +10,12 @@
       single_file_support = true,
       filetypes = { "beancount", "bean"},
     }
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "beancount",
+      callback = function()
+      vim.opt_local.commentstring = "; %s"
+    end,
+})
     vim.lsp.enable('beancount')
   '';
 }
