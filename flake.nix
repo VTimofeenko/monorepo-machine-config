@@ -336,6 +336,9 @@
               prometheus-frigate-exporter = import ./packages/prometheus-frigate-exporter/package.nix {
                 inherit (pkgs) lib python3 fetchFromGitHub;
               };
+
+              apprise-api = pkgs.callPackage ./packages/apprise-api/package.nix { };
+
             };
             checks = import ./checks { inherit self pkgs lib; };
 
