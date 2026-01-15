@@ -374,6 +374,9 @@
                     ];
                   };
                 inherit nix-config;
+
+                # Maybe later I will add dynamic imports here
+                apprise-api = import ./modules/nixOS/apprise-api.nix;
               };
             nixosConfigurations =
               let
