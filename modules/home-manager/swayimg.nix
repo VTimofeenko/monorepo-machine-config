@@ -6,7 +6,7 @@
     enable = true;
     settings =
       let
-        deleteCmd = "exec rm -- '%'; skip_file";
+        deleteCmd = "exec rm -- '%'";
       in
       {
         # Disable showing image metadata (needs >2.2 in nixpkgs-stable) [24.11]
