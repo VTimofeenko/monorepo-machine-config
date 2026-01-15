@@ -339,6 +339,8 @@
 
               apprise-api = pkgs.callPackage ./packages/apprise-api/package.nix { };
 
+              frigate-notify = pkgs.callPackage ./packages/frigate-notify/package.nix { };
+
             };
             checks = import ./checks { inherit self pkgs lib; };
 
