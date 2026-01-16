@@ -7,6 +7,7 @@ rec {
     ingress.impl
     storage.impl
     backups.impl
+    (database true)
   ]
   ++ observability.impl;
   module = ./gitea.nix;
@@ -42,6 +43,11 @@ rec {
 
   storage = {
     impl = ./non-functional/storage.nix;
+  };
+
+  database = {
+    __functor = self: enable: if enable then import self.impl else { };
+    impl = ./non-functional/database.nix;
   };
   backups = rec {
     enable = true;
