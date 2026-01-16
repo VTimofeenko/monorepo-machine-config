@@ -12,6 +12,8 @@ let
     types
     mkEnableOption
     literalExpression
+    concatStringsSep
+    mapAttrsToList
     ;
   cfg = config.services.apprise-api;
 
@@ -76,6 +78,21 @@ in
       description = "Whether to run as a dynamic user.";
     };
 
+    aliases = mkOption {
+      type = types.attrsOf types.str;
+      default = { };
+      example = {
+        "ntfy-infra-info" = "ntfys://ntfy-sh.domain.tld/alerts?priority=low";
+      };
+      description = "Declarative aliases (shorthands). Maps a key (ID) to Apprise URL(s).";
+    };
+
+    plugins = mkOption {
+      type = types.listOf types.path;
+      default = [ ];
+      description = "List of directories containing Apprise plugins.";
+    };
+
     settings = mkOption {
       type = types.attrsOf types.str;
       default = { };
@@ -114,13 +131,23 @@ in
         DJANGO_SETTINGS_MODULE = "core.settings";
         APPRISE_CONFIG_DIR = "${cfg.stateDir}/config";
         APPRISE_ATTACH_DIR = "${cfg.stateDir}/attach";
-        APPRISE_PLUGIN_PATHS = "${cfg.stateDir}/plugin";
+        APPRISE_PLUGIN_PATHS = concatStringsSep "," ([ "${cfg.stateDir}/plugin" ] ++ cfg.plugins);
         PYTHONPATH = "${appDir}:${pythonPath}";
       }
+      // (if cfg.aliases != { } then { APPRISE_STATEFUL_MODE = "simple"; } else { })
       // cfg.settings;
 
       preStart = ''
         mkdir -p "${cfg.stateDir}/config" "${cfg.stateDir}/attach" "${cfg.stateDir}/plugin"
+
+        # Write declarative aliases
+        ${concatStringsSep "\n" (
+          mapAttrsToList (name: value: ''
+            cat > "${cfg.stateDir}/config/${name}.cfg" <<EOF
+            ${value}
+            EOF
+          '') cfg.aliases
+        )}
       '';
 
       serviceConfig = {
