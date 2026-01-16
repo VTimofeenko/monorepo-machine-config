@@ -37,13 +37,13 @@ in
     user = mkOption {
       type = types.str;
       default = "apprise";
-      description = "User to run the service as.";
+      description = "User to run the service as. If set to 'apprise', the user will be created automatically. Otherwise, the user must exist.";
     };
 
     group = mkOption {
       type = types.str;
       default = "apprise";
-      description = "Group to run the service as.";
+      description = "Group to run the service as. If set to 'apprise', the group will be created automatically. Otherwise, the group must exist.";
     };
 
     listenAddress = mkOption {
@@ -70,6 +70,12 @@ in
       description = "Number of Gunicorn workers.";
     };
 
+    dynamicUser = mkOption {
+      type = types.bool;
+      default = true;
+      description = "Whether to run as a dynamic user.";
+    };
+
     settings = mkOption {
       type = types.attrsOf types.str;
       default = { };
@@ -85,7 +91,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    users.users = mkIf (cfg.user == "apprise") {
+    users.users = mkIf (cfg.user == "apprise" && !cfg.dynamicUser) {
       apprise = {
         isSystemUser = true;
         group = cfg.group;
@@ -95,7 +101,7 @@ in
       };
     };
 
-    users.groups = mkIf (cfg.group == "apprise") {
+    users.groups = mkIf (cfg.group == "apprise" && !cfg.dynamicUser) {
       apprise = { };
     };
 
@@ -118,8 +124,10 @@ in
       '';
 
       serviceConfig = {
-        User = cfg.user;
-        Group = cfg.group;
+        User = mkIf (!cfg.dynamicUser) cfg.user;
+        Group = mkIf (!cfg.dynamicUser) cfg.group;
+        DynamicUser = cfg.dynamicUser;
+        StateDirectory = mkIf cfg.dynamicUser "apprise-api";
         WorkingDirectory = appDir;
         ExecStart = ''
           ${pkgs.python3Packages.gunicorn}/bin/gunicorn \
