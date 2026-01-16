@@ -25,6 +25,13 @@
       "console=ttyAMA0,115200"
       "console=tty1"
       "boot.shell_on_fail"
+      # ```
+      # ID 152d:0578 JMicron Technology Corp. / JMicron USA Technology Corp.
+      # JMS578 SATA 6Gb/s
+      # ```
+      # Is prone to I/O errors if using `uas` driver. This
+      # forces the `usb-storage` one
+      "usb-storage.quirks=152d:0578:u"
     ];
     consoleLogLevel = 7;
     loader = {
