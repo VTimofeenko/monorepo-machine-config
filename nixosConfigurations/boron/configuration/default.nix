@@ -43,6 +43,12 @@
       "console=ttyAMA0,115200"
       "console=tty1"
       "boot.shell_on_fail"
+      # ```
+      # ID 174c:1153 ASMedia Technology Inc. ASM1153 SATA 3Gb/s bridge
+      # ```
+      # Is prone to I/O errors if using `uas` driver. This
+      # forces the `usb-storage` one. See lithium config for similar example.
+      "usb-storage.quirks=174c:1153:u"
     ];
     consoleLogLevel = 7;
     loader = {
