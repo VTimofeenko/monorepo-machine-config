@@ -467,7 +467,7 @@
               withSystem prev.stdenv.hostPlatform.system (
                 { config, ... }:
                 {
-                  inherit (config.packages) hostsBlockList dashboard-icons;
+                  inherit (config.packages) hostsBlockList dashboard-icons apprise-api frigate-notify;
                 }
               );
 

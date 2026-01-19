@@ -28,6 +28,8 @@
         };
         overlays = [
           # docspell-flake.overlays.default # Docspell commands rely on pkgs.docspell-joex, needs overlay
+          self.overlays.default
+          self.overlays.homelab
         ];
       };
 
