@@ -72,6 +72,9 @@
             {
               programs.myNeovim.enable = true;
             }
+            # More standard "effect-less" NixOS modules follow
+            specialArgs.selfModules.apprise-api
+            specialArgs.selfModules.frigate-notify
           ]
           # Per-host overrides
           # TODO: make more generic
