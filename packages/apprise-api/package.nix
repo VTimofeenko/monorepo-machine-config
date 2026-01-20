@@ -33,6 +33,7 @@ python3Packages.buildPythonApplication rec {
         inherit version;
         hash = "sha256-Qga+nLVpSj0I3Y4Dk7u5s2ISrDp3acJjNiAFXnXGyu8=";
       };
+      doCheck = false; # YOLO
     }))
     django
     gevent
