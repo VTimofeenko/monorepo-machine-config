@@ -52,6 +52,7 @@ let
         "json"
         "rs"
         "py"
+        "beancount"
       ])
       # Debug stuff
       ''
