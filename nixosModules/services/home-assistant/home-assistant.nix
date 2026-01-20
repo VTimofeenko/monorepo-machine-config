@@ -48,7 +48,6 @@ in
         time_zone = config.time.timeZone;
         name = "Home";
       };
-      inherit (srvConfig) telegram_bot notify;
     };
   };
 
