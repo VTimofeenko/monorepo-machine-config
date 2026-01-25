@@ -77,6 +77,7 @@
             # More standard "effect-less" NixOS modules follow
             specialArgs.selfModules.apprise-api
             specialArgs.selfModules.frigate-notify
+            specialArgs.selfModules.wireguard-refresh-fix
           ]
           # Per-host overrides
           # TODO: make more generic

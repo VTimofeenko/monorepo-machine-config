@@ -378,6 +378,7 @@
                 # Maybe later I will add dynamic imports here
                 apprise-api = import ./modules/nixOS/apprise-api.nix;
                 frigate-notify = import ./modules/nixOS/frigate-notify.nix;
+                wireguard-refresh-fix = import ./modules/nixOS/wireguard-refresh-fix.nix;
               };
             nixosConfigurations =
               let
