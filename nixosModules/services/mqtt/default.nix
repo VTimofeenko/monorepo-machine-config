@@ -6,5 +6,6 @@ _: {
     ./service.nix
     ./firewall.nix
     ./ssl.nix
+    ./logging.nix
   ];
 }
