@@ -8,6 +8,7 @@
     ./network-selector.nix
     ./user-stuff
     ./rtl.nix
+    ./gamemode.nix
   ];
   options.myMachines.uranium = {
     network = lib.mkOption {
