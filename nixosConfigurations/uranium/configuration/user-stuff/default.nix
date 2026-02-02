@@ -2,6 +2,7 @@ let
   systemImports = [ ];
   userImports = [
     ./desktop-environment.nix
+    ./kanshi.nix
   ];
 in
 {
