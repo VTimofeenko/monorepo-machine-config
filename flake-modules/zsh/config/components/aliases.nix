@@ -57,13 +57,20 @@ let
         rm = "${pkgs.coreutils}/bin/rm -id";
         # Use fast `$CMD_EDITOR` for `vidir`
         vidir = "EDITOR=$CMD_EDITOR ${pkgs.moreutils}/bin/vidir --verbose";
-        ccopy =
-          [
-            "${getExe pkgs.perl} -p -e 'chomp if eof'"
-            "|"
-            (if pkgs.stdenv.isDarwin then "pbcopy" else "${pkgs.wl-clipboard}/bin/wl-copy")
-          ]
-          |> lib.concatStringsSep " ";
+        # Uses `OSC52` to copy data into the clipboard. It's up to the terminal
+        # emulator to handle putting the data into the actual clipboard.
+        # Alternative approach is to use `wl-copy` and `pbcopy` directly. This
+        # approach does not rely on those tools, so does not bring in extra
+        # dependencies where they are not needed.
+        ccopy = ''
+          local buffer=$(${getExe pkgs.perl} -pe 'chomp if eof' | ${pkgs.coreutils}/bin/base64 | tr -d '\n')
+
+          if [ -n "$TMUX" ]; then
+              printf "\ePtmux;\e\e]52;c;%s\a\e\\" "$buffer"
+          else
+              printf "\e]52;c;%s\a" "$buffer"
+          fi
+        '';
         # Colorize IP output
         ip = "ip -c";
         # Neat display of all relevant things in lsblk
