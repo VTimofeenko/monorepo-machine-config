@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  selfPkgs,
   ...
 }:
 let
@@ -40,6 +41,10 @@ in
 
     # Build custom components. { } does not pass deps which is OK for now
     customComponents = map (x: pkgs.callPackage x { }) [ ./customComponents/meross_lan.nix ];
+
+    customLovelaceModules = [
+      selfPkgs.${pkgs.stdenv.system}.ha-floorplan
+    ];
 
     config = {
       default_config = { };
