@@ -59,7 +59,7 @@ let
         HOST="''${ENDPOINT%:*} "
         PORT="''${ENDPOINT##*:}"
         # Resolve the IP
-        RESOLVED_IP=$(${pkgs.glibc}/bin/getent ahostsv4 "$HOST" | ${pkgs.gawk}/bin/awk '{print $1}' | ${pkgs.coreutils}/bin/head -n 1)
+        RESOLVED_IP=$(${lib.getExe pkgs.getent} ahostsv4 "$HOST" | ${pkgs.gawk}/bin/awk '{print $1}' | ${pkgs.coreutils}/bin/head -n 1)
 
         if [ -n "$RESOLVED_IP" ]; then
           # Update the peer endpoint without tearing down the interface
