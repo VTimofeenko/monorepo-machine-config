@@ -9,7 +9,7 @@ rec {
   module = ./. + "/${serviceName}.nix";
 
   dashboard = {
-    category = "Development";
+    category = "Dev";
     links = [
       {
         icon = "cyberchef";
