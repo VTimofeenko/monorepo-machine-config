@@ -341,6 +341,8 @@
 
               frigate-notify = pkgs.callPackage ./packages/frigate-notify/package.nix { };
 
+              ha-floorplan = pkgs.callPackage ./packages/ha-floorplan/package.nix { };
+
             };
             checks = import ./checks { inherit self pkgs lib; };
 
@@ -468,7 +470,13 @@
               withSystem prev.stdenv.hostPlatform.system (
                 { config, ... }:
                 {
-                  inherit (config.packages) hostsBlockList dashboard-icons apprise-api frigate-notify;
+                  inherit (config.packages)
+                    hostsBlockList
+                    dashboard-icons
+                    apprise-api
+                    frigate-notify
+                    ha-floorplan
+                    ;
                 }
               );
 
