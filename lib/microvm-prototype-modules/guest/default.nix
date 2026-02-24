@@ -53,6 +53,18 @@ microVMName:
         proto = "virtiofs";
       }
     ];
+
+    fileSystems."/var/lib".neededForBoot = true;
+    microvm.volumes = [
+      {
+        image = "/var/lib/microvms/${microVMName}/data";
+        mountPoint = "/var/lib";
+        autoCreate = true;
+        # In megabytes
+        size = 10 * 1024;
+      }
+    ];
+
     system.stateVersion = "24.11";
 
     networking.useNetworkd = true;
