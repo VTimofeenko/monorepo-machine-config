@@ -415,14 +415,6 @@
                 }
               );
 
-            homeManagerModules = {
-              nix-config = importApply ./nixosModules/nix {
-                inherit (inputs) nixpkgs-stable nixpkgs-unstable;
-                inherit inputs;
-                inHomeManager = true;
-              };
-            };
-
             templates = {
               default = {
                 path = ./templates/base;
