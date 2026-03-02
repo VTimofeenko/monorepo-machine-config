@@ -295,9 +295,6 @@
               prometheus-frigate-exporter = import ./packages/prometheus-frigate-exporter/package.nix {
                 inherit (pkgs) lib python3 fetchFromGitHub;
               };
-
-              ha-floorplan = pkgs.callPackage ./packages/ha-floorplan/package.nix { };
-
             };
             checks = import ./checks { inherit self pkgs lib; };
 
@@ -426,7 +423,6 @@
                   inherit (config.packages)
                     hostsBlockList
                     dashboard-icons
-                    ha-floorplan
                     ;
                 }
               );
