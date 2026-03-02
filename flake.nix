@@ -278,12 +278,6 @@
                 packages = [ pkgs.nixos-anywhere ];
               };
 
-            packages = {
-              # Prometheus frigate exporter
-              prometheus-frigate-exporter = import ./packages/prometheus-frigate-exporter/package.nix {
-                inherit (pkgs) lib python3 fetchFromGitHub;
-              };
-            };
             checks = import ./checks { inherit self pkgs lib; };
 
             pre-commit = import ./.dev/pre-commit.nix { inherit inputs' lib pkgs; };
