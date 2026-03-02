@@ -485,22 +485,6 @@
         "type": "github"
       }
     },
-    "kroki-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1675596325,
-        "narHash": "sha256-wh/1pEmlMQNjOlCA25gq5bKEjb60Ei9JUoApsOBgSOc=",
-        "owner": "yuzutech",
-        "repo": "kroki-cli",
-        "rev": "d923cdd8336257d0f19f2993c112853859f68607",
-        "type": "github"
-      },
-      "original": {
-        "owner": "yuzutech",
-        "repo": "kroki-cli",
-        "type": "github"
-      }
-    },
     "microvm": {
       "inputs": {
         "nixpkgs": [
@@ -769,7 +753,6 @@
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
         "impermanence": "impermanence",
-        "kroki-src": "kroki-src",
         "microvm": "microvm",
         "my-flake-modules": "my-flake-modules",
         "nixos-hardware": "nixos-hardware",
