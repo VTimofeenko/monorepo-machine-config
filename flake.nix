@@ -335,11 +335,6 @@
                   ;
               };
 
-              # Wiz CLI
-              riz = import ./packages/riz/package.nix {
-                inherit (pkgs) fetchFromGitHub rustPlatform;
-              };
-
               # Prometheus frigate exporter
               prometheus-frigate-exporter = import ./packages/prometheus-frigate-exporter/package.nix {
                 inherit (pkgs) lib python3 fetchFromGitHub;
