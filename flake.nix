@@ -170,6 +170,7 @@
     flake-parts.lib.mkFlake { inherit inputs; } (
       { withSystem, flake-parts-lib, ... }:
       let
+        flakeModuleLoader = import ./lib/flake-module-loader.nix;
         inherit (inputs.nixpkgs-lib) lib; # A faster way to propagate lib to certain modules
         inherit (flake-parts-lib) importApply;
         /*
@@ -198,6 +199,7 @@
           desktopEnvironment = importApply ./flake-modules/desktopEnvironment { inherit withSystem self; };
           ipython = importApply ./flake-modules/ipython { inherit withSystem self; };
           python-devtools = importApply ./flake-modules/python-devtools { inherit withSystem self; };
+
         };
       in
       {
@@ -215,6 +217,12 @@
               publicFlakeModules
             ]
           ))
+          (flakeModuleLoader {
+            dir = ./flake-modules-prime;
+            inherit self withSystem lib;
+            debug = true;
+
+          })
         ];
         systems = [
           "x86_64-linux"
@@ -532,9 +540,9 @@
               # Assemble the attrset of modules
               |> lib.mergeAttrsList;
 
-              lib = {
-                flakeModuleLoader = import ./lib/flake-module-loader.nix;
-              };
+            lib = {
+              inherit flakeModuleLoader;
+            };
           };
       }
     );
