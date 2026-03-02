@@ -531,6 +531,10 @@
               })
               # Assemble the attrset of modules
               |> lib.mergeAttrsList;
+
+              lib = {
+                flakeModuleLoader = import ./lib/flake-module-loader.nix;
+              };
           };
       }
     );
