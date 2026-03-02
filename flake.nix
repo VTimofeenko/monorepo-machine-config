@@ -451,7 +451,6 @@
 
             homeManagerModules = {
               kitty = import ./modules/homeManager/kitty;
-              ideavim = import ./modules/homeManager/ideavim;
               nix-config = importApply ./nixosModules/nix {
                 inherit (inputs) nixpkgs-stable nixpkgs-unstable;
                 inherit inputs;
