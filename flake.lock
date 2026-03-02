@@ -114,32 +114,6 @@
         "type": "github"
       }
     },
-    "conventional-commit-helper": {
-      "inputs": {
-        "crane": [
-          "crane"
-        ],
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs-unstable"
-        ]
-      },
-      "locked": {
-        "lastModified": 1762537728,
-        "narHash": "sha256-1VP4enocbVbbPREBzfkBxdA/kKfFObJxLWFJ3KXG7bM=",
-        "owner": "VTimofeenko",
-        "repo": "conventional-commit-helper",
-        "rev": "7f311991306220c73bec512ecf03f90ec82f402a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "VTimofeenko",
-        "repo": "conventional-commit-helper",
-        "type": "github"
-      }
-    },
     "crane": {
       "locked": {
         "lastModified": 1771796463,
@@ -786,7 +760,6 @@
         "base16": "base16",
         "catppuccin": "catppuccin",
         "color_scheme": "color_scheme",
-        "conventional-commit-helper": "conventional-commit-helper",
         "crane": "crane",
         "data-flake": "data-flake",
         "deploy-rs": "deploy-rs",
