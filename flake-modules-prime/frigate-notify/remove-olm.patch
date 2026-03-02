@@ -1,0 +1,36 @@
+Olm dependency is marked as insecure in nixpkgs for a good reason.
+
+I am not using matrix anyway.
+diff --git a/notifier/matrix.go b/notifier/matrix.go
+index 4b4ea75..44cb609 100644
+--- a/notifier/matrix.go
++++ b/notifier/matrix.go
+@@ -1,3 +1,5 @@
++//go:build matrix
++
+ package notifier
+ 
+ import (
+diff --git a/notifier/matrix_stub.go b/notifier/matrix_stub.go
+new file mode 100644
+index 0000000..602e4e1
+--- /dev/null
++++ b/notifier/matrix_stub.go
+@@ -0,0 +1,17 @@
++//go:build !matrix
++
++package notifier
++
++import (
++       "io"
++
++       "github.com/0x2142/frigate-notify/models"
++       "github.com/rs/zerolog/log"
++)
++
++// SendMatrix is a stub when matrix build tag is not present
++func SendMatrix(event models.Event, snapshot io.Reader, provider notifMeta) {
++       log.Warn().
++               Str("provider", "Matrix").
++               Msg("Matrix support is disabled in this build")
++}

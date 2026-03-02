@@ -296,8 +296,6 @@
                 inherit (pkgs) lib python3 fetchFromGitHub;
               };
 
-              frigate-notify = pkgs.callPackage ./packages/frigate-notify/package.nix { };
-
               ha-floorplan = pkgs.callPackage ./packages/ha-floorplan/package.nix { };
 
             };
@@ -335,7 +333,6 @@
                 inherit nix-config;
 
                 # Maybe later I will add dynamic imports here
-                frigate-notify = import ./modules/nixOS/frigate-notify.nix;
                 wireguard-refresh-fix = import ./modules/nixOS/wireguard-refresh-fix.nix;
               };
             nixosConfigurations =
@@ -429,7 +426,6 @@
                   inherit (config.packages)
                     hostsBlockList
                     dashboard-icons
-                    frigate-notify
                     ha-floorplan
                     ;
                 }
