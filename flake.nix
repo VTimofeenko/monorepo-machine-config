@@ -53,17 +53,6 @@
       };
     };
 
-    # vim plugins
-    vim-scratch-plugin = {
-      url = "github:mtth/scratch.vim";
-      flake = false;
-    };
-    # Disable for now, need to find alternative
-    # nvim-devdocs = {
-    #   url = "github:luckasRanarison/nvim-devdocs";
-    #   flake = false;
-    # };
-
     # My development stuff
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -160,7 +149,6 @@
         */
         publicFlakeModules = {
           tmuxModule = importApply ./flake-modules/tmux { inherit withSystem self; };
-          nvimModule = importApply ./flake-modules/neovim { inherit withSystem self; };
           zshModule = importApply ./flake-modules/zsh { inherit self; };
           hyprlandHelpersModule = importApply ./flake-modules/hyprland-helpers {
             inherit withSystem lib self;

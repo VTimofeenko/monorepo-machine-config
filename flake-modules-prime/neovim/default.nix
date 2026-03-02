@@ -1,0 +1,83 @@
+/*
+  Flake-module entry point for Neovim configuration.
+
+  It provides outputs for:
+
+  - Base Neovim package with some plugins
+  - Neovim package with language servers
+  - NixOS module for installing Neovim
+  - home-manager module for installing Neovim
+*/
+{ withSystem, self, lib }:
+{
+
+  perSystem =
+    { system, ... }:
+    {
+      packages = withSystem system (
+        { pkgs, ... }:
+        let
+          flakeModuleLib = import ./lib { inherit self; };
+        in
+        # Attrset of package name (as visible to the consumer) and the enum type of package
+        {
+          vim-minimal = { type = "min"; };
+          vim = { type = "std"; };
+          vim-with-langs = { type = "max"; };
+          vim-max = { type = "max"; };
+          vim-lazy = { type = "max"; lazy = true; };
+        }
+        |> lib.mapAttrs (
+          _: it:
+          flakeModuleLib.mkPackage {
+            pkgType = it.type;
+            cfg = if it.lazy or false then { programs.myNeovim.lazy = true; } else { };
+            inherit pkgs lib;
+          }
+        )
+      );
+
+      # This bit adds checks dynamically.
+      # By placing a `.nix` file in the `./checks/` directory, it will be:
+      # 1. Automatically added to `flake.checks`
+      # 2. Be prefixed with `flake-module-neovim-`
+      checks = withSystem system (
+        { pkgs, ... }:
+        let
+          inherit (pkgs) lib;
+        in
+        ./checks
+        |> pkgs.lib.fileset.toList
+        |> map (
+          it:
+          let
+            fileName = it |> builtins.toString |> builtins.baseNameOf |> (lib.replaceStrings [ ".nix" ] [ "" ]);
+          in
+          {
+            "flake-module-neovim-${fileName}" = import it { inherit pkgs self; };
+          }
+        )
+        |> pkgs.lib.mergeAttrsList
+      );
+    };
+
+  flake =
+    # For some reason, passing `mkModule` through lib causes `moduleType` to become
+    # an attrset that is extremely weird. I think it's flake.parts fault
+    # ```
+    # let
+    #   # Both modules are very similar, so just build them using a "mode" flag below
+    #   # inherit (import ./lib { inherit self; }) mkModule';
+    # in
+    # ```
+    {
+      nixosModules.vim = import ./lib/mk-module.nix {
+        inherit self;
+        moduleType = "nixOS";
+      };
+      homeManagerModules.vim = import ./lib/mk-module.nix {
+        moduleType = "homeManager";
+        inherit self;
+      };
+    };
+}

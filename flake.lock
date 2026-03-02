@@ -766,7 +766,6 @@
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
         "stub-flake": "stub-flake",
         "treefmt-nix": "treefmt-nix",
-        "vim-scratch-plugin": "vim-scratch-plugin",
         "xremap-flake": "xremap-flake"
       }
     },
@@ -896,22 +895,6 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "vim-scratch-plugin": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1620018304,
-        "narHash": "sha256-P8SuMZKckMu+9AUI89X8+ymJvJhlsbT7UR7XjnWwwz8=",
-        "owner": "mtth",
-        "repo": "scratch.vim",
-        "rev": "adf826b1ac067cdb4168cb6066431cff3a2d37a3",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mtth",
-        "repo": "scratch.vim",
         "type": "github"
       }
     },
