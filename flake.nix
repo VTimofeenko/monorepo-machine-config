@@ -322,19 +322,6 @@
               };
 
             packages = {
-              # Desktop icons
-              arcticons = import ./packages/arcticons/package.nix {
-                inherit (pkgs)
-                  stdenv
-                  fetchFromGitHub
-                  inkscape
-                  scour
-                  xmlstarlet
-                  yq
-                  jq
-                  ;
-              };
-
               # Prometheus frigate exporter
               prometheus-frigate-exporter = import ./packages/prometheus-frigate-exporter/package.nix {
                 inherit (pkgs) lib python3 fetchFromGitHub;
