@@ -340,8 +340,6 @@
                 inherit (pkgs) lib python3 fetchFromGitHub;
               };
 
-              apprise-api = pkgs.callPackage ./packages/apprise-api/package.nix { };
-
               frigate-notify = pkgs.callPackage ./packages/frigate-notify/package.nix { };
 
               ha-floorplan = pkgs.callPackage ./packages/ha-floorplan/package.nix { };
@@ -381,7 +379,6 @@
                 inherit nix-config;
 
                 # Maybe later I will add dynamic imports here
-                apprise-api = import ./modules/nixOS/apprise-api.nix;
                 frigate-notify = import ./modules/nixOS/frigate-notify.nix;
                 wireguard-refresh-fix = import ./modules/nixOS/wireguard-refresh-fix.nix;
               };
@@ -476,7 +473,6 @@
                   inherit (config.packages)
                     hostsBlockList
                     dashboard-icons
-                    apprise-api
                     frigate-notify
                     ha-floorplan
                     ;
