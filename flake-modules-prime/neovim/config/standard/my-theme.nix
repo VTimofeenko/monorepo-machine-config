@@ -8,7 +8,7 @@ let
     levelWarn
     levelErr
     ;
-  inherit (colortheme.raw."#hex") fg-alt slate;
+  inherit (colortheme.scheme."#hex") fg-alt slate;
 
 in
 {
