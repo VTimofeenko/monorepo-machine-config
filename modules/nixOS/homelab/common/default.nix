@@ -3,7 +3,6 @@ _: {
   imports = [
     ./dump.nix
     ./firewall.nix
-    ./nix.nix
     ./disable_docs.nix
     ./packages.nix
     ./shell.nix

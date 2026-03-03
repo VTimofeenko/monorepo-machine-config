@@ -291,22 +291,7 @@
             # flake-modules are passed through to the output of this flake
             inherit (inputs.my-flake-modules) flake-modules;
             nixosModules =
-              let
-                nix-config = importApply ./nixosModules/nix {
-                  inherit (inputs) nixpkgs-stable nixpkgs-unstable;
-                  inherit inputs;
-                };
-              in
               {
-                default =
-                  { ... }:
-                  {
-                    imports = [
-                      self.nixosModules.zsh
-                      nix-config
-                    ];
-                  };
-                inherit nix-config;
 
                 # Maybe later I will add dynamic imports here
                 wireguard-refresh-fix = import ./modules/nixOS/wireguard-refresh-fix.nix;
