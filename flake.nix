@@ -148,7 +148,6 @@
           The attribute names don't matter
         */
         publicFlakeModules = {
-          tmuxModule = importApply ./flake-modules/tmux { inherit withSystem self; };
           zshModule = importApply ./flake-modules/zsh { inherit self; };
           hyprlandHelpersModule = importApply ./flake-modules/hyprland-helpers {
             inherit withSystem lib self;
