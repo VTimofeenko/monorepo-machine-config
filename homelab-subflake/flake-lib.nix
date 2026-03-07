@@ -65,9 +65,19 @@
           fromPublic = self.traitModules ? ${traitName};
           fromPrivate = inputs.private-modules.traitModules ? ${traitName};
         in
-        lib.optional fromPublic (dbg "trait ${traitName} (public)" self.traitModules.${traitName})
-        ++ lib.optional fromPrivate (
-          dbg "trait ${traitName} (private)" inputs.private-modules.traitModules.${traitName}
+        (
+          lib.optional fromPublic (dbg "trait ${traitName} (public)" self.traitModules.${traitName})
+          ++ lib.optional fromPrivate (
+            dbg "trait ${traitName} (private)" inputs.private-modules.traitModules.${traitName}
+          )
+        )
+        # This check alerts the operator if trait could not be found as an actual module.
+        # Potential problems:
+        # - The implementation of the trait is missing
+        # - False negative detection (see `discoverModules`)
+        |> (
+          it:
+          lib.warnIf (lib.length it == 0) "trait: ${traitName} could not be resolved to an implementation!" it
         );
 
       traitModulesForHost = (hostData.traitsAt or [ ]) |> lib.concatMap resolveTrait;
