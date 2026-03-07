@@ -50,7 +50,7 @@
 
           serviceModules = self.lib.discoverModules ./services "service";
 
-          traitModules = self.lib.discoverModules ./traits "traits";
+          traitModules = self.lib.discoverModules ./traits "trait";
 
           lib = import ./flake-lib.nix { inherit lib self; };
         };
