@@ -4,4 +4,6 @@
     nftables.enable = true;
     useNetworkd = true;
   };
+
+  services.resolved.enable = true;
 }
