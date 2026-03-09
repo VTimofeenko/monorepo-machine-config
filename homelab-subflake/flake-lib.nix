@@ -48,9 +48,9 @@
           fromPublic = self.serviceModules ? ${moduleName};
           fromPrivate = inputs.private-modules.serviceModules ? ${moduleName};
         in
-        lib.optional fromPublic (dbg "service ${moduleName} (public)" self.serviceModules.${moduleName})
-        ++ lib.optional fromPrivate (
-          dbg "service ${moduleName} (private)" inputs.private-modules.serviceModules.${moduleName}
+        lib.optionals fromPublic (dbg "service ${moduleName} (public)" self.serviceModules.${moduleName}.default)
+        ++ lib.optionals fromPrivate (
+          dbg "service ${moduleName} (private)" inputs.private-modules.serviceModules.${moduleName}.default
         );
 
       serviceModulesForHost =
