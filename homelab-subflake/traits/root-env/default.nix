@@ -1,5 +1,5 @@
 { pkgs, ... }:
 {
-  ussers.users.root.shell = pkgs.zsh;
+  users.users.root.shell = pkgs.zsh;
   environment.systemPackages = [ pkgs.git ];
 }
