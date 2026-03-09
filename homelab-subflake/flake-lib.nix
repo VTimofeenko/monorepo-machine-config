@@ -122,7 +122,7 @@
       ++ extraModules;
 
       specialArgs = {
-        inherit inputs;
+        inherit inputs self;
         pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${hostData.system};
       };
     };
