@@ -1172,6 +1172,14 @@
       "inputs": {
         "base": "base",
         "data-flake": "data-flake_2",
+        "deploy-rs": [
+          "base",
+          "deploy-rs"
+        ],
+        "devshell": [
+          "base",
+          "devshell"
+        ],
         "flake-parts": [
           "base",
           "flake-parts"

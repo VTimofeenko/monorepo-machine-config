@@ -8,6 +8,8 @@
     data-flake.url = "path:///home/spacecadet/code/private-data-flake";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     impermanence.url = "github:nix-community/impermanence";
+    deploy-rs.follows = "base/deploy-rs";
+    devshell.follows = "base/devshell";
 
     private-modules = {
       url = "path:///home/spacecadet/code/private-modules";
@@ -24,7 +26,10 @@
         inherit (inputs.nixpkgs) lib;
       in
       {
-        imports = (
+        imports = [
+          inputs.devshell.flakeModule
+          inputs.base.flake-modules.devShellCmds
+        ] ++ (
           flakeModuleLoader {
             dir = ./flake-modules;
             inherit self withSystem lib;
@@ -35,15 +40,25 @@
           "x86_64-linux"
           "aarch64-linux"
         ];
-        flake = {
-          nixosConfigurations =
-            {
+        perSystem = _: {
+          devshellCmds.deployment = {
+            enable = true;
+            useDeployRs = true;
+            localDeployment = true;
+            desktopNotifications = true;
+          };
+        };
+        flake =
+          let
+            hosts = {
               sodium = {
                 role = "server";
                 extraModules = [ ];
               };
-            }
-            |> lib.mapAttrs (
+            };
+          in
+          {
+            nixosConfigurations = hosts |> lib.mapAttrs (
               n: v:
               self.lib.mkHost {
                 hostName = n;
@@ -52,12 +67,20 @@
               }
             );
 
-          serviceModules = self.lib.discoverModules ./services "service";
+            deploy.nodes = hosts |> lib.mapAttrs (
+              nodeName: _:
+              self.lib.mkDeployRsNode {
+                inherit nodeName;
+                system = inputs.data-flake.data.hosts.all.${nodeName}.system;
+              }
+            );
 
-          traitModules = self.lib.discoverModules ./traits "trait";
+            serviceModules = self.lib.discoverModules ./services "service";
 
-          lib = import ./flake-lib.nix { inherit lib self; };
-        };
+            traitModules = self.lib.discoverModules ./traits "trait";
+
+            lib = import ./flake-lib.nix { inherit lib self; };
+          };
       }
     );
 }

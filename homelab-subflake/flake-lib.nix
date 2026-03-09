@@ -128,6 +128,36 @@
     };
 
   /**
+    Returns attrset in format expected by deploy-rs.
+  */
+  mkDeployRsNode =
+    { nodeName, system }:
+    let
+      inherit (self) inputs;
+      pkgs = import inputs.nixpkgs { inherit system; };
+      deployPkgs = import inputs.nixpkgs {
+        inherit system;
+        overlays = [
+          inputs.deploy-rs.overlays.default
+          (_: super: {
+            deploy-rs = {
+              inherit (pkgs) deploy-rs;
+              inherit (super.deploy-rs) lib;
+            };
+          })
+        ];
+      };
+    in
+    {
+      hostname = "${nodeName}.${inputs.data-flake.data.networks.mgmt.domain}";
+      sshUser = "root";
+      profiles.system = {
+        user = "root";
+        path = deployPkgs.deploy-rs.lib.activate.nixos self.nixosConfigurations.${nodeName};
+      };
+    };
+
+  /**
     Used to discover service modules and traits.
   */
   discoverModules =
