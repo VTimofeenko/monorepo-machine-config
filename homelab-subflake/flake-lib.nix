@@ -45,21 +45,27 @@
       resolveService =
         moduleName:
         let
+          serviceData = data-flake.data.services.all.${moduleName};
           fromPublic = self.serviceModules ? ${moduleName};
           fromPrivate = inputs.private-modules.serviceModules ? ${moduleName};
         in
-        lib.optionals fromPublic (
-          dbg "service ${moduleName} (public)" self.serviceModules.${moduleName}.default
-        )
-        ++ lib.optionals fromPrivate (
-          dbg "service ${moduleName} (private)" inputs.private-modules.serviceModules.${moduleName}.default
-        )
-        |> (
-          it:
-          lib.warnIf (
-            lib.length it == 0
-          ) "service: ${moduleName} could not be resolved to an implementation!" it
-        );
+        if serviceData.moduleName == "stub" then
+          [ ] |> dbg "service ${moduleName} is a stub"
+        else
+          (
+            lib.optionals fromPublic (
+              dbg "service ${moduleName} (public)" self.serviceModules.${moduleName}.default
+            )
+            ++ lib.optionals fromPrivate (
+              dbg "service ${moduleName} (private)" inputs.private-modules.serviceModules.${moduleName}.default
+            )
+            |> (
+              it:
+              lib.warnIf (
+                lib.length it == 0
+              ) "service: ${moduleName} could not be resolved to an implementation!" it
+            )
+          );
 
       serviceModulesForHost =
         hostData.servicesAt
@@ -70,15 +76,19 @@
       resolveTrait =
         traitName:
         let
+          traitData = data-flake.data.traits.all.${traitName};
           fromPublic = self.traitModules ? ${traitName};
           fromPrivate = inputs.private-modules.traitModules ? ${traitName};
         in
-        (
+        if traitData.moduleName == "stub" then
+          [ ] |> dbg "trait ${traitName} is a stub"
+        else
+        ((
           lib.optional fromPublic (dbg "trait ${traitName} (public)" self.traitModules.${traitName})
           ++ lib.optional fromPrivate (
             dbg "trait ${traitName} (private)" inputs.private-modules.traitModules.${traitName}
-          )
-        )
+            )
+            )
         # This check alerts the operator if trait could not be found as an actual module.
         # Potential problems:
         # - The implementation of the trait is missing
@@ -86,7 +96,7 @@
         |> (
           it:
           lib.warnIf (lib.length it == 0) "trait: ${traitName} could not be resolved to an implementation!" it
-        );
+          ));
 
       traitModulesForHost = (hostData.traitsAt or [ ]) |> lib.concatMap resolveTrait;
 
