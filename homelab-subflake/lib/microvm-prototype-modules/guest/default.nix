@@ -1,0 +1,80 @@
+/**
+  Guest-side microvm modules
+*/
+microVMName:
+{
+  impermanence,
+  agenix,
+  data-flake,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  microvm.vms.${microVMName}.config = {
+    imports = [
+      impermanence.nixosModules.impermanence
+      agenix.nixosModules.default
+      data-flake.nixosModules.${microVMName}
+      ./management.nix
+      ./network.nix
+
+      # TODO: Revisit this, maybe add more modules
+      ../../../modules/nixOS/homelab/common/ship-logs.nix
+    ]
+    # Add public modules
+    # TODO: refactor. This is a bit clunky and effectively reimplements what is
+    # done for the nodes
+    ++ (
+      (lib.homelab.getHost microVMName).modulesAt.public
+      |> map (it: ../../../nixosModules/services + "/${it}")
+    );
+
+    # Secrets setup
+    age.identityPaths = [ "/persist/etc/ssh/ssh_host_ed25519_key" ];
+
+    # Persistence
+    fileSystems."/persist".neededForBoot = lib.mkForce true;
+    environment.persistence."/persist".directories = [ "/var/lib/nixos" ];
+
+    # Swap
+    zramSwap = {
+      enable = true;
+      memoryPercent = 50;
+      algorithm = "lz4";
+      priority = 100;
+    };
+
+    microvm.shares = [
+      {
+        source = "/vms/${microVMName}";
+        mountPoint = "/persist";
+        tag = "persist";
+        proto = "virtiofs";
+      }
+    ];
+
+    fileSystems."/var/lib".neededForBoot = true;
+    microvm.volumes = [
+      {
+        image = "/var/lib/microvms/${microVMName}/data";
+        mountPoint = "/var/lib";
+        autoCreate = true;
+        # In megabytes
+        size = 10 * 1024;
+      }
+    ];
+
+    system.stateVersion = "24.11";
+
+    networking.useNetworkd = true;
+    networking.enableIPv6 = false;
+
+    environment.systemPackages = [
+      pkgs.lsof
+      pkgs.inetutils
+      pkgs.nftables
+      pkgs.vim
+    ];
+  };
+}

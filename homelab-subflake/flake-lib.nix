@@ -38,7 +38,7 @@
             Adds my custom functions.
             TODO: Review callsites, probably not needed as much
           */
-          (_: _: { localLib = import ../lib.nix { inherit lib; }; })
+          (_: _: { localLib = import ./lib/local-lib.nix { inherit lib; }; })
         ]
       );
 
@@ -104,6 +104,7 @@
         inputs.base.nixosModules.tmux
         inputs.base.nixosModules.vim
         inputs.base.nixosModules.my-theme
+        inputs.base.nixosModules.apprise-api # TODO: just import all once `de` is migrated
         { programs.myNeovim.enable = true; }
       ];
 
