@@ -55,6 +55,10 @@
                 role = "server";
                 extraModules = [ ];
               };
+              lithium = {
+                role = "server";
+                extraModules = [ ];
+              };
             };
           in
           {
