@@ -11,6 +11,10 @@
     deploy-rs.follows = "base/deploy-rs";
     devshell.follows = "base/devshell";
 
+    wg-namespace-flake = {
+      url = "github:VTimofeenko/wg-namespace-flake";
+    };
+
     private-modules = {
       url = "path:///home/spacecadet/code/private-modules";
       inputs.data-flake.follows = "data-flake";

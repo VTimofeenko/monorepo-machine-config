@@ -1190,7 +1190,8 @@
           "base",
           "nixpkgs"
         ],
-        "private-modules": "private-modules"
+        "private-modules": "private-modules",
+        "wg-namespace-flake": "wg-namespace-flake_2"
       }
     },
     "spectrum": {
@@ -1361,6 +1362,21 @@
       }
     },
     "wg-namespace-flake": {
+      "locked": {
+        "lastModified": 1748559072,
+        "narHash": "sha256-o9oCHBquZrLVDwv0ujx+NLDvkPoe7gzOMA2B6j0Ylhc=",
+        "owner": "VTimofeenko",
+        "repo": "wg-namespace-flake",
+        "rev": "30db3fbecbcda64ee47f3be7abf790a57974e97e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "VTimofeenko",
+        "repo": "wg-namespace-flake",
+        "type": "github"
+      }
+    },
+    "wg-namespace-flake_2": {
       "locked": {
         "lastModified": 1748559072,
         "narHash": "sha256-o9oCHBquZrLVDwv0ujx+NLDvkPoe7gzOMA2B6j0Ylhc=",
