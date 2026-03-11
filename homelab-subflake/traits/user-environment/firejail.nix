@@ -45,5 +45,23 @@
         mimeType = [ "x-scheme-handler/tg" ];
       };
     };
+
+    home.packages = [
+      (pkgs.writeShellApplication {
+        name = "firejail-kill-fuzzy";
+
+        runtimeInputs = [
+          pkgs.firejail # Better be "config.programs.firejail.package" but no such option as of Mar 11, 2026
+          pkgs.fzf
+          pkgs.gnused
+          pkgs.awk
+          pkgs.findutils # `xargs` here
+        ];
+
+        text = ''
+          firejail --list | fzf | sed 's;:; ;g' | awk '{print $1}' | xargs kill -9
+        '';
+      })
+    ];
   };
 }
