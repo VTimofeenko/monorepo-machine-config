@@ -33,13 +33,12 @@
         imports = [
           inputs.devshell.flakeModule
           inputs.base.flake-modules.devShellCmds
-        ] ++ (
-          flakeModuleLoader {
-            dir = ./flake-modules;
-            inherit self withSystem lib;
-            debug = true;
-          }
-        );
+        ]
+        ++ (flakeModuleLoader {
+          dir = ./flake-modules;
+          inherit self withSystem lib;
+          debug = true;
+        });
         systems = [
           "x86_64-linux"
           "aarch64-linux"
@@ -66,22 +65,26 @@
             };
           in
           {
-            nixosConfigurations = hosts |> lib.mapAttrs (
-              n: v:
-              self.lib.mkHost {
-                hostName = n;
-                inherit (v) role extraModules;
-                debug = true;
-              }
-            );
+            nixosConfigurations =
+              hosts
+              |> lib.mapAttrs (
+                n: v:
+                self.lib.mkHost {
+                  hostName = n;
+                  inherit (v) role extraModules;
+                  debug = true;
+                }
+              );
 
-            deploy.nodes = hosts |> lib.mapAttrs (
-              nodeName: _:
-              self.lib.mkDeployRsNode {
-                inherit nodeName;
-                system = inputs.data-flake.data.hosts.all.${nodeName}.system;
-              }
-            );
+            deploy.nodes =
+              hosts
+              |> lib.mapAttrs (
+                nodeName: _:
+                self.lib.mkDeployRsNode {
+                  inherit nodeName;
+                  system = inputs.data-flake.data.hosts.all.${nodeName}.system;
+                }
+              );
 
             serviceModules = self.lib.discoverModules ./services "service";
 
