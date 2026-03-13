@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 let
   settings.packages =
     (builtins.attrValues {
@@ -78,40 +78,78 @@ let
           }
         )
       )
-      # Bubblewrap wrapper around Gemini cli that fetches latest version
-      (
-        pkgs.writeTextFile rec {
-          name = "bwrap-gemini";
-          text = /* bash */ ''
-            #!/usr/bin/env -S nix shell github:NixOS/nixpkgs?ref=nixos-unstable#gemini-cli nu#bubblewrap --command bash
-            if [ "$(pwd)" = "$HOME" ]; then
-                echo "Error: Running from \$HOME would expose your files via the /work bind."
-                echo "Please cd into a specific project directory before running."
-                exit 1
-            fi
+      # Bubblewrap wrapper around `gemini-cli` that fetches latest version
+      (pkgs.writeTextFile rec {
+        name = "bwrap-gemini";
+        text = /* bash */ ''
+          #!/usr/bin/env -S nix shell github:NixOS/nixpkgs?ref=nixos-unstable#gemini-cli --command bash
+          if [ "$(pwd)" = "$HOME" ]; then
+              echo "Error: Running from \$HOME would expose your files via the /work bind."
+              echo "Please cd into a specific project directory before running."
+              exit 1
+          fi
 
-            bwrap \
-              --ro-bind /usr /usr \
-              --ro-bind /run /run \
-              --ro-bind /nix /nix \
-              --ro-bind /etc /etc \
-              --proc /proc \
-              --dev /dev \
-              --tmpfs /tmp \
-              --unshare-all \
-              --share-net \
-              --die-with-parent \
-              --new-session \
-              --bind "$HOME/.gemini" /homeless-shelter/.gemini \
-              --setenv HOME /homeless-shelter \
-              --bind "$(pwd)" /work \
-              --chdir /work \
-              gemini "$@"
-          '';
-          executable = true;
-          destination = "/bin/${name}";
-        }
-      )
+          ${lib.getExe pkgs.bubblewrap} \
+            --ro-bind /usr /usr \
+            --ro-bind /run /run \
+            --ro-bind /nix /nix \
+            --ro-bind /etc /etc \
+            --proc /proc \
+            --dev /dev \
+            --tmpfs /tmp \
+            --unshare-all \
+            --share-net \
+            --die-with-parent \
+            --new-session \
+            --bind "$HOME/.gemini" /homeless-shelter/.gemini \
+            --setenv HOME /homeless-shelter \
+            --bind "$(pwd)" /work \
+            --chdir /work \
+            gemini "$@"
+        '';
+        executable = true;
+        destination = "/bin/${name}";
+      })
+      # Bubblewrap wrapper around `claude` that fetches latest version
+      # TODO: add some sort of `--shell` flag so I can inspect the sandbox
+      (pkgs.writeTextFile rec {
+        name = "bwrap-claude";
+        text = /* bash */ ''
+          #!/usr/bin/env -S NIXPKGS_ALLOW_UNFREE=1 nix shell --impure nu#claude-code-bin --command bash
+
+          if [ "$(pwd)" = "$HOME" ]; then
+              echo "Error: Running from \$HOME would expose your files via the /work bind."
+              echo "Please cd into a specific project directory before running."
+              exit 1
+          fi
+
+          NEW_HOME="/homeless-shelter"
+          CLAUDE_CONFIG_DIR="''${NEW_HOME}/.claude"
+          CLAUDE_CODE_OAUTH_TOKEN=$(pass api-keys/claude)
+
+          ${lib.getExe pkgs.bubblewrap} \
+            --ro-bind /usr /usr \
+            --ro-bind /run /run \
+            --ro-bind /nix /nix \
+            --ro-bind /etc /etc \
+            --proc /proc \
+            --dev /dev \
+            --tmpfs /tmp \
+            --unshare-all \
+            --share-net \
+            --die-with-parent \
+            --new-session \
+            --bind "$HOME/.claude" $CLAUDE_CONFIG_DIR \
+            --setenv HOME $NEW_HOME \
+            --setenv CLAUDE_CONFIG_DIR "$CLAUDE_CONFIG_DIR" \
+            --setenv CLAUDE_CODE_OAUTH_TOKEN "$CLAUDE_CODE_OAUTH_TOKEN" \
+            --bind "$(pwd)" /work \
+            --chdir /work \
+            claude "$@"
+        '';
+        executable = true;
+        destination = "/bin/${name}";
+      })
     ];
 in
 {
