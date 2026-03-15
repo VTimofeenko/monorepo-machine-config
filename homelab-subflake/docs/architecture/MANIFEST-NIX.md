@@ -65,7 +65,6 @@ serviceName: {
       endpoint? : String        # Which endpoint? Inferred if omitted
       endpoints? : [String]     # Multiple exporters
       path? : String            # Metrics path, default: "/metrics"
-      bearerToken? : String     # Auth token
     }
 
     alerts? :: {
@@ -469,12 +468,9 @@ serviceManifests
     # Generate scrape config for each instance
     map (instanceName: {
       job_name = "${instanceName}-srv-scrape";
-      scheme = if isHttps then "https" else "http";
+      scheme = "https";
       metrics_path = metrics.path or "/metrics";
-      targets = if isHttps then
-        [ (lib.homelab.getServiceFqdn instanceName) ]
-      else
-        [ "${lib.homelab.getServiceInnerIP instanceName}:${toString endpoint.port}" ];
+      targets = ["${instanceName}.metrics.<publicDomain>"];
     }) instances
   )
 ```
@@ -490,23 +486,29 @@ serviceManifests
   )
 ```
 
-## Metrics Endpoint Inference
+## Metrics Architecture
 
-When `observability.metrics` exists but no endpoint is specified:
+The homelab uses a unified metrics architecture where all Prometheus scraping
+goes through the SSL proxy via HTTPS. The SSL proxy auto-detects metrics
+exporters from manifests and handles routing.
 
+**Endpoint inference:** When `observability.metrics` exists but no endpoint is
+specified:
 1. If an endpoint named `"metrics"` exists: use it (separate exporter)
 2. Else: use the first `https` endpoint (metrics on main service)
 
-This covers the two common patterns:
-- **Metrics on service**: Home Assistant exposes `/api/prometheus` on its web endpoint
-- **Separate exporter**: PostgreSQL runs postgres_exporter on a dedicated port
-
-SSL proxy will handle the authn/z for prometheus and will handle the connection
-to the actual metrics service through `backbone-inner`.
+**See [METRICS.md](METRICS.md) for complete architecture details**, including:
+- Three metrics patterns (metrics on web endpoint, separate exporter, non-web
+  services)
+- SSL proxy auto-detection logic
+- Prometheus scraping configuration
+- DNS requirements for non-web services
 
 ## Multi-Instance Services
 
-Services like `dns_1` and `dns_2` share a base manifest at `services/dns/manifest.nix`. The manifest declares `multiInstance = true` to signal consumers that multiple instances exist.
+Services like `dns_1` and `dns_2` share a base manifest at
+`services/dns/manifest.nix`. The manifest declares `multiInstance = true` to
+signal consumers that multiple instances exist.
 
 **Instance Discovery Flow:**
 
@@ -530,7 +532,8 @@ serviceManifests
     # Generate scrape config for each instance
     map (instanceName: {
       job_name = "${instanceName}-scrape";
-      targets = [ (lib.homelab.getServiceFqdn instanceName) ];
+      scheme = "https";
+      targets = [ "${instanceName}.metrics.<publicDomain>" ];
       # ... use manifest metadata
     }) instances
   )
