@@ -1,12 +1,14 @@
-let
-  serviceName = "cyberchef";
-in
-rec {
-  default = [
-    module
-    ingress.impl
-  ];
-  module = ./. + "/${serviceName}.nix";
+serviceName: {
+  module = ./cyberchef.nix;
+
+  endpoints.web = {
+    port = 80;
+    protocol = "https";
+
+    impl = import ./non-functional/endpoints-config.nix;
+  };
+
+  sslProxyConfig = import ./non-functional/ssl.nix { inherit serviceName; port = 80; };
 
   dashboard = {
     category = "Dev";
@@ -18,16 +20,5 @@ rec {
     ];
   };
 
-  ingress =
-    let
-      port = 80;
-    in
-    {
-      impl = import ./non-functional/firewall.nix { inherit port serviceName; };
-      sslProxyConfig = import ./non-functional/ssl.nix { inherit port serviceName; };
-    };
-
-  observability.enable = false;
-  backups = false; # Stateless
-  storage = false; # Stateless
+  documentation = ./README.md;
 }
