@@ -54,6 +54,13 @@ let
         else
           [];
 
+      # Extract endpoints.impl if present
+      endpointsModule =
+        if manifest ? endpoints && manifest.endpoints ? impl then
+          manifest.endpoints.impl (builtins.removeAttrs manifest.endpoints ["impl"])
+        else
+          null;
+
       # Auto-generate firewall if not provided but endpoints exist
       firewallModule =
         if manifest ? firewall then
@@ -61,8 +68,9 @@ let
         else if manifest ? endpoints then
           { lib, self, ... }:
           let
-            # Extract all ports from endpoints
-            ports = lib.mapAttrsToList (_: ep: ep.port) manifest.endpoints
+            # Extract all ports from endpoints (excluding impl)
+            endpointData = builtins.removeAttrs manifest.endpoints ["impl"];
+            ports = lib.mapAttrsToList (_: ep: ep.port) endpointData
               |> lib.unique;
           in
           {
@@ -79,6 +87,7 @@ let
       # Assemble default from all components
       defaultModules = flatten [
         (optional (manifest ? module) manifest.module)
+        (optional (endpointsModule != null) endpointsModule)
         (optional (firewallModule != null) firewallModule)
         observabilityImpls
         (extractImpl (manifest.backups or {}))

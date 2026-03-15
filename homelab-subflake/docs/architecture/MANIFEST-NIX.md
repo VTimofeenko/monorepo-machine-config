@@ -46,6 +46,10 @@ serviceName: {
       path? : String              # For https, default: "/"
       extraConfig? : String       # nginx extraConfig (for SSL tweaks)
     }
+
+    # Optional: Module to configure service to use these ports
+    # Receives all endpoints (except impl) as argument
+    impl? : (Endpoints -> Module)
   }
 
   # Firewall (optional)
@@ -131,6 +135,7 @@ The `default` attribute is automatically assembled from manifest fields:
 ```nix
 default = flatten([
   (manifest.module OR []),
+  endpoints.impl(endpoints),  # Called with endpoint data
   (manifest.firewall OR auto-generate-firewall(endpoints)),
   observability.metrics.impl,
   observability.logging.impl,
