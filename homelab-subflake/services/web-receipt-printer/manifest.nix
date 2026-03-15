@@ -1,29 +1,22 @@
-let
-  serviceName = "web-receipt-printer";
-in
-rec {
-  default = [
-    module
-    ingress.impl
-  ];
-  module = ./. + "/${serviceName}.nix";
+serviceName: {
+  module = ./web-receipt-printer.nix;
 
-  ingress = rec {
+  endpoints.web = {
     port = 5000;
-    impl = import ./non-functional/firewall.nix { inherit port; };
-    sslProxyConfig = import ./non-functional/ssl.nix { inherit port serviceName; };
+    protocol = "https";
   };
+
+  # SSL proxy metadata
+  sslProxyConfig = import ./non-functional/ssl.nix { inherit serviceName; port = 5000; };
 
   dashboard = {
     category = "Home";
     links = [
       {
+        name = "Receipt printer";
         description = "Receipt printer";
         icon = "printer";
-        name = "Receipt printer";
       }
     ];
   };
-
-  storage = false;
 }

@@ -2,6 +2,95 @@
   Functions that operate on flake itself.
 */
 { lib, self, ... }:
+let
+  inherit (builtins) filter isAttrs;
+  inherit (lib) flatten optional;
+
+  /**
+    Auto-assembles a manifest's `default` attribute from its component fields.
+
+    Takes a manifest attrset and returns the same attrset with `default` added.
+    The `default` list contains all modules that should be imported for this service.
+
+    Auto-assembly rules:
+    1. Always include `module` if present
+    2. Include `firewall` if present (future: auto-generate from endpoints)
+    3. Collect all `impl` fields from observability.{metrics, logging, probes, alerts}
+    4. Include `backups.impl` if present (future: auto-generate from backups data)
+    5. Include `storage.impl` if present
+
+    Example:
+    ```
+      mkManifest {
+        module = ./service.nix;
+        firewall = ./firewall.nix;
+        observability.metrics.impl = ./metrics.nix;
+        backups.paths = [ "/var/lib/svc" ];
+      }
+      =>
+      {
+        module = ./service.nix;
+        firewall = ./firewall.nix;
+        observability.metrics.impl = ./metrics.nix;
+        backups.paths = [ "/var/lib/svc" ];
+        default = [ ./service.nix ./firewall.nix ./metrics.nix ];
+      }
+    ```
+  */
+  mkManifest = manifest:
+    let
+      # Helper to extract impl from an attrset if it exists
+      extractImpl = attr: optional (isAttrs attr && attr ? impl) attr.impl;
+
+      # Gather observability impls
+      observabilityImpls =
+        if manifest ? observability then
+          flatten [
+            (extractImpl (manifest.observability.metrics or {}))
+            (extractImpl (manifest.observability.logging or {}))
+            (extractImpl (manifest.observability.probes or {}))
+            (extractImpl (manifest.observability.alerts or {}))
+          ]
+        else
+          [];
+
+      # Auto-generate firewall if not provided but endpoints exist
+      firewallModule =
+        if manifest ? firewall then
+          manifest.firewall
+        else if manifest ? endpoints then
+          { lib, self, ... }:
+          let
+            # Extract all ports from endpoints
+            ports = lib.mapAttrsToList (_: ep: ep.port) manifest.endpoints
+              |> lib.unique;
+          in
+          {
+            imports = [
+              (self.serviceModules.ssl-proxy.srvLib.mkBackboneInnerFirewallRules {
+                inherit lib;
+                inherit ports;
+              })
+            ];
+          }
+        else
+          null;
+
+      # Assemble default from all components
+      defaultModules = flatten [
+        (optional (manifest ? module) manifest.module)
+        (optional (firewallModule != null) firewallModule)
+        observabilityImpls
+        (extractImpl (manifest.backups or {}))
+        (extractImpl (manifest.storage or {}))
+      ]
+      # Filter out empty sets and nulls
+      |> filter (v: v != {} && v != null);
+
+    in
+    manifest // { default = defaultModules; };
+
+in
 {
   /**
     Produces a `nixosConfiguration` for a given host.
@@ -176,6 +265,9 @@
       };
     };
 
+  # Export mkManifest for use in manifests
+  inherit mkManifest;
+
   /**
     Used to discover service modules and traits.
   */
@@ -190,7 +282,15 @@
 
       importEffect =
         if format == "service" then
-          name: import (dir + "/${name}/${fileMarker.service}")
+          name:
+            let
+              imported = import (dir + "/${name}/${fileMarker.service}");
+              # If imported is a function, call it with serviceName
+              rawManifest = if builtins.isFunction imported then imported name else imported;
+              # Apply mkManifest to auto-assemble default if not already present
+              manifest = if rawManifest ? default then rawManifest else mkManifest rawManifest;
+            in
+            manifest
         else
           name: import (dir + "/${name}");
     in
@@ -203,5 +303,28 @@
       else
         acc
     ) { } (builtins.attrNames entries);
+
+  /**
+    Returns the manifest for a given service.
+
+    This allows service modules to access their own manifest data, making it
+    easier to propagate endpoints and other configuration from the manifest
+    into the service implementation.
+
+    Example:
+    ```nix
+    { self, ... }:
+    let
+      manifest = self.lib.getManifest "web-receipt-printer";
+    in
+    {
+      services.web-receipt-printer = {
+        enable = true;
+        port = manifest.endpoints.web.port;
+      };
+    }
+    ```
+  */
+  getManifest = serviceName: self.serviceModules.${serviceName};
 
 }
