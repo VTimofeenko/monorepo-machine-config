@@ -91,6 +91,9 @@
             traitModules = self.lib.discoverModules ./traits "trait";
 
             lib = import ./flake-lib.nix { inherit lib self; };
+
+            # Passthrough data-flake data for easy discovery
+            data = inputs.data-flake.data;
           };
       }
     );
