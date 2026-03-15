@@ -1,9 +1,12 @@
 serviceName: {
   module = ./web-receipt-printer.nix;
 
-  endpoints.web = {
-    port = 5000;
-    protocol = "https";
+  endpoints = {
+    web = {
+      port = 5000;
+      protocol = "https";
+    };
+    impl = import ./endpoints-config.nix;
   };
 
   # SSL proxy metadata
