@@ -114,6 +114,11 @@ serviceName: {
     ]
   }
 
+  # Documentation (optional)
+  # Path to README.md in service directory
+  # Used by mdbook pipeline to generate service documentation
+  documentation? : Path
+
   # Service-specific utilities that may be called by other services (optional)
   srvLib? : Any
 }

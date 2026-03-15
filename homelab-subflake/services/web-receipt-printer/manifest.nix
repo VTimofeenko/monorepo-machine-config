@@ -19,4 +19,6 @@ serviceName: {
       }
     ];
   };
+
+  documentation = ./README.md;
 }
