@@ -6,7 +6,7 @@ serviceName: {
       port = 5000;
       protocol = "https";
     };
-    impl = import ./endpoints-config.nix;
+    impl = import ./non-functional/endpoints-config.nix;
   };
 
   # SSL proxy metadata
