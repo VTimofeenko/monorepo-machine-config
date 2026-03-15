@@ -1,76 +1,46 @@
-let
-  serviceName = "gitea";
-in
-rec {
-  default = [
-    module
-    ingress.impl
-    storage.impl
-    backups.impl
-    (database true)
-  ]
-  ++ observability.impl;
+serviceName: {
   module = ./gitea.nix;
 
-  ingress =
-    let
-      sshPort = 22;
-      webPort = 3000;
-    in
-    {
-      impl = ./non-functional/firewall.nix;
-      sslProxyConfig = ./non-functional/ssl.nix;
-    }
-    |> builtins.mapAttrs (_: v: import v { inherit sshPort webPort serviceName; });
-
-  observability = rec {
-    enable = true;
-    impl = if enable then [ metrics.impl ] else [ ];
-    metrics = rec {
-      enable = true;
+  endpoints = {
+    web = {
+      port = 3000;
+      protocol = "https";
+    };
+    ssh = {
+      port = 22;
+      protocol = "tcp";
+    };
+    metrics = {
+      port = 3000;
+      protocol = "tcp";
       path = "/metrics";
-      impl = if enable then import ./non-functional/observability/metrics/impl.nix else { };
     };
-    logging = {
-      enable = true;
-      systemdUnit = "gitea.service";
-    };
-    alerts = {
-      enable = true;
-      grafanaImpl = import ./non-functional/observability/alerts.nix { inherit serviceName; };
-    };
+    impl = import ./non-functional/endpoints-config.nix;
   };
 
-  storage = {
-    impl = ./non-functional/storage.nix;
+  sslProxyConfig = import ./non-functional/ssl.nix { inherit serviceName; sshPort = 22; webPort = 3000; };
+
+  observability = {
+    metrics.impl = ./non-functional/observability/metrics/impl.nix;
+    alerts.grafanaImpl = import ./non-functional/observability/alerts.nix { inherit serviceName; };
   };
 
-  database = {
-    __functor = self: enable: if enable then import self.impl else { };
-    impl = ./non-functional/database.nix;
-  };
+  storage.impl = ./non-functional/storage.nix;
+
   backups = rec {
-    enable = true;
-    schedule = "daily";
     paths = [ "/var/lib/gitea" ];
     exclude = [
       "/var/lib/gitea/dump"
       "/var/lib/gitea/tmp"
     ];
-    impl =
-      if enable then
-        { lib, ... }:
-        lib.localLib.mkBkp {
-          inherit
-            paths
-            serviceName
-            schedule
-            exclude
-            ;
-        }
-      else
-        { };
+    schedule = "daily";
+    impl = { lib, ... }:
+      lib.localLib.mkBkp {
+        inherit paths exclude schedule;
+        serviceName = "gitea";
+      };
   };
+
   dashboard = {
     category = "Dev";
     links = [
@@ -81,4 +51,9 @@ rec {
       }
     ];
   };
+
+  documentation = ./README.md;
+
+  # Database module - imported separately by host config
+  database = import ./non-functional/database.nix;
 }
