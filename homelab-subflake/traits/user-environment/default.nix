@@ -23,6 +23,7 @@
     ./my-vim-config.nix
     ./broot.nix
     ./packages.nix # Dumping ground for one-off things
+    ./ripgrep.nix
 
     inputs.base.homeManagerModules.my-theme
     inputs.base.homeManagerModules.git
