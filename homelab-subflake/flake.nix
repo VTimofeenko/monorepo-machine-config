@@ -53,38 +53,24 @@
         };
         flake =
           let
-            hosts = {
-              sodium = {
-                role = "server";
-                extraModules = [ ];
-              };
-              lithium = {
-                role = "server";
-                extraModules = [ ];
-              };
-            };
+            hosts = [ "sodium" "lithium" ];
           in
           {
-            nixosConfigurations =
-              hosts
-              |> lib.mapAttrs (
-                n: v:
-                self.lib.mkHost {
-                  hostName = n;
-                  inherit (v) role extraModules;
-                  debug = true;
-                }
-              );
+            nixosConfigurations = lib.genAttrs hosts (
+              hostName:
+              self.lib.mkHost {
+                inherit hostName;
+                debug = true;
+              }
+            );
 
-            deploy.nodes =
-              hosts
-              |> lib.mapAttrs (
-                nodeName: _:
-                self.lib.mkDeployRsNode {
-                  inherit nodeName;
-                  system = inputs.data-flake.data.hosts.all.${nodeName}.system;
-                }
-              );
+            deploy.nodes = lib.genAttrs hosts (
+              nodeName:
+              self.lib.mkDeployRsNode {
+                inherit nodeName;
+                system = inputs.data-flake.data.hosts.all.${nodeName}.system;
+              }
+            );
 
             serviceModules = self.lib.discoverModules ./services "service";
 

@@ -107,7 +107,6 @@ in
   mkHost =
     {
       hostName,
-      role,
       extraModules ? [ ],
       debug ? false,
     }:
@@ -216,10 +215,8 @@ in
         { programs.myNeovim.enable = true; }
       ];
 
-      clientModules = [ ../modules/de ];
-
     in
-    dbg "role=${role}, system=${hostData.system}" lib.nixosSystem {
+    dbg "system=${hostData.system}" lib.nixosSystem {
       inherit (hostData) system;
       lib = extendedLib;
       pkgs = import nixpkgs {
@@ -235,7 +232,6 @@ in
       ++ serviceModulesForHost
       ++ traitModulesForHost
       ++ secretModulesForHost
-      ++ lib.optionals (role == "client") clientModules
       ++ extraModules;
 
       specialArgs = {
