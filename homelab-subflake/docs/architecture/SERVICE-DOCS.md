@@ -18,17 +18,20 @@ Service documentation should focus on:
 
 ### Usage and Examples
 
-- **API endpoints** and how to call them (examples with curl, code snippets)
-- **Web UI** navigation and features
-- **Configuration options** not obvious from NixOS module options
-- **Integration patterns** with other services (when non-standard)
+- **Quick start** code snippets (minimal, 1-3 examples max)
+- **Links to upstream documentation** instead of duplicating detailed usage
+- **Homelab-specific integration patterns** (only if non-standard)
+
+Keep this section short. For standard tools (Gitea, Nextcloud, etc.), just
+link to official docs rather than rewriting usage guides.
 
 ### Implementation Details
 
 - **Architecture decisions** specific to this service
 - **Quirks or gotchas** that operators should know
-- **Troubleshooting** common issues
 - **Migration notes** if service was refactored
+
+Avoid duplicating troubleshooting steps from upstream docs. Link instead.
 
 ## What NOT to Document
 
@@ -57,6 +60,7 @@ service metadata. Do NOT duplicate this in README.md:
 - **Host assignment** - defined in data-flake
 
 ### Observability
+
 - **Metrics exporters** - defined in `manifest.observability.metrics`
 - **Alerts** - defined in `manifest.observability.alerts`
 - **Logs** - defined in `manifest.observability.logging`
@@ -81,36 +85,28 @@ Brief one-line description.
 
 ## Overview
 
-2-3 paragraphs explaining what this service does, why it exists,
-and how it fits into the homelab architecture.
+1-2 paragraphs explaining what this service does and why it exists in the
+homelab.
 
-## Usage
+Access: `https://service.srv.<publicDomain>`
 
-### Web Interface
+## Documentation
 
-Description of UI features, workflows, etc.
+- [Official Docs](https://upstream-project.io/docs)
+- [API Reference](https://upstream-project.io/api)
 
-### API
-
-Code examples showing how to interact with the service:
+## Quick Start
 
 \```bash
-curl -X POST https://service.srv.<publicDomain>/api/endpoint \\
-  -H "Content-Type: application/json" \\
-  -d '{"key": "value"}'
+# Minimal usage example
+curl https://service.srv.<publicDomain>/api/endpoint
 \```
-
-## Configuration
-
-Explain non-obvious NixOS options or configuration patterns.
-
-## Troubleshooting
-
-Common issues and how to resolve them.
 
 ## Implementation Notes
 
-Architecture decisions, quirks, or important context for maintainers.
+- Storage: `/var/lib/service`
+- Database: PostgreSQL (via db service)
+- Homelab-specific quirks or architectural decisions
 ```
 
 ## Integration with Manifest
