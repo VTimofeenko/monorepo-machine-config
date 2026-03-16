@@ -172,8 +172,7 @@
           (flakeModuleLoader {
             dir = ./flake-modules-prime;
             inherit self withSystem lib;
-            debug = true;
-
+            # debug = true;
           })
         ];
         systems = [
