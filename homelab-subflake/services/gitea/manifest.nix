@@ -1,4 +1,4 @@
-{ lib, serviceName, ... }:
+{ serviceName, ... }:
 {
     module = ./gitea.nix;
 
