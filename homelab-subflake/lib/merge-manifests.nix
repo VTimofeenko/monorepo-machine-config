@@ -97,6 +97,7 @@ let
               (extractImpl manifestData.backups))
             (lib.optional (extractImpl (manifestData.storage or {}) != null)
               (extractImpl manifestData.storage))
+            (lib.optional (manifestData.database != null) manifestData.database)
           ]
           |> filter (v: v != {} && v != null);
 
