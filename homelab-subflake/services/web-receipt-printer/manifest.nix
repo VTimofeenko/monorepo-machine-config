@@ -1,13 +1,13 @@
-serviceName: {
+{ lib, serviceName, ... }:
+{
   module = ./web-receipt-printer.nix;
 
-  endpoints = {
-    web = {
-      port = 5000;
-      protocol = "https";
-    };
-    impl = import ./non-functional/endpoints-config.nix;
+  endpoints.web = {
+    port = 5000;
+    protocol = "https";
   };
+
+  endpointsConfig = import ./non-functional/endpoints-config.nix;
 
   # SSL proxy metadata
   sslProxyConfig = import ./non-functional/ssl.nix { inherit serviceName; port = 5000; };

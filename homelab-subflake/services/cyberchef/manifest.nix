@@ -1,12 +1,13 @@
-serviceName: {
+{ lib, serviceName, ... }:
+{
   module = ./cyberchef.nix;
 
   endpoints.web = {
     port = 80;
     protocol = "https";
-
-    impl = import ./non-functional/endpoints-config.nix;
   };
+
+  endpointsConfig = import ./non-functional/endpoints-config.nix;
 
   sslProxyConfig = import ./non-functional/ssl.nix { inherit serviceName; port = 80; };
 
