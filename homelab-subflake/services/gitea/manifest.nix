@@ -56,6 +56,5 @@
 
     documentation = ./README.md;
 
-    # Database module - imported separately by host config
     database = import ./non-functional/database.nix;
 }
