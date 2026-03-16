@@ -54,6 +54,18 @@
         flake =
           let
             hosts = [ "sodium" "lithium" ];
+
+            # Merge library
+            mergeLib = import ./lib/merge-manifests.nix { inherit lib; };
+
+            # Discover public manifests (unevaluated NixOS modules)
+            publicServices = self.lib.discoverModules ./services "service";
+
+            # Get private manifests (unevaluated NixOS modules)
+            privateServices = inputs.private-modules.serviceModules or {};
+
+            # Merge and evaluate to produce final manifests with auto-assembled .default
+            mergedServices = mergeLib.mergeServiceManifests publicServices privateServices;
           in
           {
             nixosConfigurations = lib.genAttrs hosts (
@@ -72,7 +84,8 @@
               }
             );
 
-            serviceModules = self.lib.discoverModules ./services "service";
+            # Export merged, evaluated manifests
+            serviceModules = mergedServices;
 
             traitModules = self.lib.discoverModules ./traits "trait";
 
