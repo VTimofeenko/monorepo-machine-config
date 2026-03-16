@@ -314,7 +314,7 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1773677834,
+        "lastModified": 1773681554,
         "narHash": "sha256-cb2H8GK3BXVr351rV+nnyPyYIAOUMfFAehdIQ99sCqI=",
         "path": "/home/spacecadet/code/private-data-flake",
         "type": "path"
@@ -1158,8 +1158,8 @@
         "nixpkgs": "nixpkgs_9"
       },
       "locked": {
-        "lastModified": 1773677864,
-        "narHash": "sha256-LEn1W/Ct3YnpksK2U5rg/HPDeGhByMoj8k/uu95zf/8=",
+        "lastModified": 1773681592,
+        "narHash": "sha256-HPGUoe4S3Z7L0LbKtYeSB1sOsqgYVZtn0LysRd2n+nk=",
         "path": "/home/spacecadet/code/private-modules",
         "type": "path"
       },
