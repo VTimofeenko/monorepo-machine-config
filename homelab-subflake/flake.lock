@@ -1158,8 +1158,8 @@
         "nixpkgs": "nixpkgs_9"
       },
       "locked": {
-        "lastModified": 1773725519,
-        "narHash": "sha256-ab1Obbu/R3W0xNfrFN4Speq1tbO4c+w4cTyuU6odDqk=",
+        "lastModified": 1773772566,
+        "narHash": "sha256-cM5IMvyJRBFSXVXJFDNUT4WOxVlB0cj/r6cAQlZV1iY=",
         "path": "/home/spacecadet/code/private-modules",
         "type": "path"
       },
