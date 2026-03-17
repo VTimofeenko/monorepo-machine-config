@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
 # Bump flake inputs with commit trailer support
 
 FIXUP=false
@@ -44,14 +46,11 @@ echo "================================================="
 # Run flake update with custom commit message
 nix flake update $UPDATE_ARGS --commit-lock-file --commit-lock-file-summary "$COMMIT_SUMMARY"
 
-if [ $? -ne 0 ]; then
-  echo "❌ Flake bump failed!"
-  exit 1
-fi
-
-# Add trailer to the commit we just created
-git interpret-trailers --trailer "Updated-Inputs: $TRAILER_VALUE" --in-place \
-  && git commit --amend --no-edit
+# Amend the commit to add trailer
+# Get current commit message, add trailer, and amend
+COMMIT_MSG=$(git log -1 --pretty=%B)
+NEW_MSG=$(echo "$COMMIT_MSG" | git interpret-trailers --trailer "Updated-Inputs: $TRAILER_VALUE")
+git commit --amend -m "$NEW_MSG"
 
 echo "✅ Flake inputs bumped with trailer: Updated-Inputs: $TRAILER_VALUE"
 
@@ -61,7 +60,7 @@ if [ "$FIXUP" = true ]; then
   echo "Checking for fixup..."
 
   # Check if previous commit (HEAD~1) has matching Updated-Inputs trailer
-  PREV_TRAILER=$(git log -1 HEAD~1 --format="%(trailers:key=Updated-Inputs,valueonly)" 2>/dev/null)
+  PREV_TRAILER=$(git log -1 HEAD~1 --format="%(trailers:key=Updated-Inputs,valueonly)" 2>/dev/null || true)
 
   if [ -n "$PREV_TRAILER" ] && [ "$PREV_TRAILER" = "$TRAILER_VALUE" ]; then
     echo "Previous commit has matching Updated-Inputs: $PREV_TRAILER"
