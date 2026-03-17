@@ -25,5 +25,11 @@
       help = "Rapid iteration loop: update data-flake and deploy on each Enter press";
       command = builtins.readFile ./dev-loop.sh;
     }
+    {
+      name = "switch-private-inputs";
+      category = "development";
+      help = "Toggle data-flake and private-modules between local and remote sources";
+      command = builtins.readFile ./switch-private-inputs.sh;
+    }
   ];
 }
