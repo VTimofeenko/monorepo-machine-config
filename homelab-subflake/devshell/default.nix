@@ -19,5 +19,11 @@
       help = "Bump flake inputs with trailers (--all for all, --fixup to squash with matching previous)";
       command = builtins.readFile ./bump-inputs.sh;
     }
+    {
+      name = "dev-loop";
+      category = "development";
+      help = "Rapid iteration loop: update data-flake and deploy on each Enter press";
+      command = builtins.readFile ./dev-loop.sh;
+    }
   ];
 }
