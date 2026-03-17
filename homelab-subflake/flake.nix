@@ -68,7 +68,7 @@
             publicServices = self.lib.discoverModules ./services "service";
 
             # Get private manifests (unevaluated NixOS modules)
-            privateServices = inputs.private-modules.serviceModules or {};
+            privateServices = inputs.private-modules.serviceModules or { };
 
             # Merge and evaluate to produce final manifests with auto-assembled .default
             mergedServices = mergeLib.mergeServiceManifests publicServices privateServices;
