@@ -53,7 +53,7 @@
         };
         flake =
           let
-            hosts = [ "sodium" "lithium" "actinium" ]; # TODO: auto-generate this from data
+            hosts = [ "sodium" "lithium" "actinium" "cerium" ]; # TODO: auto-generate this from data
 
             # Merge library
             mergeLib = import ./lib/merge-manifests.nix { inherit lib; };
