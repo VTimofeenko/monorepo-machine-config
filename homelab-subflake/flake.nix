@@ -43,14 +43,18 @@
           "x86_64-linux"
           "aarch64-linux"
         ];
-        perSystem = _: {
-          devshellCmds.deployment = {
-            enable = true;
-            useDeployRs = true;
-            localDeployment = true;
-            desktopNotifications = true;
+        perSystem =
+          { ... }:
+          {
+            devshellCmds.deployment = {
+              enable = true;
+              useDeployRs = true;
+              localDeployment = true;
+              desktopNotifications = true;
+            };
+
+            devshells.default = import ./devshell;
           };
-        };
         flake =
           let
             hosts = [
