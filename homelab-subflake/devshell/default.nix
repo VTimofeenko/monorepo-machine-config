@@ -13,5 +13,11 @@
       help = "Validate a host configuration (uses fzf if no argument)";
       command = builtins.readFile ./validate-host.sh;
     }
+    {
+      name = "bump-inputs";
+      category = "maintenance";
+      help = "Bump flake inputs with trailers (--all for all, --fixup to squash with matching previous)";
+      command = builtins.readFile ./bump-inputs.sh;
+    }
   ];
 }
