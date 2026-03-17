@@ -41,7 +41,7 @@ in
       address = "${hostConfig.ipAddress}/${hostConfig.netmask}" |> lib.toList;
       gateway = hostConfig.gateway |> lib.toList;
       dns =
-        (lib.homelab.getServiceConfig "dns")
+        (lib.homelab.getServiceConfig "dns_1")
         |> builtins.getAttr "upstream"
         # At this point the upstreams come in format [ "123.456.789.123@<port>#<domain>"];
         # Systemd needs it in a different format, 123.456.789.123:<port>#<domain>
