@@ -129,6 +129,7 @@ in
       pkgs = import nixpkgs {
         inherit (hostData) system;
         config.allowUnfree = true;
+        config.nvidia.acceptLicense = true;
         overlays = [ inputs.base.overlays.default ];
       };
       modules = [
