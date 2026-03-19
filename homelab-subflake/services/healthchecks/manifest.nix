@@ -11,7 +11,7 @@
 
   observability = {
     # TODO: this URL points to the "mostly backups" project in `healthchecks`. While important, it's not proper "service is up" monitoring.
-    metrics.path = lib.homelab.getServiceConfig serviceName |> (cfg: cfg.metricsURL);
+    metrics.main.path = lib.homelab.getServiceConfig serviceName |> (cfg: cfg.metricsURL);
     alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
   };
 

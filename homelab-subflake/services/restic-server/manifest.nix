@@ -12,7 +12,7 @@
   sslProxyConfig = import ./non-functional/ssl.nix { inherit serviceName; port = 8080; };
 
   observability = {
-    metrics.impl = ./non-functional/metrics.nix;
+    metrics.main.impl = ./non-functional/metrics.nix;
     alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
   };
 

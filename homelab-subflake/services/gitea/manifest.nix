@@ -23,7 +23,7 @@
     sslProxyConfig = import ./non-functional/ssl.nix { inherit serviceName; sshPort = 22; webPort = 3000; };
 
     observability = {
-      metrics.impl = ./non-functional/observability/metrics/impl.nix;
+      metrics.main.impl = ./non-functional/observability/metrics/impl.nix;
       alerts.grafanaImpl = import ./non-functional/observability/alerts.nix { inherit serviceName; };
     };
 

@@ -19,7 +19,7 @@
   firewall = ./firewall.nix;
 
   observability = {
-    metrics.impl = import ./non-functional/observability/metrics.nix { port = 9598; };
+    metrics.main.impl = import ./non-functional/observability/metrics.nix { port = 9598; };
     probes.impl = import ./non-functional/probes { port = 9219; };
     alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
   };

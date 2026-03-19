@@ -12,7 +12,7 @@
   sslProxyConfig = import ./non-functional/ssl.nix { port = 9090; serviceName = "prometheus"; };
 
   observability = {
-    metrics.path = "/metrics";
+    metrics.main.path = "/metrics";
     alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
   };
 
