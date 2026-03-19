@@ -68,6 +68,7 @@
               "cerium"
               "lanthanum"
               "oxygen"
+              "hydrogen"
             ]; # TODO: auto-generate this from data
 
             # Merge library
