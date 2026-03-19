@@ -55,28 +55,52 @@ let
     };
   };
 
+  # Single metrics exporter configuration
+  metricsExporterType = types.submodule {
+    options = {
+      impl = mkOption {
+        type = types.nullOr types.path;
+        default = null;
+        description = "Metrics implementation module";
+      };
+      endpoint = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Which endpoint exposes metrics (inferred if null)";
+      };
+      path = mkOption {
+        type = types.str;
+        default = "/metrics";
+        description = "Metrics path on the endpoint";
+      };
+    };
+  };
+
   observabilityType = types.submodule {
     options = {
       metrics = mkOption {
-        type = types.nullOr (
-          types.submodule {
-            options = {
-              impl = mkOption {
-                type = types.nullOr types.path;
-                default = null;
-              };
-              endpoint = mkOption {
-                type = types.nullOr types.str;
-                default = null;
-              };
-              path = mkOption {
-                type = types.str;
-                default = "/metrics";
-              };
-            };
-          }
-        );
-        default = null;
+        type = types.attrsOf metricsExporterType;
+        default = {};
+        description = ''
+          Metrics exporters for this service/trait.
+
+          Each exporter is exposed at:
+            https://<service>.metrics.<domain>/metrics/<exporterName>
+
+          Naming convention:
+            - Single exporter: Use "main" as the exporter name
+            - Multiple exporters: Use descriptive names (app, geo, infra, etc.)
+
+          Examples:
+            - Single exporter:
+              metrics.main = { impl = ./metrics.nix; };
+
+            - Multiple exporters:
+              metrics.app = { impl = ./app-metrics.nix; endpoint = "web"; };
+              metrics.geo = { impl = ./geo-metrics.nix; endpoint = "geo-exporter"; };
+
+          Migration-friendly: Adding exporters doesn't break existing scrape configs.
+        '';
       };
       alerts = mkOption {
         type = types.nullOr (
@@ -157,8 +181,13 @@ in
     observability = mkOption {
       type = observabilityType;
       default = { };
-      description = "Observability configuration";
-      # Merge behavior: recursive merge (automatic)
+      description = ''
+        Observability configuration.
+
+        Metrics exporters merge across public/private manifests.
+        Each exporter gets path-based routing at:
+          https://<service>.metrics.<domain>/metrics/<exporterName>
+      '';
     };
 
     backups = mkOption {

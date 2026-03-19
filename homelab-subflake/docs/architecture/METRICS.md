@@ -43,7 +43,7 @@ serviceName: {
 
   endpoints.web = { port = 3000; protocol = "https"; };
 
-  observability.metrics = {
+  observability.metrics.main = {
     impl = ./metrics.nix;
     endpoint = "web";
     path = "/metrics";
@@ -53,11 +53,11 @@ serviceName: {
 
 **SSL proxy behavior:**
 - Creates vhost: `gitea.metrics.<publicDomain>`
-- Routes `/metrics` to service's web endpoint: `http://innerIP:3000/metrics`
+- Routes `/metrics/main` to service's web endpoint: `http://innerIP:3000/metrics`
 
 **Prometheus scrapes:**
 ```
-https://gitea.metrics.<publicDomain>/metrics
+https://gitea.metrics.<publicDomain>/metrics/main
 ```
 
 ### Web Service - Separate Exporter
@@ -74,7 +74,7 @@ serviceName: {
     exporter = { port = 9205; protocol = "tcp"; };
   };
 
-  observability.metrics = {
+  observability.metrics.main = {
     impl = ./metrics.nix;
     endpoint = "exporter";
   };
@@ -83,11 +83,11 @@ serviceName: {
 
 **SSL proxy behavior:**
 - Creates vhost: `nextcloud.metrics.<publicDomain>`
-- Routes `/metrics` to exporter port: `http://innerIP:9205/metrics`
+- Routes `/metrics/main` to exporter port: `http://innerIP:9205/metrics`
 
 **Prometheus scrapes:**
 ```
-https://nextcloud.metrics.<publicDomain>/metrics
+https://nextcloud.metrics.<publicDomain>/metrics/main
 ```
 
 ### Non-Web Service (UDP/TCP)
@@ -104,7 +104,7 @@ serviceName: {
     metrics = { port = 9975; protocol = "tcp"; };
   };
 
-  observability.metrics = {
+  observability.metrics.main = {
     impl = ./metrics.nix;
     endpoint = "metrics";
   };
@@ -113,40 +113,44 @@ serviceName: {
 
 **SSL proxy behavior:**
 - Creates vhost: `ntp.metrics.<publicDomain>`
-- Routes `/metrics` to exporter: `http://innerIP:9975/metrics`
+- Routes `/metrics/main` to exporter: `http://innerIP:9975/metrics`
 
 **Prometheus scrapes:**
 ```
-https://ntp.metrics.<publicDomain>/metrics
+https://ntp.metrics.<publicDomain>/metrics/main
 ```
 
 ## SSL Proxy Auto-Generation
 
-For each service with `observability.metrics`, SSL proxy generates a metrics vhost:
+For each service with `observability.metrics`, SSL proxy generates a metrics vhost with path-based routing:
 
 ```
 FOR EACH service WITH observability.metrics:
   FOR EACH instance IN (multiInstance ? data-flake.getInstances(service) : [serviceName]):
 
-    # Determine which endpoint exposes metrics
-    metricsEndpoint = IF metrics.endpoint specified THEN
-                        endpoints[metrics.endpoint]
-                      ELSE IF endpoints.metrics exists THEN
-                        endpoints.metrics
-                      ELSE
-                        first HTTPS endpoint
-
-    # Generate vhost
+    # Generate single vhost for this instance
     server {
       server_name ${instance}.metrics.<publicDomain>;
 
-      location /metrics {
-        proxy_pass http://${innerIP}:${metricsEndpoint.port}${metricsPath};
+      # Generate location per exporter
+      FOR EACH (exporterName, exporterConfig) IN observability.metrics:
 
-        # Access control: only Prometheus
-        allow ${prometheusIP};
-        deny all;
-      }
+        # Determine which endpoint exposes metrics
+        metricsEndpoint = IF exporterConfig.endpoint specified THEN
+                            endpoints[exporterConfig.endpoint]
+                          ELSE IF endpoints.metrics exists THEN
+                            endpoints.metrics
+                          ELSE
+                            first HTTPS endpoint
+
+        location /metrics/${exporterName} {
+          proxy_pass http://${innerIP}:${metricsEndpoint.port}${exporterConfig.path};
+
+          # Access control: only Prometheus
+          allow ${prometheusIP};
+          deny all;
+        }
+      ENDFOR
     }
   ENDFOR
 ENDFOR
@@ -154,61 +158,136 @@ ENDFOR
 
 **Key points:**
 - One vhost per service instance
+- Path-based routing: `/metrics/<exporterName>` (always named, even for single exporters)
 - All vhosts follow `<instance>.metrics.<publicDomain>` pattern
+- Single exporters typically use `main` as the exporter name
 - Routing target determined by endpoint inference
 - Access control enforced at SSL proxy
 
+**Example: Single exporter**
+```nginx
+server {
+  server_name gitea.metrics.<publicDomain>;
+
+  location /metrics/main {
+    proxy_pass http://10.0.0.5:3000/metrics;
+    allow 10.0.0.10;  # Prometheus
+    deny all;
+  }
+}
+```
+
+**Example: Multiple exporters**
+```nginx
+server {
+  server_name <serviceName>.metrics.<publicDomain>;
+
+  location /metrics/app {
+    proxy_pass http://10.0.0.5:9001/metrics;
+    allow 10.0.0.10;  # Prometheus
+    deny all;
+  }
+
+  location /metrics/geo {
+    proxy_pass http://10.0.0.5:9002/metrics;
+    allow 10.0.0.10;  # Prometheus
+    deny all;
+  }
+}
+```
+
 ## Prometheus Scraping
 
-Prometheus configuration is uniform - always HTTPS to the metrics zone:
+Prometheus configuration generates separate scrape jobs per exporter:
 
 ```nix
 # prometheus/service-scraping/gather-services-from-manifests.nix
 serviceManifests
-  |> lib.filterAttrs (_: m: m ? observability.metrics)
+  |> lib.filterAttrs (_: m: m.observability.metrics != {})
   |> lib.mapAttrsToList (srvName: manifest:
     let
-      metrics = manifest.observability.metrics;
-      metricsPath = metrics.path or "/metrics";
-
       # Expand instances if multiInstance
       instances = if manifest.multiInstance or false then
         data-flake.getInstancesForService srvName
       else
         [srvName];
     in
-    # Generate scrape config for each instance
-    map (instanceName: {
-      job_name = "${instanceName}-srv-scrape";
-      scheme = "https";
-      metrics_path = metricsPath;
-      targets = ["${instanceName}.metrics.<publicDomain>"];
-    }) instances
+    # Generate scrape config per instance per exporter
+    lib.flatten (map (instanceName:
+      lib.mapAttrsToList (exporterName: exporterConfig:
+        {
+          job_name = "${instanceName}-${exporterName}-metrics";
+          scheme = "https";
+          metrics_path = "/metrics/${exporterName}";
+          static_configs = [{
+            targets = ["${instanceName}.metrics.<publicDomain>"];
+            labels = {
+              service = srvName;
+              instance = instanceName;
+              exporter = exporterName;
+            };
+          }];
+        }
+      ) manifest.observability.metrics
+    ) instances)
   )
 ```
 
 **Generated config examples:**
 
 ```yaml
-# Single-instance service
-- job_name: gitea-srv-scrape
+# Single-instance, single exporter
+- job_name: gitea-main-metrics
   scheme: https
-  metrics_path: /metrics
-  targets:
-    - gitea.metrics.<publicDomain>
+  metrics_path: /metrics/main
+  static_configs:
+    - targets: [gitea.metrics.<publicDomain>]
+      labels:
+        service: gitea
+        instance: gitea
+        exporter: main
+
+# Single-instance, multiple exporters
+- job_name: <serviceName>-app-metrics
+  scheme: https
+  metrics_path: /metrics/app
+  static_configs:
+    - targets: [<serviceName>.metrics.<publicDomain>]
+      labels:
+        service: <serviceName>
+        instance: <serviceName>
+        exporter: app
+
+- job_name: <serviceName>-geo-metrics
+  scheme: https
+  metrics_path: /metrics/geo
+  static_configs:
+    - targets: [<serviceName>.metrics.<publicDomain>]
+      labels:
+        service: <serviceName>
+        instance: <serviceName>
+        exporter: geo
 
 # Multi-instance service
-- job_name: dns-1-srv-scrape
+- job_name: dns-1-main-metrics
   scheme: https
-  metrics_path: /metrics
-  targets:
-    - dns-1.metrics.<publicDomain>
+  metrics_path: /metrics/main
+  static_configs:
+    - targets: [dns-1.metrics.<publicDomain>]
+      labels:
+        service: dns
+        instance: dns-1
+        exporter: main
 
-- job_name: dns-2-srv-scrape
+- job_name: dns-2-main-metrics
   scheme: https
-  metrics_path: /metrics
-  targets:
-    - dns-2.metrics.<publicDomain>
+  metrics_path: /metrics/main
+  static_configs:
+    - targets: [dns-2.metrics.<publicDomain>]
+      labels:
+        service: dns
+        instance: dns-2
+        exporter: main
 ```
 
 ## DNS Configuration
@@ -238,7 +317,7 @@ serviceName: {
     metrics = { port = 9167; protocol = "tcp"; };
   };
 
-  observability.metrics = {
+  observability.metrics.main = {
     impl = ./metrics.nix;
     endpoint = "metrics";
   };
@@ -259,14 +338,14 @@ dns-2 = std.record.update "onHost" "host-b" dns-1,
 ```nginx
 server {
   server_name dns-1.metrics.<publicDomain>;
-  location /metrics {
+  location /metrics/main {
     proxy_pass http://10.200.0.1:9167/metrics;  # host-a inner IP
   }
 }
 
 server {
   server_name dns-2.metrics.<publicDomain>;
-  location /metrics {
+  location /metrics/main {
     proxy_pass http://10.200.0.2:9167/metrics;  # host-b inner IP
   }
 }
@@ -275,15 +354,25 @@ server {
 **Prometheus scrapes both:**
 
 ```yaml
-- job_name: dns-1-srv-scrape
+- job_name: dns-1-main-metrics
   scheme: https
-  metrics_path: /metrics
-  targets: [dns-1.metrics.<publicDomain>]
+  metrics_path: /metrics/main
+  static_configs:
+    - targets: [dns-1.metrics.<publicDomain>]
+      labels:
+        service: dns
+        instance: dns-1
+        exporter: main
 
-- job_name: dns-2-srv-scrape
+- job_name: dns-2-main-metrics
   scheme: https
-  metrics_path: /metrics
-  targets: [dns-2.metrics.<publicDomain>]
+  metrics_path: /metrics/main
+  static_configs:
+    - targets: [dns-2.metrics.<publicDomain>]
+      labels:
+        service: dns
+        instance: dns-2
+        exporter: main
 ```
 
 ## Access Control
@@ -363,23 +452,60 @@ serviceName: {
     };
   };
 
-  # Metrics configuration
+  # Metrics configuration (supports multiple exporters)
   observability.metrics = {
-    impl = Path;              # Required: metrics module
-    endpoint = String;        # Optional: which endpoint (inferred if omitted)
-    path = String;            # Optional: metrics path (default: "/metrics")
+    <exporterName> = {
+      impl = Path;              # Required: metrics module
+      endpoint = String;        # Optional: which endpoint (inferred if omitted)
+      path = String;            # Optional: metrics path (default: "/metrics")
+    };
   };
 }
 ```
+
+**Multiple exporters:**
+
+Services can declare multiple metrics exporters (e.g., app-specific + infrastructure):
+
+```nix
+serviceName: "<serviceName>"
+{
+  endpoints = {
+    web = { port = 8096; protocol = "https"; };
+    app-exporter = { port = 9001; protocol = "tcp"; };
+    geo-exporter = { port = 9002; protocol = "tcp"; };
+  };
+
+  observability.metrics = {
+    app = {
+      impl = ./app-metrics.nix;
+      endpoint = "app-exporter";
+    };
+    geo = {
+      impl = ./geo-metrics.nix;
+      endpoint = "geo-exporter";
+    };
+  };
+}
+```
+
+Each exporter is exposed at:
+- `https://<serviceName>.metrics.<publicDomain>/metrics/app`
+- `https://<serviceName>.metrics.<publicDomain>/metrics/geo`
+
+**Naming convention:**
+- Single exporter: Use `main` (e.g., `metrics.main = { ... }`)
+- Multiple exporters: Use descriptive names (`app`, `geo`, `infra`, etc.)
+- **Migration-friendly:** Adding a second exporter doesn't break the first one's scrape config
 
 **Endpoint inference:** If `endpoint` not specified:
 
 1. If endpoint named `"metrics"` exists: use it
 2. Else: use first `https` endpoint
 
-## Complete Example: Three Service Types
+## Complete Examples
 
-### Gitea (Web, metrics on main endpoint)
+### Single Exporter: Gitea (Web, metrics on main endpoint)
 
 ```nix
 serviceName: {
@@ -387,7 +513,7 @@ serviceName: {
 
   endpoints.web = { port = 3000; protocol = "https"; };
 
-  observability.metrics = {
+  observability.metrics.main = {
     impl = ./metrics.nix;
     endpoint = "web";
   };
@@ -402,9 +528,9 @@ serviceName: {
 **Result:**
 
 - Service: `https://gitea.<publicDomain>`
-- Metrics: `https://gitea.metrics.<publicDomain>/metrics` → routes to port 3000
+- Metrics: `https://gitea.metrics.<publicDomain>/metrics/main` → routes to port 3000
 
-### PostgreSQL (Web, separate exporter)
+### Single Exporter: PostgreSQL (Separate exporter)
 
 ```nix
 serviceName: {
@@ -415,7 +541,7 @@ serviceName: {
     exporter = { port = 9187; protocol = "tcp"; };
   };
 
-  observability.metrics = {
+  observability.metrics.main = {
     impl = ./metrics.nix;
     endpoint = "exporter";
   };
@@ -432,29 +558,43 @@ serviceName: {
 **Result:**
 
 - Service: `postgres://db.<publicDomain>:5432` (no HTTPS)
-- Metrics: `https://db.metrics.<publicDomain>/metrics` → routes to port 9187
+- Metrics: `https://db.metrics.<publicDomain>/metrics/main` → routes to port 9187
 
-### NTP (UDP, separate exporter)
+### Multiple Exporters: <serviceName> (App + Geo metrics)
 
 ```nix
 serviceName: {
-  module = ./ntp.nix;
+  module = ./<serviceName>.nix;
 
   endpoints = {
-    ntp = { port = 123; protocol = "udp"; };
-    metrics = { port = 9975; protocol = "tcp"; };
+    web = { port = 8096; protocol = "https"; };
+    app-exporter = { port = 9001; protocol = "tcp"; };
+    geo-exporter = { port = 9002; protocol = "tcp"; };
   };
 
   observability.metrics = {
-    impl = ./metrics.nix;
-    endpoint = "metrics";
+    app = {
+      impl = ./app-metrics.nix;
+      endpoint = "app-exporter";
+    };
+    geo = {
+      impl = ./geo-metrics.nix;
+      endpoint = "geo-exporter";
+    };
+  };
+
+  dashboard = {
+    category = "Media";
+    links = [{ name = "<serviceName>"; }];
   };
 }
 ```
 
 **Result:**
 
-- Service: `ntp://ntp.<publicDomain>:123` (UDP)
-- Metrics: `https://ntp.metrics.<publicDomain>/metrics` → routes to port 9975
+- Service: `https://<serviceName>.<publicDomain>`
+- Metrics:
+  - `https://<serviceName>.metrics.<publicDomain>/metrics/app` → routes to port 9001
+  - `https://<serviceName>.metrics.<publicDomain>/metrics/geo` → routes to port 9002
 
-All three use the same metrics pattern, regardless of service type.
+All services use the same metrics pattern with path-based routing.
