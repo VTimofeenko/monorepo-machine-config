@@ -47,11 +47,19 @@ in
       );
 
       resolveService =
-        moduleName:
+        serviceName:
         let
-          serviceData = data-flake.data.services.all.${moduleName};
-          exists = self.serviceModules ? ${moduleName};
-          manifest = self.serviceModules.${moduleName} or null;
+          serviceData = data-flake.data.services.all.${serviceName};
+          moduleName = serviceData.moduleName or null;
+          fromPublic = moduleName != null && moduleName != "stub" && self.serviceModules ? ${moduleName};
+          fromPrivate = moduleName != null && moduleName != "stub" && inputs.private-modules.serviceModules ? ${moduleName};
+
+          # Get manifest for source tracking (prefer public if both exist)
+          manifest =
+            if fromPublic then self.serviceModules.${moduleName}
+            else if fromPrivate then inputs.private-modules.serviceModules.${moduleName}
+            else null;
+
           # Determine sources from manifest metadata
           sources =
             if manifest != null && manifest ? _sources then
@@ -61,21 +69,33 @@ in
                 "public"
               else
                 "private"
+            else if fromPublic && fromPrivate then
+              "public+private"
+            else if fromPublic then
+              "public"
+            else if fromPrivate then
+              "private"
             else
               "unknown";
         in
-        if serviceData.moduleName == "stub" then
-          [ ] |> dbg "service ${moduleName} is a stub"
-        else if exists then
-          dbg "service ${moduleName} (${sources})" manifest.default
+        if moduleName == null || moduleName == "stub" then
+          [ ] |> dbg "service ${serviceName} (moduleName=${toString moduleName}) is a stub or has no moduleName"
         else
-          lib.warn "service: ${moduleName} could not be resolved to an implementation!" [ ];
+          let
+            # .default is already a list of modules, so concatenate rather than nest
+            publicModules = if fromPublic then
+              (dbg "service ${serviceName} -> ${moduleName} (public)" self.serviceModules.${moduleName}.default)
+            else [];
+            privateModules = if fromPrivate then
+              (dbg "service ${serviceName} -> ${moduleName} (private)" inputs.private-modules.serviceModules.${moduleName}.default)
+            else [];
+            allModules = publicModules ++ privateModules;
+          in
+          lib.warnIf (lib.length allModules == 0)
+            "service: ${serviceName} (moduleName: ${moduleName}) could not be resolved to an implementation!"
+            allModules;
 
-      serviceModulesForHost =
-        hostData.servicesAt
-        |> map (name: data-flake.data.services.all.${name})
-        |> lib.filter (svc: svc.moduleName or null != null)
-        |> lib.concatMap (svc: resolveService svc.moduleName);
+      serviceModulesForHost = hostData.servicesAt |> lib.concatMap resolveService;
 
       resolveTrait =
         traitName:
