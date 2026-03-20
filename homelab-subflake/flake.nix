@@ -70,6 +70,7 @@
               "lanthanum"
               "oxygen"
               "hydrogen"
+              "helium"
             ]; # TODO: auto-generate this from data
 
             # Merge library
