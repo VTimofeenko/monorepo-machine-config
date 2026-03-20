@@ -1190,6 +1190,10 @@
           "base",
           "nixpkgs"
         ],
+        "nixpkgs-unstable": [
+          "base",
+          "nixpkgs-unstable"
+        ],
         "private-modules": "private-modules",
         "wg-namespace-flake": "wg-namespace-flake_2"
       }

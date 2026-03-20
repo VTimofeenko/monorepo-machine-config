@@ -4,6 +4,7 @@
   inputs = {
     base.url = "..";
     nixpkgs.follows = "base/nixpkgs";
+    nixpkgs-unstable.follows = "base/nixpkgs-unstable";
     flake-parts.follows = "base/flake-parts";
 
     # data-flake.url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-data-flake.git"; # REMOTE_SRC
