@@ -9,7 +9,7 @@
 */
 { lib, ... }:
 let
-  port = 5454; # TODO: make metrics implementation also an auto-applied function of endpoints like endpoints-config?
+  port = 8081; # TODO: make metrics implementation also an auto-applied function of endpoints like endpoints-config?
 in
 {
   # This module exists primarily to signal that metrics are enabled in the manifest
@@ -20,4 +20,6 @@ in
         metrics-interface: ${lib.homelab.getOwnIpInNetwork "backbone-inner"}
         metrics-port: ${toString port}
   '';
+
+  services.nsd.bind8Stats = true;
 }
