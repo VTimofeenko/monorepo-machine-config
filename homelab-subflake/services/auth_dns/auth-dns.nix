@@ -26,7 +26,7 @@ in
 
     zones = {
       # Main service zone
-      "srv.${publicDomainName}" = mkZoneBase "srv.${publicDomainName}" 1800;
+      "${publicDomainName}" = mkZoneBase "${publicDomainName}" 1800;
 
       # Metrics zone (as per METRICS.md)
       "metrics.${publicDomainName}" = mkZoneBase "metrics.${publicDomainName}" 1800;
