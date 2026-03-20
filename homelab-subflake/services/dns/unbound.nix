@@ -26,7 +26,7 @@ let
   nsdPort = 5454; # TODO: get this from `nsd` manifest
   # TODO: migrate this into `srvLib`? Into data-flake?
   nsdZones = [
-    "srv.${getSettings.publicDomainName}"
+    "${getSettings.publicDomainName}"
     "metrics.${getSettings.publicDomainName}"
     "backbone-inner.${getSettings.publicDomainName}"
     "mgmt.${getSettings.publicDomainName}"
