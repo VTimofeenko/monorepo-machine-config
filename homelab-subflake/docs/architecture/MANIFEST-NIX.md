@@ -64,11 +64,14 @@ serviceName: {
 
   # Observability (optional)
   observability? :: {
+    # Metrics exporters (attrsOf exporter config)
+    # Each exporter gets path-based routing: /metrics/<exporterName>
     metrics? :: {
-      impl : Path               # Metrics module (presence = metrics enabled)
-      endpoint? : String        # Which endpoint? Inferred if omitted
-      endpoints? : [String]     # Multiple exporters
-      path? : String            # Metrics path, default: "/metrics"
+      <exporterName> = {
+        impl : Path             # Metrics module (presence = metrics enabled)
+        endpoint? : String      # Which endpoint? Inferred if omitted
+        path? : String          # Metrics path, default: "/metrics"
+      }
     }
 
     alerts? :: {
@@ -137,7 +140,7 @@ default = flatten([
   (manifest.module OR []),
   endpoints.impl(endpoints),  # Called with endpoint data
   (manifest.firewall OR auto-generate-firewall(endpoints)),
-  observability.metrics.impl,
+  (mapAttrsToList (_: exporter: exporter.impl) observability.metrics),
   observability.logging.impl,
   observability.probes.impl,
   (backups.impl OR auto-generate-mkBkp(backups)),
@@ -174,7 +177,7 @@ serviceName: {
 
   endpoints.web = { port = 3000; protocol = "https"; };
 
-  observability.metrics.impl = ./metrics.nix;
+  observability.metrics.main.impl = ./metrics.nix;
 
   backups.paths = [ "/var/lib/${serviceName}" ];
 
@@ -220,7 +223,7 @@ serviceName: {
     protocol = "https";
   };
 
-  observability.metrics = {
+  observability.metrics.main = {
     impl = ./metrics.nix;
     endpoint = "metrics";
   };
@@ -243,7 +246,7 @@ serviceName: {
 
   firewall = ./firewall.nix;  # Opens DHCP on LAN, metrics on backbone-inner
 
-  observability.metrics.impl = ./metrics.nix;
+  observability.metrics.main.impl = ./metrics.nix;
 }
 ```
 
@@ -259,7 +262,7 @@ serviceName: {
 
   sslProxyConfig = ./ssl.nix;  # Custom nginx config
 
-  observability.metrics = {
+  observability.metrics.main = {
     impl = ./metrics.nix;
     endpoint = "web";
   };
@@ -282,7 +285,7 @@ serviceName: {
 
   endpoints.web = { port = 3001; protocol = "https"; };
 
-  observability.metrics.impl = ./metrics.nix;
+  observability.metrics.main.impl = ./metrics.nix;
 
   backups = {
     paths = [ "/var/lib/actual" ];
@@ -311,7 +314,7 @@ serviceName: {
     ssh = { port = 22; protocol = "tcp"; };
   };
 
-  observability.metrics = {
+  observability.metrics.main = {
     impl = ./metrics.nix;
     endpoint = "web";
   };
@@ -336,7 +339,7 @@ serviceName: {
     exporter = { port = 9187; protocol = "tcp"; };
   };
 
-  observability.metrics = {
+  observability.metrics.main = {
     impl = ./metrics.nix;
     endpoint = "exporter";
   };
@@ -374,7 +377,7 @@ serviceName: {
 
   firewall = ./firewall.nix;  # Opens DNS on all networks, not just backbone-inner
 
-  observability.metrics.impl = ./metrics.nix;
+  observability.metrics.main.impl = ./metrics.nix;
 }
 ```
 
@@ -391,7 +394,7 @@ serviceName: {
 
   endpoints.metrics = { port = 9999; protocol = "tcp"; };
 
-  observability.metrics = {
+  observability.metrics.main = {
     impl = ./metrics.nix;
     # Scrapes external rsync.net API, exposes metrics locally
   };

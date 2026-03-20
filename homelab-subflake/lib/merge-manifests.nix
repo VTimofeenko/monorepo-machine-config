@@ -76,9 +76,15 @@ let
 
           # observabilityImpls: only local concerns (metrics, logging, probes)
           # NOT alerts - that's a remote concern evaluated on grafana/prometheus hosts
+
+          # Collect all metrics exporter implementations (optional, may be empty attrset)
+          metricsImpls =
+            manifestData.observability.metrics
+            |> lib.mapAttrsToList (_: exporter: exporter.impl or null)
+            |> lib.filter (impl: impl != null);
+
           observabilityImpls = lib.flatten [
-            (lib.optional (manifestData.observability.metrics.impl or null != null)
-              manifestData.observability.metrics.impl)
+            metricsImpls
             (lib.optional (manifestData.observability.logging.impl or null != null)
               manifestData.observability.logging.impl)
             (lib.optional (manifestData.observability.probes.impl or null != null)

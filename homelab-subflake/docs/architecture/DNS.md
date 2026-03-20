@@ -242,7 +242,7 @@ Zones are auto-generated during NixOS build via manifest discovery.
 # services/gitea/manifest.nix
 serviceName: {
   endpoints.web = { port = 3000; protocol = "https"; };
-  observability.metrics = { impl = ./metrics.nix; };
+  observability.metrics.main = { impl = ./metrics.nix; };
   dashboard = { category = "Dev"; links = [{ name = "Gitea"; }]; };
 }
 ```
@@ -266,7 +266,7 @@ serviceName: {
     ntp = { port = 123; protocol = "udp"; };
     metrics = { port = 9975; protocol = "tcp"; };
   };
-  observability.metrics = { impl = ./metrics.nix; };
+  observability.metrics.main = { impl = ./metrics.nix; };
 }
 ```
 
@@ -290,7 +290,7 @@ serviceName: {
     dns = { port = 53; protocol = "udp"; };
     metrics = { port = 9167; protocol = "tcp"; };
   };
-  observability.metrics = { impl = ./metrics.nix; };
+  observability.metrics.main = { impl = ./metrics.nix; };
 }
 ```
 
