@@ -2,11 +2,6 @@
   Functions that operate on flake itself.
 */
 { lib, self, ... }:
-let
-  inherit (builtins) filter isAttrs;
-  inherit (lib) flatten optional;
-
-in
 {
   /**
     Produces a `nixosConfiguration` for a given host.
