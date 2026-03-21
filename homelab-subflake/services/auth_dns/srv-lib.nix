@@ -7,7 +7,7 @@ let
   mkARecord = mkRecord "A";
   mkCNAMERecord = domainName: recordValue: (mkRecord "CNAME" domainName (recordValue + "."));
 in
-rec {
+{
   # Re-export record formatters for internal use
   inherit mkRecord mkARecord mkCNAMERecord;
 
