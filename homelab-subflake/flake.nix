@@ -74,7 +74,14 @@
             ]; # TODO: auto-generate this from data
 
             # Merge library
-            mergeLib = import ./lib/merge-manifests.nix { inherit lib; };
+            mergeLib = import ./lib/merge-manifests.nix {
+              lib = lib.extend (
+                lib.composeManyExtensions [
+                  # There is no "Own" here, but this is useful so a `lib` with `homelab` functions is passed to the `serviceManifests`
+                  (_: _: { homelab = inputs.data-flake.lib.homelab |> lib.flip builtins.removeAttrs [ "_mkOwnFuncs" ]; })
+                ]
+              );
+            };
 
             # Discover public manifests (unevaluated NixOS modules)
             publicServices = self.lib.discoverModules ./services "service";
