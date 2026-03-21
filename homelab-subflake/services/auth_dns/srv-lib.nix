@@ -1,3 +1,4 @@
+{ lib, ... }:
 let
   # DNS record formatters
   mkRecord = recordType: domainName: recordValue:
@@ -52,4 +53,17 @@ rec {
 
     '';
   };
+
+  /** Returns a list of zones that `auth_dns` manages */
+  getZones =
+    let
+      srvDomain = lib.homelab.getSettings.publicDomainName;
+    in
+    [
+    srvDomain
+    "metrics.${srvDomain}"
+  ]
+  ++
+  # Assemble domains from networks
+  (lib.homelab.networks.getAll |> builtins.mapAttrs(_: builtins.getAttr "domain")  |> builtins.attrValues) ;
 }
