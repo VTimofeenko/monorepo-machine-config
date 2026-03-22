@@ -103,8 +103,8 @@ rec {
           it:
           [
             ''iifname "backbone-inner"''
-            ''ip saddr { ${lib.homelab.getSSLProxyIPs |> lib.concatStringsSep ", "} }''
-            ''${it.protocol} dport ${it.port |> toString} accept''
+            "ip saddr { ${lib.homelab.getSSLProxyIPs |> lib.concatStringsSep ", "} }"
+            "${it.protocol} dport ${it.port |> toString} accept"
           ]
           |> builtins.concatStringsSep " "
         )
@@ -139,11 +139,9 @@ rec {
         };
     };
 
-    /**
-
+  /**
     Grab all managed services, then find only managed(?) and non-nonWeb(!) ones
-
-    */
-    getProxiedServices = lib.homelab.services.getAll
-    |> lib.filterAttrs (_: builtins.getAttr "centralSSL");
+  */
+  getProxiedServices =
+    lib.homelab.services.getAll |> lib.filterAttrs (_: builtins.getAttr "centralSSL");
 }
