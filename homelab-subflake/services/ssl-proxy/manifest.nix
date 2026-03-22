@@ -24,7 +24,7 @@
     alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
   };
 
-  srvLib = import ./srv-lib.nix;
+  srvLib = import ./srv-lib.nix { inherit lib; };
 
   # Stateless service - no backups or storage needed
 }

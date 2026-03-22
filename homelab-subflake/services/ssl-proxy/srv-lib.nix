@@ -1,3 +1,4 @@
+{ lib, ... }:
 rec {
   /**
     Dynamic function to generate implementation for a proxy for all kinds of services.
@@ -137,4 +138,12 @@ rec {
           '';
         };
     };
+
+    /**
+
+    Grab all managed services, then find only managed(?) and non-nonWeb(!) ones
+
+    */
+    getProxiedServices = lib.homelab.services.getAll
+    |> lib.filterAttrs (_: builtins.getAttr "centralSSL");
 }
