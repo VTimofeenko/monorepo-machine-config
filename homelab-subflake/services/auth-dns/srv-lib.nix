@@ -7,7 +7,7 @@ let
   mkARecord = mkRecord "A";
   mkCNAMERecord = domainName: recordValue: (mkRecord "CNAME" domainName (recordValue + "."));
 in
-{
+rec {
   # Re-export record formatters for internal use
   inherit mkRecord mkARecord mkCNAMERecord;
 
@@ -15,7 +15,7 @@ in
     Get nameserver IPs for zone SOA/NS records.
 
     Returns IPs of DNS (Unbound) service instances, since that's what clients query.
-    auth_dns (NSD) is localhost-only and not directly accessible to clients.
+    `auth-dns` (NSD) is localhost-only and not directly accessible to clients.
     Returns list of IPs (e.g., ["192.168.1.1", "192.168.1.2"])
   */
   getNameserverIPs =
@@ -34,7 +34,7 @@ in
       `nameserverIPs`: List of nameserver IPs for NS records
       `ttl`: Zone TTL (default 1800)
 
-    Returns NSD zone config with SOA/NS headers
+    Returns NSD zone config with SOA/NS headers as a string
   */
   mkZoneBase =
     {
@@ -43,8 +43,7 @@ in
       lib,
       ttl ? 1800,
     }:
-    {
-      data = ''
+    ''
         $ORIGIN ${domain}.
         $TTL ${toString ttl}
 
@@ -61,10 +60,9 @@ in
         ${lib.concatLines (lib.imap1 (i: ip: "ns${toString i} IN A ${ip}") nameserverIPs)}
 
       '';
-    };
 
   /**
-    Returns a list of zones that `auth_dns` manages
+    Returns a list of zones that `auth-dns` manages
   */
   getZones =
     let
@@ -81,4 +79,30 @@ in
         |> builtins.mapAttrs (_: builtins.getAttr "domain")
         |> builtins.attrValues
       );
+
+
+      mkZoneForNet = netName:
+      let
+        net = lib.homelab.getNetwork netName;
+        zone = net.domain;
+      in
+      {
+        ${zone}.data = [
+      (mkZoneBase {
+        domain = zone;
+        nameserverIPs = net |> builtins.getAttr "dnsServers";
+        ttl = 1800; # TODO: maybe higher?
+      })
+
+      # Records for hosts
+      (
+        net.hostsInNetwork
+        |> lib.mapAttrsToList (_: v: { inherit (v) hostName ipAddress; })
+        |> map ({ hostName, ipAddress }: mkARecord hostName ipAddress)
+        )
+
+
+    ]
+    |> lib.flatten
+    |> lib.concatStringsSep "\n";};
 }

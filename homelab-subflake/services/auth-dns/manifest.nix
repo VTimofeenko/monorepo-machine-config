@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, ... }:
 {
   module = ./auth-dns.nix;
 
@@ -23,7 +23,7 @@
   multiInstance = true;
 
   # Zone generation library
-  srvLib = import ./srv-lib.nix;
+  srvLib = import ./srv-lib.nix { inherit lib; };
 
   observability = {
     metrics.main = {
