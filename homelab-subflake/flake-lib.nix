@@ -31,9 +31,11 @@ rec {
           (_: _: {
             homelab =
               builtins.removeAttrs data-flake.lib.homelab [ "_mkOwnFuncs" ]
-              // data-flake.lib.homelab._mkOwnFuncs hostName;
+              // data-flake.lib.homelab._mkOwnFuncs hostName
+              // {
+                inherit getManifest;
+              };
           })
-          (_: _: { homelab = { inherit getManifest; }; })
           /**
             Adds my custom functions.
             TODO: Review callsites, probably not needed as much
