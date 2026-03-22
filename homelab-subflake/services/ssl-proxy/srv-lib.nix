@@ -140,7 +140,7 @@ rec {
     };
 
   /**
-    Grab all managed services, then find only managed(?) and non-nonWeb(!) ones
+    Return the list of services that have are terminated here.
   */
   getProxiedServices =
     lib.homelab.services.getAll
