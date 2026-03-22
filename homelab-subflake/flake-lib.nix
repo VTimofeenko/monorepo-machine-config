@@ -48,13 +48,17 @@ rec {
           serviceData = data-flake.data.services.all.${serviceName};
           moduleName = serviceData.moduleName or null;
           fromPublic = moduleName != null && moduleName != "stub" && self.serviceModules ? ${moduleName};
-          fromPrivate = moduleName != null && moduleName != "stub" && inputs.private-modules.serviceModules ? ${moduleName};
+          fromPrivate =
+            moduleName != null && moduleName != "stub" && inputs.private-modules.serviceModules ? ${moduleName};
 
           # Get manifest for source tracking (prefer public if both exist)
           manifest =
-            if fromPublic then self.serviceModules.${moduleName}
-            else if fromPrivate then inputs.private-modules.serviceModules.${moduleName}
-            else null;
+            if fromPublic then
+              self.serviceModules.${moduleName}
+            else if fromPrivate then
+              inputs.private-modules.serviceModules.${moduleName}
+            else
+              null;
 
           # Determine sources from manifest metadata
           sources =
@@ -75,16 +79,23 @@ rec {
               "unknown";
         in
         if moduleName == null || moduleName == "stub" then
-          [ ] |> dbg "service ${serviceName} (moduleName=${toString moduleName}) is a stub or has no moduleName"
+          [ ]
+          |> dbg "service ${serviceName} (moduleName=${toString moduleName}) is a stub or has no moduleName"
         else
           let
             # .default is already a list of modules, so concatenate rather than nest
-            publicModules = if fromPublic then
-              (dbg "service ${serviceName} -> ${moduleName} (public)" self.serviceModules.${moduleName}.default)
-            else [];
-            privateModules = if fromPrivate then
-              (dbg "service ${serviceName} -> ${moduleName} (private)" inputs.private-modules.serviceModules.${moduleName}.default)
-            else [];
+            publicModules =
+              if fromPublic then
+                (dbg "service ${serviceName} -> ${moduleName} (public)" self.serviceModules.${moduleName}.default)
+              else
+                [ ];
+            privateModules =
+              if fromPrivate then
+                (dbg "service ${serviceName} -> ${moduleName} (private)"
+                  inputs.private-modules.serviceModules.${moduleName}.default
+                )
+              else
+                [ ];
             allModules = publicModules ++ privateModules;
           in
           lib.warnIf (lib.length allModules == 0)
@@ -103,20 +114,22 @@ rec {
         if traitData.moduleName == "stub" then
           [ ] |> dbg "trait ${traitName} is a stub"
         else
-        ((
-          lib.optional fromPublic (dbg "trait ${traitName} (public)" self.traitModules.${traitName})
-          ++ lib.optional fromPrivate (
-            dbg "trait ${traitName} (private)" inputs.private-modules.traitModules.${traitName}
+          (
+            (
+              lib.optional fromPublic (dbg "trait ${traitName} (public)" self.traitModules.${traitName})
+              ++ lib.optional fromPrivate (
+                dbg "trait ${traitName} (private)" inputs.private-modules.traitModules.${traitName}
+              )
             )
+            # This check alerts the operator if trait could not be found as an actual module.
+            # Potential problems:
+            # - The implementation of the trait is missing
+            # - False negative detection (see `discoverModules`)
+            |> (
+              it:
+              lib.warnIf (lib.length it == 0) "trait: ${traitName} could not be resolved to an implementation!" it
             )
-        # This check alerts the operator if trait could not be found as an actual module.
-        # Potential problems:
-        # - The implementation of the trait is missing
-        # - False negative detection (see `discoverModules`)
-        |> (
-          it:
-          lib.warnIf (lib.length it == 0) "trait: ${traitName} could not be resolved to an implementation!" it
-          ));
+          );
 
       traitModulesForHost = (hostData.traitsAt or [ ]) |> lib.concatMap resolveTrait;
 
