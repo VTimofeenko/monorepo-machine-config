@@ -2,7 +2,7 @@
   Functions that operate on flake itself.
 */
 { lib, self, ... }:
-{
+rec {
   /**
     Produces a `nixosConfiguration` for a given host.
   */
@@ -33,6 +33,7 @@
               builtins.removeAttrs data-flake.lib.homelab [ "_mkOwnFuncs" ]
               // data-flake.lib.homelab._mkOwnFuncs hostName;
           })
+          (_: _: { homelab = { inherit getManifest; }; })
           /**
             Adds my custom functions.
             TODO: Review callsites, probably not needed as much
