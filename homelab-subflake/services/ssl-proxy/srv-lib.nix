@@ -143,5 +143,7 @@ rec {
     Grab all managed services, then find only managed(?) and non-nonWeb(!) ones
   */
   getProxiedServices =
-    lib.homelab.services.getAll |> lib.filterAttrs (_: builtins.getAttr "centralSSL");
+    lib.homelab.services.getAll
+    |> lib.filterAttrs (_: builtins.getAttr "centralSSL")
+    |> builtins.attrNames;
 }
