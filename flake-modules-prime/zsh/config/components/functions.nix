@@ -28,7 +28,14 @@ let
     ad-nauseam = {
       description = "Repeat last command by every press of Return";
       text = # bash
-        ''while true; do read && !!; done'';
+        ''
+          local last_cmd=$(fc -ln -1)
+          echo "Repeating: $last_cmd"
+          echo "(Press Ctrl-C to stop)"
+          while true; do
+            read && eval "$last_cmd"
+          done
+        '';
     };
 
     yml-to-nix = {
