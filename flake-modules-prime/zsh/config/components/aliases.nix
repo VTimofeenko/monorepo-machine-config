@@ -14,10 +14,12 @@ let
         nru = "nix repl -f flake:nu";
         # Load flake into repl. Searches upward from PWD for nearest flake.nix,
         # stopping at PRJ_ROOT. Uses git+file: (fast, filters gitignored files).
-        nrlf = ''nix repl --expr "builtins.getFlake \"$(_find_flake git)\""'';
+        # Automatically provides 'lib' as inputs.nixpkgs.lib extended with flake's lib.
+        nrlf = ''nix repl --expr "let flake = builtins.getFlake \"$(_find_flake git)\"; nixpkgsLib = flake.inputs.nixpkgs.lib or {}; lib = nixpkgsLib // (flake.lib or {}); in flake // { inherit lib; }"'';
         # This is the slower way that might load extra stuff but is live.
         # Searches upward for nearest flake.nix, uses path: (no git filtering).
-        nrrlf = ''nix repl --expr "builtins.getFlake \"$(_find_flake path)\""'';
+        # Automatically provides 'lib' as inputs.nixpkgs.lib extended with flake's lib.
+        nrrlf = ''nix repl --expr "let flake = builtins.getFlake \"$(_find_flake path)\"; nixpkgsLib = flake.inputs.nixpkgs.lib or {}; lib = nixpkgsLib // (flake.lib or {}); in flake // { inherit lib; }"'';
       }
       # ls aliases
       {
