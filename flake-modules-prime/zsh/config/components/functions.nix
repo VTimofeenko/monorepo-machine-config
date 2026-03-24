@@ -111,7 +111,11 @@ let
             dir=$(dirname "$dir")
           done
 
-          # Fallback to root
+          # Fallback to root (no flake.nix found)
+          if [ ! -f "$base_root/flake.nix" ]; then
+            echo "Warning: No flake.nix found between $PWD and $root" >&2
+          fi
+          echo "Loading flake: $url_prefix$base_root" >&2
           echo "$url_prefix$base_root"
         '';
     };
