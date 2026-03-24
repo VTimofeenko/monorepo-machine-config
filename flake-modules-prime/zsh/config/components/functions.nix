@@ -65,37 +65,38 @@ let
         '';
     };
 
-    _nrlf_find_flake = {
-      description = "Find the nearest flake.nix by walking up from PWD to PRJ_ROOT";
+    _find_flake = {
+      description = "Find the nearest flake.nix by walking up from PWD to PRJ_ROOT. Args: 'git' or 'path'";
       text = # bash
         ''
+          local mode="''${1:-git}"
           local dir="$PWD"
           local root="''${PRJ_ROOT:-$PWD}"
-          local git_root=""
+          local base_root="$root"
+          local url_prefix="path:"
 
-          # Find git root
-          local check_dir="$root"
-          while [ "$check_dir" != "/" ]; do
-            if [ -d "$check_dir/.git" ]; then
-              git_root="$check_dir"
-              break
-            fi
-            check_dir=$(dirname "$check_dir")
-          done
+          # For git mode, try to find git root and use git+file:
+          if [ "$mode" = "git" ]; then
+            url_prefix="git+file:"
+            local check_dir="$root"
+            while [ "$check_dir" != "/" ]; do
+              if [ -d "$check_dir/.git" ]; then
+                base_root="$check_dir"
+                break
+              fi
+              check_dir=$(dirname "$check_dir")
+            done
+          fi
 
           # Find nearest flake.nix
           while [ "$dir" != "/" ]; do
             if [ -f "$dir/flake.nix" ]; then
-              if [ -n "$git_root" ]; then
-                # Use git+file with ?dir= for subdirectories
-                if [ "$dir" = "$git_root" ]; then
-                  echo "git+file:$git_root"
-                else
-                  local subdir="''${dir#$git_root/}"
-                  echo "git+file:$git_root?dir=$subdir"
-                fi
+              # Construct URL based on mode
+              if [ "$dir" = "$base_root" ]; then
+                echo "$url_prefix$base_root"
               else
-                echo "$dir"
+                local subdir="''${dir#$base_root/}"
+                echo "$url_prefix$base_root?dir=$subdir"
               fi
               return
             fi
@@ -108,11 +109,7 @@ let
           done
 
           # Fallback to root
-          if [ -n "$git_root" ] && [ "$root" = "$git_root" ]; then
-            echo "git+file:$root"
-          else
-            echo "$root"
-          fi
+          echo "$url_prefix$base_root"
         '';
     };
   };

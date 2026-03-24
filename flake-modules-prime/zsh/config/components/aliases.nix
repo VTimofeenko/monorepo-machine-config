@@ -13,11 +13,11 @@ let
         # Quick nix repl with stable nixpkgs imported
         nru = "nix repl -f flake:nu";
         # Load flake into repl. Searches upward from PWD for nearest flake.nix,
-        # stopping at PRJ_ROOT. Uses git+file: for repo roots (fast, filtered),
-        # plain paths for subflakes.
-        nrlf = ''nix repl --expr "builtins.getFlake \"$(_nrlf_find_flake)\""'';
-        # This is the slower way that might load extra stuff but is live
-        nrrlf = ''nix repl --expr "builtins.getFlake \"''${PRJ_ROOT:-$PWD}\""'';
+        # stopping at PRJ_ROOT. Uses git+file: (fast, filters gitignored files).
+        nrlf = ''nix repl --expr "builtins.getFlake \"$(_find_flake git)\""'';
+        # This is the slower way that might load extra stuff but is live.
+        # Searches upward for nearest flake.nix, uses path: (no git filtering).
+        nrrlf = ''nix repl --expr "builtins.getFlake \"$(_find_flake path)\""'';
       }
       # ls aliases
       {
