@@ -64,6 +64,57 @@ let
           nix-build --expr "with import <nixpkgs> {}; callPackage ./$1 {}"
         '';
     };
+
+    _nrlf_find_flake = {
+      description = "Find the nearest flake.nix by walking up from PWD to PRJ_ROOT";
+      text = # bash
+        ''
+          local dir="$PWD"
+          local root="''${PRJ_ROOT:-$PWD}"
+          local git_root=""
+
+          # Find git root
+          local check_dir="$root"
+          while [ "$check_dir" != "/" ]; do
+            if [ -d "$check_dir/.git" ]; then
+              git_root="$check_dir"
+              break
+            fi
+            check_dir=$(dirname "$check_dir")
+          done
+
+          # Find nearest flake.nix
+          while [ "$dir" != "/" ]; do
+            if [ -f "$dir/flake.nix" ]; then
+              if [ -n "$git_root" ]; then
+                # Use git+file with ?dir= for subdirectories
+                if [ "$dir" = "$git_root" ]; then
+                  echo "git+file:$git_root"
+                else
+                  local subdir="''${dir#$git_root/}"
+                  echo "git+file:$git_root?dir=$subdir"
+                fi
+              else
+                echo "$dir"
+              fi
+              return
+            fi
+
+            if [ "$dir" = "$root" ]; then
+              break
+            fi
+
+            dir=$(dirname "$dir")
+          done
+
+          # Fallback to root
+          if [ -n "$git_root" ] && [ "$root" = "$git_root" ]; then
+            echo "git+file:$root"
+          else
+            echo "$root"
+          fi
+        '';
+    };
   };
 
   inherit (lib) getExe';
