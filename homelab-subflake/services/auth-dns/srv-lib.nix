@@ -40,7 +40,6 @@ rec {
     {
       domain,
       nameserverIPs,
-      lib,
       ttl ? 1800,
     }:
     ''
