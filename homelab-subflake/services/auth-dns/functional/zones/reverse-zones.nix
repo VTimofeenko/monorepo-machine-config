@@ -28,7 +28,7 @@ in
           $ORIGIN ${n}.
           $TTL 86400
           @ IN SOA ns1.home.arpa. admin.home.arpa. (
-              2024071012 ; Serial
+              ${builtins.readFile ../../serial} ; Serial
               3600       ; Refresh
               900        ; Retry
               1209600    ; Expire
