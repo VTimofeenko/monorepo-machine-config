@@ -43,22 +43,22 @@ rec {
       ttl ? 1800,
     }:
     ''
-        $ORIGIN ${domain}.
-        $TTL ${toString ttl}
+      $ORIGIN ${domain}.
+      $TTL ${toString ttl}
 
-        @ IN SOA ns1.${domain}. admin.${domain}. (
-            ${builtins.readFile ./serial} ; serial number
-            28800 ; Refresh
-            7200 ; Retry
-            864000 ; Expire
-            86400 ; Min TTL
-            )
+      @ IN SOA ns1.${domain}. admin.${domain}. (
+          ${builtins.readFile ./serial} ; serial number
+          28800 ; Refresh
+          7200 ; Retry
+          864000 ; Expire
+          86400 ; Min TTL
+          )
 
-        ${lib.concatLines (lib.imap1 (i: _ip: "IN NS ns${toString i}.${domain}.") nameserverIPs)}
+      ${lib.concatLines (lib.imap1 (i: _ip: "IN NS ns${toString i}.${domain}.") nameserverIPs)}
 
-        ${lib.concatLines (lib.imap1 (i: ip: "ns${toString i} IN A ${ip}") nameserverIPs)}
+      ${lib.concatLines (lib.imap1 (i: ip: "ns${toString i} IN A ${ip}") nameserverIPs)}
 
-      '';
+    '';
 
   /**
     Returns a list of zones that `auth-dns` manages
@@ -79,29 +79,30 @@ rec {
         |> builtins.attrValues
       );
 
+  mkZoneForNet =
+    netName:
+    let
+      net = lib.homelab.getNetwork netName;
+      zone = net.domain;
+    in
+    {
+      ${zone}.data =
+        [
+          (mkZoneBase {
+            domain = zone;
+            nameserverIPs = net |> builtins.getAttr "dnsServers";
+            ttl = 1800; # TODO: maybe higher?
+          })
 
-      mkZoneForNet = netName:
-      let
-        net = lib.homelab.getNetwork netName;
-        zone = net.domain;
-      in
-      {
-        ${zone}.data = [
-      (mkZoneBase {
-        domain = zone;
-        nameserverIPs = net |> builtins.getAttr "dnsServers";
-        ttl = 1800; # TODO: maybe higher?
-      })
+          # Records for hosts
+          (
+            net.hostsInNetwork
+            |> lib.mapAttrsToList (_: v: { inherit (v) hostName ipAddress; })
+            |> map ({ hostName, ipAddress }: mkARecord hostName ipAddress)
+          )
 
-      # Records for hosts
-      (
-        net.hostsInNetwork
-        |> lib.mapAttrsToList (_: v: { inherit (v) hostName ipAddress; })
-        |> map ({ hostName, ipAddress }: mkARecord hostName ipAddress)
-        )
-
-
-    ]
-    |> lib.flatten
-    |> lib.concatStringsSep "\n";};
+        ]
+        |> lib.flatten
+        |> lib.concatStringsSep "\n";
+    };
 }
