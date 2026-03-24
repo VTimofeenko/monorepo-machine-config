@@ -40,7 +40,7 @@ rec {
     {
       domain,
       nameserverIPs,
-      ttl ? 1800,
+      ttl ? 604800,
     }:
     ''
       $ORIGIN ${domain}.
@@ -51,7 +51,7 @@ rec {
           28800 ; Refresh
           7200 ; Retry
           864000 ; Expire
-          86400 ; Min TTL
+          604800 ; Min TTL
           )
 
       ${lib.concatLines (lib.imap1 (i: _ip: "IN NS ns${toString i}.${domain}.") nameserverIPs)}
@@ -91,7 +91,6 @@ rec {
           (mkZoneBase {
             domain = zone;
             nameserverIPs = net |> builtins.getAttr "dnsServers";
-            ttl = 1800; # TODO: maybe higher?
           })
 
           # Records for hosts

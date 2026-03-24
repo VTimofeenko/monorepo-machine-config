@@ -21,7 +21,6 @@ in
       (srvLib.mkZoneBase {
         domain = zone;
         nameserverIPs = "lan" |> lib.homelab.getNetwork |> builtins.getAttr "dnsServers";
-        ttl = 1800; # TODO: maybe higher?
       })
 
       # CNAME records for SSL proxied services

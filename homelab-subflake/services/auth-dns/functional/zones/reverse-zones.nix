@@ -26,13 +26,13 @@ in
       n: v: {
         data = ''
           $ORIGIN ${n}.
-          $TTL 86400
+          $TTL 604800
           @ IN SOA ns1.home.arpa. admin.home.arpa. (
               ${builtins.readFile ../../serial} ; Serial
-              3600       ; Refresh
-              900        ; Retry
-              1209600    ; Expire
-              86400 )    ; Minimum TTL
+              28800      ; Refresh
+              7200       ; Retry
+              864000     ; Expire
+              604800 )   ; Minimum TTL
 
           @ IN NS ns1.home.arpa.
           @ IN NS ns2.home.arpa.
