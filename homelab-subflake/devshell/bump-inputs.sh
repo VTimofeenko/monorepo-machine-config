@@ -43,14 +43,15 @@ fi
 
 echo "================================================="
 
-# Run flake update with custom commit message
-nix flake update $UPDATE_ARGS --commit-lock-file --commit-lock-file-summary "$COMMIT_SUMMARY"
+# Run flake update (without committing)
+nix flake update $UPDATE_ARGS
 
-# Amend the commit to add trailer
-# Get current commit message, add trailer, and amend
-COMMIT_MSG=$(git log -1 --pretty=%B)
-NEW_MSG=$(echo "$COMMIT_MSG" | git interpret-trailers --trailer "Updated-Inputs: $TRAILER_VALUE")
-git commit --amend -m "$NEW_MSG"
+# Create commit with ONLY flake.lock (path argument bypasses staging area)
+COMMIT_MSG=$(git interpret-trailers --trailer "Updated-Inputs: $TRAILER_VALUE" <<EOF
+$COMMIT_SUMMARY
+EOF
+)
+git commit -m "$COMMIT_MSG" flake.lock
 
 echo "✅ Flake inputs bumped with trailer: Updated-Inputs: $TRAILER_VALUE"
 
