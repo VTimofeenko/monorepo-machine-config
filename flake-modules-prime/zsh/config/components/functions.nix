@@ -92,12 +92,15 @@ let
           while [ "$dir" != "/" ]; do
             if [ -f "$dir/flake.nix" ]; then
               # Construct URL based on mode
+              local result
               if [ "$dir" = "$base_root" ]; then
-                echo "$url_prefix$base_root"
+                result="$url_prefix$base_root"
               else
                 local subdir="''${dir#$base_root/}"
-                echo "$url_prefix$base_root?dir=$subdir"
+                result="$url_prefix$base_root?dir=$subdir"
               fi
+              echo "Loading flake: $result" >&2
+              echo "$result"
               return
             fi
 
