@@ -67,7 +67,7 @@ in
         lib.homelab.services.getAll
         |> lib.filterAttrs (n: v: !builtins.elem "alien" v.groups || n == "nfs") # See above
         # Create a `TXT` record for _all_ services. If a service does not have a domain, fall back to service name
-        |> lib.mapAttrsToList (n: v: srvLib.mkRecord "TXT" (v.domain or n) ''"real-host=${v.onHost}"'')
+        |> lib.mapAttrsToList (n: v: srvLib.mkRecord "TXT" "_i.${v.domain or n}" ''"real-host=${v.onHost}"'')
         )
     ]
     |> lib.flatten
