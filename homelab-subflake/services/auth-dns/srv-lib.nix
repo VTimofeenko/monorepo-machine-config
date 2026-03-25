@@ -104,4 +104,37 @@ rec {
         |> lib.flatten
         |> lib.concatStringsSep "\n";
     };
+
+  /**
+    Create base reverse zone configuration with SOA and NS records.
+
+    Arguments:
+      `reverseZone`: Reverse zone name (e.g., "1.168.192.in-addr.arpa")
+      `forwardDomain`: Forward domain for this network (e.g., "home.arpa")
+      `nameserverIPs`: List of nameserver IPs for NS records
+      `ttl`: Zone TTL (default 604800)
+
+    Returns NSD reverse zone config with SOA/NS headers as a string
+  */
+  mkReverseZoneBase =
+    {
+      reverseZone,
+      forwardDomain,
+      nameserverIPs,
+      ttl ? 604800,
+    }:
+    ''
+      $ORIGIN ${reverseZone}.
+      $TTL ${toString ttl}
+
+      @ IN SOA ns1.${forwardDomain}. admin.${forwardDomain}. (
+          ${builtins.readFile ./serial} ; Serial
+          28800      ; Refresh
+          7200       ; Retry
+          864000     ; Expire
+          ${toString ttl} )   ; Minimum TTL
+
+      ${lib.concatLines (lib.imap1 (i: _: "IN NS ns${toString i}.${forwardDomain}.") nameserverIPs)}
+
+    '';
 }

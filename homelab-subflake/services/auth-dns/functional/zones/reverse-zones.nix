@@ -10,35 +10,34 @@ in
 
   services.nsd.zones =
     lib.homelab.networks.getAll
-    |> (lib.mapAttrs' (
-      _: v:
-      lib.nameValuePair (v.subnet |> splitReverseJoin |> (it: "${it}.in-addr.arpa")) (
-        v.hostsInNetwork
-        |> builtins.attrValues
-        |> (map (it: {
-          inherit (it) fqdn;
-          domainName = it.ipAddress |> lib.removePrefix "${v.subnet}" |> splitReverseJoin;
-        }))
-        |> map (it: srvLib.mkRecord "PTR" it.domainName it.fqdn)
-      )
-    )) # -> `{ reverseZoneName = [ record ... ]  } `
-    |> lib.mapAttrs (
-      n: v: {
-        data = ''
-          $ORIGIN ${n}.
-          $TTL 604800
-          @ IN SOA ns1.home.arpa. admin.home.arpa. (
-              ${builtins.readFile ../../serial} ; Serial
-              28800      ; Refresh
-              7200       ; Retry
-              864000     ; Expire
-              604800 )   ; Minimum TTL
+    |> lib.mapAttrs' (
+      netName: net:
+      let
+        reverseZone = net.subnet |> splitReverseJoin |> (it: "${it}.in-addr.arpa");
+        ptrRecords =
+          net.hostsInNetwork
+          |> builtins.attrValues
+          |> map (it: {
+            inherit (it) fqdn;
+            domainName = it.ipAddress |> lib.removePrefix "${net.subnet}" |> splitReverseJoin;
+          })
+          |> map (it: srvLib.mkRecord "PTR" it.domainName it.fqdn);
+      in
+      lib.nameValuePair reverseZone {
+        data =
+          [
+            # Zone header with network-specific nameservers
+            (srvLib.mkReverseZoneBase {
+              inherit reverseZone;
+              forwardDomain = net.domain;
+              nameserverIPs = net.dnsServers;
+            })
 
-          @ IN NS ns1.home.arpa.
-          @ IN NS ns2.home.arpa.
-
-          ${lib.concatStringsSep "\n" v}
-        '';
+            # PTR records
+            ptrRecords
+          ]
+          |> lib.flatten
+          |> lib.concatStringsSep "\n";
       }
     );
 }
