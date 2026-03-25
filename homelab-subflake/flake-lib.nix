@@ -49,38 +49,11 @@ rec {
         let
           serviceData = data-flake.data.services.all.${serviceName};
           moduleName = serviceData.moduleName or null;
-          fromPublic = moduleName != null && moduleName != "stub" && self.serviceModules ? ${moduleName};
+          fromPublic = moduleName != null && !serviceData.sideEffectOnly && self.serviceModules ? ${moduleName};
           fromPrivate =
-            moduleName != null && moduleName != "stub" && inputs.private-modules.serviceModules ? ${moduleName};
-
-          # Get manifest for source tracking (prefer public if both exist)
-          manifest =
-            if fromPublic then
-              self.serviceModules.${moduleName}
-            else if fromPrivate then
-              inputs.private-modules.serviceModules.${moduleName}
-            else
-              null;
-
-          # Determine sources from manifest metadata
-          sources =
-            if manifest != null && manifest ? _sources then
-              if manifest._sources.hasPublic && manifest._sources.hasPrivate then
-                "public+private"
-              else if manifest._sources.hasPublic then
-                "public"
-              else
-                "private"
-            else if fromPublic && fromPrivate then
-              "public+private"
-            else if fromPublic then
-              "public"
-            else if fromPrivate then
-              "private"
-            else
-              "unknown";
+            moduleName != null && !serviceData.sideEffectOnly && inputs.private-modules.serviceModules ? ${moduleName};
         in
-        if moduleName == null || moduleName == "stub" then
+        if moduleName == null || serviceData.sideEffectOnly then
           [ ]
           |> dbg "service ${serviceName} (moduleName=${toString moduleName}) is a stub or has no moduleName"
         else
@@ -113,7 +86,7 @@ rec {
           fromPublic = self.traitModules ? ${traitName};
           fromPrivate = inputs.private-modules.traitModules ? ${traitName};
         in
-        if traitData.moduleName == "stub" then
+        if traitData.sideEffectOnly then
           [ ] |> dbg "trait ${traitName} is a stub"
         else
           (
