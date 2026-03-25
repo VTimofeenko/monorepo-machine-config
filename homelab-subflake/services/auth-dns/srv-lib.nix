@@ -62,7 +62,9 @@ rec {
     '';
 
   /**
-    Returns a list of zones that `auth-dns` manages
+    Returns a list of forward zones that `auth-dns` manages
+
+    Note: Reverse zones (in-addr.arpa) are handled separately via getReverseZones.
   */
   getZones =
     let
@@ -71,7 +73,6 @@ rec {
     [
       srvDomain
       "metrics.${srvDomain}"
-      "in-addr.arpa"
     ]
     ++
       # Assemble domains from networks
@@ -80,6 +81,49 @@ rec {
         |> builtins.mapAttrs (_: builtins.getAttr "domain")
         |> builtins.attrValues
       );
+
+  /**
+    Returns reverse zone information for DNS forwarding.
+
+    Returns an attrset with:
+      - reverseZones: List of specific reverse zones (e.g., ["1.168.192.in-addr.arpa."])
+      - parentZones: List of parent zones that need nodefault (e.g., ["168.192.in-addr.arpa."])
+  */
+  getReverseZones =
+    let
+      inherit (lib.localLib) splitReverseJoin;
+
+      # Get all network subnets and convert to reverse format
+      # e.g., "192.168.1" -> "1.168.192"
+      subnetsInArpa =
+        lib.homelab.networks.getAll
+        |> lib.mapAttrsToList (_: net: net.subnet)
+        |> map splitReverseJoin;
+
+      # Create specific reverse zones for each network
+      # e.g., "1.168.192.in-addr.arpa."
+      reverseZones = map (x: "${x}.in-addr.arpa.") subnetsInArpa;
+
+      # Create parent zones that need nodefault
+      parentZones =
+        subnetsInArpa
+        |> map (lib.splitString ".")
+        |> map (parts:
+          if (lib.elemAt parts 1) == "168" && (lib.elemAt parts 2) == "192" then
+            "168.192.in-addr.arpa."
+          else if (lib.last parts) == "10" then
+            "10.in-addr.arpa."
+          else if (lib.elemAt parts 1) == "16" && (lib.elemAt parts 2) == "172" then
+            "16.172.in-addr.arpa."
+          else
+            # For other networks, use the parent class
+            "${lib.concatStringsSep "." (lib.tail parts)}.in-addr.arpa."
+        )
+        |> lib.unique;
+    in
+    {
+      inherit reverseZones parentZones;
+    };
 
   mkZoneForNet =
     netName:

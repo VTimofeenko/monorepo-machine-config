@@ -1,23 +1,24 @@
 # Configure reverse DNS lookups on unbound side
 { lib, ... }:
 let
-  # Get NSD port from auth-dns manifest
+  # Get reverse zone information from `auth-dns` manifest
+  # This ensures `dns` and `auth-dns` stay in sync on which zones exist
   authDnsManifest = lib.homelab.getManifest "auth-dns";
   nsdPort = authDnsManifest.endpoints.dns.port;
+
+  # Get reverse zones from `auth-dns` (single source of truth)
+  inherit (authDnsManifest.srvLib.getReverseZones) reverseZones parentZones;
 in
 {
   services.unbound.settings = {
-    # Tell Unbound not to use default behavior for reverse DNS
-    server.local-zone = [ "in-addr.arpa. nodefault" ];
-    server.domain-insecure = [ "in-addr.arpa." ];
+    # Set parent zones to `nodefault` to prevent default local-data
+    server.local-zone = map (zone: "${zone} nodefault") parentZones;
+    server.domain-insecure = parentZones;
 
-    # Forward all reverse DNS queries to NSD (authoritative)
-    # If NSD doesn't have the zone, it returns NXDOMAIN
-    stub-zone = [
-      {
-        name = "in-addr.arpa";
-        stub-addr = [ "127.0.0.1@${toString nsdPort}" ];
-      }
-    ];
+    # Forward specific reverse zones to NSD (authoritative)
+    forward-zone = map (name: {
+      inherit name;
+      forward-addr = "127.0.0.1@${toString nsdPort}";
+    }) reverseZones;
   };
 }
