@@ -9,7 +9,7 @@
 */
 { lib, ... }:
 let
-  inherit (import ../lib.nix) mkARecord;
+  inherit (lib.homelab.getManifest "auth-dns") srvLib;
   clientNetViewName = "wg_client_network";
   client = lib.homelab.getNetwork "client";
 in
@@ -32,7 +32,7 @@ in
         |> map (
           it:
           lib.homelab.getSettings.sslProxyHosts
-          |> map (it': ''"${mkARecord it (lib.homelab.getHostIpInNetwork it' "backbone")}"'')
+          |> map (it': ''"${srvLib.mkARecord it (lib.homelab.getHostIpInNetwork it' "backbone")}"'')
         )
         |> lib.flatten;
       view-first = "yes";

@@ -30,9 +30,6 @@
 
   multiInstance = true;
 
-  # Service library
-  srvLib = import ./lib.nix;
-
   # No backups - stateless service
   # No storage - stateless service
 }

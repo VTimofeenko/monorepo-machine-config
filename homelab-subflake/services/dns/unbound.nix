@@ -9,7 +9,6 @@ let
     getOwnIpInNetwork
     getOwnHost
     getService
-    getSettings
     ;
 
   # Find which DNS service instance is running on this host
@@ -23,16 +22,10 @@ let
   # Get service config using the actual instance name, not module name
   thisSrvConfig = getServiceConfig dnsServiceName;
 
-  nsdPort = 5454; # TODO: get this from `nsd` manifest
-  # TODO: migrate this into `srvLib`? Into data-flake?
-  nsdZones = [
-    "${getSettings.publicDomainName}"
-    "metrics.${getSettings.publicDomainName}"
-    "backbone-inner.${getSettings.publicDomainName}"
-    "mgmt.${getSettings.publicDomainName}"
-    "db.${getSettings.publicDomainName}"
-    "home.arpa"
-  ];
+  # Get NSD configuration from auth-dns manifest
+  authDnsManifest = lib.homelab.getManifest "auth-dns";
+  nsdPort = authDnsManifest.endpoints.dns.port;
+  nsdZones = authDnsManifest.srvLib.getZones;
 in
 {
   imports = lib.localLib.mkImportsFromDir ./functional ++ [
