@@ -70,6 +70,7 @@ rec {
     [
       srvDomain
       "metrics.${srvDomain}"
+      "in-addr.arpa"
     ]
     ++
       # Assemble domains from networks
