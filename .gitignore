@@ -11,3 +11,4 @@ flake-modules/vim/packages/lua/lua/.luarc.json
 # Ignore templates' flake.lock so it gets generated whenever the template is
 # instantiated
 templates/*/flake.lock
+**/*.qcow2
