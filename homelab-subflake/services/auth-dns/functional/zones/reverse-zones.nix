@@ -21,7 +21,7 @@ in
             inherit (it) fqdn;
             domainName = it.ipAddress |> lib.removePrefix "${net.subnet}." |> splitReverseJoin;
           })
-          |> map (it: srvLib.mkRecord "PTR" it.domainName it.fqdn);
+          |> map (it: srvLib.mkPTRRecord it.domainName it.fqdn);
       in
       lib.nameValuePair reverseZone {
         data =

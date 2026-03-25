@@ -6,10 +6,11 @@ let
     "${domainName} IN ${recordType} ${recordValue}";
   mkARecord = mkRecord "A";
   mkCNAMERecord = domainName: recordValue: (mkRecord "CNAME" domainName (recordValue + "."));
+  mkPTRRecord = domainName: recordValue: (mkRecord "PTR" domainName (recordValue + "."));
 in
 rec {
   # Re-export record formatters for internal use
-  inherit mkRecord mkARecord mkCNAMERecord;
+  inherit mkRecord mkARecord mkCNAMERecord mkPTRRecord;
 
   /**
     Get nameserver IPs for zone SOA/NS records.
