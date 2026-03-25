@@ -79,6 +79,8 @@
                 lib.composeManyExtensions [
                   # There is no "Own" here, but this is useful so a `lib` with `homelab` functions is passed to the `serviceManifests`
                   (_: _: { homelab = inputs.data-flake.lib.homelab |> lib.flip builtins.removeAttrs [ "_mkOwnFuncs" ]; })
+                  # Add localLib so manifests can use it (e.g., srv-lib.nix)
+                  (_: _: { localLib = import ./lib/local-lib.nix { inherit lib; }; })
                 ]
               );
             };
