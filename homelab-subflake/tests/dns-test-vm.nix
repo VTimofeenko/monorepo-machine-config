@@ -1,14 +1,20 @@
 /**
   DNS Test VM Configuration
 
-  Creates a test VM that runs only auth-dns and dns services.
-  Uses data-flake's mkCustom to extend the data with test VM configuration.
+  Creates a test VM that runs only `auth-dns` and `dns` services.
+  Uses data-flake's `mkCustom` to extend the data with test VM configuration.
 
   Usage:
-    nix build .#nixosConfigurations.dns-test-vm.config.system.build.vm
-    ./result/bin/run-dns-test-vm-vm
+  ```
+  nix run .#nixosConfigurations.dns-test-vm.config.system.build.vm
+  ```
 */
-{ inputs, self, lib, ... }:
+{
+  inputs,
+  self,
+  lib,
+  ...
+}:
 let
   # Extended data with test VM
   testData = import ./test-data.nix { data-flake = inputs.data-flake; };
@@ -18,14 +24,18 @@ let
 
   hostName = "dns-test-vm";
 
-  # Build extended lib that mkHost expects
+  # Build extended lib that `mkHost` expects
   extendedLib = lib.extend (
     lib.composeManyExtensions [
       # Replace homelab lib with our custom one that has test data
+      # Include both base functions and host-specific "Own" functions
       (_: _: {
-        homelab = customHomelabLib // {
-          inherit (self.lib) getManifest getManifests;
-        };
+        homelab =
+          customHomelabLib
+          // customHomelabLib._mkOwnFuncs hostName
+          // {
+            inherit (self.lib) getManifest getManifests;
+          };
       })
       # Add local lib functions
       (_: _: { localLib = import ../lib/local-lib.nix { inherit lib; }; })
@@ -34,8 +44,9 @@ let
 
   hostData = testData.hosts.all.${hostName};
 
-  # Resolve services for test VM (same logic as mkHost)
-  resolveService = serviceName:
+  # Resolve services for test VM (same logic as `mkHost`)
+  resolveService =
+    serviceName:
     let
       serviceData = testData.services.all.${serviceName};
       moduleName = serviceData.moduleName or null;
@@ -51,11 +62,8 @@ let
   serviceModules = hostData.servicesAt |> lib.concatMap resolveService;
 
   # Resolve traits (minimal for test VM)
-  resolveTrait = traitName:
-    if self.traitModules ? ${traitName} then
-      [ self.traitModules.${traitName} ]
-    else
-      [ ];
+  resolveTrait =
+    traitName: if self.traitModules ? ${traitName} then [ self.traitModules.${traitName} ] else [ ];
 
   traitModules = (hostData.traitsAt or [ ]) |> lib.concatMap resolveTrait;
 
@@ -81,13 +89,14 @@ lib.nixosSystem {
     ../hosts/${hostName}/configuration
     { networking.hostName = hostName; }
 
-    # Enable VM building
+    # Enable VM building with serial console (no graphical window)
     {
       virtualisation.vmVariant = {
         virtualisation = {
           memorySize = 2048;
           cores = 2;
           graphics = false;
+          qemu.options = [ "-nographic" ];
         };
       };
     }
