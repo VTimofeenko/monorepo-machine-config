@@ -36,16 +36,17 @@ in
       })
 
       # A records for each service instance with metrics, pointing to all SSL proxies
-        (lib.mapCartesianProduct ({ a, b }: srvLib.mkCNAMERecord a b) {
-          a =
-            # This goes back to service _instances_
-            lib.homelab.services.getAll
-            |> lib.filterAttrs (_: svcData: manifestsWithMetrics ? ${svcData.moduleName or ""})
-            |> lib.attrNames;
-          b =
-            # Prometheus is the one that will be using this; Prometheus can talk over backbone-inner
-            lib.homelab.hosts.getWithService "ssl-proxy" |> map (lib.flip lib.homelab.hosts.getFQDNInNetwork "backbone-inner");
-        })
+      (lib.mapCartesianProduct ({ a, b }: srvLib.mkCNAMERecord a b) {
+        a =
+          # This goes back to service _instances_
+          lib.homelab.services.getAll
+          |> lib.filterAttrs (_: svcData: manifestsWithMetrics ? ${svcData.moduleName or ""})
+          |> lib.attrNames;
+        b =
+          # Prometheus is the one that will be using this; Prometheus can talk over backbone-inner
+          lib.homelab.hosts.getWithService "ssl-proxy"
+          |> map (lib.flip lib.homelab.hosts.getFQDNInNetwork "backbone-inner");
+      })
     ]
     |> lib.flatten
     |> lib.concatStringsSep "\n";
