@@ -49,29 +49,40 @@ rec {
         let
           serviceData = data-flake.data.services.all.${serviceName};
           moduleName = serviceData.moduleName or null;
-          fromPublic = moduleName != null && !serviceData.sideEffectOnly && self.serviceModules ? ${moduleName};
-          fromPrivate =
-            moduleName != null && !serviceData.sideEffectOnly && inputs.private-modules.serviceModules ? ${moduleName};
+          # Check raw sources to determine provenance (for debug logging)
+          hasPublic =
+            moduleName != null
+            && !serviceData.sideEffectOnly
+            && builtins.pathExists (./services + "/${moduleName}");
+          hasPrivate =
+            moduleName != null
+            && !serviceData.sideEffectOnly
+            && inputs.private-modules.serviceModules ? ${moduleName};
+          hasMerged =
+            moduleName != null && !serviceData.sideEffectOnly && self.serviceModules ? ${moduleName};
         in
         if moduleName == null || serviceData.sideEffectOnly then
           [ ]
           |> dbg "service ${serviceName} (moduleName=${toString moduleName}) is a stub or has no moduleName"
         else
           let
-            # .default is already a list of modules, so concatenate rather than nest
-            publicModules =
-              if fromPublic then
-                (dbg "service ${serviceName} -> ${moduleName} (public)" self.serviceModules.${moduleName}.default)
+            # Log provenance for debugging (before accessing modules to ensure traces fire)
+            loggedPublic =
+              if hasPublic then dbg "service ${serviceName} -> ${moduleName} (public)" hasPublic else hasPublic;
+            loggedPrivate =
+              if hasPrivate then
+                dbg "service ${serviceName} -> ${moduleName} (private)" hasPrivate
+              else
+                hasPrivate;
+
+            # Access the merged result (which already combines public + private)
+            # self.serviceModules contains the output of mergeServiceManifests
+            allModules =
+              if hasMerged then
+                # Force evaluation of log variables, then return modules
+                builtins.seq loggedPublic (builtins.seq loggedPrivate self.serviceModules.${moduleName}.default)
               else
                 [ ];
-            privateModules =
-              if fromPrivate then
-                (dbg "service ${serviceName} -> ${moduleName} (private)"
-                  inputs.private-modules.serviceModules.${moduleName}.default
-                )
-              else
-                [ ];
-            allModules = publicModules ++ privateModules;
           in
           lib.warnIf (lib.length allModules == 0)
             "service: ${serviceName} (moduleName: ${moduleName}) could not be resolved to an implementation!"
