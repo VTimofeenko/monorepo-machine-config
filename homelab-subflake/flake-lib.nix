@@ -33,7 +33,7 @@ rec {
               builtins.removeAttrs data-flake.lib.homelab [ "_mkOwnFuncs" ]
               // data-flake.lib.homelab._mkOwnFuncs hostName
               // {
-                inherit getManifest;
+                inherit getManifest getManifests;
               };
           })
           /**
@@ -256,4 +256,8 @@ rec {
   */
   getManifest = serviceName: self.serviceModules.${serviceName};
 
+  /**
+    Returns all manifests. Easier to pass around as `lib` extension instead of `self`.
+  */
+  getManifests = self.serviceModules;
 }
