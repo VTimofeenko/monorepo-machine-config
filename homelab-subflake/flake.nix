@@ -99,7 +99,10 @@
                 inherit hostName;
                 debug = true;
               }
-            );
+            ) // {
+              # Test VMs with custom data
+              dns-test-vm = import ./tests/dns-test-vm.nix { inherit inputs self lib; };
+            };
 
             deploy.nodes = lib.genAttrs hosts (
               nodeName:
