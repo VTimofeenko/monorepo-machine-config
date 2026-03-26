@@ -63,7 +63,8 @@ in
             target = it.targets;
           }
         )
-        |> lib.flatten;
+        |> lib.flatten
+        |> map (it: "\"${it}\""); # Escape the data, necessary
       view-first = "yes"; # Forces view to be served first. Necessary, the view data is the source of truth. Upstream should not be engaged.
     }
   ];
