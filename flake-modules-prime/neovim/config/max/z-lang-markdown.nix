@@ -11,6 +11,7 @@
 */
 {
   pkgs,
+  pkgs-unstable,
   lib,
   ...
 }:
@@ -68,7 +69,7 @@ in
     ''
     ''
       vim.lsp.config.harper_ls = {
-        cmd = { "${lib.getExe pkgs.harper}", "--stdio" },
+        cmd = { "${lib.getExe pkgs-unstable.harper}", "--stdio" },
         settings = {
           ["harper-ls"] = {
             linters = {
