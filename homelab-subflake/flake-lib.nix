@@ -2,6 +2,9 @@
   Functions that operate on flake itself.
 */
 { lib, self, ... }:
+let
+  inherit (self.inputs) data-flake nixpkgs;
+in
 rec {
   /**
     Produces a `nixosConfiguration` for a given host.
@@ -14,7 +17,6 @@ rec {
     }:
     let
       inherit (self) inputs;
-      inherit (inputs) data-flake nixpkgs;
       inherit (builtins) trace;
 
       dbg = label: val: if debug then trace "[mkHost:${hostName}] ${label}" val else val;
@@ -244,4 +246,10 @@ rec {
     Returns all manifests. Easier to pass around as `lib` extension instead of `self`.
   */
   getManifests = self.serviceModules;
+
+  /**
+    Pass `homelab` through
+  */
+  homelab = builtins.removeAttrs data-flake.lib.homelab [ "_mkOwnFuncs" ];
+
 }
