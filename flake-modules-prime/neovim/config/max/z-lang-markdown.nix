@@ -4,8 +4,6 @@
   Features:
 
   - `Harper` :: helps find typos in Markdown and programming comments
-  - `Vale` :: helps with writing prose a bit better. It requires some out of band
-    configuration by running `vale sync` with appropriate env config.
   - `Markdownlint` (running as LSP through `EFM`) :: makes the Markdown more uniform
   - `marksman` :: detects broken links
   - `markdown-nvim` :: used for navigation and for working with Markdown lists
@@ -17,31 +15,6 @@
   ...
 }:
 let
-  valeConfig =
-    {
-      sections = {
-        "*" = {
-          "BasedOnStyles" = "Vale, write-good, Readability";
-          "write-good.E-Prime" = "NO"; # This is a bit arbitrary
-          "Vale.Spelling" = "NO"; # Harper does this already
-          # I am not smart enough to know what these mean. These checks are
-          # very angry at me.
-          "Readability.FleschReadingEase" = "NO";
-          "Readability.FleschKincaid" = "NO";
-          "Readability.SMOG" = "NO";
-          "Readability.ColemanLiau" = "NO";
-          "Readability.LIX" = "NO";
-          "Readability.GunningFog" = "NO";
-        };
-      };
-      globalSection = {
-        "StylesPath" = "/home/spacecadet/.local/share/vale/styles";
-        MinAlertLevel = "suggestion";
-        Packages = "write-good, Readability";
-      };
-    }
-    |> (pkgs.formats.iniWithGlobalSection { }).generate ".vale.ini";
-
   markdownlintConfig =
     {
       default = true;
@@ -105,21 +78,6 @@ in
         }
       }
       vim.lsp.enable('harper_ls')
-    ''
-    ''
-      -- see
-      vim.env.VALE_CONFIG_PATH = "${valeConfig}"
-      vim.env.VALE_STYLES_PATH = vim.env.XDG_DATA_HOME .. "/vale/styles"
-      vim.lsp.config.vale_ls = {
-        cmd = { "${lib.getExe pkgs.vale-ls}" },
-        init_options = {
-            installVale = false,
-            configPath = "${valeConfig}",
-            syncOnStartup = false,
-        },
-        filetypes = { "asciidoc", "markdown", "text" },
-      }
-      vim.lsp.enable('vale_ls')
     ''
     ''
       vim.api.nvim_create_autocmd("FileType", {
