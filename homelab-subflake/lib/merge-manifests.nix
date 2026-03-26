@@ -91,19 +91,59 @@ let
               manifestData.observability.probes.impl)
           ];
 
+          # Auto-generate firewall rules for metrics endpoints (infrastructure concern)
+          # Metrics are always scraped by prometheus from backbone-inner, regardless of
+          # custom service firewall rules.
+          metricsFirewallModule =
+            if manifestData.observability.metrics != { } then
+              (
+                { lib, self, ... }:
+                let
+                  # Extract ports from metrics exporters by looking up their endpoint references
+                  metricsPorts =
+                    lib.mapAttrsToList (
+                      exporterName: exporter:
+                      let
+                        # Determine which endpoint this exporter uses
+                        endpointName =
+                          if exporter.endpoint != null then
+                            exporter.endpoint
+                          else
+                            # Infer: look for endpoints.metrics first, then fall back to first endpoint
+                            if manifestData.endpoints ? metrics then
+                              "metrics"
+                            else
+                              null;
+                        endpoint = if endpointName != null then manifestData.endpoints.${endpointName} or null else null;
+                      in
+                      if endpoint != null then endpoint.port else null
+                    ) manifestData.observability.metrics
+                    |> lib.filter (p: p != null)
+                    |> lib.unique;
+                in
+                if metricsPorts != [ ] then
+                  self.serviceModules.ssl-proxy.srvLib.mkBackboneInnerFirewallRules {
+                    inherit lib;
+                    ports = metricsPorts;
+                  }
+                else
+                  { }
+              )
+            else
+              null;
+
           # backups and storage impls
           extractImpl = attr: if lib.isAttrs attr && attr ? impl then attr.impl else null;
 
           defaultModules = lib.flatten [
             allModules
-            (lib.optional (endpointsModule != null) endpointsModule)
-            (lib.optional (firewallModule != null) firewallModule)
+            endpointsModule
+            firewallModule
+            metricsFirewallModule
             observabilityImpls
-            (lib.optional (extractImpl (manifestData.backups or {}) != null)
-              (extractImpl manifestData.backups))
-            (lib.optional (extractImpl (manifestData.storage or {}) != null)
-              (extractImpl manifestData.storage))
-            (lib.optional (manifestData.database != null) manifestData.database)
+            (extractImpl (manifestData.backups or {}))
+            (extractImpl (manifestData.storage or {}))
+            manifestData.database
           ]
           |> filter (v: v != {} && v != null);
 
