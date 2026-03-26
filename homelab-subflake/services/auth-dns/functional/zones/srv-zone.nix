@@ -45,7 +45,7 @@ in
         lib.homelab.services.getAll
         |> lib.filterAttrs (n: v: !builtins.elem "alien" v.groups || n == "nfs") # Exclude alien services, except NFS. # TODO: Maybe come up with a better separation of truly remote services vs NFS on NAS that I just don't declaratively manage
         |> lib.filterAttrs (_: v: !builtins.elem "nonWeb" v.groups) # exclude non-web services (DNS, DHCP, etc.)
-        |> lib.filterAttrs (_: v: !v.centralSSL) # exclude non-web services (DNS, DHCP, etc.)
+        |> lib.filterAttrs (_: v: !v.centralSSL) # remove services covered above
         |> lib.mapAttrsToList (
           _: v:
           let
