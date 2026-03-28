@@ -71,6 +71,7 @@
               "oxygen"
               "hydrogen"
               "helium"
+              "beryllium"
             ]; # TODO: auto-generate this from data
 
             # Merge library
