@@ -6,7 +6,6 @@
 let
   inherit (lib.homelab)
     getServiceConfig
-    getOwnIpInNetwork
     getOwnHost
     getService
     ;
@@ -18,7 +17,6 @@ let
     |> builtins.filter (name: (getService name).moduleName == "dns")
     |> builtins.head;
 
-  thisSrv = getService dnsServiceName;
   # Get service config using the actual instance name, not module name
   thisSrvConfig = getServiceConfig dnsServiceName;
 
@@ -39,8 +37,6 @@ in
     localControlSocketPath = "/run/unbound/unbound.socket";
     settings = {
       server = {
-        # Where to listen on
-        interface = map getOwnIpInNetwork thisSrv.networkAccess;
 
         # Custom records go here
         local-zone =

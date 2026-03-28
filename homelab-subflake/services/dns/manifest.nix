@@ -15,6 +15,8 @@
     };
   };
 
+  endpointsConfig = import ./non-functional/endpoints-config.nix;
+
   # Custom firewall - opens DNS port on configured network interfaces (not just backbone)
   firewall = ./non-functional/firewall.nix;
 
