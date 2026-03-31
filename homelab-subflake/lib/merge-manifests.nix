@@ -48,7 +48,13 @@ let
           # endpointsModule: custom impl if provided
           endpointsModule =
             if manifestData.endpointsConfig != null then
-              manifestData.endpointsConfig manifestData.endpoints
+              if lib.isAttrs manifestData.endpointsConfig && !lib.isFunction manifestData.endpointsConfig then
+                let
+                  _ = builtins.trace "WARNING: [${serviceName}] endpointsConfig is a set, not a function - passing through as-is" null;
+                in
+                manifestData.endpointsConfig
+              else
+                manifestData.endpointsConfig manifestData.endpoints
             else
               null;
 
