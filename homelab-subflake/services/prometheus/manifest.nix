@@ -1,4 +1,4 @@
-{ lib, serviceName, ... }:
+{ serviceName, ... }:
 {
   module = ./service.nix;
 
@@ -7,9 +7,7 @@
     protocol = "https";
   };
 
-  firewall = import ./non-functional/firewall.nix { port = 9090; serviceName = "prometheus"; };
-
-  sslProxyConfig = import ./non-functional/ssl.nix { port = 9090; serviceName = "prometheus"; };
+  endpointsConfig = import ./non-functional/endpoints-config.nix;
 
   observability = {
     metrics.main.path = "/metrics";
