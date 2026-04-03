@@ -7,8 +7,8 @@
     nixpkgs-unstable.follows = "base/nixpkgs-unstable";
     flake-parts.follows = "base/flake-parts";
 
-    # data-flake.url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-data-flake.git"; # REMOTE_SRC
-    data-flake.url = "path:///home/spacecadet/code/private-data-flake"; # LOCAL_SRC
+    data-flake.url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-data-flake.git"; # REMOTE_SRC
+    # data-flake.url = "path:///home/spacecadet/code/private-data-flake"; # LOCAL_SRC
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     impermanence.url = "github:nix-community/impermanence";
@@ -20,8 +20,8 @@
     };
 
     private-modules = {
-      # url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-modules.git"; # REMOTE_SRC
-      url = "path:///home/spacecadet/code/private-modules"; # LOCAL_SRC
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-modules.git"; # REMOTE_SRC
+      # url = "path:///home/spacecadet/code/private-modules"; # LOCAL_SRC
       inputs.data-flake.follows = "data-flake";
     };
   };
