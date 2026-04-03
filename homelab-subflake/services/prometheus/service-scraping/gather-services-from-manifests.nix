@@ -1,70 +1,45 @@
 /**
-  This module retrieves the scrape targets from the new `manifest.nix`.
+  Retrieves scrape targets from service manifests.
 
-  I will start lightweight and add features from `./default.nix` as needed.
+  Generates one scrape job per (service, exporter) pair. Multi-instance
+  services (e.g. `dns-1`, `dns-2`) appear as multiple targets within the same job.
+  All targets are scraped via the SSL proxy at
+  `<instance>.metrics.<publicDomain>/metrics/<exporterName>`.
 */
-{
-  lib,
-  data-flake,
-  self,
-  ...
-}:
-let
-  serviceManifests =
-    # Collect the service manifests from data-flake
-    data-flake.serviceModules
-    # Add manifests from self
-    |> lib.recursiveUpdate self.serviceModules;
-in
+{ lib, ... }:
 {
   services.prometheus.scrapeConfigs =
-    serviceManifests
-    # Filter only ones that declare metrics
-    # I might need to also disable if v.observability.enable is false...
-    |> lib.filterAttrs (_: v: v.observability.metrics.enable or false)
+    lib.homelab.getManifests
+    # Filter only for services that declare metrics
+    # If a service is "alien" (e.g. `rsync-net`) – it will have a dedicated
+    # SERVICE object for its metrics
+    |> lib.filterAttrs (_: m: m.observability.metrics != { })
+    # Construct (service, exporter) jobs where multi-instance services appear
+    # as multiple `static_configs` targets within the same job.
+    # This relies on:
+    # 1. `srv:ssl-proxy` handling the domains and path-based routing
+    # 2. `srv:auth-dns` resolving the instance names
     |> lib.mapAttrsToList (
       srvName: manifest:
-      let
-        # Decide whether the metrics endpoint is part of the service or there's a separate exporter
-        metricsPartOfService =
-          !(manifest.observability.metrics ? "port" || manifest.observability.metrics ? "ports");
-      in
-      {
-        job_name = "${srvName}-srv-scrape";
-        scrape_interval = "30s";
-        scheme = if metricsPartOfService then "https" else "http";
-        metrics_path =
-          (manifest.observability.metrics.path or "/metrics")
-          |> (it: if builtins.isFunction it then it lib else it);
-
-        static_configs =
-          let
-            srvScrapeTargets =
-              if srvName == "dns" then
-                [
-                  "dns_1"
-                  "dns_2"
-                ]
-              else
-                srvName |> lib.toList;
-          in
-          srvScrapeTargets
-          |> map (it: {
-            targets =
-              if metricsPartOfService then
-                (it |> lib.homelab.getServiceFqdn) |> lib.toList
-              else
-                let
-                  # Cast single port as a list to simplify code later
-                  ports = (manifest.observability.metrics.port or manifest.observability.metrics.ports) |> lib.toList;
-                in
-                map (port: "${it |> lib.homelab.getServiceInnerIP}:${toString port}") ports;
-            labels.host = it |> lib.homelab.getServiceHost;
-          });
-
-        # TODO: this is effectively a one-off constant
-        bearer_token = (lib.homelab.getServiceConfig srvName).metricsToken or null;
-      }
-    );
-
+      manifest.observability.metrics
+      |> lib.mapAttrsToList (
+        exporterName: _: {
+          job_name = "${srvName}-${exporterName}-metrics";
+          scheme = "https";
+          scrape_interval = "30s";
+          metrics_path = "/metrics/${exporterName}";
+          static_configs =
+            lib.homelab.services.getInstances srvName
+            |> map (instanceName: {
+              targets = [ (lib.homelab.services.getServiceMetricsFqdn instanceName) ];
+              labels = {
+                service = srvName;
+                instance = instanceName;
+                exporter = exporterName;
+              };
+            });
+        }
+      )
+    )
+    |> lib.flatten;
 }

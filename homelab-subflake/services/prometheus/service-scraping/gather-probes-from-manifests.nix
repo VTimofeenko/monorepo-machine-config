@@ -1,20 +1,12 @@
 /**
   This module retrieves the probe targets from the new `manifest.nix`.
 
-  Unlike metric scraping, probe configurations are usually unique per service, so this module is building imports.
+  Unlike metric scraping, probe configurations are usually unique per service,
+  so this module is only building imports.
 */
-{
-  lib,
-  data-flake,
-  self,
-  ...
-}:
+{ lib, ... }:
 let
-  serviceManifests =
-    # Collect the service manifests from data-flake
-    data-flake.serviceModules
-    # Add manifests from self
-    |> lib.recursiveUpdate self.serviceModules;
+  serviceManifests = lib.homelab.getManifests;
 in
 {
   imports =
