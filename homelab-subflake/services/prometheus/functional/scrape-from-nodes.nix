@@ -20,7 +20,7 @@
       job_name = it.exporterName;
       scrape_interval = "30s";
       static_configs =
-        lib.homelab.getService "monitoring-source"
+        lib.homelab.traits.get "monitoring-source"
         |> builtins.getAttr "onHosts"
         |> map (nodeName: {
           targets =
