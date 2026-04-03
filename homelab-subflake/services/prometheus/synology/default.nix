@@ -8,9 +8,6 @@
     extraFlags = [ "--config.expand-environment-variables" ];
   };
 
-  # Secrets
-  age.secrets."prometheus-synology-secret".file = lib.homelab.getSrvSecret "prometheus" "synology-snmp-creds";
-
   # Strictly speaking, LoadCredential would be better but then prometheus-snmp-exporter would need to be wrapped to read from CREDENTIALS_DIRECTORY in an overlay and that's a bit overkill for me.
   systemd.services.prometheus-snmp-exporter.serviceConfig.EnvironmentFile = [
     config.age.secrets."prometheus-synology-secret".path
