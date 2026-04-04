@@ -1,6 +1,8 @@
 {
   /**
     Produce a standard firewall rule that allows Prometheus to scrape metrics.
+
+    TODO: allow comments
   */
   mkBackboneInnerFirewallRules =
     {
