@@ -2,7 +2,6 @@
 { lib, config, ... }:
 let
   inherit (lib.homelab)
-    getServiceConfig
     getServiceFqdn
     getService
     getHostIpInNetwork
@@ -20,7 +19,7 @@ in
   services.gitea.settings.metrics = {
     # Gotta be "ENABLED" IN ALL CAPS
     ENABLED = true;
-    TOKEN = (getServiceConfig srvName).metricsToken;
+    TOKEN = "";
   };
 
   # Allow /metrics only from specific hosts
