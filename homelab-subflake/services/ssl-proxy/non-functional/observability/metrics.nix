@@ -1,10 +1,10 @@
 /**
   Sets up a vector instance to extract upstream logs and show them as metrics and in a structured format.:
 */
-{ port }:
 { lib, ... }:
 let
-  vectorListenerPort = 9000;
+  vectorListenerPort = 9000; # TODO: grab it from `srv:log-concentrator` manifest
+  port = 9598; # TODO: grab from own manifest
 in
 {
   # Set up the log format for the access log
@@ -158,10 +158,4 @@ in
     };
   };
 
-  # Allow firewall
-  networking.firewall.extraInputRules = ''
-    iifname "backbone-inner" ip saddr ${
-      "prometheus" |> lib.homelab.getServiceInnerIP
-    } tcp dport ${port |> toString} accept comment "Allow prometheus to scrape metrics"
-  '';
 }

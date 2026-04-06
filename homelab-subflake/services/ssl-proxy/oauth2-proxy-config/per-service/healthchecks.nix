@@ -1,4 +1,7 @@
-{ lib, config, ... }:
+{ lib, ... }:
+let
+  prometheusIP = "prometheus" |> lib.homelab.getServiceHost |> lib.flip lib.homelab.getHostIpInNetwork "lan";
+in
 {
   services.nginx.virtualHosts.${"healthchecks" |> lib.homelab.getServiceFqdn} = {
     # Disable OAuth on ping and metrics paths
@@ -7,15 +10,13 @@
       extraConfig = ''auth_request off;'';
     };
 
-    # Reimplements the metrics location generation logic
     locations."~ /metrics/" = {
       proxyPass = "$srv_upstream";
       extraConfig = ''
         auth_request off;
-      ''
-      + config.services.nginx.virtualHosts.${
-        "healthchecks" |> lib.homelab.getServiceFqdn
-      }.locations.${(lib.homelab.getServiceConfig "healthchecks").metricsURL}.extraConfig;
+        allow ${prometheusIP};
+        deny all;
+      '';
     };
   };
 }
