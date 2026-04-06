@@ -25,45 +25,45 @@
     recommendedProxySettings = true;
   };
 
-  imports =
-    let
-      serviceManifests =
-        # Collect the service manifests from data-flake
-        data-flake.serviceModules
-        # Add manifests from self
-        |> lib.mergeAttrs self.serviceModules
-        # Only interested in modules with 'ingress'
-        |> lib.filterAttrs (_: builtins.hasAttr "ingress")
-        # Only want ones that declare some sort of `sslProxyConfig`
-        |> lib.filterAttrs (_: value: builtins.hasAttr "sslProxyConfig" value.ingress);
-    in
-    # This code constructs the virtual host configurations for the services
-    (
-      serviceManifests
-      # Extract the `sslProxyConfig` module
-      |> lib.mapAttrsToList (_: value: value.ingress.sslProxyConfig)
-    )
-    # Create dedicated paths for metrics
-    ++ (
-      serviceManifests
-      |> lib.filterAttrs (_: v: v.observability.metrics.enable or false)
-      # Exclude ones with "`addr`" specified – those have custom listeners
-      |> lib.filterAttrs (_: v: !v.observability.metrics ? "port")
-      |> lib.mapAttrsToList (
-        serviceName: srvManifest:
-        (import ./srv-lib.nix).mkMetricsPathAllowOnlyPrometheus {
-          inherit serviceName lib;
-          metricsPath =
-            (srvManifest.observability.metrics.path or "/metrics")
-            |> (it: if lib.isFunction it then it lib else it);
-        }
-      )
-    )
-    # Add components of this service
-    ++ (lib.fileset.fileFilter (file: file.hasExt "nix") ./functional |> lib.fileset.toList)
-    ++ [
-      ./listen-address.nix
-      ./utils.nix
-      ./oauth2-proxy-config
-    ];
+  # imports =
+  #   let
+  #     serviceManifests =
+  #       # Collect the service manifests from data-flake
+  #       data-flake.serviceModules
+  #       # Add manifests from self
+  #       |> lib.mergeAttrs self.serviceModules
+  #       # Only interested in modules with 'ingress'
+  #       |> lib.filterAttrs (_: builtins.hasAttr "ingress")
+  #       # Only want ones that declare some sort of `sslProxyConfig`
+  #       |> lib.filterAttrs (_: value: builtins.hasAttr "sslProxyConfig" value.ingress);
+  #   in
+  #   # This code constructs the virtual host configurations for the services
+  #   (
+  #     serviceManifests
+  #     # Extract the `sslProxyConfig` module
+  #     |> lib.mapAttrsToList (_: value: value.ingress.sslProxyConfig)
+  #   )
+  #   # Create dedicated paths for metrics
+  #   ++ (
+  #     serviceManifests
+  #     |> lib.filterAttrs (_: v: v.observability.metrics.enable or false)
+  #     # Exclude ones with "`addr`" specified – those have custom listeners
+  #     |> lib.filterAttrs (_: v: !v.observability.metrics ? "port")
+  #     |> lib.mapAttrsToList (
+  #       serviceName: srvManifest:
+  #       (import ./srv-lib.nix).mkMetricsPathAllowOnlyPrometheus {
+  #         inherit serviceName lib;
+  #         metricsPath =
+  #           (srvManifest.observability.metrics.path or "/metrics")
+  #           |> (it: if lib.isFunction it then it lib else it);
+  #       }
+  #     )
+  #   )
+  #   # Add components of this service
+  #   ++ (lib.fileset.fileFilter (file: file.hasExt "nix") ./functional |> lib.fileset.toList)
+  #   ++ [
+  #     ./listen-address.nix
+  #     ./utils.nix
+  #     ./oauth2-proxy-config
+  #   ];
 }
