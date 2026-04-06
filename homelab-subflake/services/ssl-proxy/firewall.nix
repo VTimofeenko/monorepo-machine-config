@@ -10,6 +10,7 @@ in
   networking.firewall.interfaces = {
     phy-lan = { inherit allowedTCPPorts; };
     backbone = { inherit allowedTCPPorts; };
+    backbone-inner = { inherit allowedTCPPorts; };
   };
 
   networking.firewall.extraReversePathFilterRules = ''

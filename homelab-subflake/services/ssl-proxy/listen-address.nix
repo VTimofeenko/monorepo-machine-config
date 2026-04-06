@@ -9,6 +9,7 @@
       [
         "lan"
         "backbone"
+        "backbone-inner"
       ]
       |> map lib.homelab.getOwnIpInNetwork;
   };
