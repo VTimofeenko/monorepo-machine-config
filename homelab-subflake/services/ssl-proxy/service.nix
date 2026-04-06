@@ -15,6 +15,7 @@
   services.nginx = {
     enable = true;
     recommendedProxySettings = true;
+    serverNamesHashBucketSize = 128; # Necessary for having many domains
   };
 
   imports =
