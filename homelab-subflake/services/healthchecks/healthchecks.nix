@@ -53,7 +53,10 @@ in
     );
     settings = {
       SECRET_KEY_FILE = config.age.secrets."${srvName}-secret".path;
-      ALLOWED_HOSTS = [ fqdn ];
+      ALLOWED_HOSTS = [
+        fqdn
+        (lib.homelab.services.getServiceMetricsFqdn srvName) # So `srv:ssl-proxy` can proxy `srv:prometheus` metrics here
+      ];
       INTEGRATIONS_ALLOW_PRIVATE_IPS = "True"; # Allow running checks on classful IPs in LAN
       REGISTRATION_OPEN = false;
       SITE_ROOT = "https://${fqdn}";
