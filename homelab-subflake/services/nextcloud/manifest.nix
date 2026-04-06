@@ -20,7 +20,7 @@
   observability = {
     metrics.main = {
       impl = ./non-functional/metrics.nix;
-      path = "/";
+      path = "/metrics";
       endpoint = "metrics";
     };
     alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
