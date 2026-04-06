@@ -139,6 +139,9 @@ rec {
         { programs.myNeovim.enable = true; }
       ];
 
+      # These modules are side-effect free by convention
+      privateModules = inputs.private-modules.nixosModules |> builtins.attrValues;
+
     in
     dbg "system=${hostData.system}" lib.nixosSystem {
       inherit (hostData) system;
@@ -156,6 +159,7 @@ rec {
       ++ baseFlakeModules
       ++ serviceModulesForHost
       ++ traitModulesForHost
+      ++ privateModules
       ++ secretModulesForHost
       ++ extraModules;
 
