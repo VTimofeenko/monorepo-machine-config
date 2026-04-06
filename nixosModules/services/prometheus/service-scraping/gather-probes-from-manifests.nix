@@ -17,10 +17,10 @@ let
     |> lib.recursiveUpdate self.serviceModules;
 in
 {
-  imports =
-    serviceManifests
-    # Filter only ones that declare probes
-    |> lib.filterAttrs (_: v: v.observability.probes.enable or false)
-    # Import the Prometheus implementation
-    |> lib.mapAttrsToList (_: it: it.observability.probes.prometheusImpl);
+  # imports =
+  #   serviceManifests
+  #   # Filter only ones that declare probes
+  #   |> lib.filterAttrs (_: v: v.observability.probes.enable or false)
+  #   # Import the Prometheus implementation
+  #   |> lib.mapAttrsToList (_: it: it.observability.probes.prometheusImpl);
 }
