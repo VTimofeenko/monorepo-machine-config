@@ -1,0 +1,68 @@
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+let
+  inherit (lib.homelab) getServiceFqdn getSrvSecret;
+  srvName = "nextcloud";
+in
+{
+  # Service configuration
+  services.nextcloud = {
+    enable = true;
+    package = pkgs.nextcloud32;
+    hostName = getServiceFqdn srvName;
+
+    configureRedis = true;
+
+    phpOptions = {
+      "opcache.interned_strings_buffer" = "16";
+    };
+
+    config = {
+      dbtype = "pgsql";
+      dbuser = "nextcloud";
+      dbhost = getServiceFqdn "db";
+      dbname = "nextcloud";
+      dbpassFile = config.age.secrets.dbpassFile.path;
+      adminuser = "root";
+      adminpassFile = config.age.secrets.adminpassFile.path;
+    };
+    settings = {
+      allow_local_remote_servers = true;
+      overwriteprotocol = "https";
+      trusted_proxies = lib.homelab.getSSLProxyIPs;
+      maintenance_window_start = 10; # In UTC, = 2 AM PST
+      default_phone_region = "US";
+    };
+
+    secretFile = config.age.secrets.nextcloudSecrets.path;
+  };
+
+  imports = lib.localLib.mkImportsFromDir ./functional;
+
+  # Secrets
+  age.secrets =
+    let
+      nextcloudUsr = config.systemd.services.nextcloud-setup.serviceConfig.User;
+    in
+    {
+      dbpassFile = {
+        file = getSrvSecret srvName "dbpassFile";
+        owner = nextcloudUsr;
+        group = nextcloudUsr;
+      };
+      adminpassFile = {
+        file = getSrvSecret srvName "adminpassFile";
+        owner = nextcloudUsr;
+        group = nextcloudUsr;
+      };
+      nextcloudSecrets = {
+        file = getSrvSecret srvName "nextcloudSecrets";
+        owner = nextcloudUsr;
+        group = nextcloudUsr;
+      };
+    };
+}
