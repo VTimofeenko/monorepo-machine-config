@@ -23,6 +23,7 @@
       impl = ./non-functional/metrics.nix;
       path = "/";
     };
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
   };
 
   # Storage and backups omitted - this is a stateless service
