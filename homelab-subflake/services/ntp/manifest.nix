@@ -22,6 +22,6 @@
       path = "/";
       endpoint = "metrics";
     };
-    alerts.grafanaImpl = import ./non-functional/alerts.nix;
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
   };
 }
