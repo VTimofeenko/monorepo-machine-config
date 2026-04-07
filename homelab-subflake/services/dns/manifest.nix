@@ -26,7 +26,7 @@
       impl = ./non-functional/metrics.nix;
     };
 
-    alerts.grafanaImpl = import ./non-functional/alerts.nix;
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
     logging.impl = ./non-functional/logging.nix;
   };
 
