@@ -33,6 +33,7 @@
           labels = {
             alias = "${nodeName}.home.arpa";
             host = nodeName;
+            exporter = it.exporterName;
             resource = "host:${nodeName}";
           };
         });
