@@ -36,6 +36,7 @@
                 service = srvName;
                 instance = instanceName;
                 exporter = exporterName;
+                resource = "srv:${srvName}";
               };
             });
         }
