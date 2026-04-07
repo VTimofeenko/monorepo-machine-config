@@ -24,7 +24,7 @@
 
     observability = {
       metrics.main.impl = ./non-functional/observability/metrics/impl.nix;
-      alerts.grafanaImpl = import ./non-functional/observability/alerts.nix { inherit serviceName; };
+      alerts.prometheusImpl = ./non-functional/observability/alerts.nix;
     };
 
     storage.impl = ./non-functional/storage.nix;
