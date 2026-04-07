@@ -30,6 +30,7 @@
       impl = ./non-functional/metrics.nix;
       endpoint = "metrics";
     };
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
   };
 
   documentation = ./README.md;
