@@ -14,6 +14,7 @@
         {
           url = "http://${address}/hook";
           max_alerts = 3;
+          send_resolved = true;
         }
       ];
     }
