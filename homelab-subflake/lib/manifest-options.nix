@@ -106,9 +106,16 @@ let
         type = types.nullOr (
           types.submodule {
             options = {
+              # Kept for compatibility, change later
               grafanaImpl = mkOption {
                 type = types.nullOr types.path;
                 default = null;
+                description = "Path to Grafana alerting rules definition";
+              };
+              prometheusImpl = mkOption {
+                type = types.nullOr types.path;
+                default = null;
+                description = "Path to Prometheus alerting rules definition";
               };
             };
           }

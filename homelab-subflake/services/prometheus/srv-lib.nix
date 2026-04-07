@@ -1,4 +1,39 @@
 {
+  alertLevels = [
+    "Emergency"
+    "Alert"
+    "Critical"
+    "Error"
+    "Warning"
+    "Notice"
+    "Informational"
+    "Debug"
+  ];
+
+  severityNumMap = {
+    Emergency = 21;
+    Alert = 19;
+    Critical = 18;
+    Error = 17;
+    Warning = 13;
+    Notice = 10;
+    Informational = 9;
+    Debug = 5;
+  };
+
+  # Reverse map: _alertLevelNum (string) -> level name
+  numToLevel =
+    {
+      "21" = "Emergency";
+      "19" = "Alert";
+      "18" = "Critical";
+      "17" = "Error";
+      "13" = "Warning";
+      "10" = "Notice";
+      "9" = "Informational";
+      "5" = "Debug";
+    };
+
   /**
     Produce a standard firewall rule that allows Prometheus to scrape metrics.
 
