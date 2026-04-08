@@ -139,9 +139,20 @@ let
         type = types.nullOr (
           types.submodule {
             options = {
+              enable = mkOption {
+                type = types.bool;
+                default = false;
+                description = "Whether Prometheus probing is enabled for this service";
+              };
               impl = mkOption {
                 type = types.nullOr types.path;
                 default = null;
+                description = "NixOS module enabling the probe exporter on the service host";
+              };
+              prometheusImpl = mkOption {
+                type = types.nullOr types.path;
+                default = null;
+                description = "NixOS module configuring Prometheus scrape jobs for this service's probes";
               };
             };
           }
