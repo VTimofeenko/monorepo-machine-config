@@ -144,6 +144,11 @@ let
                 default = false;
                 description = "Whether Prometheus probing is enabled for this service";
               };
+              ssl = mkOption {
+                type = types.bool;
+                default = false;
+                description = "Whether probing checks an SSL certificate (enables auto-generated cert expiry alerts)";
+              };
               impl = mkOption {
                 type = types.nullOr types.path;
                 default = null;

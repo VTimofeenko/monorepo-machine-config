@@ -26,6 +26,7 @@
     alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
     probes = {
       enable = true;
+      ssl = true;
       prometheusImpl = ./non-functional/probes/prometheus.nix;
     };
   };

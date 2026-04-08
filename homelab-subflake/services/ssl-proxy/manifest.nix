@@ -22,6 +22,7 @@
     metrics.main.impl = ./non-functional/observability/metrics.nix;
     probes = {
       enable = true;
+      ssl = true;
       impl = ./non-functional/probes;
       prometheusImpl = ./non-functional/probes/prometheus.nix;
     };
