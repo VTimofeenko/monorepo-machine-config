@@ -1,26 +1,25 @@
-{ serviceName, ... }:
-{ lib, ... }:
+{ serviceName, lib, ... }:
+let
+  host = lib.homelab.getServiceHost serviceName;
+  fsDiskLabel = ''mountpoint="/var/lib/restic", host="${host}"'';
+in
 {
-  # standard proxy alerts
   Alert = [
     {
       title = "Restic service down";
-      query = "up{job=\"${serviceName}-srv-scrape\"}";
+      expr = ''absent(up{resource="srv:${serviceName}"}) or up{resource="srv:${serviceName}"} == 0'';
+    }
+  ];
+  Warning = [
+    {
+      title = "Disk almost full";
+      expr = "(node_filesystem_avail_bytes{${fsDiskLabel}} / node_filesystem_size_bytes{${fsDiskLabel}}) * 100 < 10";
+      grafanaDashboardId = "ec51fd06-a034-4271-90e3-62d95310044a";
     }
     {
-      title = "disk almost full";
-      query =
-        let
-          label = "mountpoint=\"/var/lib/restic\", host=\"${serviceName |> lib.homelab.getServiceHost}\"";
-        in
-        "(((node_filesystem_avail_bytes{${label}} * 100) / node_filesystem_size_bytes{${label}}) < 10)";
-      addVector = true;
-    }
-    {
-      title = "Spike in proxy errors";
-      query = "(vector(0) and on() (irate(ssl_proxy_nginx_http_requests_total{domain=\"${
-        serviceName |> lib.homelab.getServiceFqdn
-      }\", result!=\"2xx_3xx_success\"}[3m]) > 0)) or on() vector(1) ";
+      title = "No backup snapshots in 30h";
+      expr = ''sum(increase(rest_server_blob_write_total{resource="srv:${serviceName}", type="snapshots"}[30h])) == 0'';
+      grafanaDashboardId = "ec51fd06-a034-4271-90e3-62d95310044a";
     }
   ];
 }
