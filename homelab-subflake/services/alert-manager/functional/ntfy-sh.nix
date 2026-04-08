@@ -34,7 +34,7 @@ in
           templates = {
             title = ''{{ if eq .Status "resolved" }}Resolved: {{ end }}{{ index .Annotations "summary" }}'';
             description = ''{{ index .Annotations "description" }}'';
-            headers.X-Click = "{{ .dashboard }}";
+            headers.X-Click = ''{{ index .Annotations "dashboard" }}'';
           };
         };
       };
