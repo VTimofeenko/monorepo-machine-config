@@ -12,7 +12,7 @@
   observability = {
     # TODO: this URL points to the "mostly backups" project in `healthchecks`. While important, it's not proper "service is up" monitoring.
     metrics.main.path = lib.homelab.getServiceConfig serviceName |> (cfg: cfg.metricsURL);
-    alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
   };
 
   # Backups disabled - FIXME: enable after migration of cerium
