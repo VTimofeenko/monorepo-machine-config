@@ -1,4 +1,4 @@
-{ lib, serviceName, ... }:
+{ lib, ... }:
 {
   module = ./service.nix;
 
@@ -9,7 +9,7 @@
       protocol = "tcp";
       path = "/metrics";
     };
-    probes = {
+    probe = {
       port = 9219;
       protocol = "tcp";
     };
@@ -20,8 +20,12 @@
 
   observability = {
     metrics.main.impl = ./non-functional/observability/metrics.nix;
-    probes.impl = ./non-functional/probes;
-    alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
+    probes = {
+      enable = true;
+      impl = ./non-functional/probes;
+      prometheusImpl = ./non-functional/probes/prometheus.nix;
+    };
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
   };
 
   srvLib = import ./srv-lib.nix { inherit lib; };
