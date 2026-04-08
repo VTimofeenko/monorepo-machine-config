@@ -19,4 +19,3 @@ buildGoModule rec {
 
   meta.mainProgram = "ssl_exporter";
 }
-

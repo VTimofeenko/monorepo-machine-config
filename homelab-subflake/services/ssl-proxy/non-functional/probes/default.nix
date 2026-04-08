@@ -20,5 +20,4 @@ in
     } tcp dport ${port |> toString} accept comment "Allow prometheus to scrape ssl probes"
   '';
 
-  imports = [ ./impl.nix ];
 }

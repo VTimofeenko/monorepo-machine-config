@@ -16,11 +16,7 @@ in
   options.services.prometheus.exporters.ssl_exporter = {
     enable = lib.mkEnableOption "ssl prometheus exporter";
 
-    package = mkOption {
-      type = types.package;
-      description = "The ssl-exporter package to use.";
-      default = pkgs.callPackage ./pkg.nix { };
-    };
+    package = lib.mkPackageOption pkgs "prometheus-ssl-exporter" { };
     port = mkOption {
       type = types.port;
       default = 9219;

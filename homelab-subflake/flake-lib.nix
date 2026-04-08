@@ -136,6 +136,7 @@ rec {
         inputs.base.nixosModules.vim
         inputs.base.nixosModules.my-theme
         inputs.base.nixosModules.apprise-api # TODO: just import all once `de` is migrated
+        inputs.base.nixosModules.prometheus-ssl-exporter
         { programs.myNeovim.enable = true; }
       ];
 
