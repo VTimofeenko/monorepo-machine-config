@@ -29,6 +29,31 @@ let
     let
       innerIP = lib.homelab.getServiceInnerIP instanceName;
       fqdn = lib.homelab.services.getServiceMetricsFqdn instanceName;
+
+      metricsLocations = manifest.observability.metrics
+        |> lib.mapAttrs' (
+          exporterName: exporter:
+          let
+            endpoint = inferEndpoint manifest.endpoints exporter;
+          in
+          lib.nameValuePair "/metrics/${exporterName}" {
+            proxyPass = "http://${innerIP}:${toString endpoint.port}${exporter.path}";
+            extraConfig = ''
+              allow ${prometheusInnerIP};
+              deny all;
+            '';
+          }
+        );
+
+      probeLocation = lib.optionalAttrs (manifest.endpoints ? probe) {
+        "/probe" = {
+          proxyPass = "http://${innerIP}:${toString manifest.endpoints.probe.port}";
+          extraConfig = ''
+            allow ${prometheusInnerIP};
+            deny all;
+          '';
+        };
+      };
     in
     {
       "${fqdn}" = {
@@ -36,27 +61,14 @@ let
         inherit (config.services.homelab.ssl-proxy) listenAddresses;
         sslCertificate = config.age.secrets."ssl-cert".path;
         sslCertificateKey = config.age.secrets."ssl-key".path;
-        locations = manifest.observability.metrics
-          |> lib.mapAttrs' (
-            exporterName: exporter:
-            let
-              endpoint = inferEndpoint manifest.endpoints exporter;
-            in
-            lib.nameValuePair "/metrics/${exporterName}" {
-              proxyPass = "http://${innerIP}:${toString endpoint.port}${exporter.path}";
-              extraConfig = ''
-                allow ${prometheusInnerIP};
-                deny all;
-              '';
-            }
-          );
+        locations = metricsLocations // probeLocation;
       };
     };
 in
 {
   services.nginx.virtualHosts =
     lib.homelab.getManifests
-    |> lib.filterAttrs (_: m: m.observability.metrics != { })
+    |> lib.filterAttrs (_: m: m.observability.metrics != { } || m.endpoints ? probe)
     |> lib.mapAttrsToList (
       modName: manifest:
       lib.homelab.services.getInstances modName
