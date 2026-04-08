@@ -24,6 +24,10 @@
       impl = ./non-functional/metrics.nix;
     };
     alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
+    probes = {
+      enable = true;
+      prometheusImpl = ./non-functional/probes/prometheus.nix;
+    };
   };
 
   backups = {
