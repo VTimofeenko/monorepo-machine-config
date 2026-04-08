@@ -25,7 +25,7 @@
       impl = ./non-functional/metrics.nix;
       path = "/api/prometheus";
     };
-    alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
   };
 
   dashboard = {
