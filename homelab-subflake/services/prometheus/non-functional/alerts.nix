@@ -1,24 +1,19 @@
-{ serviceName, ... }:
-{ lib, config, ... }:
-let
-  mountPoint = config.services.prometheus.stateDir;
-in
+{ serviceName, lib, ... }:
 {
   Alert = [
     {
       title = "service down";
-      query = "up{job=\"${serviceName}-srv-scrape\"}";
+      expr = ''absent(up{resource="srv:${serviceName}"}) or up{resource="srv:${serviceName}"} == 0'';
     }
     {
       title = "disk almost full";
-      query = "(vector(0) and on() (((node_filesystem_avail_bytes{mountpoint=\"${mountPoint}\"} * 100) / node_filesystem_size_bytes{mountpoint=\"${mountPoint}\"}) < 10)) or on() vector(1)";
+      expr =
+        let
+          mountpoint = "/var/lib/prometheus2";
+          host = serviceName |> lib.homelab.getServiceHost;
+        in
+        ''(node_filesystem_avail_bytes{mountpoint="${mountpoint}",host="${host}"} * 100) / node_filesystem_size_bytes{mountpoint="${mountpoint}",host="${host}"} < 10'';
       description = "Free disk space < 10%";
-    }
-    {
-      title = "Spike in proxy errors";
-      query = "(vector(0) and on() (irate(ssl_proxy_nginx_http_requests_total{domain=\"${
-        serviceName |> lib.homelab.getServiceFqdn
-      }\", result!=\"2xx_3xx_success\"}[3m]) > 0)) or on() vector(1) ";
     }
   ];
 }
