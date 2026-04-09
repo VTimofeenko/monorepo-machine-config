@@ -29,7 +29,7 @@
       endpoint = "metrics";
     };
 
-    alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
   };
 
   # Stateless service - no backups or storage needed

@@ -1,24 +1,32 @@
 { serviceName, ... }:
+let
+  grafanaDashboardId = "fdydurfmfkbuod";
+in
 {
   Emergency = [
     {
       title = "UPS check is down";
-      query = "up{job=\"${serviceName}-srv-scrape\"}";
+      expr = ''absent(up{resource="srv:${serviceName}"}) or up{resource="srv:${serviceName}"} == 0'';
     }
     {
       title = "UPS is on battery";
-      query = "network_ups_tools_ups_status{flag=\"OB\"} > 0";
-      addVector = true;
+      expr = ''network_ups_tools_ups_status{resource="srv:${serviceName}",flag="OB"} > 0'';
     }
     {
-      title = "battery needs replacement";
-      query = "network_ups_tools_ups_status{flag=\"RB\"} > 0";
-      addVector = true;
+      title = "Battery needs replacement";
+      expr = ''network_ups_tools_ups_status{resource="srv:${serviceName}",flag="RB"} > 0'';
     }
     {
-      title = "low remaining runtime";
-      query = "network_ups_tools_battery_runtime < 300";
-      addVector = true;
+      title = "Low remaining runtime";
+      expr = ''network_ups_tools_battery_runtime{resource="srv:${serviceName}"} < network_ups_tools_battery_runtime_low{resource="srv:${serviceName}"}'';
+    }
+  ];
+  Warning = [
+    {
+      title = "Low battery charge";
+      expr = ''network_ups_tools_battery_charge{resource="srv:${serviceName}"} < 30'';
+      description = "Battery charge below 30%";
     }
   ];
 }
+|> builtins.mapAttrs (_: v: v |> map (it: it // { inherit grafanaDashboardId; }))
