@@ -23,7 +23,7 @@
       path = "/metrics";
       endpoint = "metrics";
     };
-    alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
   };
 
   backups = {

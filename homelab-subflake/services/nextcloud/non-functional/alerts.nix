@@ -1,30 +1,18 @@
-{ serviceName, ... }:
-{ lib, ... }:
+{ serviceName, lib, ... }:
 {
   Emergency = [
     {
-      title = "${serviceName} service down";
-      query = "up{job=\"${serviceName}-srv-scrape\"}";
+      title = "service down";
+      expr = ''absent(nextcloud_up{resource="srv:${serviceName}"}) or nextcloud_up{resource="srv:${serviceName}"} == 0'';
     }
     {
       title = "disk almost full";
-      description = "Free disk space < 10%";
-      query =
+      expr =
         let
-          label = "mountpoint=~\"/var/lib/nextcloud.*\", host=\"${
-            serviceName |> lib.homelab.getServiceHost
-          }\"";
+          host = serviceName |> lib.homelab.getServiceHost;
         in
-        "(((node_filesystem_avail_bytes{${label}} * 100) / node_filesystem_size_bytes{${label}}) < 10)";
-      addVector = true;
-    }
-  ];
-  Alert = [
-    {
-      title = "Spike in proxy errors";
-      query = "(vector(0) and on() (irate(ssl_proxy_nginx_http_requests_total{domain=\"${
-        serviceName |> lib.homelab.getServiceFqdn
-      }\", result!=\"2xx_3xx_success\"}[3m]) > 0)) or on() vector(1) ";
+        ''(node_filesystem_avail_bytes{mountpoint=~"/var/lib/nextcloud.*",host="${host}"} * 100) / node_filesystem_size_bytes{mountpoint=~"/var/lib/nextcloud.*",host="${host}"} < 10'';
+      description = "Free disk space < 10%";
     }
   ];
 }
