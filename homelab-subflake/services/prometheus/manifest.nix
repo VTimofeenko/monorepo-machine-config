@@ -1,4 +1,4 @@
-{ serviceName, ... }:
+{ lib, ... }:
 {
   module = ./service.nix;
 
@@ -27,7 +27,7 @@
     ];
   };
 
-  srvLib = import ./srv-lib.nix;
+  srvLib = import ./srv-lib.nix { inherit lib; };
 
   # Backups disabled - data to be replicated
 }

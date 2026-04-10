@@ -7,20 +7,7 @@
 */
 { lib, pkgs, ... }:
 let
-  inherit (lib.homelab.getSrvLib "prometheus") severityNumMap alertLevels;
-
-  grafanaFqdn = lib.homelab.getServiceFqdn "grafana";
-
-  forDefaults = {
-    Emergency = "0m";
-    Alert = "2m";
-    Critical = "2m";
-    Error = "2m";
-    Warning = "5m";
-    Notice = "5m";
-    Informational = "5m";
-    Debug = "5m";
-  };
+  mkRule = (lib.homelab.getSrvLib "prometheus").mkRule;
 
   # Import an `alerts.nix` path. Supports both plain attrsets and
   # `{ lib, serviceName, ... }` functions.
@@ -36,29 +23,6 @@ let
       }
     else
       raw;
-
-  # Build a single Prometheus alerting rule attrset.
-  mkRule =
-    srvName: alertLevel: rule:
-    assert lib.assertOneOf "alertLevel" alertLevel alertLevels;
-    {
-      alert = rule.title |> lib.splitString " " |> map lib.localLib.uppercase |> lib.concatStrings;
-      expr = rule.expr;
-      for = rule.for or forDefaults.${alertLevel};
-      labels = {
-        inherit alertLevel;
-        _alertLevelNum = severityNumMap.${alertLevel} |> toString;
-        resource = "srv:${srvName}";
-        service = srvName;
-      };
-      annotations = {
-        summary = rule.title;
-      }
-      // lib.optionalAttrs (rule ? description) { inherit (rule) description; }
-      // lib.optionalAttrs (rule ? grafanaDashboardId) {
-        dashboard = "https://${grafanaFqdn}/d/${rule.grafanaDashboardId}";
-      };
-    };
 
   # Expand all alerts from a manifest into a flat list of rule attrsets.
   mkServiceRules =

@@ -6,7 +6,7 @@
 */
 { lib, pkgs, ... }:
 let
-  inherit (lib.homelab.getSrvLib "prometheus") severityNumMap numToLevel;
+  inherit (lib.homelab.getSrvLib "prometheus") severityNumMap numToLevel mkRule;
 
   defaultHostSeverity = "Warning";
 
@@ -50,19 +50,12 @@ let
     let
       maxNum = hostMaxSeverityNum.${hostName} or 0;
       level = if maxNum == 0 then defaultHostSeverity else numToLevel.${toString maxNum};
-      num = severityNumMap.${level};
     in
-    {
-      alert = "Host `${hostName}` Down";
+    mkRule hostName level {
+      title = "Host down";
       expr = ''up{resource="host:${hostName}"} == 0'';
       for = "2m";
-      labels = {
-        alertLevel = level;
-        _alertLevelNum = toString num;
-        host = hostName;
-        resource = "host:${hostName}";
-      };
-      annotations.summary = "${hostName} is unreachable";
+      description = "${hostName} is unreachable";
     };
 
 in
