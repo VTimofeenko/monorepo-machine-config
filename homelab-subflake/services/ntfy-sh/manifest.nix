@@ -9,9 +9,7 @@
 
   endpointsConfig = import ./non-functional/endpoints-config.nix;
 
-  observability = {
-    alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
-  };
+  observability = { }; # TODO: implement proper metrics here
 
   # Backups disabled — no persistent state to back up
   # backups = { ... };

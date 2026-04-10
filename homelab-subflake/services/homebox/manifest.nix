@@ -22,9 +22,7 @@
       };
   };
 
-  observability = {
-    alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
-  };
+  observability = { }; # TODO: implement probe and metrics https://homebox.software/en/advanced/opentelemetry/
 
   dashboard = {
     category = "Home";

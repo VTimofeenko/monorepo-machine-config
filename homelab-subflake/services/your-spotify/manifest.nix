@@ -31,9 +31,7 @@
 
   endpointsConfig = import ./non-functional/endpoints-config.nix;
 
-  observability = {
-    alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
-  };
+  observability = { }; # TODO: implement 200 probe only
 
   # Backups disabled — TODO
   # backups = { ... };

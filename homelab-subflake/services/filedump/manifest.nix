@@ -11,9 +11,7 @@
 
   sslProxyConfig = import ./non-functional/ssl.nix { inherit serviceName; };
 
-  observability = {
-    alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
-  };
+  observability = { }; # TODO: implement, probe only
 
   dashboard = {
     category = "Home";
