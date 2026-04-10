@@ -23,7 +23,7 @@
     metrics.main = {
       impl = ./non-functional/metrics.nix;
     };
-    alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
     probes = {
       enable = true;
       ssl = true;
