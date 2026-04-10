@@ -59,7 +59,7 @@
         # Turn into list just in case, so callers don't need to bother.
         |> lib.toList
         # Parse ports coming in as just int. If so – reconstruct attrset.
-        # Otherwise leave the value be and let if fail later if needed.
+        # Else leave the value be and let if fail later if needed.
         |> map (
           it:
           if lib.isInt it then
@@ -75,8 +75,8 @@
           it:
           [
             ''iifname "backbone-inner"''
-            ''ip saddr { ${"prometheus" |> lib.homelab.getServiceInnerIP} }''
-            ''${it.protocol} dport ${it.port |> toString} accept''
+            "ip saddr { ${"prometheus" |> lib.homelab.getServiceInnerIP} }"
+            "${it.protocol} dport ${it.port |> toString} accept"
           ]
           |> builtins.concatStringsSep " "
         )
