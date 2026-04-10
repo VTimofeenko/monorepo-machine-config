@@ -20,12 +20,26 @@ in
       title = "Low remaining runtime";
       expr = ''network_ups_tools_battery_runtime{resource="srv:${serviceName}"} < network_ups_tools_battery_runtime_low{resource="srv:${serviceName}"}'';
     }
+    {
+      title = "UPS overloaded";
+      expr = ''network_ups_tools_ups_status{resource="srv:${serviceName}",flag="OVER"} > 0'';
+    }
   ];
   Warning = [
     {
       title = "Low battery charge";
       expr = ''network_ups_tools_battery_charge{resource="srv:${serviceName}"} < 30'';
       description = "Battery charge below 30%";
+    }
+    {
+      title = "UPS in bypass mode";
+      expr = ''network_ups_tools_ups_status{resource="srv:${serviceName}",flag="BYPASS"} > 0'';
+      description = "UPS is in bypass mode — no battery protection";
+    }
+    {
+      title = "High UPS load";
+      expr = ''network_ups_tools_ups_load{resource="srv:${serviceName}"} > 80'';
+      description = "UPS load above 80%";
     }
   ];
 }
