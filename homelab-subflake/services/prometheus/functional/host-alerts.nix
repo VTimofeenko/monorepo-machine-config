@@ -17,8 +17,17 @@ let
   hostSelector =
     monitoredHosts |> lib.concatStringsSep "|" |> (hosts: ''resource=~"host:(${hosts})"'');
 
-  # Filesystem selector: skip virtual/read-only/boot mounts
+  # Filesystem selector: skip virtual/read-only/boot mounts.
   fsSelector = ''${hostSelector},fstype!~"tmpfs|overlay|devtmpfs|squashfs|ramfs",mountpoint!~"/boot.*"'';
+
+  # Collapse multiple mountpoints of the same device (bind mounts) into one
+  # series per (resource, host, device) to avoid duplicate alerts.
+  fsAvail = "min by (resource, host, device) (node_filesystem_avail_bytes{${fsSelector}})";
+  fsSize = "min by (resource, host, device) (node_filesystem_size_bytes{${fsSelector}})";
+
+  # Minimum absolute free space: avoids noise on multi-TB disks where a
+  # percentage threshold alone is too sensitive (e.g. 20% of 12 terabytes = 2.4 terabytes free).
+  minFreeBytesWarn = toString (50 * 1024 * 1024 * 1024); # 50 gigabytes
 
 in
 {
@@ -36,27 +45,17 @@ in
               })
               (mkRule "Error" {
                 title = "Disk space critical";
-                expr = ''
-                  node_filesystem_avail_bytes{${fsSelector}}
-                  / node_filesystem_size_bytes{${fsSelector}}
-                  < 0.05
-                '';
+                expr = "${fsAvail} / ${fsSize} < 0.05";
                 description = "Filesystem has less than 5% free space";
               })
               (mkRule "Warning" {
                 title = "Disk space low";
                 expr = ''
-                  (
-                    node_filesystem_avail_bytes{${fsSelector}}
-                    / node_filesystem_size_bytes{${fsSelector}}
-                    < 0.20
-                  ) unless (
-                    node_filesystem_avail_bytes{${fsSelector}}
-                    / node_filesystem_size_bytes{${fsSelector}}
-                    < 0.05
-                  )
+                  (${fsAvail} / ${fsSize} < 0.20)
+                  and (${fsAvail} < ${minFreeBytesWarn})
+                  unless (${fsAvail} / ${fsSize} < 0.05)
                 '';
-                description = "Filesystem is between 80-95% full";
+                description = "Filesystem is between 80-95% full and less than 50 GiB free";
               })
               (mkRule "Warning" {
                 title = "Low available memory";
