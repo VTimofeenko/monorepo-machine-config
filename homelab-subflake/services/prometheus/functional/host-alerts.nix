@@ -91,12 +91,14 @@ in
                 expr = "abs(node_timex_offset_seconds{${hostSelector}}) > 0.1";
                 description = "System clock is more than 100ms out of sync with NTP";
               })
-              # TODO: fix nixos_version_info metric and re-enable
+              # TODO: fix `nixos_version_info` metric and re-enable
+              # ```
               # (mkRule "Informational" {
               #   title = "Dirty NixOS build";
               #   expr = ''nixos_version_info{${hostSelector}} == 1'';
               #   description = "Host is running a locally-modified NixOS build";
               # })
+              # ```
             ];
           }
         ];
