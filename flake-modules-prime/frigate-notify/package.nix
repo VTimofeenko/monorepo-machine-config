@@ -1,3 +1,6 @@
+/**
+  A forked version of `frigate-notify` that adds a few features and removes Olm dependency.
+*/
 {
   lib,
   buildGoModule,
@@ -6,20 +9,18 @@
 
 buildGoModule rec {
   pname = "frigate-notify";
-  version = "0.5.3";
+  version = "0.5.4";
 
   src = fetchFromGitHub {
-    owner = "0x2142";
+    owner = "VTimofeenko";
     repo = pname;
-    tag = "v${version}";
-    hash = "sha256-VYDfnEITQcLGld2yYvBUdS2Xw1x4TuH+qTjlVVEP5+8=";
+    rev = "10430798fd19a383af3fc19905e5ebd36632f318";
+    hash = "sha256-fsjtFFxW0UBqSJILxuSUar7xWAK8GzAnd/LlKrkmKyg=";
   };
 
-  vendorHash = "sha256-miBOrWqzpuxJGj8g2kdn1Jgv0r42f2vMr47usYXFsJU=";
+  vendorHash = "sha256-rS4g6N9GVgGiV1pdJzH0rnOPhgF46ewOAX6oVG4Zoqs=";
 
   doCheck = false; # it tries to perform some tests that require frigate
-
-  patches = [ ./remove-olm.patch ];
 
   meta = with lib; {
     description = "A simple app designed to send notifications from Frigate NVR to your favorite platforms";
