@@ -1,6 +1,7 @@
-{ lib
-, buildGoModule
-, fetchFromGitHub
+{
+  lib,
+  buildGoModule,
+  fetchFromGitHub,
 }:
 
 buildGoModule rec {
@@ -16,7 +17,7 @@ buildGoModule rec {
 
   vendorHash = "sha256-miBOrWqzpuxJGj8g2kdn1Jgv0r42f2vMr47usYXFsJU=";
 
-  doCheck = false;  #  it tries to perform some tests that require frigate
+  doCheck = false; # it tries to perform some tests that require frigate
 
   patches = [ ./remove-olm.patch ];
 
