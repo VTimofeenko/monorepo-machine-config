@@ -73,6 +73,7 @@
               "helium"
               "beryllium"
               "fluorine"
+              "nitrogen"
             ]; # TODO: auto-generate this from data
 
             # Merge library
