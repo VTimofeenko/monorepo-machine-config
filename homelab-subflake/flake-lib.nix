@@ -137,6 +137,7 @@ rec {
         inputs.base.nixosModules.my-theme
         inputs.base.nixosModules.apprise-api # TODO: just import all once `de` is migrated
         inputs.base.nixosModules.prometheus-ssl-exporter
+        inputs.base.nixosModules.frigate-notify
         { programs.myNeovim.enable = true; }
       ];
 
