@@ -7,8 +7,6 @@
 let
   srvName = "filedump";
   cfg = config.services.myFiledump;
-
-  misc-icons = pkgs.callPackage ./packages/misc-icons.nix { };
 in
 {
   options.services.myFiledump = {
@@ -25,7 +23,6 @@ in
   config.systemd.tmpfiles.rules = [
     "d ${cfg.dir} 0755 root root"
     "L+ ${cfg.dir}/${cfg.dashboard-icons} - - - - ${pkgs.dashboard-icons}"
-    "L+ ${cfg.dir}/misc-icons - - - - ${misc-icons}/share/icons"
   ];
 
   config.services.nginx = {
