@@ -3,6 +3,15 @@ let
   ownIP = lib.homelab.getOwnIpInNetwork "lan";
 in
 {
+  age.secrets.ssl-cert = {
+    owner = config.services.nginx.user;
+    inherit (config.services.nginx) group;
+  };
+  age.secrets.ssl-key = {
+    owner = config.services.nginx.user;
+    inherit (config.services.nginx) group;
+  };
+
   services.nginx = {
     enable = true;
     streamConfig = ''
