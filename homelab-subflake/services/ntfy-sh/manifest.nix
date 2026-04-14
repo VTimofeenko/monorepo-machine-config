@@ -1,15 +1,25 @@
 { serviceName, ... }:
 {
   module = ./ntfy-sh.nix;
+  endpoints = rec {
 
-  endpoints.web = {
-    port = 8004;
-    protocol = "https";
+    web = {
+      port = 8004;
+      protocol = "https";
+    };
+
+    metrics = {
+      inherit (web) port;
+      protocol = "tcp";
+      path = "/metrics";
+    };
   };
 
   endpointsConfig = import ./non-functional/endpoints-config.nix;
 
-  observability = { }; # TODO: implement proper metrics here
+  observability = {
+    metrics.main.impl = ./non-functional/metrics.nix;
+  };
 
   # Backups disabled — no persistent state to back up
   # backups = { ... };
