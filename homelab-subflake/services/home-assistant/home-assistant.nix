@@ -2,7 +2,6 @@
   config,
   pkgs,
   lib,
-  selfPkgs,
   ...
 }:
 let
@@ -43,7 +42,7 @@ in
     customComponents = map (x: pkgs.callPackage x { }) [ ./customComponents/meross_lan.nix ];
 
     customLovelaceModules = [
-      selfPkgs.${pkgs.stdenv.system}.ha-floorplan
+      pkgs.ha-floorplan
     ];
 
     config = {
