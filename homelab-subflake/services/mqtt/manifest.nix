@@ -7,6 +7,8 @@
     protocol = "tcp";
   };
 
+  firewall = ./non-functional/firewall.nix;
+
   sslProxyConfig = import ./non-functional/ssl.nix;
 
   observability = {
