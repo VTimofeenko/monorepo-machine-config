@@ -74,6 +74,7 @@ in
           ["harper-ls"] = {
             linters = {
               ToDoHyphen = false,
+              ExpandMemoryShorthands = false
             }
           }
         }
