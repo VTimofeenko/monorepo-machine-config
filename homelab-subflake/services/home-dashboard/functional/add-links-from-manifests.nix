@@ -1,16 +1,11 @@
-# FIXME: `data-flake` is a legacy input — replace with lib.homelab equivalent once available.
-# FIXME: `self` is passed here to access self.serviceModules — minimize if a lib.homelab
-#        function for enumerating all service manifests becomes available.
 {
-  data-flake,
-  self,
   lib,
   ...
 }:
 {
   services.homepage-dashboard.services =
     # Take data-flake and self `serviceModules`
-    (self.serviceModules // data-flake.serviceModules)
+    lib.homelab.getManifests
     # Filter only ones that have "dashboard" attribute
     |> lib.filterAttrs (_: value: value |> builtins.hasAttr "dashboard")
     # The general format at this point is:
