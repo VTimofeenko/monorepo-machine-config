@@ -9,7 +9,7 @@
     sinks.vector-exporter = {
       type = "prometheus_exporter";
       inputs = [ "vector-metrics" ];
-      address = "0.0.0.0:${(lib.homelab.getManifest "log-concentrator").endpoints.metrics.port}";
+      address = "0.0.0.0:${(lib.homelab.getManifest "log-concentrator").endpoints.metrics.port |> toString}";
     };
   };
 }

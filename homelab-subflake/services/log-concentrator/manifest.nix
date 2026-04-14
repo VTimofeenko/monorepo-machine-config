@@ -1,40 +1,31 @@
 { serviceName, ... }:
-let
-  vectorPort = 6000;
-  syslogPort = 514;
-  accessLogConcentratorPort = 9514;
-  metricsPort = 8087;
-  dnstapPort = 9001;
-in
 {
   module = ./log-concentrator.nix;
 
   endpoints = {
     vector = {
-      port = vectorPort;
+      port = 6000;
       protocol = "tcp";
     };
     syslog = {
-      port = syslogPort;
+      port = 514;
       protocol = "udp";
     };
     access-logs = {
-      port = accessLogConcentratorPort;
+      port = 9514;
       protocol = "tcp";
     };
     dnstap = {
-      port = dnstapPort;
+      port = 9001;
       protocol = "tcp";
     };
     metrics = {
-      port = metricsPort;
+      port = 8087;
       protocol = "tcp";
     };
   };
 
-  firewall = import ./non-functional/firewall.nix {
-    inherit vectorPort syslogPort accessLogConcentratorPort;
-  };
+  firewall = ./non-functional/firewall.nix;
 
   endpointsConfig = import ./non-functional/endpoints-config.nix;
 

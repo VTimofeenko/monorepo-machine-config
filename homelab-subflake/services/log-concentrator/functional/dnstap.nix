@@ -3,7 +3,7 @@
 */
 { lib, ... }:
 let
-  dnstapPort = (lib.homelab.getServiceManifest "log-concentrator").endpoints.dnstap.port;
+  dnstapPort = (lib.homelab.getManifest "log-concentrator").endpoints.dnstap.port;
 in
 {
   services.vector.settings = {
