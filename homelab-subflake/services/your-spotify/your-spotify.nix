@@ -14,9 +14,6 @@ in
 
     settings.SPOTIFY_PUBLIC =
       lib.homelab.getServiceConfig serviceName |> builtins.getAttr "spotifyPublic";
-    # FIXME: age.secrets."your-spotify-spotify-secret" is referenced here but
-    #        not declared in this file — verify it is declared in a private module,
-    #        or add: age.secrets."your-spotify-spotify-secret".file = lib.homelab.getSrvSecret serviceName "spotify-secret";
     spotifySecretFile = config.age.secrets."${serviceName}-spotify-secret".path;
   };
 

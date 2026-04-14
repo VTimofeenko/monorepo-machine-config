@@ -1,11 +1,6 @@
 { config, lib, ... }:
 let
-
-  inherit (lib.homelab)
-    getSettings
-    getSrvSecret
-    ;
-  srvName = "pgadmin";
+  inherit (lib.homelab) getSettings ;
 in
 {
   # Service config
@@ -15,15 +10,6 @@ in
     initialPasswordFile = "${config.age.secrets.pgadmin-password.path}";
     settings = {
       UPGRADE_CHECK_ENABLED = false;
-    };
-  };
-
-  # Secrets
-  age.secrets = {
-    pgadmin-password = {
-      file = getSrvSecret srvName "pgadmin-password";
-      owner = config.systemd.services.pgadmin.serviceConfig.User;
-      group = config.systemd.services.pgadmin.serviceConfig.User;
     };
   };
 }

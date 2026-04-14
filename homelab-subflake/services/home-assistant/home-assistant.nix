@@ -5,22 +5,13 @@
   ...
 }:
 let
-  inherit (lib.homelab) getServiceConfig getSrvSecret;
+  inherit (lib.homelab) getServiceConfig;
 
   srvName = "home-assistant";
   srvConfig = getServiceConfig srvName;
 
-  homeassistantUser = config.systemd.services.home-assistant.serviceConfig.User;
-
 in
 {
-  # Secrets
-  age.secrets.ha-secret = {
-    file = getSrvSecret srvName "ha-secrets";
-    owner = homeassistantUser;
-    path = "${config.services.home-assistant.configDir}/secrets.yaml";
-  };
-
   services.home-assistant = {
     enable = true;
     extraComponents = [
@@ -36,7 +27,8 @@ in
       "zha"
       "wiz"
       "ntfy"
-    ] ++ srvConfig.components;
+    ]
+    ++ srvConfig.components;
 
     # Build custom components. { } does not pass deps which is OK for now
     customComponents = map (x: pkgs.callPackage x { }) [ ./customComponents/meross_lan.nix ];

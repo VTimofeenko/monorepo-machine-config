@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (lib.homelab) getServiceFqdn getSrvSecret;
+  inherit (lib.homelab) getServiceFqdn;
   srvName = "nextcloud";
 in
 {
@@ -26,9 +26,9 @@ in
       dbuser = "nextcloud";
       dbhost = getServiceFqdn "db";
       dbname = "nextcloud";
-      dbpassFile = config.age.secrets.dbpassFile.path;
+      dbpassFile = config.age.secrets.nextcloud-db-password.path;
       adminuser = "root";
-      adminpassFile = config.age.secrets.adminpassFile.path;
+      adminpassFile = config.age.secrets.nextcloud-admin-password.path;
     };
     settings = {
       allow_local_remote_servers = true;
@@ -38,31 +38,9 @@ in
       default_phone_region = "US";
     };
 
-    secretFile = config.age.secrets.nextcloudSecrets.path;
+    secretFile = config.age.secrets.nextcloud-secrets.path;
   };
 
   imports = lib.localLib.mkImportsFromDir ./functional;
 
-  # Secrets
-  age.secrets =
-    let
-      nextcloudUsr = config.systemd.services.nextcloud-setup.serviceConfig.User;
-    in
-    {
-      dbpassFile = {
-        file = getSrvSecret srvName "dbpassFile";
-        owner = nextcloudUsr;
-        group = nextcloudUsr;
-      };
-      adminpassFile = {
-        file = getSrvSecret srvName "adminpassFile";
-        owner = nextcloudUsr;
-        group = nextcloudUsr;
-      };
-      nextcloudSecrets = {
-        file = getSrvSecret srvName "nextcloudSecrets";
-        owner = nextcloudUsr;
-        group = nextcloudUsr;
-      };
-    };
 }
