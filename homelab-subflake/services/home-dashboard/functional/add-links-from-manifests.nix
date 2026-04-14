@@ -7,27 +7,47 @@
     # Take data-flake and self `serviceModules`
     lib.homelab.getManifests
     # Filter only ones that have "dashboard" attribute
-    |> lib.filterAttrs (_: value: value |> builtins.hasAttr "dashboard")
+    |> lib.filterAttrs (
+      _: value: (value |> builtins.hasAttr "dashboard") && (!builtins.isNull value.dashboard)
+    )
     # The general format at this point is:
     # `service-foo = { category = "bar"; links = [ { { path = "/"; description = "baz"; icon = "foz"; name = "qux"; }}] }`
     |> lib.mapAttrs (
       name: value:
       let
-        # Some dashboard attrsets are functions
-        # TODO: Maybe refactor manifests as functions in general?
-        dashboard = if lib.isFunction value.dashboard then value.dashboard { inherit lib; } else value.dashboard;
+        inherit (value) dashboard;
       in
       {
         "${dashboard.category}" =
           dashboard.links
           |> map (it: {
             "${it.name}" = {
-              description = "${it.description or ""}";
-              href = it.absoluteURL or "https://${lib.homelab.getServiceFqdn name}${it.path or "/"}";
+
+              # Human readable description of the service on the dashboard
+              inherit (it) description;
+
+              # This will be the URL that opens when clicking on the tile
+              # Explicit `absoluteURL` wins
+              # If problems here – check `../../../lib/manifest-options.nix`
+              href =
+                if !builtins.isNull it.absoluteURL then
+                  it.absoluteURL
+                else
+                  let
+                    service = if builtins.isNull it.service then name else it.service;
+                  in
+                  service
+                  |> lib.homelab.getServiceFqdn
+                  |> (it': "https://${it'}")
+                  |> (it': "${it'}${it.path |> toString}");
+
               # Get the icon, but fallback to `selfhosted` icon
-              icon = "https://${lib.homelab.getServiceFqdn "filedump"}/dashboard-icons/png/${
-                if it |> builtins.hasAttr "icon" then "${it.icon}.png" else "selfhosted.png"
-              }";
+              icon =
+                "filedump"
+                |> lib.homelab.getServiceFqdn
+                |> (it': "https://${it'}")
+                |> (it': "${it'}/dashboard-icons/png")
+                |> (it': "/${it'}/${if builtins.isNull it.icon then "selfhosted" else it.icon}.png");
             };
           });
       }

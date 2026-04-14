@@ -52,6 +52,18 @@ let
         type = types.nullOr types.str;
         default = null;
       };
+      absoluteURL = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+      };
+      path = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+      };
+      service = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+      };
     };
   };
 
