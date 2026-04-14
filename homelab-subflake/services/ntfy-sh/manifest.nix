@@ -19,6 +19,7 @@
 
   observability = {
     metrics.main.impl = ./non-functional/metrics.nix;
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
   };
 
   # Backups disabled — no persistent state to back up
