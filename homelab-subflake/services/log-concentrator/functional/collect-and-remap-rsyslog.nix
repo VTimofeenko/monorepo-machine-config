@@ -43,7 +43,7 @@
                 "ERROR3": "19",
                 "FATAL": "21",
             }
-            hostname = if (.host == "ZD-APMgr" || ."source_ip" == "${lib.homelab.hosts.getIPInNetwork "lan" "ruckus-office"}") { "ruckus-office" } else {.host}
+            hostname = if (.host == "ZD-APMgr" || ."source_ip" == "${lib.homelab.hosts.getLANIP "ruckus-office"}") { "ruckus-office" } else {.host}
 
 
             . = {

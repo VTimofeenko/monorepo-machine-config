@@ -11,7 +11,7 @@ in
     iifname "backbone-inner" tcp dport ${endpoints.vector.port |> toString} accept
     iifname "phy-lan" ip saddr ${
       config.homelab.services.log-concentrator.rsyslogClients
-      |> map (lib.homelab.hosts.getIPInNetwork "lan")
+      |> map (lib.homelab.hosts.getLANIP)
       |> lib.concatStringsSep ", "
       |> (it: "{ ${it} }")
     } udp dport ${endpoints.syslog.port |> toString} accept
