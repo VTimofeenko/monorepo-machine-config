@@ -92,7 +92,7 @@ let
     options = {
       metrics = mkOption {
         type = types.attrsOf metricsExporterType;
-        default = {};
+        default = { };
         description = ''
           Metrics exporters for this service/trait.
 
