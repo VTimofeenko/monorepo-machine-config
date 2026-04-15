@@ -5,11 +5,13 @@
   Sets up macvtap network interfaces and persistence filesystem mounts for each
   hosted microvm, driven entirely by `lib.homelab.getOwnMicrovms`.
 */
-{ lib, ... }:
+{ lib, inputs, ... }:
 let
   microvms = lib.homelab.getOwnMicrovms;
 in
 {
+  imports = [ inputs.microvm.nixosModules.host ];
+
   microvm.vms = lib.genAttrs microvms (microvmName: {
     config.microvm.shares = [
       {

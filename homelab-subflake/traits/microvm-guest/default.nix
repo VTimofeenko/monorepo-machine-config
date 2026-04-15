@@ -4,13 +4,21 @@
   Applied automatically to any host with `isMicroVM == true`.
   Covers everything a microvm guest needs that isn't service/secret-specific.
 */
-{ lib, pkgs, inputs, ... }:
+{
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 let
   hostName = lib.homelab.getOwnHost.hostName;
   lan = lib.homelab.getNetwork "lan";
 in
 {
-  imports = [ inputs.impermanence.nixosModules.impermanence ];
+  imports = [
+    inputs.microvm.nixosModules.microvm
+    inputs.impermanence.nixosModules.impermanence
+  ];
 
   # TODO: remove this post-deploy, should be managed by trait now
   services.openssh = {

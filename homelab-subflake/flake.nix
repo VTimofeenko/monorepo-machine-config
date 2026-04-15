@@ -19,6 +19,11 @@
       url = "github:VTimofeenko/wg-namespace-flake";
     };
 
+    microvm = {
+      url = "github:astro/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     private-modules = {
       url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-modules.git"; # REMOTE_SRC
       # url = "path:///home/spacecadet/code/private-modules"; # LOCAL_SRC
