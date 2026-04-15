@@ -29,12 +29,6 @@
   backups = {
     paths = [ "/var/lib/nextcloud" ];
     exclude = [ "appdata_ochcggcdayyl/preview" ];
-    impl = { lib, ... }:
-      lib.localLib.mkBkp {
-        paths = [ "/var/lib/nextcloud" ];
-        exclude = [ "appdata_ochcggcdayyl/preview" ];
-        serviceName = "nextcloud";
-      };
   };
 
   dashboard = {

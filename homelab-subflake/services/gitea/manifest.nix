@@ -29,18 +29,12 @@
 
     storage.impl = ./non-functional/storage.nix;
 
-    backups = rec {
+    backups = {
       paths = [ "/var/lib/gitea" ];
       exclude = [
         "/var/lib/gitea/dump"
         "/var/lib/gitea/tmp"
       ];
-      schedule = "daily";
-      impl = { lib, ... }:
-        lib.localLib.mkBkp {
-          inherit paths exclude schedule;
-          serviceName = "gitea";
-        };
     };
 
     dashboard = {

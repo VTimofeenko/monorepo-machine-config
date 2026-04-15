@@ -12,14 +12,7 @@
   sslProxyConfig = import ./non-functional/ssl.nix { inherit serviceName; };
 
   backups = {
-    schedule = "daily";
     paths = [ "/var/lib/esphome/*.yaml" ];
-    impl = { lib, ... }:
-      lib.localLib.mkBkp {
-        paths = [ "/var/lib/esphome/*.yaml" ];
-        schedule = "daily";
-        serviceName = "esphome";
-      };
   };
 
   dashboard = {

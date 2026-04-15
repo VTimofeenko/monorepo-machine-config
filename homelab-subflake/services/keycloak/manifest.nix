@@ -32,14 +32,7 @@
   };
 
   backups = {
-    paths = [ ];
-    impl =
-      { lib, ... }:
-      lib.localLib.mkBkp {
-        paths = [ ];
-        inherit serviceName;
-        localDB = true; # Everything in database
-      };
+    localDB = true; # Everything in database
   };
 
   dashboard = {

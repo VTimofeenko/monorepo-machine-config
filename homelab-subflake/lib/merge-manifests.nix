@@ -138,20 +138,46 @@ let
             else
               null;
 
-          # backups and storage impls
+          # Auto-assemble backup modules from structured backups config
+          backupsModules =
+            if manifestData.backups == null then
+              [ ]
+            else
+              let
+                bkp = manifestData.backups;
+                bkpServiceName = if bkp.serviceName != null then bkp.serviceName else serviceName;
+              in
+              lib.flatten [
+                (lib.localLib.mkBkp {
+                  inherit (bkp)
+                    paths
+                    exclude
+                    schedule
+                    localDB
+                    localOnly
+                    ;
+                  serviceName = bkpServiceName;
+                })
+                (lib.optional (bkp.extraConfig != null) (
+                  lib.modules.importApply bkp.extraConfig { serviceName = bkpServiceName; }
+                ))
+              ];
+
+          # storage impl
           extractImpl = attr: if lib.isAttrs attr && attr ? impl then attr.impl else null;
 
-          defaultModules = lib.flatten [
-            allModules
-            endpointsModule
-            firewallModule
-            metricsFirewallModule
-            observabilityImpls
-            (extractImpl (manifestData.backups or {}))
-            (extractImpl (manifestData.storage or {}))
-            manifestData.database
-          ]
-          |> filter (v: v != {} && v != null);
+          defaultModules =
+            lib.flatten [
+              allModules
+              endpointsModule
+              firewallModule
+              metricsFirewallModule
+              observabilityImpls
+              backupsModules
+              (extractImpl (manifestData.storage or { }))
+              manifestData.database
+            ]
+            |> filter (v: v != { } && v != null);
 
         in
         manifestData // {

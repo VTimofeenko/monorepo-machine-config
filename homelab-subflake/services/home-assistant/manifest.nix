@@ -10,14 +10,7 @@
   endpointsConfig = import ./non-functional/endpoints-config.nix;
 
   backups = {
-    schedule = "daily";
     paths = [ "/var/lib/hass" ];
-    impl = { lib, ... }:
-      lib.localLib.mkBkp {
-        paths = [ "/var/lib/hass" ];
-        schedule = "daily";
-        serviceName = "home-assistant";
-      };
   };
 
   observability = {

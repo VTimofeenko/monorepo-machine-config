@@ -226,9 +226,53 @@ in
     };
 
     backups = mkOption {
-      type = types.nullOr types.anything;
+      type = types.nullOr (
+        types.submodule {
+          options = {
+            paths = mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+              description = "Paths to include in the backup";
+            };
+            exclude = mkOption {
+              type = types.listOf types.str;
+              default = [ ];
+              description = "Paths to exclude from the backup";
+            };
+            schedule = mkOption {
+              type = types.str;
+              default = "daily";
+              description = "Backup schedule (OnCalendar value)";
+            };
+            localDB = mkOption {
+              type = types.bool;
+              default = false;
+              description = "Also dump and back up the local PostgreSQL database";
+            };
+            localOnly = mkOption {
+              type = types.bool;
+              default = false;
+              description = "Do not store backups remotely (local restic server only)";
+            };
+            serviceName = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Override the service name used in backup job IDs and secrets (useful for abbreviated names)";
+            };
+            extraConfig = mkOption {
+              type = types.nullOr types.path;
+              default = null;
+              description = ''
+                Path to a NixOS module for additional backup customizations.
+                Called via importApply with { serviceName } as static arg.
+                Use this to override fields like dynamicFilesFrom or repository.
+              '';
+            };
+          };
+        }
+      );
       default = null;
-      description = "Backup configuration";
+      description = "Backup configuration. Parameters are forwarded to mkBkp; extraConfig allows per-service overrides.";
     };
 
     storage = mkOption {
