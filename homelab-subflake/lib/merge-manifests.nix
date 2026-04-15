@@ -7,13 +7,13 @@ let
   manifestOptionsModule = import ./manifest-options.nix;
 
   # Takes unevaluated manifest modules and returns evaluated attrset
-  mergeServiceManifests = publicServices: privateServices:
+  mergeServiceManifests =
+    publicServices: privateServices:
     let
-      allNames = lib.unique (
-        builtins.attrNames publicServices ++ builtins.attrNames privateServices
-      );
+      allNames = lib.unique (builtins.attrNames publicServices ++ builtins.attrNames privateServices);
 
-      mergeOne = serviceName:
+      mergeOne =
+        serviceName:
         let
           publicMod = publicServices.${serviceName} or null;
           privateMod = privateServices.${serviceName} or null;
@@ -43,7 +43,7 @@ let
           # Auto-assemble .default field from manifest components
 
           # module is either null or a list (custom merge collected multiple definitions)
-          allModules = if manifestData.module == null then [] else lib.toList manifestData.module;
+          allModules = if manifestData.module == null then [ ] else lib.toList manifestData.module;
 
           # endpointsModule: custom impl if provided
           endpointsModule =
@@ -62,13 +62,12 @@ let
           firewallModule =
             if manifestData.firewall != null then
               manifestData.firewall
-            else if manifestData.endpoints != {} then
+            else if manifestData.endpoints != { } then
               # Auto-generate firewall from endpoints
               { lib, self, ... }:
               let
-                endpointData = builtins.removeAttrs manifestData.endpoints ["impl"];
-                ports = lib.mapAttrsToList (_: ep: ep.port) endpointData
-                  |> lib.unique;
+                endpointData = builtins.removeAttrs manifestData.endpoints [ "impl" ];
+                ports = lib.mapAttrsToList (_: ep: ep.port) endpointData |> lib.unique;
               in
               {
                 imports = [
@@ -91,10 +90,12 @@ let
 
           observabilityImpls = lib.flatten [
             metricsImpls
-            (lib.optional (manifestData.observability.logging.impl or null != null)
-              manifestData.observability.logging.impl)
-            (lib.optional (manifestData.observability.probes.impl or null != null)
-              manifestData.observability.probes.impl)
+            (lib.optional (
+              manifestData.observability.logging.impl or null != null
+            ) manifestData.observability.logging.impl)
+            (lib.optional (
+              manifestData.observability.probes.impl or null != null
+            ) manifestData.observability.probes.impl)
           ];
 
           # Auto-generate firewall rules for metrics endpoints (infrastructure concern)
@@ -115,11 +116,11 @@ let
                           if exporter.endpoint != null then
                             exporter.endpoint
                           else
-                            # Infer: look for endpoints.metrics first, then fall back to first endpoint
-                            if manifestData.endpoints ? metrics then
-                              "metrics"
-                            else
-                              null;
+                          # Infer: look for endpoints.metrics first, then fall back to first endpoint
+                          if manifestData.endpoints ? metrics then
+                            "metrics"
+                          else
+                            null;
                         endpoint = if endpointName != null then manifestData.endpoints.${endpointName} or null else null;
                       in
                       if endpoint != null then endpoint.port else null
@@ -180,7 +181,8 @@ let
             |> filter (v: v != { } && v != null);
 
         in
-        manifestData // {
+        manifestData
+        // {
           # Add auto-assembled default field
           default = defaultModules;
 
