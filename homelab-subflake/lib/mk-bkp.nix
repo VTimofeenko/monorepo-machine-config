@@ -10,6 +10,7 @@
   schedule ? "daily",
   localDB ? false, # If set to true, adds `pg_dumpall` script to backup the result of the DB dump
   localOnly ? false, # If set to true, do not store backups remotely
+  backupName ? null,
   serviceName,
 }:
 {
@@ -20,6 +21,8 @@
 }:
 let
   inherit (config.networking) hostName;
+
+  actualBackupName = if builtins.isNull backupName then serviceName else backupName;
 
   # Define retention policy
   pruneOpts = [
@@ -60,7 +63,7 @@ in
 
           backupPrepareCommand = dumpScript;
 
-          repository = "rest:https://${lib.homelab.getServiceFqdn "restic-server"}/${hostName}/${serviceName}";
+          repository = "rest:https://${lib.homelab.getServiceFqdn "restic-server"}/${hostName}/${actualBackupName}";
           package = (
             ''
               export RESTIC_REST_PASSWORD=$(cat $CREDENTIALS_DIRECTORY/restic_server_password)
@@ -73,10 +76,10 @@ in
         };
       };
 
-      systemd.services."restic-backups-${serviceName}-localbackup" = {
-        onFailure = [ "ping-healthchecks@${serviceName}-local-backup:failure.service" ];
-        onSuccess = [ "ping-healthchecks@${serviceName}-local-backup:success.service" ];
-        wants = [ "ping-healthchecks@${serviceName}-local-backup:start.service" ];
+      systemd.services."restic-backups-${actualBackupName}-localbackup" = {
+        onFailure = [ "ping-healthchecks@${actualBackupName}-local-backup:failure.service" ];
+        onSuccess = [ "ping-healthchecks@${actualBackupName}-local-backup:success.service" ];
+        wants = [ "ping-healthchecks@${actualBackupName}-local-backup:start.service" ];
 
         serviceConfig = {
           Environment = [ "RESTIC_REST_USERNAME=${hostName}" ];
@@ -101,7 +104,7 @@ in
         # If `localDB` is set, `dynamicFilesFrom` will list the dump
         dynamicFilesFrom = if localDB then "ls $RUNTIME_DIRECTORY/${dumpFile}" else null;
 
-        repository = "sftp:${(lib.homelab.getService "rsync-net").settings.sftpConnectString}:${serviceName}";
+        repository = "sftp:${(lib.homelab.getService "rsync-net").settings.sftpConnectString}:${actualBackupName}";
         timerConfig.OnCalendar = schedule;
 
         backupPrepareCommand = dumpScript;
@@ -127,10 +130,10 @@ in
         passwordFile = config.age.secrets."${serviceName}-bkp-password".path;
       };
 
-      systemd.services."restic-backups-${serviceName}-rsync-net-backup" = {
-        onFailure = [ "ping-healthchecks@${serviceName}-rsync-net-backup:failure.service" ];
-        onSuccess = [ "ping-healthchecks@${serviceName}-rsync-net-backup:success.service" ];
-        wants = [ "ping-healthchecks@${serviceName}-rsync-net-backup:start.service" ];
+      systemd.services."restic-backups-${actualBackupName}-rsync-net-backup" = {
+        onFailure = [ "ping-healthchecks@${actualBackupName}-rsync-net-backup:failure.service" ];
+        onSuccess = [ "ping-healthchecks@${actualBackupName}-rsync-net-backup:success.service" ];
+        wants = [ "ping-healthchecks@${actualBackupName}-rsync-net-backup:start.service" ];
 
         serviceConfig.LoadCredential = [ "rsync-net-ssh-key:${config.age.secrets.rsync-net-ssh.path}" ];
       };

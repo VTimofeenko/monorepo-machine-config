@@ -259,6 +259,11 @@ in
               default = null;
               description = "Override the service name used in backup job IDs and secrets (useful for abbreviated names)";
             };
+            backupName = mkOption {
+              type = types.nullOr types.str;
+              default = null;
+              description = "Override the backup name if only that needs to be abbreviated.";
+            };
             extraConfig = mkOption {
               type = types.nullOr types.path;
               default = null;
