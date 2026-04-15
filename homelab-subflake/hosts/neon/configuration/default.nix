@@ -53,8 +53,4 @@ in
     ./storage.nix
   ];
 
-  # Per-VM memory overrides (host-specific tuning, auto-discovered microvms
-  # are wired by mkHost via lib.homelab.getMicrovms)
-  microvm.vms.promethium.config.microvm.mem = 2049;
-  microvm.vms.neodymium.config.microvm.mem = 1024;
 }
