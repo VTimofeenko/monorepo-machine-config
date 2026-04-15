@@ -49,7 +49,6 @@ in
       name = "10-lan";
       matchConfig.Name = lib.mkForce "phy-lan";
       networkConfig = {
-        DHCP = "no";
         Address = [ "${lib.homelab.getOwnIpInNetwork "lan"}/24" ];
         Gateway = lan.settings.defaultGateway.address;
         DNS = lan.dnsServers;

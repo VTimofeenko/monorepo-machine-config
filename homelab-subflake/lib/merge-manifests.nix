@@ -156,6 +156,7 @@ let
                     schedule
                     localDB
                     localOnly
+                    backupName
                     ;
                   serviceName = bkpServiceName;
                 })

@@ -35,10 +35,22 @@ rec {
       ]
     );
 
-  mkHost =
+  /**
+    Resolves all NixOS modules for a given host: services, traits, secrets,
+    base flake modules, and private modules. Used by both `mkHost` (for real
+    hosts) and `mkMicroVMHostModule` (for inline microvm guest configs).
+
+    Returns an attrset with:
+      - `extendedLib`: lib extended with homelab + localLib bound to hostName
+      - `hostData`: raw host data from data-flake
+      - `pkgs`: nixpkgs instance with overlays applied
+      - `modules`: all resolved NixOS modules (base + services + traits + private + secrets)
+      - `specialArgs`: standard specialArgs for nixosSystem / microvm.vms
+      - `dbg`: trace helper (no-ops when debug = false)
+  */
+  mkHostConfig =
     {
       hostName,
-      extraModules ? [ ],
       debug ? false,
     }:
     let
@@ -56,7 +68,6 @@ rec {
         let
           serviceData = data-flake.data.services.all.${serviceName};
           moduleName = serviceData.moduleName or null;
-          # Check raw sources to determine provenance (for debug logging)
           hasPublic =
             moduleName != null
             && !serviceData.sideEffectOnly
@@ -73,7 +84,6 @@ rec {
           |> dbg "service ${serviceName} (moduleName=${toString moduleName}) is a stub or has no moduleName"
         else
           let
-            # Log provenance for debugging (before accessing modules to ensure traces fire)
             loggedPublic =
               if hasPublic then dbg "service ${serviceName} -> ${moduleName} (public)" hasPublic else hasPublic;
             loggedPrivate =
@@ -82,11 +92,8 @@ rec {
               else
                 hasPrivate;
 
-            # Access the merged result (which already combines public + private)
-            # `self.serviceModules` contains the output of `mergeServiceManifests`
             allModules =
               if hasMerged then
-                # Force evaluation of log variables, then return modules
                 builtins.seq loggedPublic (builtins.seq loggedPrivate self.serviceModules.${moduleName}.default)
               else
                 [ ];
@@ -94,8 +101,6 @@ rec {
           lib.warnIf (lib.length allModules == 0)
             "service: ${serviceName} (moduleName: ${moduleName}) could not be resolved to an implementation!"
             allModules;
-
-      serviceModulesForHost = hostData.servicesAt |> lib.concatMap resolveService;
 
       resolveTrait =
         traitName:
@@ -114,22 +119,16 @@ rec {
                 dbg "trait ${traitName} (private)" inputs.private-modules.traitModules.${traitName}
               )
             )
-            # This check alerts the operator if trait could not be found as an actual module.
-            # Potential problems:
-            # - The implementation of the trait is missing
-            # - False negative detection (see `discoverModules`)
             |> (
               it:
               lib.warnIf (lib.length it == 0) "trait: ${traitName} could not be resolved to an implementation!" it
             )
           );
 
-      traitModulesForHost = (hostData.traitsAt or [ ]) |> lib.concatMap resolveTrait;
+      serviceModules = hostData.servicesAt |> lib.concatMap resolveService;
+      traitModules = (hostData.traitsAt or [ ]) |> lib.concatMap resolveTrait;
 
-      # Secret modules from private-modules — includes agenix module, `age-rekey`
-      # config, and all secret definitions for this host. Self-contained: homelab
-      # does not need to know about agenix internals.
-      secretModulesForHost =
+      secretModules =
         let
           has = inputs.private-modules.secretModules ? ${hostName};
         in
@@ -149,77 +148,76 @@ rec {
       # These modules are side-effect free by convention
       privateModules = inputs.private-modules.nixosModules |> builtins.attrValues;
 
-      # Microvms hosted on this machine (empty for non-hypervisor hosts).
-      # Infrastructure (macvtap, filesystems) is handled by the microvm-host trait.
-      # This only assembles the guest NixOS config (specialArgs + imports).
-      hostedMicrovms = data-flake.lib.homelab.getMicrovms hostName;
-
-      /**
-        Produces a NixOS module that wires one microvm's guest config into the host.
-
-        The host-side infrastructure (macvtap, filesystems) is handled by the
-        `microvm-host` trait. This function only sets specialArgs and config.imports
-        for the guest, using the same service/trait/secret resolution as mkHost.
-      */
-      mkMicroVMHostModule =
-        microvmName:
-        let
-          microvmData = data-flake.data.hosts.all.${microvmName};
-          microvmServices = microvmData.servicesAt |> lib.concatMap resolveService;
-          microvmTraits = (microvmData.traitsAt or [ ]) |> lib.concatMap resolveTrait;
-          microvmSecrets =
-            let
-              has = inputs.private-modules.secretModules ? ${microvmName};
-            in
-            lib.optional has inputs.private-modules.secretModules.${microvmName};
-          microvmMem = microvmData.settings.mem or null;
-        in
-        {
-          microvm.vms.${microvmName} = {
-            specialArgs = {
-              # lib bound to the microvm's identity; inputs for trait modules (e.g. impermanence)
-              lib = mkExtendedLib microvmName;
-              inherit inputs self;
-            };
-
-            config.imports =
-              privateModules
-              ++ microvmServices
-              ++ microvmTraits # includes microvm-guest (infra + impermanence + management + network)
-              ++ microvmSecrets
-              ++ lib.optionals (microvmMem != null) [ { microvm.mem = microvmMem; } ];
-          };
-        };
-
-      microvmHostModules = hostedMicrovms |> map mkMicroVMHostModule;
-
-    in
-    dbg "system=${hostData.system}" lib.nixosSystem {
-      inherit (hostData) system;
-      lib = extendedLib;
       pkgs = import nixpkgs {
         inherit (hostData) system;
         config.allowUnfree = true;
         config.nvidia.acceptLicense = true;
-        overlays = [ inputs.base.overlays.default ];
+        overlays = [
+          inputs.base.overlays.default
+          inputs.private-modules.overlays.default
+        ];
       };
+    in
+    {
+      inherit
+        extendedLib
+        hostData
+        pkgs
+        dbg
+        ;
+      modules = baseFlakeModules ++ serviceModules ++ traitModules ++ privateModules ++ secretModules;
+      specialArgs = {
+        inherit inputs self;
+        pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${hostData.system};
+      };
+    };
+
+  mkHost =
+    {
+      hostName,
+      extraModules ? [ ],
+      debug ? false,
+    }:
+    let
+      cfg = mkHostConfig { inherit hostName debug; };
+      hostedMicrovms = data-flake.lib.homelab.getMicrovms hostName;
+      microvmHostModules = hostedMicrovms |> map mkMicroVMHostModule;
+    in
+    cfg.dbg "system=${cfg.hostData.system}" lib.nixosSystem {
+      inherit (cfg.hostData) system;
+      lib = cfg.extendedLib;
+      inherit (cfg) pkgs specialArgs;
       modules = [
         { networking.hostName = hostName; }
       ]
       ++ lib.optionals (builtins.pathExists (./hosts + "/${hostName}/configuration")) [
         (./hosts + "/${hostName}/configuration")
       ]
-      ++ baseFlakeModules
-      ++ serviceModulesForHost
-      ++ traitModulesForHost
-      ++ privateModules
-      ++ secretModulesForHost
+      ++ cfg.modules
       ++ microvmHostModules
       ++ extraModules;
+    };
 
-      specialArgs = {
-        inherit inputs self;
-        pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${hostData.system};
+  /**
+    Produces a NixOS module that wires one microvm's guest config into the host.
+
+    The host-side infrastructure (macvtap, filesystems) is handled by the
+    `microvm-host` trait. This function only sets specialArgs and config.imports
+    for the guest, using the same service/trait/secret resolution as mkHost.
+  */
+  mkMicroVMHostModule =
+    microvmName:
+    let
+      cfg = mkHostConfig { hostName = microvmName; };
+      microvmMem = cfg.hostData.settings.mem or null;
+    in
+    {
+      microvm.vms.${microvmName} = {
+        specialArgs = cfg.specialArgs // {
+          lib = cfg.extendedLib;
+        };
+        config.imports =
+          cfg.modules ++ lib.optionals (microvmMem != null) [ { microvm.mem = microvmMem; } ];
       };
     };
 
