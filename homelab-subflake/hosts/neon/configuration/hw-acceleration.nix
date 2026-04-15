@@ -12,7 +12,7 @@
 */
 {
   pkgs,
-  nixos-hardware,
+  inputs,
   ...
 }:
 {
@@ -26,7 +26,7 @@
   ];
 
   imports = [
-    nixos-hardware.nixosModules.common-gpu-intel
+    inputs.nixos-hardware.nixosModules.common-gpu-intel
   ];
   environment.sessionVariables.LIBVA_DRIVER_NAME = "iHD";
   hardware.intelgpu.driver = "xe";

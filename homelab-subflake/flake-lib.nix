@@ -7,8 +7,34 @@ let
 in
 rec {
   /**
-    Produces a `nixosConfiguration` for a given host.
+    Extends `lib` with `lib.homelab` bound to a specific hostname and
+    `lib.localLib`. Used for both regular hosts and microvm guests.
   */
+  mkExtendedLib =
+    hostName:
+    lib.extend (
+      lib.composeManyExtensions [
+        /**
+          Adds `lib.homelab.<functions>`.
+
+          `_mkOwnFuncs` generates functions like `getOwnIPInNetwork`
+        */
+        (_: _: {
+          homelab =
+            builtins.removeAttrs data-flake.lib.homelab [ "_mkOwnFuncs" ]
+            // data-flake.lib.homelab._mkOwnFuncs hostName
+            // {
+              inherit getManifest getManifests getSrvLib;
+            };
+        })
+        /**
+          Adds my custom functions.
+          TODO: Review callsites, probably not needed as much
+        */
+        (_: _: { localLib = import ./lib/local-lib.nix { inherit lib; }; })
+      ]
+    );
+
   mkHost =
     {
       hostName,
@@ -23,28 +49,7 @@ rec {
 
       hostData = data-flake.data.hosts.all.${hostName};
 
-      extendedLib = lib.extend (
-        lib.composeManyExtensions [
-          /**
-            Adds `lib.homelab.<functions>`.
-
-            `_mkOwnFuncs` generates functions like `getOwnIPInNetwork`
-          */
-          (_: _: {
-            homelab =
-              builtins.removeAttrs data-flake.lib.homelab [ "_mkOwnFuncs" ]
-              // data-flake.lib.homelab._mkOwnFuncs hostName
-              // {
-                inherit getManifest getManifests getSrvLib;
-              };
-          })
-          /**
-            Adds my custom functions.
-            TODO: Review callsites, probably not needed as much
-          */
-          (_: _: { localLib = import ./lib/local-lib.nix { inherit lib; }; })
-        ]
-      );
+      extendedLib = mkExtendedLib hostName;
 
       resolveService =
         serviceName:
@@ -78,7 +83,7 @@ rec {
                 hasPrivate;
 
             # Access the merged result (which already combines public + private)
-            # self.serviceModules contains the output of mergeServiceManifests
+            # `self.serviceModules` contains the output of `mergeServiceManifests`
             allModules =
               if hasMerged then
                 # Force evaluation of log variables, then return modules
@@ -121,7 +126,7 @@ rec {
 
       traitModulesForHost = (hostData.traitsAt or [ ]) |> lib.concatMap resolveTrait;
 
-      # Secret modules from private-modules — includes agenix module, age.rekey
+      # Secret modules from private-modules — includes agenix module, `age-rekey`
       # config, and all secret definitions for this host. Self-contained: homelab
       # does not need to know about agenix internals.
       secretModulesForHost =
@@ -144,6 +149,58 @@ rec {
       # These modules are side-effect free by convention
       privateModules = inputs.private-modules.nixosModules |> builtins.attrValues;
 
+      # Microvms hosted on this machine (empty for non-hypervisor hosts)
+      hostedMicrovms = data-flake.lib.homelab.getMicrovms hostName;
+
+      /**
+        Produces a HOST-side NixOS module for one microvm.
+
+        Sets up the host infrastructure (`macvtap` interface, persistence
+        filesystem) and assembles the guest config (infra + services +
+        traits + secrets), with lib extended for the microvm's identity.
+      */
+      mkMicroVMHostModule =
+        microvmName:
+        let
+          microvmData = data-flake.data.hosts.all.${microvmName};
+          microvmServices = microvmData.servicesAt |> lib.concatMap resolveService;
+          microvmTraits = (microvmData.traitsAt or [ ]) |> lib.concatMap resolveTrait;
+          microvmSecrets =
+            let
+              has = inputs.private-modules.secretModules ? ${microvmName};
+            in
+            lib.optional has inputs.private-modules.secretModules.${microvmName};
+        in
+        {
+          imports = [ ((import ./lib/microvm-prototype-modules/host) microvmName) ];
+
+          microvm.vms.${microvmName} = {
+            specialArgs.lib = mkExtendedLib microvmName;
+
+            config.imports = [
+              inputs.impermanence.nixosModules.impermanence
+              ./lib/microvm-prototype-modules/guest/default.nix
+              ./lib/microvm-prototype-modules/guest/management.nix
+              ./lib/microvm-prototype-modules/guest/network.nix
+            ]
+            ++ privateModules
+            ++ microvmServices
+            ++ microvmTraits
+            ++ microvmSecrets;
+          };
+        };
+
+      microvmHostModules = hostedMicrovms |> map mkMicroVMHostModule;
+
+      # When this host IS a microvm guest, add guest infrastructure
+      isMicroVMGuest = hostData ? parentHost;
+      microvmGuestModules = lib.optionals isMicroVMGuest [
+        inputs.impermanence.nixosModules.impermanence
+        ./lib/microvm-prototype-modules/guest/default.nix
+        ./lib/microvm-prototype-modules/guest/management.nix
+        ./lib/microvm-prototype-modules/guest/network.nix
+      ];
+
     in
     dbg "system=${hostData.system}" lib.nixosSystem {
       inherit (hostData) system;
@@ -155,14 +212,18 @@ rec {
         overlays = [ inputs.base.overlays.default ];
       };
       modules = [
-        ./hosts/${hostName}/configuration
         { networking.hostName = hostName; }
+      ]
+      ++ lib.optionals (builtins.pathExists (./hosts + "/${hostName}/configuration")) [
+        (./hosts + "/${hostName}/configuration")
       ]
       ++ baseFlakeModules
       ++ serviceModulesForHost
       ++ traitModulesForHost
       ++ privateModules
       ++ secretModulesForHost
+      ++ microvmHostModules
+      ++ microvmGuestModules
       ++ extraModules;
 
       specialArgs = {
@@ -172,7 +233,7 @@ rec {
     };
 
   /**
-    Returns attrset in format expected by deploy-rs.
+    Returns attrset in format expected by `deploy-rs`.
   */
   mkDeployRsNode =
     { nodeName, system }:

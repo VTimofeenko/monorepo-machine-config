@@ -62,27 +62,21 @@
           };
         flake =
           let
-            hosts = [
-              "sodium"
-              "lithium"
-              "actinium"
-              "cerium"
-              "lanthanum"
-              "oxygen"
-              "hydrogen"
-              "helium"
-              "beryllium"
-              "fluorine"
-              "nitrogen"
-            ]; # TODO: auto-generate this from data
+            # Microvms: built as nixosConfigurations for inspection, but not
+            # deployed via deploy-rs (they are managed through their parent host).
+            microVMs = inputs.data-flake.lib.homelab.hosts.getAllMicroVMs |> builtins.attrNames;
+            realHosts =
+              inputs.data-flake.lib.homelab.hosts.getManaged |> builtins.attrNames |> lib.subtractLists microVMs;
 
             # Merge library
             mergeLib = import ./lib/merge-manifests.nix {
               lib = lib.extend (
                 lib.composeManyExtensions [
                   # There is no "Own" here, but this is useful so a `lib` with `homelab` functions is passed to the `serviceManifests`
-                  (_: _: { homelab = inputs.data-flake.lib.homelab |> lib.flip builtins.removeAttrs [ "_mkOwnFuncs" ]; })
-                  # Add localLib so manifests can use it (e.g., srv-lib.nix)
+                  (_: _: {
+                    homelab = inputs.data-flake.lib.homelab |> lib.flip builtins.removeAttrs [ "_mkOwnFuncs" ];
+                  })
+                  # Add localLib so manifests can use it (e.g., `srv-lib.nix`)
                   (_: _: { localLib = import ./lib/local-lib.nix { inherit lib; }; })
                 ]
               );
@@ -98,18 +92,20 @@
             mergedServices = mergeLib.mergeServiceManifests publicServices privateServices;
           in
           {
-            nixosConfigurations = lib.genAttrs hosts (
-              hostName:
-              self.lib.mkHost {
-                inherit hostName;
-                debug = true;
-              }
-            ) // {
-              # Test VMs with custom data
-              dns-test-vm = import ./tests/dns-test-vm.nix { inherit inputs self lib; };
-            };
+            nixosConfigurations =
+              lib.genAttrs (realHosts ++ microVMs) (
+                hostName:
+                self.lib.mkHost {
+                  inherit hostName;
+                  debug = true;
+                }
+              )
+              // {
+                # Test VMs with custom data
+                dns-test-vm = import ./tests/dns-test-vm.nix { inherit inputs self lib; };
+              };
 
-            deploy.nodes = lib.genAttrs hosts (
+            deploy.nodes = lib.genAttrs realHosts (
               nodeName:
               self.lib.mkDeployRsNode {
                 inherit nodeName;

@@ -1,39 +1,13 @@
 /**
-  Host-side microvm modules
+  Host-side microvm modules.
+
+  Note: `specialArgs.lib` (bound to the microvm's hostname) is injected by
+  `mkMicroVMHostModule` in `flake-lib.nix`, not here.
 */
 microVMName:
-{
-  pkgs,
-  lib,
-  data-flake,
-  self,
-  ...
-}:
-let
-  inherit (data-flake.lib) homelab;
-
-  localLibExt = _: _: { localLib = import ../../locallib.nix { inherit lib; }; };
-  homelabExt =
-    _: _:
-    {
-      inherit homelab;
-    }
-    |> (lib.flip builtins.removeAttrs [ "_mkOwnFuncs" ]) # Remove generating function
-    |> (lib.recursiveUpdate { homelab = homelab._mkOwnFuncs microVMName; }); # Bind get functions to hostname, producing `getOwn*` functions
-in
+{ lib, ... }:
 {
   microvm.vms.${microVMName} = {
-    # Done to add custom lib functions
-    specialArgs.lib = pkgs.lib.extend (
-      lib.composeManyExtensions [
-        homelabExt
-        localLibExt
-      ]
-    ); # TODO: may need a more generic function here to pass `localLib` like what the flake does
-    specialArgs.self = self;
-
-    # It is highly recommended to share the host's nix-store
-    # with the VMs to prevent building huge images.
     config.microvm.shares = [
       {
         source = "/nix/store";

@@ -95,8 +95,6 @@ in
       (concatStringsSep ".")
     ];
 
-  mkMicroVMModules = import ./microvm-prototype-modules;
-
   mkHealthCheckModules = import ./healthchecks-systemd-module;
 
   /**
