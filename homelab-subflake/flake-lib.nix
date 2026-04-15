@@ -176,9 +176,11 @@ rec {
         in
         {
           microvm.vms.${microvmName} = {
-            # lib bound to the microvm's identity; inputs for trait modules (e.g. impermanence)
-            specialArgs.lib = mkExtendedLib microvmName;
-            specialArgs.inputs = inputs;
+            specialArgs = {
+              # lib bound to the microvm's identity; inputs for trait modules (e.g. impermanence)
+              lib = mkExtendedLib microvmName;
+              inherit inputs self;
+            };
 
             config.imports =
               privateModules
