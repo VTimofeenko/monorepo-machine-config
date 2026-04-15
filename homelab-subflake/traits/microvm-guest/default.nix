@@ -29,7 +29,7 @@ in
         type = "ed25519";
       }
     ];
-    settings.PermitRootLogin = "yes";
+    settings.PermitRootLogin = lib.mkForce "yes";
   };
   users.users.root.openssh.authorizedKeys.keys = lib.homelab.getSettings.SSHKeys;
 
@@ -37,10 +37,12 @@ in
     [
       "phy-lan"
     ]
-    |> map (it: { ${it}.allowedTCPPorts = [ 22 ]; })
+    |> map (it: {
+      ${it}.allowedTCPPorts = [ 22 ];
+    })
     |> lib.mergeAttrsList;
 
-    # TODO: remove this post-deploy,
+  # TODO: remove this post-deploy,
   systemd.network = {
     networks."10-lan" = {
       enable = true;
