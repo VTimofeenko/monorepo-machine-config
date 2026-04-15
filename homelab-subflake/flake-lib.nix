@@ -149,15 +149,17 @@ rec {
       # These modules are side-effect free by convention
       privateModules = inputs.private-modules.nixosModules |> builtins.attrValues;
 
-      # Microvms hosted on this machine (empty for non-hypervisor hosts)
+      # Microvms hosted on this machine (empty for non-hypervisor hosts).
+      # Infrastructure (macvtap, filesystems) is handled by the microvm-host trait.
+      # This only assembles the guest NixOS config (specialArgs + imports).
       hostedMicrovms = data-flake.lib.homelab.getMicrovms hostName;
 
       /**
-        Produces a HOST-side NixOS module for one microvm.
+        Produces a NixOS module that wires one microvm's guest config into the host.
 
-        Sets up the host infrastructure (`macvtap` interface, persistence
-        filesystem) and assembles the guest config (infra + services +
-        traits + secrets), with lib extended for the microvm's identity.
+        The host-side infrastructure (macvtap, filesystems) is handled by the
+        `microvm-host` trait. This function only sets specialArgs and config.imports
+        for the guest, using the same service/trait/secret resolution as mkHost.
       */
       mkMicroVMHostModule =
         microvmName:
@@ -170,36 +172,24 @@ rec {
               has = inputs.private-modules.secretModules ? ${microvmName};
             in
             lib.optional has inputs.private-modules.secretModules.${microvmName};
+          microvmMem = microvmData.settings.mem or null;
         in
         {
-          imports = [ ((import ./lib/microvm-prototype-modules/host) microvmName) ];
-
           microvm.vms.${microvmName} = {
+            # lib bound to the microvm's identity; inputs for trait modules (e.g. impermanence)
             specialArgs.lib = mkExtendedLib microvmName;
+            specialArgs.inputs = inputs;
 
-            config.imports = [
-              inputs.impermanence.nixosModules.impermanence
-              ./lib/microvm-prototype-modules/guest/default.nix
-              ./lib/microvm-prototype-modules/guest/management.nix
-              ./lib/microvm-prototype-modules/guest/network.nix
-            ]
-            ++ privateModules
-            ++ microvmServices
-            ++ microvmTraits
-            ++ microvmSecrets;
+            config.imports =
+              privateModules
+              ++ microvmServices
+              ++ microvmTraits # includes microvm-guest (infra + impermanence + management + network)
+              ++ microvmSecrets
+              ++ lib.optionals (microvmMem != null) [ { microvm.mem = microvmMem; } ];
           };
         };
 
       microvmHostModules = hostedMicrovms |> map mkMicroVMHostModule;
-
-      # When this host IS a microvm guest, add guest infrastructure
-      isMicroVMGuest = hostData ? parentHost;
-      microvmGuestModules = lib.optionals isMicroVMGuest [
-        inputs.impermanence.nixosModules.impermanence
-        ./lib/microvm-prototype-modules/guest/default.nix
-        ./lib/microvm-prototype-modules/guest/management.nix
-        ./lib/microvm-prototype-modules/guest/network.nix
-      ];
 
     in
     dbg "system=${hostData.system}" lib.nixosSystem {
@@ -223,7 +213,6 @@ rec {
       ++ privateModules
       ++ secretModulesForHost
       ++ microvmHostModules
-      ++ microvmGuestModules
       ++ extraModules;
 
       specialArgs = {
