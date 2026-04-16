@@ -107,6 +107,10 @@ in
 
   system.stateVersion = "24.11";
 
+  # Revert `trait:nix-config` setting
+  nix.gc.automatic = lib.mkForce false;
+  nix.optimise.automatic = lib.mkForce false;
+
   environment.systemPackages = [
     pkgs.lsof
     pkgs.inetutils
