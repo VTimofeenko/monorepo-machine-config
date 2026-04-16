@@ -76,7 +76,7 @@ in
         };
       };
 
-      systemd.services."restic-backups-${actualBackupName}-localbackup" = {
+      systemd.services."restic-backups-${serviceName}-localbackup" = {
         onFailure = [ "ping-healthchecks@${actualBackupName}-local-backup:failure.service" ];
         onSuccess = [ "ping-healthchecks@${actualBackupName}-local-backup:success.service" ];
         wants = [ "ping-healthchecks@${actualBackupName}-local-backup:start.service" ];
@@ -130,7 +130,7 @@ in
         passwordFile = config.age.secrets."${serviceName}-bkp-password".path;
       };
 
-      systemd.services."restic-backups-${actualBackupName}-rsync-net-backup" = {
+      systemd.services."restic-backups-${serviceName}-rsync-net-backup" = {
         onFailure = [ "ping-healthchecks@${actualBackupName}-rsync-net-backup:failure.service" ];
         onSuccess = [ "ping-healthchecks@${actualBackupName}-rsync-net-backup:success.service" ];
         wants = [ "ping-healthchecks@${actualBackupName}-rsync-net-backup:start.service" ];
