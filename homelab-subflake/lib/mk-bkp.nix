@@ -77,9 +77,9 @@ in
       };
 
       systemd.services."restic-backups-${serviceName}-localbackup" = {
-        onFailure = [ "ping-healthchecks@${actualBackupName}-local-backup:failure.service" ];
-        onSuccess = [ "ping-healthchecks@${actualBackupName}-local-backup:success.service" ];
-        wants = [ "ping-healthchecks@${actualBackupName}-local-backup:start.service" ];
+        onFailure = [ "ping-healthchecks@${serviceName}-local-backup:failure.service" ];
+        onSuccess = [ "ping-healthchecks@${serviceName}-local-backup:success.service" ];
+        wants = [ "ping-healthchecks@${serviceName}-local-backup:start.service" ];
 
         serviceConfig = {
           Environment = [ "RESTIC_REST_USERNAME=${hostName}" ];
@@ -131,9 +131,9 @@ in
       };
 
       systemd.services."restic-backups-${serviceName}-rsync-net-backup" = {
-        onFailure = [ "ping-healthchecks@${actualBackupName}-rsync-net-backup:failure.service" ];
-        onSuccess = [ "ping-healthchecks@${actualBackupName}-rsync-net-backup:success.service" ];
-        wants = [ "ping-healthchecks@${actualBackupName}-rsync-net-backup:start.service" ];
+        onFailure = [ "ping-healthchecks@${serviceName}-rsync-net-backup:failure.service" ];
+        onSuccess = [ "ping-healthchecks@${serviceName}-rsync-net-backup:success.service" ];
+        wants = [ "ping-healthchecks@${serviceName}-rsync-net-backup:start.service" ];
 
         serviceConfig.LoadCredential = [ "rsync-net-ssh-key:${config.age.secrets.rsync-net-ssh.path}" ];
       };
