@@ -29,6 +29,11 @@
       # url = "path:///home/spacecadet/code/private-modules"; # LOCAL_SRC
       inputs.data-flake.follows = "data-flake";
     };
+
+    docspell-flake = {
+      url = "github:eikek/docspell?ref=v0.43.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
