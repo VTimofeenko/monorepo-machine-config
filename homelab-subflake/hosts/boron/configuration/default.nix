@@ -1,7 +1,7 @@
 {
   pkgs,
   lib,
-  nixos-hardware,
+  inputs,
   ...
 }:
 {
@@ -70,6 +70,6 @@
 
   # Imports
   imports = [
-    nixos-hardware.nixosModules.raspberry-pi-4
+    inputs.nixos-hardware.nixosModules.raspberry-pi-4
   ];
 }
