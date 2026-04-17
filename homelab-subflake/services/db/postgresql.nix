@@ -19,7 +19,7 @@ in
     owner = config.systemd.services.postgresql.serviceConfig.User;
     group = config.systemd.services.postgresql.serviceConfig.Group;
   };
-  age.secrets.ssl-key = {
+  age.secrets.psql-ssl-key = {
     inherit (config.age.secrets.ssl-key) file;
     owner = config.systemd.services.postgresql.serviceConfig.User;
     group = config.systemd.services.postgresql.serviceConfig.Group;
