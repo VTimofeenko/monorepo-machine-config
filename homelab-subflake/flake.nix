@@ -34,6 +34,14 @@
       url = "github:eikek/docspell?ref=v0.43.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    miniflux-yt-helper = {
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/miniflux-yt-helper.git";
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs-unstable";
+      };
+    };
   };
 
   outputs =
