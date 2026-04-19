@@ -31,5 +31,8 @@ in
     '';
   };
 
-  environment.systemPackages = [ pkgs.mongodb-tools ];
+  environment.systemPackages = [
+    pkgs.mongodb-tools
+    pkgs.mongosh
+  ];
 }
