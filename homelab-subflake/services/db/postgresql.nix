@@ -57,21 +57,26 @@ in
   };
 
   # DB configuration for services
-  imports =
-    map
-      (srvName: {
-        services.postgresql = {
-          ensureDatabases = [ srvName ];
-          ensureUsers = [
-            {
-              name = srvName;
-              ensureDBOwnership = true;
-            }
-          ];
-        };
-      })
-      [
-        "nextcloud"
-        "docspell"
-      ]; # TODO: Generate these in manifests
+  imports = [
+    ./functional/gather-databases-from-manifests.nix
+    # TODO: migrate to database.create = true in their manifests
+    {
+      services.postgresql = {
+        ensureDatabases = [
+          "nextcloud"
+          "docspell"
+        ];
+        ensureUsers = [
+          {
+            name = "nextcloud";
+            ensureDBOwnership = true;
+          }
+          {
+            name = "docspell";
+            ensureDBOwnership = true;
+          }
+        ];
+      };
+    }
+  ];
 }

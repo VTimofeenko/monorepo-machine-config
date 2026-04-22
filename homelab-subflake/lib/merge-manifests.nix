@@ -177,7 +177,7 @@ let
               observabilityImpls
               backupsModules
               (extractImpl (manifestData.storage or { }))
-              manifestData.database
+              (extractImpl (manifestData.database or { }))
             ]
             |> filter (v: v != { } && v != null);
 

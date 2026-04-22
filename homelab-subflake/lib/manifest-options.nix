@@ -320,9 +320,22 @@ in
     };
 
     database = mkOption {
-      type = types.nullOr types.anything;
+      type = types.nullOr (types.submodule {
+        options = {
+          create = mkOption {
+            type = types.bool;
+            default = false;
+            description = "Signal to the db service to create a PostgreSQL user and database for this service";
+          };
+          impl = mkOption {
+            type = types.nullOr types.path;
+            default = null;
+            description = "NixOS module configuring the service's database client connection";
+          };
+        };
+      });
       default = null;
-      description = "Database module";
+      description = "Database configuration";
     };
 
     srvLib = mkOption {

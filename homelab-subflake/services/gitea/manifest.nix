@@ -50,5 +50,8 @@
 
     documentation = ./README.md;
 
-    database = import ./non-functional/database.nix;
+    database = {
+      create = true;
+      impl = ./non-functional/database.nix;
+    };
 }
