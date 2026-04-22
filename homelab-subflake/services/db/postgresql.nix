@@ -53,6 +53,9 @@ in
 
       # DB network
       host    all             all             ${dbNet.subnet}.0/24          scram-sha-256
+
+      # backbone inner network
+      host    all             all             ${(lib.homelab.getNetwork "backbone-inner").prefix}           scram-sha-256
     '';
   };
 
