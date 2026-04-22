@@ -47,7 +47,7 @@
                 |> lib.homelab.getServiceFqdn
                 |> (it': "https://${it'}")
                 |> (it': "${it'}/dashboard-icons/png")
-                |> (it': "/${it'}/${if builtins.isNull it.icon then "selfhosted" else it.icon}.png");
+                |> (it': "${it'}/${if builtins.isNull it.icon then "selfhosted" else it.icon}.png");
             };
           });
       }
