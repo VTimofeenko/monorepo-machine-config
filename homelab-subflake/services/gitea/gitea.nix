@@ -20,6 +20,7 @@ in
       # Allows users to create repos by simply pushing it
       repository.ENABLE_PUSH_CREATE_USER = true;
 
+      webhook.ALLOWED_HOST_LIST = "*.${lib.homelab.getSettings.publicDomainName}";
       service = {
         REGISTER_MANUAL_CONFIRM = true;
       };
