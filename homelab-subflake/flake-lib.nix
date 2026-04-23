@@ -142,6 +142,7 @@ rec {
         inputs.base.nixosModules.apprise-api # TODO: just import all once `de` is migrated
         inputs.base.nixosModules.prometheus-ssl-exporter
         inputs.base.nixosModules.frigate-notify
+        inputs.base.nixosModules.fava
         { programs.myNeovim.enable = true; }
       ];
 
