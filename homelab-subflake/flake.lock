@@ -329,11 +329,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1776888995,
-        "narHash": "sha256-bNaT8LvVHVtSoDrwop6U45qc4Y/0/fSx7wsx78DxcFQ=",
+        "lastModified": 1776910785,
+        "narHash": "sha256-kODuHAFt1wihYupIrZwDSKe85oyiEKfWjAxRJgjeG9Y=",
         "ref": "refs/heads/master",
-        "rev": "cb03a3e3a8ae8264792fdcce8329c95684adbe97",
-        "revCount": 130,
+        "rev": "cae5529de683f64047c2b03779dc9795e72d6fc8",
+        "revCount": 131,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-data-flake.git"
       },
@@ -1315,11 +1315,11 @@
         "nixpkgs": "nixpkgs_10"
       },
       "locked": {
-        "lastModified": 1776891253,
-        "narHash": "sha256-rs+UdQLO25AR7S2vGdY9LRkHfkuPV5Gj1/ZfOXwp0Kc=",
+        "lastModified": 1776911798,
+        "narHash": "sha256-3t8sQN230lHD8Vjj3ISyVGd5E4kyC5Bfw4qontUYOR4=",
         "ref": "refs/heads/master",
-        "rev": "f82887249abe273f73d3704f92fbf9796e041815",
-        "revCount": 179,
+        "rev": "a0b638d2a6b3812082709ca2032e7a234e672e78",
+        "revCount": 181,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-modules.git"
       },
