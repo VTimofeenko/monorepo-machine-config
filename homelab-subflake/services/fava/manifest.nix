@@ -1,14 +1,25 @@
-{ ... }:
+{ serviceName, ... }:
 {
   module = ./fava.nix;
 
   endpoints = {
-    web = { port = 5001; protocol = "https"; };
-    webhook = { port = 9001; protocol = "tcp"; };
-    metrics = { port = 9002; protocol = "tcp"; };
+    web = {
+      port = 5001;
+      protocol = "https";
+    };
+    webhook = {
+      port = 9001;
+      protocol = "tcp";
+    };
+    metrics = {
+      port = 9002;
+      protocol = "tcp";
+    };
   };
 
   endpointsConfig = import ./non-functional/endpoints-config.nix;
+
+  sslProxyConfig = import ./non-functional/ssl.nix { inherit serviceName; };
 
   observability.metrics.main = {
     impl = ./non-functional/observability/metrics/impl.nix;

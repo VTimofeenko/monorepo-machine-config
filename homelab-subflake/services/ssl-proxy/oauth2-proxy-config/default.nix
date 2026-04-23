@@ -48,6 +48,7 @@ in
     nginx.virtualHosts =
       [
         "healthchecks"
+        "fava"
       ]
       |> map (it: {
         name = lib.homelab.getServiceFqdn it;
