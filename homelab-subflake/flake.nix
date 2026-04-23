@@ -42,6 +42,14 @@
         nixpkgs.follows = "nixpkgs-unstable";
       };
     };
+
+    fava-helper = {
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/fava-helper.git";
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs-unstable";
+      };
+    };
   };
 
   outputs =
