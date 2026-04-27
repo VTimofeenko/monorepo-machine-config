@@ -10,6 +10,7 @@ in
     HBOX_OIDC_AUTO_REDIRECT = "true";
     HBOX_OPTIONS_ALLOW_LOCAL_LOGIN = "false";
     HBOX_OPTIONS_ALLOW_REGISTRATION = "false";
+    HBOX_OPTIONS_TRUST_PROXY = "true";
   };
 
   # HBOX_OIDC_CLIENT_SECRET is injected via the secret file (key=value format)
