@@ -1,6 +1,7 @@
 {
   inputs,
   pkgs,
+  lib,
   ...
 }:
 {
@@ -30,6 +31,7 @@
       generic-extlinux-compatible.enable = true;
     };
   };
+  boot.kernel.sysctl."vm.mmap_rnd_bits" = lib.mkForce 18;
 
   # Misc
   system.stateVersion = "25.05";
