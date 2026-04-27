@@ -29,22 +29,6 @@ in
       vim.lsp.enable('nickel_ls')
     ''
 
-    # Force stop nickel_ls on buffer unload to avoid slow shutdown
-    # Revisit later, this assert will take care of that
-    (
-      assert lib.assertMsg (lib.versionOlder settings.nlsPkg.version "1.16.0") "Check force exit nls hook in vim, may be fixed";
-      ''
-        vim.api.nvim_create_autocmd("BufUnload", {
-          pattern = "*.ncl",
-          callback = function()
-          for _, client in ipairs(vim.lsp.get_clients({ name = "nickel_ls" })) do
-          vim.lsp.stop_client(client.id, true)
-          end
-          end,
-        })
-      ''
-    )
-
     # nickel templates for luasnip
     ''
       ls.add_snippets("nickel", {
