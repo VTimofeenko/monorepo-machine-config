@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ inputs, pkgs, lib, ... }:
 {
   # Boot
   boot = {
@@ -39,6 +39,7 @@
       generic-extlinux-compatible.enable = true;
     };
   };
+  boot.kernel.sysctl."vm.mmap_rnd_bits" = lib.mkForce 18;
 
   # File systems
   fileSystems."/" = {
