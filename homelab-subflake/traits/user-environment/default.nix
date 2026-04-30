@@ -11,6 +11,8 @@
     ./firejail.nix
     ./flatpak.nix
     ./virtualization.nix
+
+    inputs.home-manager.nixosModules.default
   ];
 
   home-manager.users.spacecadet.imports = [
