@@ -1398,7 +1398,8 @@
           "nixpkgs-unstable"
         ],
         "private-modules": "private-modules",
-        "wg-namespace-flake": "wg-namespace-flake_2"
+        "wg-namespace-flake": "wg-namespace-flake_2",
+        "xremap-flake": "xremap-flake_2"
       }
     },
     "spectrum": {
@@ -1688,6 +1689,51 @@
       "original": {
         "owner": "xremap",
         "repo": "nix-flake",
+        "type": "github"
+      }
+    },
+    "xremap-flake_2": {
+      "inputs": {
+        "crane": [
+          "base",
+          "crane"
+        ],
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "xremap": "xremap_2"
+      },
+      "locked": {
+        "lastModified": 1777344123,
+        "narHash": "sha256-FORgBEkRc3LOQc23ZFJ8mDvjym9WkCgR97gUBT3tTp0=",
+        "owner": "xremap",
+        "repo": "nix-flake",
+        "rev": "69bc1bcdf33da0350cd28b2824b82ccf065a1b4b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "xremap",
+        "repo": "nix-flake",
+        "type": "github"
+      }
+    },
+    "xremap_2": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1777213346,
+        "narHash": "sha256-VhIdsBRJzPWhEMZCh9WaWQ3rOZxrKcT3ltpijtYiy0s=",
+        "owner": "k0kubun",
+        "repo": "xremap",
+        "rev": "37666ae7bff437e2c5fb5d77e7521c28ecbfbdcc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "k0kubun",
+        "ref": "v0.15.3",
+        "repo": "xremap",
         "type": "github"
       }
     }
