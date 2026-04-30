@@ -843,6 +843,27 @@
     "home-manager_3": {
       "inputs": {
         "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1775425411,
+        "narHash": "sha256-KY6HsebJHEe5nHOWP7ur09mb0drGxYSzE3rQxy62rJo=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "0d02ec1d0a05f88ef9e74b516842900c41f0f2fe",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "release-25.11",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "home-manager_4": {
+      "inputs": {
+        "nixpkgs": [
           "impermanence",
           "nixpkgs"
         ]
@@ -882,7 +903,7 @@
     },
     "impermanence_2": {
       "inputs": {
-        "home-manager": "home-manager_3",
+        "home-manager": "home-manager_4",
         "nixpkgs": "nixpkgs_9"
       },
       "locked": {
@@ -1385,6 +1406,7 @@
           "base",
           "flake-parts"
         ],
+        "home-manager": "home-manager_3",
         "impermanence": "impermanence_2",
         "microvm": "microvm_2",
         "miniflux-yt-helper": "miniflux-yt-helper",
