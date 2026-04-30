@@ -359,23 +359,6 @@
                 #   inherit specialArgs;
                 # };
               };
-            deploy.nodes =
-              lib.recursiveUpdate
-                (builtins.mapAttrs (
-                  hostName: hostData:
-                  homelab.mkDeployRsNode {
-                    nodeName = hostData.hostName;
-                    inherit (inputs) data-flake;
-                    inherit (hostData) system;
-                  }
-                ) inputs.data-flake.data.hosts.managed)
-                {
-                  /*
-                    Temporary overrides can be configured here like so:
-
-                    hydrogen.hostname = "192.168.1.1";
-                  */
-                };
             overlays.homelab =
               _: prev:
               withSystem prev.stdenv.hostPlatform.system (
