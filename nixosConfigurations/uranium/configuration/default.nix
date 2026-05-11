@@ -8,6 +8,7 @@
     ./network-selector.nix
     ./user-stuff
     ./rtl.nix
+    ./3d-print.nix
     ./gamemode.nix
   ];
   options.myMachines.uranium = {
