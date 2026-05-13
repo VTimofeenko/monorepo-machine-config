@@ -17,6 +17,12 @@ in
           lan-bridge.name
         ];
       };
+
+      # Certain IoT clients (cameras) send a minimal DHCP request with an empty client
+      # This should prevent `ALLOC_ENGINE_V4_DISCOVER_ADDRESS_CONFLICT` noise in logs
+      # and perceived conflicts
+      host-reservation-identifiers = [ "hw-address" ];
+
       lease-database = {
         name = "/var/lib/kea/dhcp4.leases";
         persist = true;
@@ -27,6 +33,9 @@ in
           id = 1;
           pools = [ { pool = "${lan.subnet}.240 - ${lan.subnet}.254"; } ];
           subnet = "${lan.subnet}.0${lan.settings.netmask}";
+          # Some clients have weird behavior. If this is omitted, `kea`
+          # will think that there are duplicate leases.
+          match-client-id = false;
 
           # Looks like this is needed as an advertisement from DHCP to get gateway to hosts
           option-data = [
@@ -36,11 +45,15 @@ in
             }
           ];
           # Static DHCP assignments
-          reservations = lib.attrsets.mapAttrsToList (_: hostData: {
-            hw-address = hostData.macAddr;
-            ip-address = hostData.ipAddress;
-            hostname = hostData.fqdn;
-          }) lan.hostsInNetwork;
+          reservations =
+            lan.hostsInNetwork
+            |> lib.mapAttrsToList (
+              _: hostData: {
+                hw-address = hostData.macAddr;
+                ip-address = hostData.ipAddress;
+                hostname = hostData.fqdn;
+              }
+            );
         }
       ];
       option-data = [
