@@ -1,0 +1,380 @@
+# Taken from https://github.com/linkwarden/linkwarden/pull/1251/changes
+diff --git a/.env.sample b/.env.sample
+index d607f6171..a434cc871 100644
+--- a/.env.sample
++++ b/.env.sample
+@@ -96,6 +96,8 @@ PROXY_USERNAME=
+ PROXY_PASSWORD=
+ PROXY_BYPASS=
+ 
++FLARESOLVERR_URL=
++
+ # PDF archive settings
+ PDF_MARGIN_TOP=
+ PDF_MARGIN_BOTTOM=
+diff --git a/apps/worker/lib/archiveHandler.ts b/apps/worker/lib/archiveHandler.ts
+index 707f8b1c0..6ed953e26 100644
+--- a/apps/worker/lib/archiveHandler.ts
++++ b/apps/worker/lib/archiveHandler.ts
+@@ -14,10 +14,21 @@ import autoTagLink from "./autoTagLink";
+ import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
+ import { isArchivalTag } from "@linkwarden/lib";
+ import { ArchivalSettings } from "@linkwarden/types";
+-import { getDefaultContextOptions } from "./browser";
++import { getDefaultContextOptions, solveCaptcha } from "./browser";
+ 
+ const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;
+ 
++function isCloudflareTitle(title?: string | null) {
++  if (!title) return false;
++  const t = title.toLowerCase();
++  return (
++    t.includes("just a moment") ||
++    t.includes("attention required") ||
++    t.includes("cloudflare") ||
++    t.includes("verify you are human")
++  );
++}
++
+ export default async function archiveHandler(
+   link: LinkWithCollectionOwnerAndTags,
+   browser: Browser
+@@ -67,9 +78,9 @@ export default async function archiveHandler(
+     }, BROWSER_TIMEOUT * 60000);
+   });
+ 
+-  const contextOptions = getDefaultContextOptions();
+-  const context = await browser.newContext(contextOptions);
+-  const page = await context.newPage();
++  const baseContextOptions = getDefaultContextOptions();
++  let context = await browser.newContext(baseContextOptions);
++  let page = await context.newPage();
+ 
+   createFolder({ filePath: `archives/preview/${link.collectionId}` });
+   createFolder({ filePath: `archives/${link.collectionId}` });
+@@ -120,12 +131,66 @@ export default async function archiveHandler(
+         } else if (link.url) {
+           await page.goto(link.url, { waitUntil: "domcontentloaded" });
+ 
++          const initialTitle = await page.title().catch(() => "");
++
++          if (isCloudflareTitle(initialTitle) && link.url) {
++            console.log(
++              `Detected Cloudflare challenge, using FlareSolverr for: ${link.url}`
++            );
++            const solved = await solveCaptcha(link.url);
++
++            if (solved.status === "ok" && solved.solution) {
++              console.log(
++                "FlareSolverr returned ok status; applying cookies/user-agent to Playwright context."
++              );
++              await context.close().catch(() => {});
++
++              const nextContextOptions = solved.userAgent
++                ? {
++                    ...baseContextOptions,
++                    userAgent: solved.userAgent,
++                  }
++                : baseContextOptions;
++
++              context = await browser.newContext(nextContextOptions);
++
++              if (solved.solution.cookies?.length) {
++                await context.addCookies(solved.solution.cookies);
++              }
++
++              page = await context.newPage();
++              await page.goto(link.url, { waitUntil: "domcontentloaded" });
++
++              const afterSolveTitle = await page.title().catch(() => "");
++              if (
++                isCloudflareTitle(afterSolveTitle) &&
++                solved.solution.response
++              ) {
++                console.log(
++                  "Page still looks like Cloudflare after cookie navigation; using FlareSolverr HTML response as fallback."
++                );
++                await page.setContent(solved.solution.response, {
++                  waitUntil: "domcontentloaded",
++                  baseURL: link.url,
++                });
++              } else {
++                console.log(
++                  "Cloudflare challenge cleared after applying FlareSolverr cookies/user-agent."
++                );
++              }
++            } else if (solved.status !== "skip") {
++              console.log(
++                `FlareSolverr did not return ok status (status=${solved.status}). Continuing without it.`
++              );
++            }
++          }
++
+           // Handle Monolith being sent in beforehand while making sure other values line up
+           if (link.monolith?.endsWith(".html")) {
+             // Use Monolith content instead of page
+             const file = await readFile(link.monolith);
+ 
+-            if (file.contentType == "text/html") {
++            if (file.contentType === "text/html") {
+               const fileContent = file.file;
+ 
+               if (typeof fileContent === "string") {
+@@ -140,6 +205,18 @@ export default async function archiveHandler(
+             }
+           }
+ 
++          if (isCloudflareTitle(link.name)) {
++            const title = await page.title().catch(() => undefined);
++            if (title && !isCloudflareTitle(title)) {
++              await prisma.link.update({
++                where: { id: link.id },
++                data: {
++                  name: title,
++                },
++              });
++            }
++          }
++
+           const metaDescription = await page.evaluate(() => {
+             const description = document.querySelector(
+               'meta[name="description"]'
+diff --git a/apps/worker/lib/browser.ts b/apps/worker/lib/browser.ts
+index 203b67f94..0b566312e 100644
+--- a/apps/worker/lib/browser.ts
++++ b/apps/worker/lib/browser.ts
+@@ -6,6 +6,8 @@ import {
+   type BrowserContextOptions,
+ } from "playwright";
+ 
++import axios from "axios";
++
+ export function getBrowserOptions(): LaunchOptions {
+   let browserOptions: LaunchOptions = {
+     // headless: false,
+@@ -57,3 +59,63 @@ export async function launchBrowser(): Promise<Browser> {
+ 
+   return chromium.launch(browserOptions);
+ }
++
++export async function solveCaptcha(
++  url: string,
++  maxTimeout: number = 90000
++): Promise<{
++  status: string;
++  userAgent?: string;
++  solution?: {
++    cookies: {
++      name: string;
++      value: string;
++      domain: string;
++      path: string;
++      secure: boolean;
++      expires?: number;
++      httpOnly?: boolean;
++      sameSite?: "Strict" | "Lax" | "None";
++    }[];
++    response?: string;
++  };
++}> {
++  if (!process.env.FLARESOLVERR_URL) {
++    return { status: "skip" };
++  }
++
++  const flareSolverrUrl = process.env.FLARESOLVERR_URL.endsWith("/v1")
++    ? process.env.FLARESOLVERR_URL
++    : `${process.env.FLARESOLVERR_URL.replace(/\/$/, "")}/v1`;
++
++  try {
++    const response = await axios.post(
++      flareSolverrUrl,
++      {
++        cmd: "request.get",
++        url,
++        maxTimeout,
++      },
++      {
++        headers: {
++          "Content-Type": "application/json",
++        },
++      }
++    );
++
++    const data = response.data;
++
++    return {
++      status: data?.status,
++      userAgent: data?.solution?.userAgent,
++      solution: data?.solution
++        ? {
++            cookies: data.solution.cookies ?? [],
++            response: data.solution.response,
++          }
++        : undefined,
++    };
++  } catch (_error) {
++    return { status: "error" };
++  }
++}
+diff --git a/apps/worker/lib/preservationScheme/handleArchivePreview.ts b/apps/worker/lib/preservationScheme/handleArchivePreview.ts
+index fb5108bfd..32f99a772 100644
+--- a/apps/worker/lib/preservationScheme/handleArchivePreview.ts
++++ b/apps/worker/lib/preservationScheme/handleArchivePreview.ts
+@@ -1,5 +1,6 @@
+ import { Collection, Link, User } from "@linkwarden/prisma/client";
+ import { Page } from "playwright";
++import { URL } from "node:url";
+ import { generatePreview } from "@linkwarden/lib";
+ import { createFile } from "@linkwarden/filesystem";
+ import { prisma } from "@linkwarden/prisma";
+@@ -14,38 +15,86 @@ const handleArchivePreview = async (
+   link: LinksAndCollectionAndOwner,
+   page: Page
+ ) => {
+-  let ogImageUrl = await page.evaluate(() => {
+-    const metaTag = document.querySelector('meta[property="og:image"]');
+-    return metaTag ? (metaTag as any).content : null;
++  const ogImageUrl = await page.evaluate(() => {
++    const doc = (
++      globalThis as unknown as {
++        document?: {
++          querySelector: (
++            selector: string
++          ) => { getAttribute?: (name: string) => string | null } | null;
++        };
++      }
++    ).document;
++
++    const selectors = [
++      'meta[property="og:image"]',
++      'meta[property="og:image:secure_url"]',
++      'meta[name="og:image"]',
++      'meta[name="twitter:image"]',
++      'meta[name="twitter:image:src"]',
++      'meta[name="image"]',
++      'meta[itemprop="image"]',
++    ];
++
++    for (const selector of selectors) {
++      const el = doc?.querySelector(selector);
++      const content = el?.getAttribute?.("content");
++      if (content) return content;
++    }
++
++    return null;
+   });
+ 
+   let previewGenerated = false;
+ 
+   if (ogImageUrl) {
+-    if (
+-      !ogImageUrl.startsWith("http://") &&
+-      !ogImageUrl.startsWith("https://")
+-    ) {
+-      const origin = await page.evaluate(() => document.location.origin);
+-      ogImageUrl =
+-        origin + (ogImageUrl.startsWith("/") ? ogImageUrl : "/" + ogImageUrl);
+-    }
++    try {
++      const resolvedOgImageUrl = new URL(ogImageUrl, page.url()).toString();
++      const userAgent = await page
++        .evaluate(
++          () =>
++            (
++              globalThis as unknown as {
++                navigator?: { userAgent?: string };
++              }
++            ).navigator?.userAgent
++        )
++        .catch(() => undefined);
+ 
+-    const imageResponse = await page.goto(ogImageUrl);
++      const headers: Record<string, string> = {
++        Referer: page.url(),
++      };
++      if (userAgent) headers["User-Agent"] = userAgent;
+ 
+-    if (imageResponse && !link.preview?.startsWith("archive")) {
+-      const buffer = await imageResponse.body();
+-      previewGenerated = await generatePreview(
+-        buffer,
+-        link.collectionId,
+-        link.id
+-      );
+-    }
++      const imageResponse = await page
++        .context()
++        .request.get(resolvedOgImageUrl, { headers });
++
++      const contentType = imageResponse.headers()["content-type"];
+ 
+-    await page.goBack();
++      if (
++        imageResponse.ok() &&
++        contentType?.startsWith("image") &&
++        !link.preview?.startsWith("archive")
++      ) {
++        const buffer = await imageResponse.body();
++        previewGenerated = await generatePreview(
++          buffer,
++          link.collectionId,
++          link.id
++        );
++
++        if (previewGenerated) {
++          console.log("Successfully generated preview from og:image");
++        }
++      }
++    } catch (_err) {
++      previewGenerated = false;
++    }
+   }
+ 
+   if (!previewGenerated && !link.preview?.startsWith("archive")) {
++    console.log("Falling back to screenshot preview");
+     await page
+       .screenshot({ type: "jpeg", quality: 20 })
+       .then(async (screenshot) => {
+diff --git a/apps/worker/tsconfig.json b/apps/worker/tsconfig.json
+index 5f11a5130..9198f9e17 100644
+--- a/apps/worker/tsconfig.json
++++ b/apps/worker/tsconfig.json
+@@ -10,7 +10,8 @@
+     "module": "NodeNext",
+     "outDir": "dist",
+     "sourceMap": true,
+-    "lib": ["es2022"],
++    "lib": ["es2022", "dom"],
++    "types": ["node"],
+     "moduleResolution": "NodeNext"
+   }
+ }
+diff --git a/docker-compose.yml b/docker-compose.yml
+index 6523d8404..8c06b2548 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -11,7 +11,7 @@ services:
+       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
+     restart: always
+     # build: . # uncomment to build from source
+-    image: ghcr.io/linkwarden/linkwarden:latest # comment to build from source
++    image: ghcr.io/yurisasc/linkwarden:latest # comment to build from source
+     ports:
+       - 3000:3000
+     volumes:
+@@ -19,6 +19,7 @@ services:
+     depends_on:
+       - postgres
+       - meilisearch
++      - flaresolverr
+   meilisearch:
+     image: getmeili/meilisearch:v1.12.8
+     restart: always
+@@ -26,3 +27,6 @@ services:
+       - .env
+     volumes:
+       - ./meili_data:/meili_data
++  flaresolverr:
++    image: ghcr.io/flaresolverr/flaresolverr:latest
++    restart: always
+

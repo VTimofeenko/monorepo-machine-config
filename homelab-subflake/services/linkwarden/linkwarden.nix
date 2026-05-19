@@ -1,5 +1,7 @@
 { lib, config, ... }:
 {
+  imports = [ ./flaresolverr.nix ];
+
   services.linkwarden = {
     enable = true;
 
