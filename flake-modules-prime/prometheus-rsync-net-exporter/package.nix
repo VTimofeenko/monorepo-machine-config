@@ -14,11 +14,10 @@ rustPlatform.buildRustPackage rec {
     domain = "gitea.srv.vtimofeenko.com";
     owner = "spacecadet";
     repo = "prometheus-rsync-net-exporter-rs";
-    # tag = version;
-    rev = "8b0f1479d6c49674d55bca21f7ec432cdf8a1d12";
-    hash = "sha256-j3CM8z5A/LwBOKi0KmWyTR1c/+8uk03F7QqGCIVuDsY=";
+    tag = "v${version}";
+    hash = "sha256-1jESS10dQWnIFob3xNzXALoJlET0tcVguKsLQD2YbBQ=";
   };
-  cargoHash = "sha256-8AuXXHge3DuXjN0KdI0b2hu/pzbPq4WpNLNIwY12f8I=";
+  cargoHash = "sha256-ClAWk8UJUyekdPQ5xhlDXrY+cvt1wJ6Rm9cvc5CBiRU=";
 
   nativeBuildInputs = [ pkg-config ];
   buildInputs = [ openssl ];
