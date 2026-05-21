@@ -46,6 +46,12 @@ echo "================================================="
 # Run flake update (without committing)
 nix flake update $UPDATE_ARGS
 
+# Check if flake.lock was actually modified
+if git diff --quiet flake.lock && git diff --cached --quiet flake.lock; then
+  echo "✅ Nothing to bump — flake.lock is already up to date"
+  exit 0
+fi
+
 # Create commit with ONLY flake.lock (path argument bypasses staging area)
 COMMIT_MSG=$(git interpret-trailers --trailer "Updated-Inputs: $TRAILER_VALUE" <<EOF
 $COMMIT_SUMMARY
