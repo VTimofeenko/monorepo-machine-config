@@ -17,7 +17,7 @@ python3Packages.buildPythonApplication rec {
     owner = "caronc";
     repo = "apprise-api";
     tag = "v${version}";
-    hash = "sha256-tFhlBKRliGyx0t2k/81Q8igdyIpMKagkTKgTXk+9tus=";
+    hash = "sha256-RnEAVN2dCWcvUUaM51a+sie0Oemqq2oWn54I9iS/YAA=";
   };
 
   pyproject = true;
