@@ -143,6 +143,7 @@ rec {
         inputs.base.nixosModules.prometheus-ssl-exporter
         inputs.base.nixosModules.frigate-notify
         inputs.base.nixosModules.fava
+        inputs.base.nixosModules.prusa-exporter
         { programs.myNeovim.enable = true; }
       ];
 
