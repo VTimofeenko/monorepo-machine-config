@@ -147,6 +147,30 @@ let
         );
         default = null;
       };
+      dashboards = mkOption {
+        type = types.nullOr (
+          types.submodule {
+            options = {
+              enable = mkOption {
+                type = types.bool;
+                default = false;
+                description = "Whether to provision a Grafana dashboard for this service";
+              };
+              mod = mkOption {
+                type = types.nullOr types.path;
+                default = null;
+                description = ''
+                  NixOS module evaluated on the Grafana host that installs the
+                  dashboard JSON under /etc/grafana-dashboards/.
+                '';
+              };
+            };
+          }
+        );
+        default = null;
+        description = "Grafana dashboard provisioning configuration";
+      };
+
       probes = mkOption {
         type = types.nullOr (
           types.submodule {

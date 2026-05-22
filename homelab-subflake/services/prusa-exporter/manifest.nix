@@ -22,5 +22,10 @@
   };
 
   # No backups – stateless exporter
-  # No dashboard – infrastructure metrics only
+
+  # Grafana dashboard (HTTP/PrusaLink metrics only – no UDP exporter required)
+  observability.dashboards = {
+    enable = true;
+    mod = ./dashboard.nix;
+  };
 }
