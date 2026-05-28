@@ -2,8 +2,6 @@
 {
   # Boot
   boot = {
-    # Sets screen timeout to 1 minute
-    kernelParams = [ "consoleblank=60" ];
     initrd = {
       availableKernelModules = [
         "xhci_pci"
