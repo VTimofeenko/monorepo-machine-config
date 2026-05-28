@@ -1353,7 +1353,7 @@
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "",
           "values": false
@@ -1394,10 +1394,11 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "avg by (printer_mac) (prusa_chamber_temp{printer_mac=\"$printer_mac\"})",
+          "expr": "avg by (printer_mac) (prusa_chamber_temp{printer_mac=\"$printer_mac\"} and on(printer_mac) prusa_last_push_timestamp{printer_mac=\"$printer_mac\"} > (time() - 120))",
+          "instant": true,
           "interval": "1s",
           "legendFormat": "Chamber",
-          "range": true,
+          "range": false,
           "refId": "C"
         }
       ],
@@ -1972,7 +1973,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "avg by(printer_mac) (prusa_chamber_temp{printer_mac=\"$printer_mac\"})",
+          "expr": "avg by(printer_mac) (prusa_chamber_temp{printer_mac=\"$printer_mac\"} and on(printer_mac) prusa_last_push_timestamp{printer_mac=\"$printer_mac\"} > (time() - 120))",
           "interval": "1s",
           "legendFormat": "Chamber",
           "range": true,
