@@ -28,4 +28,6 @@
     enable = true;
     mod = ./dashboard.nix;
   };
+
+  observability.alerts.prometheusImpl = ./non-functional/alerts.nix;
 }
