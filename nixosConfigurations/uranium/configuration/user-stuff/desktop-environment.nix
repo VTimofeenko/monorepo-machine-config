@@ -6,5 +6,6 @@
       "hyprland needs to be enabled and under correct attribute";
     {
       monitor = "eDP-1,2256x1504@60,0x0,1"; # This is the built in monitor
+      windowrulev2="tag +flyout, title:(.*wants to open)" |> lib.singleton;
     };
 }

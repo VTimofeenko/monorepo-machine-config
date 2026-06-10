@@ -300,6 +300,7 @@ in
         windowrule = float,$pinentry
         windowrule = float,xdg-desktop-portal-gtk
         windowrule = float,title:^Open File.*
+        windowrule = float,title:.*wants to open.*
         windowrule = size 25% 20%,$pinentry
         windowrule = center,$pinentry
         windowrule = stayfocused,$pinentry
