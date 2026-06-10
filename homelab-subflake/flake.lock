@@ -344,11 +344,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1779381896,
-        "narHash": "sha256-sVE6dkgvmavV80I3jFDtOFi1RFyoUL0swV5VrK0RsXA=",
+        "lastModified": 1781118611,
+        "narHash": "sha256-csIC+Cr5ndoIvQaq63yyEfREFpQfiJhUZhsBX1S80Hk=",
         "ref": "refs/heads/master",
-        "rev": "b84e48ef910ea82009572a38f925cfb86b801426",
-        "revCount": 148,
+        "rev": "27700f61396e50e0e05036ed1e44ae42665bf99e",
+        "revCount": 149,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-data-flake.git"
       },
