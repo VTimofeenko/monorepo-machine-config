@@ -1840,7 +1840,7 @@
           {
             "matcher": {
               "id": "byFrameRefID",
-              "options": "F"
+              "options": "G"
             },
             "properties": [
               {
@@ -1887,6 +1887,49 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "custom.axisPlacement",
+                "value": "hidden"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 0
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 1
+              },
+              {
+                "id": "custom.drawStyle",
+                "value": "line"
+              },
+              {
+                "id": "custom.lineInterpolation",
+                "value": "stepAfter"
+              }
+            ]
           }
         ]
       },
@@ -1925,11 +1968,23 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
+          "expr": "avg by(printer_mac) (prusa_door_sensor{printer_mac=\"$printer_mac\"} > bool 100)",
+          "interval": "1s",
+          "legendFormat": "Door Open",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
           "expr": "avg by(printer_address) (prusa_temperature_celsius{printer_address=\"$printer_address\", printer_heated_element=\"tool0\"})",
           "interval": "1s",
           "legendFormat": "Nozzle",
           "range": true,
-          "refId": "A"
+          "refId": "B"
         },
         {
           "datasource": {
@@ -1941,7 +1996,7 @@
           "interval": "1s",
           "legendFormat": "Nozzle Target",
           "range": true,
-          "refId": "B"
+          "refId": "C"
         },
         {
           "datasource": {
@@ -1953,7 +2008,7 @@
           "interval": "1s",
           "legendFormat": "Bed",
           "range": true,
-          "refId": "C"
+          "refId": "D"
         },
         {
           "datasource": {
@@ -1965,7 +2020,7 @@
           "interval": "1s",
           "legendFormat": "Bed Target",
           "range": true,
-          "refId": "D"
+          "refId": "E"
         },
         {
           "datasource": {
@@ -1977,7 +2032,7 @@
           "interval": "1s",
           "legendFormat": "Chamber",
           "range": true,
-          "refId": "E"
+          "refId": "F"
         },
         {
           "datasource": {
@@ -1989,7 +2044,7 @@
           "interval": "15s",
           "legendFormat": "🖨 {{printer_job_name}}",
           "range": true,
-          "refId": "F"
+          "refId": "G"
         }
       ],
       "title": "All Temperatures",
