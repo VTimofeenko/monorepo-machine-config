@@ -2049,6 +2049,57 @@
       ],
       "title": "All Temperatures",
       "type": "timeseries"
+    },
+    {
+      "id": 40,
+      "type": "text",
+      "title": "Live",
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 0,
+        "y": 29
+      },
+      "options": {
+        "mode": "html",
+        "content": "<iframe src=\"https://prusa-camera.srv.vtimofeenko.com/stream.html?src=prusa_buddy&mode=mse\" allow=\"autoplay\" frameborder=\"0\" style=\"overflow:hidden;height:100%;width:100%;position:absolute;top:0;left:0;right:0;bottom:0\" height=\"100%\" width=\"100%\"></iframe>"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      }
+    },
+    {
+      "id": 41,
+      "type": "text",
+      "title": "Recording",
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 8,
+        "y": 29
+      },
+      "options": {
+        "mode": "html",
+        "content": "<div style=\"position:absolute;inset:0\">\n  <video id=\"v\" controls style=\"width:100%;height:100%\"></video>\n  <div id=\"ts\" style=\"position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.6);color:#fff;padding:2px 6px;font-family:monospace;font-size:12px;pointer-events:none\"></div>\n</div>\n<script>\n(function() {\n  var video = document.getElementById(\"v\");\n  var tsDiv = document.getElementById(\"ts\");\n  var fragPDT = null;\n  var fragVidStart = null;\n\n  fetch(\"https://prusa-camera.srv.vtimofeenko.com/hls.js\")\n    .then(function(r) { return r.text(); })\n    .then(function(src) {\n      new Function(\"define\", \"module\", \"exports\", src)(undefined, undefined, undefined);\n      var Hls = window.Hls;\n      var h = new Hls();\n      h.loadSource(\"https://prusa-camera.srv.vtimofeenko.com/recordings/stream.m3u8\");\n      h.attachMedia(video);\n\n      h.on(Hls.Events.FRAG_CHANGED, function(evt, data) {\n        if (data.frag.programDateTime) {\n          fragPDT = data.frag.programDateTime;\n          fragVidStart = data.frag.start;\n        }\n      });\n\n      video.addEventListener(\"timeupdate\", function() {\n        if (fragPDT === null) return;\n        var wallMs = fragPDT + (video.currentTime - fragVidStart) * 1000;\n        tsDiv.textContent = new Date(wallMs).toLocaleString();\n      });\n    });\n})();\n</script>"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      }
+    },
+    {
+      "id": 42,
+      "type": "row",
+      "title": "Camera",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "collapsed": false,
+      "panels": []
     }
   ],
   "refresh": "5s",
