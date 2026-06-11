@@ -1375,11 +1375,11 @@
         "nixpkgs": "nixpkgs_10"
       },
       "locked": {
-        "lastModified": 1781221196,
-        "narHash": "sha256-DIp5XmusZWIl9K7bYhMDLIpsWUvTL/phZuYUZ/HVmqQ=",
+        "lastModified": 1782176625,
+        "narHash": "sha256-x/Sg+dHaHT6qwa1Gyw3NADMp2iX2DjF5klO50j6+ljQ=",
         "ref": "refs/heads/master",
-        "rev": "cf55e1086806edf6bbddead66fa7a5369665a81d",
-        "revCount": 236,
+        "rev": "ad00eb921c0abbf56c5eeb6dfae01e8bd8e7abe2",
+        "revCount": 247,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-modules.git"
       },
