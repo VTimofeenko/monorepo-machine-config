@@ -10,7 +10,8 @@ in
       OpenIDConfig__ClientId = "lubelogger";
       OpenIDConfig__AuthURL = "${keycloakRealm}/protocol/openid-connect/auth";
       OpenIDConfig__TokenURL = "${keycloakRealm}/protocol/openid-connect/token";
-      EnableAuth = "true";
+      OpenIDConfig__UserInfoURL = "${keycloakRealm}/protocol/openid-connect/userinfo";
+      EnableAuth = "false";
       OpenIDConfig__RedirectURL = "https://${lib.homelab.getServiceFqdn "lubelogger"}/Login/RemoteAuth";
       OpenIDConfig__DisableRegularLogin = "true"; # optional: skip the login form
       OpenIDConfig__LogOutURL = "${(lib.homelab.getServiceConfig "keycloak").realmURL}/protocol/openid-connect/logout";
