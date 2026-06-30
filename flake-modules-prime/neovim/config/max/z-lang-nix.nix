@@ -12,7 +12,7 @@
     Both are using live versions so that pipe syntax is supported
 
   - Treesitter support for nested strings (`hmts-nvim`) allows highlighting, say, bash strings inside nix strings
-  - Formatting using `nix-rfc-style-format`
+  - Formatting using `nixfmt`
   - Snippets:
     - `let .. in`
     - `if then else`
@@ -95,7 +95,7 @@ in
       settings = {
         ["nil"] = {
           formatting = {
-            command = { "${lib.getExe pkgs.nixfmt-rfc-style}" },
+            command = { "${lib.getExe pkgs.nixfmt}" },
           },
           flake = {
             autoEvalInputs = true,
