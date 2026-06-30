@@ -52,9 +52,8 @@ in
               beancount-language-server
               emacs-notifier
               kroki-cli
+              bash-language-server
               ;
-            # inherit (pkgs.python311Packages) grip; # markdown previews
-            inherit (pkgs.nodePackages) bash-language-server; # sh LSP
           };
     };
     zsh = {
