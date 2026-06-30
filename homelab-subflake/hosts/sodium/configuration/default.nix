@@ -19,6 +19,7 @@
         "usb_storage"
       ];
     };
+    kernelPackages = pkgs.linuxPackages_latest;
     kernelParams = [
       "8250.nr_uarts=1"
       "console=ttyAMA0,115200"
