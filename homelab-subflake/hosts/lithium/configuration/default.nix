@@ -14,8 +14,7 @@
         "usb_storage"
       ];
     };
-    # Necessary for USB boot(!)
-    kernelPackages = pkgs.linuxPackages_rpi4;
+    kernelPackages = pkgs.linuxPackages_latest;
     blacklistedKernelModules = [
       "bluetooth"
       "btusb"
