@@ -188,26 +188,17 @@ in
         # Add computed plugins
         |> (
           it:
-          pkgs.wrapNeovimUnstable it (
-            (pkgs.neovimUtils.makeNeovimConfig {
-              inherit plugins;
-              withPython3 = true;
-              withRuby = false;
-            })
-            # Add the extra packages
-            |> (
-              x:
-              x
-              // {
-                wrapperArgs = x.wrapperArgs ++ [
-                  "--prefix"
-                  "PATH"
-                  ":"
-                  (lib.makeBinPath configFromType.packages)
-                ];
-              }
-            )
-          )
+          pkgs.wrapNeovimUnstable it {
+            inherit plugins;
+            withPython3 = true;
+            withRuby = false;
+            wrapperArgs = [
+              "--prefix"
+              "PATH"
+              ":"
+              (lib.makeBinPath configFromType.packages)
+            ];
+          }
         )
         # Produce the package
         |> (
