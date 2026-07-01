@@ -1,0 +1,35 @@
+diff --git a/plugin/hmts.lua b/plugin/hmts.lua
+index 8514070..3475bbb 100644
+--- a/plugin/hmts.lua
++++ b/plugin/hmts.lua
+@@ -124,7 +124,12 @@ end
+ ---@param predicate string[]
+ ---@return boolean
+ local function hmts_path_handler(match, _, bufnr, predicate)
+-	local node = match[predicate[2]]:parent()
++	local capture = match[predicate[2]]
++	if not capture then return false end
++	-- nvim 0.12+: match values are TSNode[] instead of TSNode
++	local capture_node = type(capture) == "table" and capture[1] or capture
++	if not capture_node then return false end
++	local node = capture_node:parent()
+ 	local target_path = vim.list_slice(predicate, 3, nil)
+ 
+ 	while node do
+@@ -152,7 +157,10 @@ end
+ ---@param predicate string[]
+ ---@param metadata table<string, string>
+ local function hmts_inject_handler(match, _, bufnr, predicate, metadata)
+-	local path_node = match[predicate[2]]
++	local raw = match[predicate[2]]
++	if not raw then return end
++	local path_node = type(raw) == "table" and raw[1] or raw
++	if not path_node then return end
+ 	local filename = find_filename_in_parent_node(path_node, bufnr)
+ 	local alias = vim.filetype.match({ filename = filename })
+ 
+@@ -167,3 +175,4 @@ end
+ local opts = vim.fn.has("nvim-0.10") == 1 and { force = true, all = false } or true
+ vim.treesitter.query.add_predicate("hmts-path?", hmts_path_handler, opts)
+ vim.treesitter.query.add_directive("hmts-inject!", hmts_inject_handler, opts)
++vim.notify("hmts.nvim loaded (nvim012 patch)", vim.log.levels.INFO)

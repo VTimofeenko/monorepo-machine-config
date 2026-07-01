@@ -80,7 +80,9 @@ let
 in
 {
   plugins = [
-    pkgs.vimPlugins.hmts-nvim
+    (pkgs.vimPlugins.hmts-nvim.overrideAttrs (old: {
+      patches = (old.patches or []) ++ [ ./hmts-nvim-nvim012.patch ];
+    }))
     # vim-nix provides nice indentation
     pkgs.vimPlugins.vim-nix
   ];
@@ -235,7 +237,9 @@ in
 
       vim.api.nvim_create_autocmd("FileType", {
         pattern = { "nix" },
-        callback = function()
+        callback = function(args)
+          -- vim-nix sets b:current_syntax before treesitter auto-starts, so force it
+          vim.treesitter.start(args.buf)
           local wk = require("which-key")
           wk.add({
             { "gf", open_file, desc = "Open file under cursor" },
