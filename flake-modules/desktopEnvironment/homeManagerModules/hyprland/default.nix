@@ -36,4 +36,5 @@
     (lib.mkForce false);
 
   services.swaync.enable = true;
+  wayland.windowManager.hyprland.configType = "hyprlang";
 }
