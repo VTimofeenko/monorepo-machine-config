@@ -62,8 +62,13 @@
 
           browserpass.enable = true;
 
+          firefox.configPath = ".mozilla/firefox";
+
           password-store = {
             enable = true;
+            settings = {
+              PASSWORD_STORE_DIR = "$XDG_DATA_HOME/password-store";
+            };
             package = pkgs.pass.withExtensions (exts: [
               exts.pass-otp
               exts.pass-genphrase
