@@ -39,11 +39,15 @@ in
   # Idle configuration: lock after inactivity
   services.swayidle = {
     enable = true;
-    systemdTarget =
-      assert lib.assertMsg osConfig.programs.uwsm.enable
-        "This setting relies on uwsm being used to wrap hyprland session.";
-      # This is a bit brittle; exposes the way uwsm generates the session name
-      "wayland-session@hyprland\x2duwsm.desktop.target";
+
+    # This is disabled to test the default behavior of `uwsm` on 26.05
+    # ```
+    # systemdTarget =
+    #   assert lib.assertMsg osConfig.programs.uwsm.enable
+    #     "This setting relies on uwsm being used to wrap hyprland session.";
+    #   # This is a bit brittle; exposes the way uwsm generates the session name
+    #   "wayland-session@hyprland\x2duwsm.desktop.target";
+    # ```
 
     events = {
       after-resume = "${hyprctl} dispatch dpms on";
