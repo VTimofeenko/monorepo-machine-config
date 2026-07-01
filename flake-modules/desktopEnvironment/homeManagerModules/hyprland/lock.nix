@@ -41,24 +41,15 @@ in
     enable = true;
     systemdTarget =
       assert lib.assertMsg osConfig.programs.uwsm.enable
-        ''This setting relies on uwsm being used to wrap hyprland session.'';
+        "This setting relies on uwsm being used to wrap hyprland session.";
       # This is a bit brittle; exposes the way uwsm generates the session name
       "wayland-session@hyprland\x2duwsm.desktop.target";
 
-    events = [
-      {
-        event = "after-resume";
-        command = "${hyprctl} dispatch dpms on";
-      }
-      {
-        event = "lock";
-        command = lockCmd;
-      }
-      {
-        event = "before-sleep";
-        command = lockCmd;
-      }
-    ];
+    events = {
+      after-resume = "${hyprctl} dispatch dpms on";
+      lock = lockCmd;
+      before-sleep = lockCmd;
+    };
 
     timeouts = [
       {
