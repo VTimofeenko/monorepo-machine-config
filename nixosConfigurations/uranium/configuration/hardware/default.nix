@@ -31,7 +31,6 @@
         "uas"
       ];
       kernelModules = [ ];
-      luks.gpgSupport = true;
       luks.devices."luks".device = "/dev/disk/by-uuid/c2e5cd09-b5d7-42cb-a78a-f549edfa0eb4";
     };
   };
