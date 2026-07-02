@@ -24,7 +24,6 @@
 {
   pkgs,
   lib,
-  self,
   pkgs-unstable,
   ...
 }:
@@ -119,23 +118,13 @@ in
           },
           options = {
             home_manager = {
-              ${
-                  # This parameter needs a nix path to an attribute set
-                  # containing homeConfigurations.
-                  # I am reusing this flake's output. This is not ideal as it
-                  # works as an implicit dependency, but should work for now.
-                  #
-                  # FIXME: create a fake homeConfigurations output in the vim flake module for this
-                  assert builtins.hasAttr "deck" self.outputs.legacyPackages.${pkgs.stdenv.system}.homeConfigurations;
-                  # `\"` around `flakeRef` is load bearing
-                  ''expr = "(builtins.getFlake \"${flakeRef}\").outputs.legacyPackages.${pkgs.stdenv.system}.homeConfigurations.deck.options"''
-                }
-              },
-            },
+              expr = "let f = builtins.getFlake \"${flakeRef}\"; in (f.inputs.home-manager.lib.homeManagerConfiguration { pkgs = f.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.system}; modules = [{ home.username = \"stub\"; home.homeDirectory = \"/stub\"; home.stateVersion = \"25.11\"; }]; }).options",
+            }
           },
         },
       }
-      vim.lsp.enable('nixd')
+    }
+    vim.lsp.enable('nixd')
     ''
     ''
       ls.add_snippets("nix", {
