@@ -16,7 +16,7 @@
       { "zM", require("ufo").closeAllFolds, desc = "Close all folds" },
     })
     require("ufo").setup({
-      provider_selector = function(bufnr, filetype, buftype)
+      provider_selector = function(bufnr, filetype, _buftype)
         return { "treesitter", "indent" }
       end,
     })
