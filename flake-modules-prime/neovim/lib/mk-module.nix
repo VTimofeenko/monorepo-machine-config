@@ -60,8 +60,6 @@ in
       default = "";
     };
 
-    lazy = mkEnableOption "lazy.nvim integration";
-
     # Used by the dynamic package generator later
     finalPackage = mkOption {
       type = lib.types.package;
@@ -84,68 +82,6 @@ in
 
       extraPluginsNormalized = lib.flatten (map lib.attrValues cfg.extraPlugins);
 
-      # --- Lazy Loading Logic ---
-
-      # Separate modules into those with plugins (specs) and global config
-      modulesWithPlugins = lib.filter (m: (m ? plugin) || (m ? plugins)) configFromType.modules;
-      modulesGlobal = lib.filter (m: !((m ? plugin) || (m ? plugins))) configFromType.modules;
-
-      globalInitLua =
-        (lib.concatMapStringsSep "\n" (m: m.config or "") modulesGlobal) + "\n" + cfg.extraInitLua;
-
-      # Generate lazy specs for built-in modules
-      mkLazySpecs =
-        modules:
-        map (
-          m:
-          let
-            ps = if m ? plugin then [ m.plugin ] else m.plugins;
-            main = builtins.head ps;
-            deps = builtins.tail ps;
-            cfg = m.config or "";
-          in
-          ''
-            {
-              dir = "${main}",
-              dependencies = { ${lib.concatMapStringsSep ", " (d: "{ dir = \"${d}\" }") deps} },
-              config = function()
-                ${cfg}
-              end,
-            },
-          ''
-        ) modules;
-
-      # Generate lazy specs for extraPlugins
-      mkExtraLazySpecs =
-        plugins:
-        map (p: ''
-          {
-            dir = "${p.pkg}",
-            config = function()
-              ${p.config}
-            end,
-          },
-        '') plugins;
-
-      lazyInitLua = ''
-        -- Global config (options, variables)
-        ${globalInitLua}
-
-        -- Lazy.nvim setup
-        local lazypath = "${pkgs.vimPlugins.lazy-nvim}/share/nvim/site/pack/lazy/start/lazy.nvim"
-        if not vim.uv.fs_stat(lazypath) then
-          vim.notify("lazy.nvim not found at " .. lazypath, vim.log.levels.ERROR)
-        end
-        vim.opt.rtp:prepend(lazypath)
-
-        require("lazy").setup({
-          ${lib.concatStrings (mkLazySpecs modulesWithPlugins)}
-          ${lib.concatStrings (mkExtraLazySpecs extraPluginsNormalized)}
-        })
-      '';
-
-      # --- Standard Logic ---
-
       standardInitLua = (
         configFromType.initLua
         # Append from extraPlugins
@@ -157,7 +93,7 @@ in
       );
 
       initLua =
-        (if cfg.lazy then lazyInitLua else standardInitLua)
+        standardInitLua
         |> (
           it:
           pkgs.writeTextFile {
@@ -170,17 +106,7 @@ in
       # If lazy: all plugins are optional, except lazy.nvim
       # If standard: all plugins are eager
 
-      allPluginsList = configFromType.plugins ++ (map (it: it.pkg) extraPluginsNormalized);
-
-      plugins =
-        if cfg.lazy then
-          [ pkgs.vimPlugins.lazy-nvim ]
-          ++ (map (p: {
-            plugin = p;
-            optional = true;
-          }) allPluginsList)
-        else
-          allPluginsList;
+      plugins = configFromType.plugins ++ (map (it: it.pkg) extraPluginsNormalized);
 
       finalPackage =
         # Take basePackage

@@ -25,13 +25,11 @@
           vim = { type = "std"; };
           vim-with-langs = { type = "max"; };
           vim-max = { type = "max"; };
-          vim-lazy = { type = "max"; lazy = true; };
         }
         |> lib.mapAttrs (
           _: it:
           flakeModuleLib.mkPackage {
             pkgType = it.type;
-            cfg = if it.lazy or false then { programs.myNeovim.lazy = true; } else { };
             inherit pkgs lib;
           }
         )
