@@ -10,11 +10,11 @@
     # lua
     ''
       local cmp = require("cmp")
-      cmp_sources = {
+      local cmp_sources = {
         { name = "path" },
         { name = "buffer" },
       }
-      cmp_mappings = {
+      local cmp_mappings = {
         ["<C-p>"] = cmp.mapping.select_prev_item(),
         ["<C-n>"] = cmp.mapping.select_next_item(),
         ["<C-space>"] = cmp.mapping.complete(),

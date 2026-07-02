@@ -98,7 +98,7 @@
             "i",
             "s",
         })
-        cmp_snippet = {
+        local cmp_snippet = {
           expand = function(args)
             require("luasnip").lsp_expand(args.body)
           end,
