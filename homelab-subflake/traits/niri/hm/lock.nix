@@ -12,7 +12,6 @@ in
 
   services.swayidle = {
     enable = true;
-    systemdTarget = "niri.service";
     events = {
       after-resume = "${niriMsg} power-on-monitors";
       lock = lockCmd;
