@@ -133,7 +133,7 @@ in
 
         -- Lazy.nvim setup
         local lazypath = "${pkgs.vimPlugins.lazy-nvim}/share/nvim/site/pack/lazy/start/lazy.nvim"
-        if not vim.loop.fs_stat(lazypath) then
+        if not vim.uv.fs_stat(lazypath) then
           vim.notify("lazy.nvim not found at " .. lazypath, vim.log.levels.ERROR)
         end
         vim.opt.rtp:prepend(lazypath)
