@@ -115,13 +115,6 @@
             desc = "Previous changed hunk",
           },
           {
-            "[c",
-            function()
-              gs.prev_hunk({target = "all"})
-            end,
-            desc = "Previous changed hunk",
-          },
-          {
             "<Space>gs",
             my_gitsigns_actions.stage_hunk,
             desc = "Stage hunk",
