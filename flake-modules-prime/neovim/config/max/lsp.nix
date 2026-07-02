@@ -27,8 +27,8 @@
         { "gd", vim.lsp.buf.definition, desc = "Go to definition" },
         { "gi", vim.lsp.buf.implementation, desc = "Go to implementation" },
         { "gr", vim.lsp.buf.references, desc = "Go to references" },
-        { "[d", vim.diagnostic.goto_prev, desc = "Previous diagnostic" },
-        { "]d", vim.diagnostic.goto_next, desc = "Next diagnostic" },
+        { "[d", function() vim.diagnostic.jump({count=-1, float=true}) end, desc = "Previous diagnostic" },
+        { "]d", function() vim.diagnostic.jump({count=1, float=true}) end, desc = "Next diagnostic" },
       })
 
       --vim.keymap.set('x', '\\a', function() vim.lsp.buf.code_action() end)
