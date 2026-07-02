@@ -13,20 +13,11 @@ in
   services.swayidle = {
     enable = true;
     systemdTarget = "niri.service";
-    events = [
-      {
-        event = "after-resume";
-        command = "${niriMsg} power-on-monitors";
-      }
-      {
-        event = "before-sleep";
-        command = lockCmd;
-      }
-      {
-        event = "lock";
-        command = lockCmd;
-      }
-    ];
+    events = {
+      after-resume = "${niriMsg} power-on-monitors";
+      lock = lockCmd;
+      before-sleep = lockCmd;
+    };
     timeouts = [
       {
         timeout = 300;
