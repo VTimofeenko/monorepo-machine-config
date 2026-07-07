@@ -20,7 +20,7 @@ in
   Error = [
     {
       title = "DNSSEC bogus answers";
-      expr = ''unbound_answers_bogus{resource="srv:${serviceName}"} > 0'';
+      expr = ''rate(unbound_answers_bogus{resource="srv:${serviceName}"}[5m]) > 0'';
       description = "Unbound is returning DNSSEC validation failures. May indicate a misconfigured domain or an attack.";
     }
   ];
