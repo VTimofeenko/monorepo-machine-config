@@ -6,25 +6,28 @@ index d607f6171..a434cc871 100644
 @@ -96,6 +96,8 @@ PROXY_USERNAME=
  PROXY_PASSWORD=
  PROXY_BYPASS=
- 
+
 +FLARESOLVERR_URL=
 +
  # PDF archive settings
  PDF_MARGIN_TOP=
  PDF_MARGIN_BOTTOM=
 diff --git a/apps/worker/lib/archiveHandler.ts b/apps/worker/lib/archiveHandler.ts
-index 707f8b1c0..6ed953e26 100644
 --- a/apps/worker/lib/archiveHandler.ts
 +++ b/apps/worker/lib/archiveHandler.ts
-@@ -14,10 +14,21 @@ import autoTagLink from "./autoTagLink";
- import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types";
- import { isArchivalTag } from "@linkwarden/lib";
- import { ArchivalSettings } from "@linkwarden/types";
+@@ -14,7 +14,7 @@
+ import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types/global";
+ import { isArchivalTag } from "@linkwarden/lib/isArchivalTag";
+ import { ArchivalSettings } from "@linkwarden/types/global";
 -import { getDefaultContextOptions } from "./browser";
 +import { getDefaultContextOptions, solveCaptcha } from "./browser";
- 
+ import {
+   assertUrlIsSafeForServerSideFetch,
+   UnsafeUrlError,
+@@ -23,6 +23,17 @@
+
  const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;
- 
+
 +function isCloudflareTitle(title?: string | null) {
 +  if (!title) return false;
 +  const t = title.toLowerCase();
@@ -39,23 +42,24 @@ index 707f8b1c0..6ed953e26 100644
  export default async function archiveHandler(
    link: LinkWithCollectionOwnerAndTags,
    browser: Browser
-@@ -67,9 +78,9 @@ export default async function archiveHandler(
+@@ -88,10 +99,10 @@
      }, BROWSER_TIMEOUT * 60000);
    });
- 
+
 -  const contextOptions = getDefaultContextOptions();
 -  const context = await browser.newContext(contextOptions);
--  const page = await context.newPage();
 +  const baseContextOptions = getDefaultContextOptions();
 +  let context = await browser.newContext(baseContextOptions);
+   await protectPageRequests(context);
+-  const page = await context.newPage();
 +  let page = await context.newPage();
- 
+
    createFolder({ filePath: `archives/preview/${link.collectionId}` });
    createFolder({ filePath: `archives/${link.collectionId}` });
-@@ -120,12 +131,66 @@ export default async function archiveHandler(
+@@ -142,12 +153,67 @@
          } else if (link.url) {
            await page.goto(link.url, { waitUntil: "domcontentloaded" });
- 
+
 +          const initialTitle = await page.title().catch(() => "");
 +
 +          if (isCloudflareTitle(initialTitle) && link.url) {
@@ -78,6 +82,7 @@ index 707f8b1c0..6ed953e26 100644
 +                : baseContextOptions;
 +
 +              context = await browser.newContext(nextContextOptions);
++              await protectPageRequests(context);
 +
 +              if (solved.solution.cookies?.length) {
 +                await context.addCookies(solved.solution.cookies);
@@ -114,16 +119,16 @@ index 707f8b1c0..6ed953e26 100644
            if (link.monolith?.endsWith(".html")) {
              // Use Monolith content instead of page
              const file = await readFile(link.monolith);
- 
+
 -            if (file.contentType == "text/html") {
 +            if (file.contentType === "text/html") {
                const fileContent = file.file;
- 
+
                if (typeof fileContent === "string") {
-@@ -140,6 +205,18 @@ export default async function archiveHandler(
+@@ -162,6 +228,18 @@
              }
            }
- 
+
 +          if (isCloudflareTitle(link.name)) {
 +            const title = await page.title().catch(() => undefined);
 +            if (title && !isCloudflareTitle(title)) {
@@ -146,14 +151,14 @@ index 203b67f94..0b566312e 100644
 @@ -6,6 +6,8 @@ import {
    type BrowserContextOptions,
  } from "playwright";
- 
+
 +import axios from "axios";
 +
  export function getBrowserOptions(): LaunchOptions {
    let browserOptions: LaunchOptions = {
      // headless: false,
 @@ -57,3 +59,63 @@ export async function launchBrowser(): Promise<Browser> {
- 
+
    return chromium.launch(browserOptions);
  }
 +
@@ -217,17 +222,16 @@ index 203b67f94..0b566312e 100644
 +  }
 +}
 diff --git a/apps/worker/lib/preservationScheme/handleArchivePreview.ts b/apps/worker/lib/preservationScheme/handleArchivePreview.ts
-index fb5108bfd..32f99a772 100644
 --- a/apps/worker/lib/preservationScheme/handleArchivePreview.ts
 +++ b/apps/worker/lib/preservationScheme/handleArchivePreview.ts
 @@ -1,5 +1,6 @@
  import { Collection, Link, User } from "@linkwarden/prisma/client";
  import { Page } from "playwright";
 +import { URL } from "node:url";
- import { generatePreview } from "@linkwarden/lib";
+ import { generatePreview } from "@linkwarden/lib/generatePreview";
  import { createFile } from "@linkwarden/filesystem";
  import { prisma } from "@linkwarden/prisma";
-@@ -14,38 +15,86 @@ const handleArchivePreview = async (
+@@ -18,45 +19,91 @@
    link: LinksAndCollectionAndOwner,
    page: Page
  ) => {
@@ -263,9 +267,9 @@ index fb5108bfd..32f99a772 100644
 +
 +    return null;
    });
- 
+
    let previewGenerated = false;
- 
+
    if (ogImageUrl) {
 -    if (
 -      !ogImageUrl.startsWith("http://") &&
@@ -275,8 +279,14 @@ index fb5108bfd..32f99a772 100644
 -      ogImageUrl =
 -        origin + (ogImageUrl.startsWith("/") ? ogImageUrl : "/" + ogImageUrl);
 -    }
-+    try {
+-
+     try {
+-      await assertUrlIsSafeForServerSideFetch(ogImageUrl);
+-      const imageResponse = await page.goto(ogImageUrl);
 +      const resolvedOgImageUrl = new URL(ogImageUrl, page.url()).toString();
++      await assertUrlIsSafeForServerSideFetch(resolvedOgImageUrl);
+
+-      if (imageResponse && !link.preview?.startsWith("archive")) {
 +      const userAgent = await page
 +        .evaluate(
 +          () =>
@@ -287,49 +297,45 @@ index fb5108bfd..32f99a772 100644
 +            ).navigator?.userAgent
 +        )
 +        .catch(() => undefined);
- 
--    const imageResponse = await page.goto(ogImageUrl);
++
 +      const headers: Record<string, string> = {
 +        Referer: page.url(),
 +      };
 +      if (userAgent) headers["User-Agent"] = userAgent;
- 
--    if (imageResponse && !link.preview?.startsWith("archive")) {
--      const buffer = await imageResponse.body();
--      previewGenerated = await generatePreview(
--        buffer,
--        link.collectionId,
--        link.id
--      );
--    }
++
 +      const imageResponse = await page
 +        .context()
 +        .request.get(resolvedOgImageUrl, { headers });
 +
 +      const contentType = imageResponse.headers()["content-type"];
- 
--    await page.goBack();
++
 +      if (
 +        imageResponse.ok() &&
 +        contentType?.startsWith("image") &&
 +        !link.preview?.startsWith("archive")
 +      ) {
-+        const buffer = await imageResponse.body();
-+        previewGenerated = await generatePreview(
-+          buffer,
-+          link.collectionId,
-+          link.id
-+        );
-+
+         const buffer = await imageResponse.body();
+         previewGenerated = await generatePreview(
+           buffer,
+           link.collectionId,
+           link.id
+         );
+-      }
+
+-      await page.goBack();
 +        if (previewGenerated) {
 +          console.log("Successfully generated preview from og:image");
 +        }
 +      }
-+    } catch (_err) {
+     } catch (error) {
+       if (!(error instanceof UnsafeUrlError)) {
+-        throw error;
++        console.log("Error generating preview from og:image:", error);
+       }
 +      previewGenerated = false;
-+    }
+     }
    }
- 
+
    if (!previewGenerated && !link.preview?.startsWith("archive")) {
 +    console.log("Falling back to screenshot preview");
      await page
@@ -377,4 +383,3 @@ index 6523d8404..8c06b2548 100644
 +  flaresolverr:
 +    image: ghcr.io/flaresolverr/flaresolverr:latest
 +    restart: always
-
