@@ -41,6 +41,7 @@ in
       microvmName:
       lib.nameValuePair "/vms/${microvmName}" {
         device = "/dev/disk/by-label/VMs";
+        fsType = "btrfs";
         options = [
           "defaults"
           "noatime"
