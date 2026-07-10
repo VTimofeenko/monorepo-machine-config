@@ -19,7 +19,7 @@ in
     setXauthrequest = true;
 
     cookie = {
-      secret = (lib.homelab.getServiceConfig srvName).cookie;
+      secretFile = config.age.secrets.oauth2-proxy-cookie.path;
       secure = true;
       domain = ".${domainPart}";
       httpOnly = true;
