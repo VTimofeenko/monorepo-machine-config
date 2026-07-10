@@ -9,6 +9,6 @@
 
     wireless.enable = lib.mkForce false;
 
-    defaultGateway.interface = "phy-lan"; # This may be needed by default...
+    inherit ((lib.homelab.getNetwork "lan").settings) defaultGateway;
   };
 }
