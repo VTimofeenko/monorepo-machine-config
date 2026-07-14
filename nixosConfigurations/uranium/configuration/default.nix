@@ -10,6 +10,7 @@
     ./rtl.nix
     ./3d-print.nix
     ./gamemode.nix
+    ./wifi-tdls-disable.nix
   ];
   options.myMachines.uranium = {
     network = lib.mkOption {
