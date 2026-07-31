@@ -11,14 +11,24 @@
     vim.o.foldenable = true
 
     local wk = require("which-key")
+
+    local ufo_loaded = false
+    local function ensure_ufo()
+      local ufo = require("ufo")
+      if not ufo_loaded then
+        ufo.setup({
+          provider_selector = function(bufnr, filetype, _buftype)
+            return { "treesitter", "indent" }
+          end,
+        })
+        ufo_loaded = true
+      end
+      return ufo
+    end
+
     wk.add({
-      { "zR", require("ufo").openAllFolds, desc = "Open all folds" },
-      { "zM", require("ufo").closeAllFolds, desc = "Close all folds" },
-    })
-    require("ufo").setup({
-      provider_selector = function(bufnr, filetype, _buftype)
-        return { "treesitter", "indent" }
-      end,
+      { "zR", function() ensure_ufo().openAllFolds() end, desc = "Open all folds" },
+      { "zM", function() ensure_ufo().closeAllFolds() end, desc = "Close all folds" },
     })
   '';
 }

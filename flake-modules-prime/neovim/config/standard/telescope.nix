@@ -47,16 +47,27 @@
     ''
     # lua
     + ''
-      require("telescope").load_extension("file_browser")
-
-      local file_browser = require("telescope").extensions.file_browser.file_browser
+      local file_browser_loaded = false
+      local function ensure_file_browser()
+        if not file_browser_loaded then
+          require("telescope").load_extension("file_browser")
+          file_browser_loaded = true
+        end
+        return require("telescope").extensions.file_browser.file_browser
+      end
 
       wk.add({
-        { "<leader>ff", file_browser, desc = "File browser in project root" },
+        {
+          "<leader>ff",
+          function()
+            ensure_file_browser()()
+          end,
+          desc = "File browser in project root",
+        },
         {
           "<leader>fl",
           function()
-            file_browser({ cwd = vim.fn.expand("%:h") })
+            ensure_file_browser()({ cwd = vim.fn.expand("%:h") })
           end,
           desc = "File browser (look around)",
         },
