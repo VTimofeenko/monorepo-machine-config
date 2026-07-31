@@ -1,15 +1,8 @@
 # Tiny module that provides configuration for homepage dashboard
 { lib, ... }:
-let
-  inherit (lib.homelab) getServiceConfig;
-
-  srvName = "home-dashboard";
-  srvCfg = getServiceConfig srvName;
-in
 {
   services.homepage-dashboard = {
     enable = true;
-    inherit (srvCfg) bookmarks settings;
   };
 
   # This bit of code allowed dynamically loading secrets into
