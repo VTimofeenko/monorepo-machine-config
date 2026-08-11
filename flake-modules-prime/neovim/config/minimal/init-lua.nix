@@ -45,6 +45,10 @@ _: {
       -- Escape -> clear search highlight
       vim.api.nvim_set_keymap("n", "<ESC>", ":noh<CR>", { noremap = true, silent = true })
 
+      -- Blackhole register prefix: <localleader>b + motion/operator behaves like "_,
+      -- e.g. <localleader>bdG == "_dG, without needing to reach for shift-quote/shift-underscore
+      vim.keymap.set({ "n", "x" }, "<localleader>b", '"_', { noremap = true })
+
       -- Display diagnostics as virtual lines
       vim.diagnostic.config({ virtual_lines = true })
     '';
