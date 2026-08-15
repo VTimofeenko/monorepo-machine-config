@@ -15,6 +15,11 @@
     deploy-rs.follows = "base/deploy-rs";
     devshell.follows = "base/devshell";
 
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.flake-parts.follows = "flake-parts";
+    };
+
     wg-namespace-flake = {
       url = "github:VTimofeenko/wg-namespace-flake";
     };
