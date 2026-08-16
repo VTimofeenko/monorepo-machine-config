@@ -1,7 +1,7 @@
 /**
   Temporary home for one-off packages before they earn a proper trait.
 */
-{ pkgs, inputs, ... }:
+{ inputs, ... }:
 {
   imports = [ inputs.xremap-flake.nixosModules.default ];
 
@@ -32,9 +32,5 @@
         "9" = "0";
       };
     }
-  ];
-  home-manager.users.spacecadet.home.packages = with pkgs; [
-    pavucontrol
-    blueman
   ];
 }
