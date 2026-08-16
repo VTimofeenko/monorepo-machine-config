@@ -80,7 +80,11 @@ let
         # Confirm before executing things that take the node offline
         poweroff = "confirm poweroff";
         reboot = "confirm reboot";
+        o = "open";
       }
+      (lib.optionalAttrs pkgs.stdenv.isLinux {
+        open = "xdg-open";
+      })
     ]
     |> lib.mergeAttrsList;
 
