@@ -269,7 +269,7 @@
               {
                 env = [ ];
                 commands = devShellCmds;
-                packages = [ pkgs.nixos-anywhere ];
+                packages = [ pkgs.nixos-anywhere pkgs.nix-melt ];
               };
 
             checks = import ./checks { inherit self pkgs lib; };
