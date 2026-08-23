@@ -3,6 +3,7 @@
   imports = [
     inputs.xremap-flake.nixosModules.default
     ./shortcuts.nix
+    ./app-jumps.nix
   ];
 
   services.xremap = {
