@@ -106,7 +106,9 @@ in
     if $DRY_RUN_CMD [ ! -d ${doomRepoLocation} ]; then
       $DRY_RUN_CMD ${lib.getExe pkgs.git} clone --depth=1 --single-branch "${doomGit}" "${doomRepoLocation}"
       # Bootstrap doom's module cache so early-init doesn't error on first launch.
-      $DRY_RUN_CMD "${doomRepoLocation}/bin/doom" sync -! --doomdir="${doomDir}" --emacsdir="${doomRepoLocation}"
+      # EMACS must be set explicitly: at activation time the new home-manager
+      # profile (and its emacs) isn't linked into $PATH yet.
+      $DRY_RUN_CMD env EMACS="${lib.getExe emacs-with-flags}" "${doomRepoLocation}/bin/doom" sync -! --doomdir="${doomDir}" --emacsdir="${doomRepoLocation}"
     fi
   '';
 
