@@ -103,7 +103,7 @@ in
     It should check if the directory exist and become a no-op if it does ('true' part)
   */
   home.activation.gitCheckoutDoom = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    $DRY_RUN_CMD [ ! -d ${doomRepoLocation} ] && ${lib.getExe pkgs.git} clone --depth=1 --single-branch "${doomGit}" "${doomRepoLocation} || true"
+    $DRY_RUN_CMD [ ! -d ${doomRepoLocation} ] && ${lib.getExe pkgs.git} clone --depth=1 --single-branch "${doomGit}" "${doomRepoLocation}" || true
   '';
 
   # Doom really wants its dir in .config. I want to manage everything in this repo.
