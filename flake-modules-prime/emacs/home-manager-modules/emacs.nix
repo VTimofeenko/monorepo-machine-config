@@ -15,7 +15,7 @@ let
   # doomDir = "$XDG_CONFIG_HOME/doom";
   # gitManageddoomDir = "$HOME/code/literate-machine-config/modules/emacs/doom.dir";
   doomDir = "/home/spacecadet/.config/doom";
-  gitManageddoomDir = "/home/spacecadet/code/literate-machine-config/parts/emacs/doom.dir";
+  gitManageddoomDir = "/home/spacecadet/code/literate-machine-config/flake-modules-prime/emacs/doom.dir";
 in
 {
   programs = {
