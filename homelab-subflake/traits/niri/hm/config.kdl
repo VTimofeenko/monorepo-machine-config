@@ -1,3 +1,6 @@
+// Per-host monitor config, if any -- see ./outputs.nix
+include "outputs.kdl"
+
 input {
     keyboard {
         xkb {
@@ -69,6 +72,7 @@ window-rule {
     match app-id="xdg-desktop-portal-gtk"
     match title="^Open File$"
     match title=r#".*wants to save"#
+    match title=r#".*wants to open"#
     match app-id="opensnitch_ui" title=r#"^OpenSnitch v"#
     open-floating true
 }
@@ -81,6 +85,13 @@ binds {
     Mod+Shift+Q repeat=false { close-window; }
 
     Mod+Ctrl+S hotkey-overlay-title="Screenshot" { spawn-sh "printf 'area\nscreen\nwindow' | @fuzzel@ --dmenu | xargs @grimblast@ copysave"; }
+
+    // Stand-in for Hyprland's `submap = resize`/`submap = toggle`; niri has
+    // no nested keymaps. Hyprland used Mod+Ctrl+R for resize mode, but
+    // niri's own Mod+Ctrl+R (reset-window-height, below) already claims
+    // that chord, so resize mode moved to Mod+Alt+R instead.
+    Mod+Alt+R  hotkey-overlay-title="Resize Mode" { spawn "@wlrWhichKey@" "resize"; }
+    Mod+Ctrl+T hotkey-overlay-title="Toggle Mode" { spawn "@wlrWhichKey@" "toggle"; }
 
     Mod+Space { switch-layout "next"; }
 
@@ -228,6 +239,12 @@ binds {
     Mod+Shift+V { switch-focus-between-floating-and-tiling; }
 
     Mod+W { toggle-column-tabbed-display; }
+
+    // App jumps: also reachable by holding Caps Lock (xremap's hyper key)
+    // and the same letter -- see ../xremap.nix (app-jumps.nix's appMap).
+    Mod+Shift+Ctrl+Alt+B hotkey-overlay-title="Focus Firefox" { spawn "@niriFocusApp@" "^firefox$"; }
+    Mod+Shift+Ctrl+Alt+E hotkey-overlay-title="Focus Emacs"   { spawn "@niriFocusApp@" "^Emacs$"; }
+    Mod+Shift+Ctrl+Alt+T hotkey-overlay-title="Focus kitty"   { spawn "@niriFocusApp@" "^kitty$"; }
 
     Print      { screenshot; }
     Ctrl+Print { screenshot-screen; }
