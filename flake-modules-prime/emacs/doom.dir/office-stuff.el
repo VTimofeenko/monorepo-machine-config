@@ -28,7 +28,8 @@
   )
 
 (after! vdirel
-        (setq vdirel-repository "~/.local/state/vdirs/contacts/nextcloud/contacts"))
+        (when (file-directory-p "~/.local/state/vdirs/contacts/nextcloud/contacts")
+          (setq vdirel-repository "~/.local/state/vdirs/contacts/nextcloud/contacts")))
 
 (after! notmuch
         (setq notmuch-fcc-dirs
