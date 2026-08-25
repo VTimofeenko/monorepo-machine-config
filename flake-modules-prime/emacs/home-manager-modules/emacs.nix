@@ -8,12 +8,8 @@ let
     withWebP = true;
   };
 
-  doomGit = "https://github.com/doomemacs/doomemacs";
-  # Looks like desktopEntry requires this to be absolute
-  doomRepoLocation = "/home/spacecadet/.cache/hm-doom-repo";
-  # Looks like tmpfiles wants this to be absolute
-  # doomDir = "$XDG_CONFIG_HOME/doom";
-  # gitManageddoomDir = "$HOME/code/literate-machine-config/modules/emacs/doom.dir";
+  # Looks like desktopEntry/tmpfiles want these absolute
+  doomRepoLocation = "/home/spacecadet/.local/share/doom-emacs";
   doomDir = "/home/spacecadet/.config/doom";
   gitManageddoomDir = "/home/spacecadet/code/literate-machine-config/flake-modules-prime/emacs/doom.dir";
 in
@@ -62,9 +58,21 @@ in
         # Override "emacs" alias with proper init dir
         emacs = "emacs --init-directory ${doomRepoLocation}";
       };
-      # This allows keeping the doom config in place
-      localVariables.DOOMDIR = doomDir;
     };
+  };
+
+  # Exported (not just zsh-local) so any subprocess doom/emacs spawns -- and
+  # bare `doom sync`/`doom doctor` runs from any shell -- resolve to the same
+  # non-default locations instead of silently falling back to
+  # ~/.config/emacs et al.
+  home.sessionVariables = {
+    DOOMDIR = doomDir;
+    EMACSDIR = doomRepoLocation;
+    # Pin explicitly: straight's build tree is versioned by Emacs version
+    # (build-<version>/), so if this were left to a bare PATH lookup, any
+    # stray/other Emacs ahead of it on PATH would silently build packages
+    # against the wrong version.
+    EMACS = lib.getExe emacs-with-flags;
   };
 
   xdg.desktopEntries = {
@@ -96,20 +104,13 @@ in
 
   # TODO: add all icons font?
 
-  /*
-    This activation script will check out doom-emacs into a pre-defined directory
-
-    It should check if the directory exist and become a no-op if it does ('true' part)
-  */
-  home.activation.gitCheckoutDoom = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    if $DRY_RUN_CMD [ ! -d ${doomRepoLocation} ]; then
-      $DRY_RUN_CMD ${lib.getExe pkgs.git} clone --depth=1 --single-branch "${doomGit}" "${doomRepoLocation}"
-      # Bootstrap doom's module cache so early-init doesn't error on first launch.
-      # EMACS must be set explicitly: at activation time the new home-manager
-      # profile (and its emacs) isn't linked into $PATH yet.
-      $DRY_RUN_CMD env EMACS="${lib.getExe emacs-with-flags}" "${doomRepoLocation}/bin/doom" sync -! --doomdir="${doomDir}" --emacsdir="${doomRepoLocation}"
-    fi
-  '';
+  # NOTE: doom-emacs itself is *not* bootstrapped by home-manager activation
+  # anymore (that was fragile: silent failures, and a no-op once the
+  # directory exists once, so it could never self-heal). Bootstrap it
+  # manually after first switch:
+  #
+  #   git clone --depth=1 --single-branch https://github.com/doomemacs/doomemacs ${doomRepoLocation}
+  #   EMACS="$(command -v emacs)" ${doomRepoLocation}/bin/doom sync -! --doomdir="${doomDir}" --emacsdir="${doomRepoLocation}"
 
   # Doom really wants its dir in .config. I want to manage everything in this repo.
   # xdg.configFile."doom".source = config.lib.file.mkOutOfStoreSymlink gitManageddoomDir;
