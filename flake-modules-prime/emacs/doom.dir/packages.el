@@ -68,8 +68,6 @@
 
 (package! org-super-agenda)
 
-(package! vdirel)
-
 (package! org-ql)
 
 (package! org-ai)

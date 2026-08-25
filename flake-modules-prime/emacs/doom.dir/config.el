@@ -8,7 +8,6 @@
 (load! "org-custom")
 (load! "semantic-commits")
 (load! "ejc-custom")
-(load! "office-stuff")
 (load! "org-agenda-grid-hide-hook")
 
 

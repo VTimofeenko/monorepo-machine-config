@@ -50,7 +50,6 @@ in
               lua-language-server # lua LSP
               graphviz # dot for roam
               beancount-language-server
-              emacs-notifier
               kroki-cli
               bash-language-server
               ;
