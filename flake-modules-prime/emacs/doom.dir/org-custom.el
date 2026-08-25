@@ -410,8 +410,6 @@
            nil)))
     (org-download-clipboard file)))
 
-(require 'org-web-tools)
-
 (use-package! org-transclusion
   :after org
   :init
