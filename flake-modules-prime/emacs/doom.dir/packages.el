@@ -54,23 +54,12 @@
 (package! evil-terminal-cursor-changer)
 ;; Custom xdg-open shortcuts
 (package! openwith)
-;; To embed screenshots
-(package! org-download)
-;; Ability to read logs
-(package! logview)
-;; SQL workbook
-(package! ejc-sql)
 ;; In-window speedbar
 (package! sr-speedbar)
-
-;; View, capture, and archive Web pages in Org-mode
-(package! org-web-tools)
 
 (package! org-super-agenda)
 
 (package! org-ql)
-
-(package! org-ai)
 
 (package! org-fancy-priorities)
 
