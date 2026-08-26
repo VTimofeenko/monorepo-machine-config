@@ -78,7 +78,10 @@ in
   xdg.desktopEntries = {
     emacs = {
       name = "Emacs";
-      exec = "emacs --init-directory ${doomRepoLocation} %F";
+      # Explicit env instead of relying on session-var propagation: launcher
+      # invocations don't go through zsh/home.sessionVariables, so DOOMDIR
+      # can silently resolve to the wrong default here otherwise.
+      exec = "env DOOMDIR=${doomDir} EMACSDIR=${doomRepoLocation} emacs --init-directory ${doomRepoLocation} %F";
       icon = "emacs";
       mimeType = [
         "text/english"
@@ -110,7 +113,15 @@ in
   # manually after first switch:
   #
   #   git clone --depth=1 --single-branch https://github.com/doomemacs/doomemacs ${doomRepoLocation}
-  #   EMACS="$(command -v emacs)" ${doomRepoLocation}/bin/doom sync -! --doomdir="${doomDir}" --emacsdir="${doomRepoLocation}"
+  #   ${doomRepoLocation}/bin/doom install -!
+  #
+  # NOTE: it must be `install`, not `sync`, on a fresh ${doomRepoLocation}.
+  # `sync` assumes `install` already ran once; skipping straight to `sync`
+  # silently resolves stock doom modules (evil, doom-themes, etc.) as
+  # `&nopath` (see `doom info`) and only ever builds what packages.el
+  # declares directly, which quietly looks "done" while being half-loaded.
+  # DOOMDIR/EMACSDIR/EMACS are already exported via home.sessionVariables
+  # above, so no extra flags are needed here.
 
   # Doom really wants its dir in .config. I want to manage everything in this repo.
   # xdg.configFile."doom".source = config.lib.file.mkOutOfStoreSymlink gitManageddoomDir;
