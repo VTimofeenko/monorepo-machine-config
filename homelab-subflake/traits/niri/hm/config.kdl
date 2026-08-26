@@ -1,5 +1,5 @@
-// Per-host monitor config, if any -- see ./outputs.nix
-include "outputs.kdl"
+// Per-host monitor config, if any -- see ./kanshi.nix. Managed dynamically
+// over wlr-output-management by kanshi, not a static `output` block here.
 
 input {
     keyboard {

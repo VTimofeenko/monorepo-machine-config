@@ -22,8 +22,8 @@ let
 in
 {
   imports = [
+    ./kanshi.nix
     ./lock.nix
-    ./outputs.nix
     ./wlr-which-key
   ];
 
