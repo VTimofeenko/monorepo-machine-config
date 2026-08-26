@@ -22,6 +22,7 @@ let
 in
 {
   imports = [
+    ./cursor.nix
     ./kanshi.nix
     ./lock.nix
     ./wlr-which-key

@@ -1,6 +1,16 @@
 // Per-host monitor config, if any -- see ./kanshi.nix. Managed dynamically
 // over wlr-output-management by kanshi, not a static `output` block here.
 
+// Explicit theme+size (mirrored in ./cursor.nix's home.pointerCursor) so
+// niri's own compositor-drawn cursor matches what GTK/Xwayland apps use --
+// left unset, native-Wayland and Xwayland apps picked different implicit
+// defaults, making the pointer huge in native Wayland windows but normal
+// under Xwayland (e.g. Emacs).
+cursor {
+    xcursor-theme "Adwaita"
+    xcursor-size 24
+}
+
 input {
     keyboard {
         xkb {
