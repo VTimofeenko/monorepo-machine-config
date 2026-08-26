@@ -46,5 +46,12 @@ in
   programs.kitty.enable = true;
   services.mako.enable = true;
   services.polkit-gnome.enable = true;
-  home.packages = with pkgs; [ swaybg ];
+  # Niri auto-spawns xwayland-satellite on-demand as soon as an X11 client
+  # connects (needs no config, just the binary on PATH) -- gets Steam,
+  # Emacs's GUI mode, PrusaSlicer, and other X11-only apps working.
+  # https://github.com/YaLTeR/niri/wiki/Xwayland#using-xwayland-satellite
+  home.packages = with pkgs; [
+    swaybg
+    xwayland-satellite
+  ];
 }
