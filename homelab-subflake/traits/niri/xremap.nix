@@ -21,4 +21,11 @@
     serviceMode = "user";
     watch = true;
   };
+
+  # The xremap-flake NixOS module's user-service path (unlike its own
+  # home-manager module) only sets `after`/`wantedBy` on graphical-session.target,
+  # not `partOf` -- so stopping the target never stops xremap.service. It's
+  # left running with a stale NIRI_SOCKET across logins, and re-starting the
+  # target on relogin is a no-op since xremap.service never went inactive.
+  systemd.user.services.xremap.partOf = [ "graphical-session.target" ];
 }
