@@ -109,14 +109,25 @@ in
           forward-tls-upstream = "yes";
           forward-first = "no";
         }
-        # NOTE: archive.ph needs special treatment.
-        {
-          name = "archive.ph";
+      ]
+      # Archive.* needs to be pinned to specific upstreams
+      ++ (
+        [
+          "today"
+          "ph"
+          "is"
+          "li"
+          "vn"
+          "md"
+          "fo"
+        ]
+        |> map (it: {
+          name = "archive.${it}";
           forward-addr = thisSrvConfig.altUpstream;
           forward-tls-upstream = "yes";
           forward-first = "no";
-        }
-      ];
+        })
+      );
     };
   };
 }
