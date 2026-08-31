@@ -20,7 +20,6 @@ input {
     }
     touchpad {
         tap
-        natural-scroll
     }
     mouse {}
 }
