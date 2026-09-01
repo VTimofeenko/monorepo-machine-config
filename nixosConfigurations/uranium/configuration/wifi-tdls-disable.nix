@@ -13,14 +13,14 @@
 { pkgs, lib, ... }:
 {
   systemd.services.wpa-tdls-disable = {
-    description = "Disable TDLS on wifi-lan (workaround for 7.X kernel TDLS key install failure)";
+    description = "Disable TDLS on phy-lan (workaround for 7.X kernel TDLS key install failure)";
     after = [ "wpa_supplicant.service" ];
     partOf = [ "wpa_supplicant.service" ];
     wantedBy = [ "wpa_supplicant.service" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStart = "${lib.getExe' pkgs.wpa_supplicant "wpa_cli"} -p /run/wpa_supplicant/control -i wifi-lan set tdls_disabled 1";
+      ExecStart = "${lib.getExe' pkgs.wpa_supplicant "wpa_cli"} -p /run/wpa_supplicant/control -i phy-lan set tdls_disabled 1";
     };
   };
 }
