@@ -23,7 +23,7 @@
     - `let .. in`
     - `if then else`
     - Common module arguments `{ pkgs, lib, config, ... }:`
-    - `writeShellApplication` with args
+    - `writeShellApplication` with arguments
 
   TODO: add hover data for common functions (maybe source from devdocs or noogle?)
 */
