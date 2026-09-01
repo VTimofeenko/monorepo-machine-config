@@ -144,6 +144,7 @@ rec {
         inputs.base.nixosModules.frigate-notify
         inputs.base.nixosModules.fava
         inputs.base.nixosModules.prusa-exporter
+        inputs.base.nixosModules.excalidash
         { programs.myNeovim.enable = true; }
       ];
 
