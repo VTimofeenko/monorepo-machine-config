@@ -247,6 +247,23 @@ in
           local wk = require("which-key")
           wk.add({
             { "gf", open_file, desc = "Open file under cursor" },
+            -- Override the global code-action mapping for nix buffers:
+            -- nixd always puts "Quote attribute name" first in the list,
+            -- which bumps the more commonly used Pack/Flatten actions off
+            -- slot 1. Just hide it -- it's rarely needed and still
+            -- reachable by manually re-quoting the string.
+            {
+              "<localleader>a",
+              function()
+                vim.lsp.buf.code_action({
+                  filter = function(action)
+                    return action.title ~= "Quote attribute name"
+                  end,
+                })
+              end,
+              desc = "LSP code actions (excl. quote attribute name)",
+              buffer = args.buf,
+            },
           })
 
           -- Doc comments (/** */) are markdown-ish and often contain "- " bullet
