@@ -80,6 +80,28 @@ in
         }
       }
       vim.lsp.enable('harper_ls')
+
+      -- Harper (esp. via Python docstrings, see
+      -- https://github.com/Automattic/harper/issues/2417) can be too noisy
+      -- to be useful in a given buffer. This toggles its diagnostics off/on
+      -- for just the current buffer, leaving other buffers unaffected.
+      local function toggle_harper_buffer()
+        local bufnr = vim.api.nvim_get_current_buf()
+        local clients = vim.lsp.get_clients({ bufnr = bufnr, name = "harper_ls" })
+        if #clients == 0 then
+          vim.notify("Harper is not attached to this buffer", vim.log.levels.WARN)
+          return
+        end
+        for _, client in ipairs(clients) do
+          local ns = vim.lsp.diagnostic.get_namespace(client.id)
+          local enabled = vim.diagnostic.is_enabled({ ns_id = ns, bufnr = bufnr })
+          vim.diagnostic.enable(not enabled, { ns_id = ns, bufnr = bufnr })
+        end
+      end
+
+      require("which-key").add({
+        { "<leader>Th", toggle_harper_buffer, desc = "Toggle Harper spellcheck (this buffer)" },
+      })
     ''
     ''
       vim.api.nvim_create_autocmd("FileType", {
