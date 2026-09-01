@@ -3,8 +3,14 @@
 
   Features:
   - Two LSPs:
-    - `nixd` :: `nixd` uses standard parser. I am using it mostly for lib functions and options completions
-    - `nil` :: I am using nil for code action and completions
+    - `nixd` :: `nixd` uses standard parser. It's the "smart" server: lib/options
+      completions, diagnostics, and code actions. `nixd` doesn't provide semantic
+      tokens (off by default upstream), so it can't drive syntax highlighting on
+      its own.
+    - `nil` :: does:
+      - LSP semantic-token highlighting and `nixfmt`-backed formatting. Its
+      - diagnostics are silenced and its code actions are disabled so it
+        doesn't duplicate/compete with `nixd`.
 
       Full set of features:
       https://github.com/oxalica/nil/blob/main/docs/features.md#cli-features
@@ -104,6 +110,15 @@ in
           },
         },
       },
+      -- nixd owns diagnostics and code actions (see module doc comment for
+      -- why); nil stays attached only for semantic-token highlighting and
+      -- nixfmt-backed formatting.
+      handlers = {
+        ["textDocument/publishDiagnostics"] = function() end,
+      },
+      on_attach = function(client)
+        client.server_capabilities.codeActionProvider = false
+      end,
     }
     vim.lsp.enable('nil_ls')
 
