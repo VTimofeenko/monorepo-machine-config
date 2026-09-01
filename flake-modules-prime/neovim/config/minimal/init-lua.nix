@@ -49,7 +49,18 @@ _: {
       -- e.g. <localleader>bdG == "_dG, without needing to reach for shift-quote/shift-underscore
       vim.keymap.set({ "n", "x" }, "<localleader>b", '"_', { noremap = true })
 
-      -- Display diagnostics as virtual lines
-      vim.diagnostic.config({ virtual_lines = true })
+      -- Display diagnostics as virtual lines, but only for the line the
+      -- cursor is on. Sources like Harper can emit one diagnostic per word,
+      -- and `virtual_lines = true` renders all of them, for every line in
+      -- the buffer,  which balloons the buffer height into
+      -- unreadable garbage. Scoping to the current line keeps the detailed
+      -- view while editing without doing that.
+      -- Also limit the spam to WARN+ severity.
+      vim.diagnostic.config({
+        virtual_lines = {
+          current_line = true,
+          severity = { min = vim.diagnostic.severity.WARN },
+        }
+      })
     '';
 }
