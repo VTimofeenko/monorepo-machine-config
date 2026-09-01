@@ -233,6 +233,15 @@ in
           wk.add({
             { "gf", open_file, desc = "Open file under cursor" },
           })
+
+          -- Doc comments (/** */) are markdown-ish and often contain "- " bullet
+          -- lists. `gq` only gives wrapped continuation lines a hanging indent
+          -- when it recognizes a list item. Set formatlistpat to cover
+          -- `-`/`*`/`+` bullets and numbers, so re-flowed list items stay indented under
+          -- the bullet instead of flush with the margin.
+          vim.opt_local.formatoptions:append("n")
+          vim.opt_local.autoindent = true
+          vim.opt_local.formatlistpat = [[^\s*[-*+]\s\+\|^\s*\d\+[\]:.)}\t ]\s*]]
         end,
       })
 
