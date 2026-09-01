@@ -45,6 +45,7 @@
           inherit (pkgs) lib;
         in
         ./checks
+        |> pkgs.lib.fileset.maybeMissing
         |> pkgs.lib.fileset.toList
         |> map (
           it:
