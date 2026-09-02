@@ -29,14 +29,13 @@
             modules = [
               { _module.check = false; } # This skips some checks that can be (probably) safely bypassed
               it
+              { programs.myNeovim.type = pkgType; }
             ];
             specialArgs = { inherit pkgs lib; };
           }
         )
         # Get only the config from the result
-        |> builtins.getAttr "config"
-        # Apply the package type to the config
-        |> lib.flip lib.recursiveUpdate { programs.myNeovim.type = pkgType; };
+        |> builtins.getAttr "config";
     in
     # Treat the module as a function and apply it to get the value of the package
     # Take the module
