@@ -4,7 +4,7 @@
 -- Implementation note:
 -- `vim.lsp.config()` deep-merges repeated calls, so this only replaces
 -- `nixpkgs.expr` – `cmd`, `capabilities`, `options.home_manager,` etc. all
--- still come from the shared config.
+-- still come from the shared `config`.
 vim.lsp.config("nixd", {
   settings = {
     nixd = {
@@ -22,7 +22,12 @@ vim.lsp.config("nixd", {
   },
 })
 
--- Adds homelab functions to Noogle telescope picker.
---
--- See `noogle.nix` implementation notes on how to regenerate this.
-vim.g.noogle_extra_data = vim.fn.expand("~/.cache/noogle-homelab-docs.json")
+-- Register `lib.homelab` docs with NixLibDocs telescope picker
+local ok, nix_lib_docs = pcall(require, "nix-lib-docs")
+if ok then
+  nix_lib_docs.register_source("homelab", {
+    expr = [[
+      (builtins.getFlake (toString ./.)).inputs.data-flake.packages.${builtins.currentSystem}.homelab-lib-docs
+    ]],
+  })
+end
