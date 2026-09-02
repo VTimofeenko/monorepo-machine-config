@@ -25,7 +25,13 @@
     - Common module arguments `{ pkgs, lib, config, ... }:`
     - `writeShellApplication` with arguments
 
-  TODO: add hover data for common functions (maybe source from devdocs or noogle?)
+  - `lib.homelab.*` completion and hover, but only inside homelab-subflake
+    and private-modules, using nixd extension.
+
+  - NixLibDocs (nix-lib-docs.nix) provides Telescope documentation for `lib.*`,
+    built from upstream nixpkgs at package build time. Project-local docs
+    like `lib.homelab` are dynamically registered alongside nixd in `.nvim.lua`
+    via `require("nix-lib-docs").register_source("homelab", { expr = ... })`.
 */
 {
   pkgs,
@@ -137,7 +143,7 @@ in
             }
           },
         },
-      }
+      },
     }
     vim.lsp.enable('nixd')
     ''
