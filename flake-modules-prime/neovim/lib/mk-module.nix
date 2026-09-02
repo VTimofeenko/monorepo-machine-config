@@ -66,14 +66,6 @@ in
       internal = true;
       readOnly = true;
     };
-
-    # finalPackage
-    # Take basePackage
-    # Add plugins (depending on the type)
-    # Add initlua from all the plugins
-    # Append extraInitLua
-    # Produce the package
-
   };
   config =
     let
@@ -133,7 +125,16 @@ in
             name = "nvim";
             paths = [ it ];
             buildInputs = [ pkgs.makeWrapper ];
-            postBuild = "wrapProgram $out/bin/nvim --add-flags '-u ${initLua}'";
+            # This wrapper is written so `$VIMINT` is read very early and does
+            # not short-circuit `exrc` later.
+            #
+            # Originally this was just `--add-flags -u ${initLua}` which worked
+            # fine, until I needed to set up `exrc`.
+            postBuild = ''
+              wrapProgram $out/bin/nvim \
+                --set VIMINIT 'source ${initLua}' \
+                --set-default MYVIMRC '${initLua}'
+            '';
           }
         );
 

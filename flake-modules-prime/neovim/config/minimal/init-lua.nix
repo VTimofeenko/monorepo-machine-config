@@ -8,6 +8,15 @@ _: {
       vim.g.mapleader = " "
       vim.g.maplocalleader = ","
 
+      -- Enable project-level configuration files (.nvim.lua/.nvimrc/.exrc).
+      -- Enabled <=> running as non-root
+      -- Implementation notes:
+      -- - `exrc` needs to be set very early
+      -- - I am nulling out VIMINT to prevent it leaking into subshells/nested vims
+      -- - see also `lib/mk-module.nix`as to how this is implemented.
+      vim.o.exrc = vim.uv.getuid() ~= 0
+      vim.env.VIMINIT = nil
+
       local options = vim.opt
       options.number = true
       options.relativenumber = true
