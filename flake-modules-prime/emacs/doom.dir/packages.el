@@ -64,3 +64,5 @@
 (package! org-fancy-priorities)
 
 (package! org-transclusion)
+
+(package! kitty-graphics :recipe (:host github :repo "cashmeredev/kitty-graphics.el"))

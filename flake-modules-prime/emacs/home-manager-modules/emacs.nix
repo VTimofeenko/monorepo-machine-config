@@ -41,6 +41,7 @@ in
           builtins.attrValues {
             inherit (pkgs)
               fd # fast find
+              imagemagick # for kitty graphics
               ripgrep # fast grep
               sqlite # org roam
               lua-language-server # lua LSP

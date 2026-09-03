@@ -418,3 +418,8 @@
    :leader
    :prefix "n"
    :desc "Org Transclusion Mode" "t" #'org-transclusion-mode))
+
+(use-package kitty-graphics
+  :after org
+  :config
+  (kitty-graphics-setup))
