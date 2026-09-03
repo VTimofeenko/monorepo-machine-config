@@ -77,13 +77,13 @@ function M.register_source(name, spec)
   end
 
   if spec.expr and type(spec.expr) == "string" then
-    M._resolve_expr_async(name, spec.expr)
+    M._resolve_expr_async(name, spec.expr, spec.cwd)
   end
 end
 
 -- Resolves a Nix expression asynchronously using `nix build --no-link --print-out-paths --impure`
 -- Caches the resulting store path locally in Neovim's cache dir for instant 0ms loads
-function M._resolve_expr_async(name, expr)
+function M._resolve_expr_async(name, expr, cwd)
   local cache_dir = vim.fn.stdpath("cache") .. "/nix-lib-docs-sources"
   vim.fn.mkdir(cache_dir, "p")
   local cache_file = cache_dir .. "/" .. name .. ".json"
@@ -95,9 +95,14 @@ function M._resolve_expr_async(name, expr)
 
   -- Verify or update asynchronously in background via nix build
   if vim.fn.executable("nix") == 1 then
+    local sys_opts = { text = true }
+    if cwd and type(cwd) == "string" and vim.fn.isdirectory(cwd) == 1 then
+      sys_opts.cwd = cwd
+    end
+
     vim.system(
       { "nix", "build", "--no-link", "--print-out-paths", "--impure", "--expr", expr },
-      { text = true },
+      sys_opts,
       function(obj)
         if obj.code == 0 and obj.stdout then
           local store_path = vim.trim(obj.stdout)
