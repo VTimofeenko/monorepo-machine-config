@@ -23,7 +23,7 @@
     # production. See ../../../flake-modules-prime/excalidash/nixos-module.nix.
     frontendUrl = "https://${lib.homelab.getServiceFqdn "excalidash"}";
 
-    database = {
+    database.postgresql = {
       host = "db" |> lib.homelab.getServiceFqdn;
       passwordFile = config.age.secrets.excalidash-db-password.path;
     };

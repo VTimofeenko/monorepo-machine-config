@@ -1,14 +1,19 @@
 /**
-  ExcaliDash backend (Node/Express + Prisma + Postgres).
+  ExcaliDash backend (Node/Express + Prisma).
 
   ExcaliDash isn't packaged in nixpkgs, so this fetches the upstream release
   tag straight from GitHub and builds it directly — no vendored copy of the
   source lives in this repo. Two things this derivation deliberately does
   differently than upstream's Docker image:
 
-  - Only the `postgresql` Prisma migration set is shipped — the runtime
-    sqlite/postgresql migration-copy dance in their `docker-entrypoint.sh` is
-    dropped entirely. Postgres-only is the only provider this module supports.
+  - Only one Prisma migration set (`databaseProvider`) is shipped per build —
+    the runtime sqlite/postgresql migration-copy dance in their
+    `docker-entrypoint.sh` is dropped entirely; the provider is baked in at
+    build time instead. `./excalidash-backend-sqlite.nix` is the sqlite
+    variant of this same derivation (`callPackage ./excalidash-backend.nix {
+    databaseProvider = "sqlite"; }`) — the two aren't runtime-switchable
+    (Prisma generates a provider-specific client), so pick whichever one
+    matches `services.excalidash.database.type` (../nixos-module.nix).
   - Prisma's engine binaries are pulled from nixpkgs' `prisma-engines` instead
     of letting `prisma generate`/`migrate deploy` download them from
     binaries.prisma.sh — required for a hermetic Nix build (no network in the
@@ -31,8 +36,13 @@
   prisma_6,
   prisma-engines_6,
   makeWrapper,
+  # "postgresql" (default) or "sqlite" — see ./excalidash-backend-sqlite.nix.
+  databaseProvider ? "postgresql",
 }:
-
+assert lib.assertOneOf "databaseProvider" databaseProvider [
+  "postgresql"
+  "sqlite"
+];
 let
   version = "0.6.0";
 
@@ -64,17 +74,19 @@ let
   '';
 in
 buildNpmPackage (finalAttrs: {
-  pname = "excalidash-backend";
+  pname = "excalidash-backend" + lib.optionalString (databaseProvider == "sqlite") "-sqlite";
   inherit version;
 
   inherit src;
 
   nodejs = nodejs_22;
 
-  # `better-sqlite3` is an unconditional `dependencies` entry (it's only used
-  # as a fallback for Node's built-in `node:sqlite`, for the legacy-import
-  # feature) so `npm ci` still compiles its native addon even though we never
-  # run in sqlite mode.
+  # `better-sqlite3` is an unconditional `dependencies` entry regardless of
+  # `databaseProvider` — it's unrelated to Prisma's own sqlite/postgresql
+  # datasource selection, only used as a fallback for Node's built-in
+  # `node:sqlite` for the legacy-import feature (opening someone else's raw
+  # sqlite export file directly) — so `npm ci` always compiles its native
+  # addon.
   nativeBuildInputs = [
     python3
     makeWrapper
@@ -129,13 +141,13 @@ buildNpmPackage (finalAttrs: {
   # `npm run build` in package.json is `prisma generate && tsc` — reimplemented
   # here so we can pin the datasource provider first (their build script
   # relies on `DATABASE_PROVIDER` being set at runtime, which this module
-  # doesn't do — postgresql is the only supported provider).
+  # doesn't do — the provider is fixed per-build, see `databaseProvider`).
   buildPhase = ''
     runHook preBuild
 
     sed -i \
-      -e '/datasource db {/,/}/ s/provider = env("[^"]*")/provider = "postgresql"/' \
-      -e '/datasource db {/,/}/ s/provider = "[^"]*"/provider = "postgresql"/' \
+      -e '/datasource db {/,/}/ s/provider = env("[^"]*")/provider = "${databaseProvider}"/' \
+      -e '/datasource db {/,/}/ s/provider = "[^"]*"/provider = "${databaseProvider}"/' \
       prisma/schema.prisma
 
     npx prisma generate
@@ -156,9 +168,9 @@ buildNpmPackage (finalAttrs: {
     cp -r dist node_modules package.json $out/share/excalidash/
     mkdir -p $out/share/excalidash/uploads
 
-    # Only the postgresql migration set — no runtime provider switching.
+    # Only this build's own provider's migration set — no runtime switching.
     mkdir -p $out/share/excalidash/prisma
-    cp -r prisma/migrations/postgresql $out/share/excalidash/prisma/migrations
+    cp -r prisma/migrations/${databaseProvider} $out/share/excalidash/prisma/migrations
     cp prisma/schema.prisma $out/share/excalidash/prisma/schema.prisma
 
     makeWrapper ${nodejs_22}/bin/node $out/bin/excalidash-server \
@@ -167,7 +179,7 @@ buildNpmPackage (finalAttrs: {
       --set-default PRISMA_QUERY_ENGINE_LIBRARY "${prisma-engines_6}/lib/libquery_engine.node" \
       --set-default PRISMA_QUERY_ENGINE_BINARY "${prisma-engines_6}/bin/query-engine" \
       --set-default PRISMA_SCHEMA_ENGINE_BINARY "${prisma-engines_6}/bin/schema-engine" \
-      --set-default DATABASE_PROVIDER "postgresql"
+      --set-default DATABASE_PROVIDER "${databaseProvider}"
 
     makeWrapper ${lib.getExe prisma_6} $out/bin/excalidash-migrate \
       --add-flags "migrate deploy --schema $out/share/excalidash/prisma/schema.prisma" \
@@ -180,8 +192,11 @@ buildNpmPackage (finalAttrs: {
   '';
 
   meta = {
-    description = "ExcaliDash backend API (Express + Prisma + Postgres)";
+    description = "ExcaliDash backend API (Express + Prisma, ${databaseProvider})";
     mainProgram = "excalidash-server";
-    platforms = [ "x86_64-linux" ];
+    # No real restriction: nodejs_22, prisma_6 and prisma-engines_6 (the
+    # only platform-sensitive deps here) all cover more than x86_64-linux —
+    # confirmed by a real `nix build .#packages.aarch64-linux.excalidash-backend`.
+    platforms = lib.platforms.linux;
   };
 })

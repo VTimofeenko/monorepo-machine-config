@@ -6,9 +6,11 @@
   - Implementation tries to be as systemd compatible as possible. The
     `docker-compose` files were taken as the source.
   - JavaScript bits were inspired by `linkwarden` module in nixpkgs
+  - `database` is a `types.attrTag` (`database.postgresql.*` or
+    `database.sqlite.*`, mutually exclusive by construction) — see
+    `../packages/excalidash-backend-sqlite.nix`.
 
   TODO:
-  - More backends (`sqlite` at least) to make things simpler
   - (maybe) drop bundled nginx?
 */
 {
@@ -31,7 +33,21 @@ in
   options.services.excalidash = {
     enable = mkEnableOption "ExcaliDash — self-hosted Excalidraw dashboard";
 
-    backendPackage = mkPackageOption pkgs "excalidash-backend" { };
+    backendPackage = mkOption {
+      type = types.package;
+      default = if cfg.database ? sqlite then pkgs.excalidash-backend-sqlite else pkgs.excalidash-backend;
+      defaultText = lib.literalExpression ''
+        if config.services.excalidash.database ? sqlite
+        then pkgs.excalidash-backend-sqlite
+        else pkgs.excalidash-backend
+      '';
+      description = ''
+        Which backend build to run. Prisma bakes its datasource provider in
+        at build time (not runtime-switchable), so this must match whichever
+        `database` tag is set — the default already does this automatically;
+        only override if supplying a differently-built package entirely.
+      '';
+    };
     frontendPackage = mkPackageOption pkgs "excalidash-frontend" { };
 
     listenHost = mkOption {
@@ -73,37 +89,73 @@ in
       '';
     };
 
-    database = {
-      host = mkOption {
-        type = types.str;
-        default = "127.0.0.1";
-        description = "Postgres host.";
+    # A tagged union, not a flat `type` enum + "only used when..." fields:
+    # Prisma generates a provider-specific client (not runtime-switchable),
+    # so postgresql's and sqlite's settings are genuinely mutually exclusive
+    # — this makes that a type error (`defined both as postgresql and
+    # sqlite`) instead of silently-dead config. Set exactly one:
+    # `database.postgresql.host = ...;` or `database.sqlite.path = ...;`.
+    database = mkOption {
+      type = types.attrTag {
+        postgresql = mkOption {
+          description = "Run against Postgres.";
+          type = types.submodule {
+            options = {
+              host = mkOption {
+                type = types.str;
+                default = "127.0.0.1";
+                description = "Postgres host.";
+              };
+              port = mkOption {
+                type = types.port;
+                default = 5432;
+                description = "Postgres port.";
+              };
+              name = mkOption {
+                type = types.str;
+                default = "excalidash";
+                description = "Postgres database name.";
+              };
+              user = mkOption {
+                type = types.str;
+                default = "excalidash";
+                description = "Postgres role name.";
+              };
+              passwordFile = mkOption {
+                type = types.nullOr types.path;
+                default = null;
+                description = ''
+                  File containing the Postgres role's password. Leave unset
+                  only for a Postgres instance configured for passwordless
+                  (trust/peer) auth for this role — never leave unset
+                  against a real password-auth instance.
+                '';
+              };
+            };
+          };
+        };
+
+        sqlite = mkOption {
+          description = "Run against a local sqlite file.";
+          type = types.submodule {
+            options = {
+              path = mkOption {
+                type = types.path;
+                default = "/var/lib/excalidash/excalidash.db";
+                description = ''
+                  Where the sqlite database file lives. The default is under
+                  this unit's own `StateDirectory`, which is the only sane
+                  choice unless you have a specific reason to put it
+                  elsewhere — it needs to be somewhere
+                  `excalidash-backend`'s `DynamicUser` can read and write.
+                '';
+              };
+            };
+          };
+        };
       };
-      port = mkOption {
-        type = types.port;
-        default = 5432;
-        description = "Postgres port.";
-      };
-      name = mkOption {
-        type = types.str;
-        default = "excalidash";
-        description = "Postgres database name.";
-      };
-      user = mkOption {
-        type = types.str;
-        default = "excalidash";
-        description = "Postgres role name.";
-      };
-      passwordFile = mkOption {
-        type = types.nullOr types.path;
-        default = null;
-        description = ''
-          File containing the Postgres role's password. Leave unset only for
-          a Postgres instance configured for passwordless (trust/peer) auth
-          for this role — never leave unset against a real password-auth
-          instance.
-        '';
-      };
+      default.postgresql = { };
+      description = "Which database to run against, and its connection details.";
     };
 
     jwtSecretFile = mkOption {
@@ -168,7 +220,9 @@ in
         # `LoadCredential` will expose it under ($CREDENTIALS_DIRECTORY/<id>).
         externalSecrets =
           cfg.secretFiles
-          // lib.optionalAttrs (cfg.database.passwordFile != null) { db-password = cfg.database.passwordFile; }
+          // lib.optionalAttrs (
+            cfg.database ? postgresql && cfg.database.postgresql.passwordFile != null
+          ) { db-password = cfg.database.postgresql.passwordFile; }
           // lib.optionalAttrs (cfg.jwtSecretFile != null) { jwt-secret = cfg.jwtSecretFile; }
           // lib.optionalAttrs (cfg.csrfSecretFile != null) { csrf-secret = cfg.csrfSecretFile; };
 
@@ -202,12 +256,15 @@ in
             # next to the (read-only, Nix-store) source — see
             # ../packages/excalidash-backend.nix's postPatch.
             printf 'XDG_DATA_HOME=%s\n' "$STATE_DIRECTORY"
-            ${lib.optionalString (cfg.database.passwordFile != null) ''
-              DB_PASSWORD="$(<"''${CREDENTIALS_DIRECTORY}/db-password")"
-              printf 'DATABASE_URL=postgresql://${cfg.database.user}:%s@${cfg.database.host}:${toString cfg.database.port}/${cfg.database.name}\n' "$DB_PASSWORD"
+            ${lib.optionalString (cfg.database ? sqlite) ''
+              printf 'DATABASE_URL=file:${cfg.database.sqlite.path}\n'
             ''}
-            ${lib.optionalString (cfg.database.passwordFile == null) ''
-              printf 'DATABASE_URL=postgresql://${cfg.database.user}@${cfg.database.host}:${toString cfg.database.port}/${cfg.database.name}\n'
+            ${lib.optionalString (cfg.database ? postgresql && cfg.database.postgresql.passwordFile != null) ''
+              DB_PASSWORD="$(<"''${CREDENTIALS_DIRECTORY}/db-password")"
+              printf 'DATABASE_URL=postgresql://${cfg.database.postgresql.user}:%s@${cfg.database.postgresql.host}:${toString cfg.database.postgresql.port}/${cfg.database.postgresql.name}\n' "$DB_PASSWORD"
+            ''}
+            ${lib.optionalString (cfg.database ? postgresql && cfg.database.postgresql.passwordFile == null) ''
+              printf 'DATABASE_URL=postgresql://${cfg.database.postgresql.user}@${cfg.database.postgresql.host}:${toString cfg.database.postgresql.port}/${cfg.database.postgresql.name}\n'
             ''}
             ${lib.concatMapStringsSep "\n" (name: ''
               printf '${name}=%s\n' "$(<"''${CREDENTIALS_DIRECTORY}/${name}")"
@@ -218,7 +275,12 @@ in
       {
         description = "ExcaliDash backend";
         wantedBy = [ "multi-user.target" ];
-        after = [ "network.target" ] ++ lib.optional (cfg.database.host == "127.0.0.1") "postgresql.service";
+        after = [
+          "network.target"
+        ]
+        ++ lib.optional (
+          cfg.database ? postgresql && cfg.database.postgresql.host == "127.0.0.1"
+        ) "postgresql.service";
 
         environment = cfg.environment // lib.optionalAttrs (cfg.frontendUrl != null) {
           FRONTEND_URL = cfg.frontendUrl;
@@ -227,7 +289,7 @@ in
           PORT = "8000";
           AUTH_MODE = cfg.authMode;
           TRUST_PROXY = lib.boolToString cfg.trustProxy;
-          DATABASE_PROVIDER = "postgresql";
+          DATABASE_PROVIDER = if cfg.database ? sqlite then "sqlite" else "postgresql";
           # `DynamicUser` has no `passwd` entry, so Node's `os.homedir()` (used by
           # Prisma's CLI, e.g. via `tempy`, during `excalidash-migrate`)
           # fails with `uv_os_homedir returned ENOENT` unless $HOME is set.

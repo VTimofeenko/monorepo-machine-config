@@ -61,6 +61,6 @@ buildNpmPackage (finalAttrs: {
 
   meta = {
     description = "ExcaliDash static frontend (Vite/React SPA)";
-    platforms = [ "x86_64-linux" ];
+    platforms = lib.platforms.linux;
   };
 })
