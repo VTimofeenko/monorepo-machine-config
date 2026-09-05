@@ -79,6 +79,8 @@ window-rule {
 window-rule {
     match app-id=r#"^org\.gnupg\.pinentry-qt$"#
     match app-id="xdg-desktop-portal-gtk"
+    match app-id=r#"^org\.freedesktop\.impl\.portal\.desktop\.kde$"#
+    match app-id="xdg-desktop-portal-kde"
     match title="^Open File$"
     match title=r#".*wants to save"#
     match title=r#".*wants to open"#
