@@ -12,7 +12,7 @@ stdenvNoCC.mkDerivation {
     url = "https://dl.dafont.com/dl/?f=good_timing";
     extension = "zip";
     stripRoot = false;
-    hash = "sha256-xrUy5WZ9ixGhxPgWGsG7H8KNP+fR0ZK/Vv1QigN5pIY=";
+    hash = "sha256-f8YWPtrKJYMW6e//AzzZkifLKaAyNMWHyG/IUg85Fbg=";
   };
 
   installPhase = ''
