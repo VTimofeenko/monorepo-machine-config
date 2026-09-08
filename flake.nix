@@ -74,7 +74,6 @@
         pre-commit-hooks-nix.follows = "pre-commit-hooks-nix";
         devshell.follows = "devshell";
         treefmt-nix.follows = "treefmt-nix";
-        deploy-rs.follows = "deploy-rs";
       };
     };
     # Rust
