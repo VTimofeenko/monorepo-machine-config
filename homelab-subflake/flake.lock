@@ -1419,11 +1419,11 @@
         "nixpkgs": "nixpkgs_13"
       },
       "locked": {
-        "lastModified": 1788818345,
-        "narHash": "sha256-RMfnzKnzYaymQf3BAUsQbrYYtaGdrKxvjR467sp6wbE=",
+        "lastModified": 1788840526,
+        "narHash": "sha256-m8AIYK4C23cRAPur9GUvJDw+Y9eRS1vknwKvOlMaKWQ=",
         "ref": "refs/heads/master",
-        "rev": "4279b6d084f3d7a14dec901f5a431a157df98073",
-        "revCount": 289,
+        "rev": "245924e13e8f753aa9c2c31e9325adf9fb39845d",
+        "revCount": 292,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-modules.git"
       },
