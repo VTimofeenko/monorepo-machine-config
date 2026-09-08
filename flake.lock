@@ -487,9 +487,6 @@
     },
     "my-flake-modules": {
       "inputs": {
-        "deploy-rs": [
-          "deploy-rs"
-        ],
         "devshell": [
           "devshell"
         ],
@@ -517,11 +514,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1761096958,
-        "narHash": "sha256-XEyevu5dMrknxpzN8W9Bmn2v4IwurYDfllBbEP+50dc=",
+        "lastModified": 1788906493,
+        "narHash": "sha256-Il5YM9Y/bMdBJyJvPNAvInKQDgZAFIVw1dmWydjcA4Q=",
         "owner": "VTimofeenko",
         "repo": "flake-modules",
-        "rev": "4213591fe18495832e80aba8e26e097722596c93",
+        "rev": "4d028705250946bc77476a11fa9429186a35abe1",
         "type": "github"
       },
       "original": {
