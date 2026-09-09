@@ -57,8 +57,6 @@ let
         grep = "grep --color=auto";
         mv = "mv -v";
         rm = "${pkgs.coreutils}/bin/rm -id";
-        # Use fast `$CMD_EDITOR` for `vidir`
-        vidir = "EDITOR=$CMD_EDITOR ${pkgs.moreutils}/bin/vidir --verbose";
         # Uses `OSC52` to copy data into the clipboard. It's up to the terminal
         # emulator to handle putting the data into the actual clipboard.
         # Alternative approach is to use `wl-copy` and `pbcopy` directly. This
@@ -89,12 +87,56 @@ let
     |> lib.mergeAttrsList;
 
   inherit (lib) getExe;
+
+  # Dispatcher alias, calls standard `vidir` or `vidir-img` if the latter makes
+  # sense. `vidir-img` is a separate flake module.
+  # A function rather than an alias since it needs a conditional; it
+  # shadows any `vidir` alias/word, so none is defined above.
+  vidirInit =
+    let
+      imageExts = "png|jpg|jpeg|gif|webp|avif";
+    in
+    ''
+      vidir() {
+        # Options (e.g. a bare `vidir --verbose`) aren't path targets --
+        # filter them out before deciding whether to default to `.`.
+        local -a targets=("''${@:#-*}")
+        (( $#targets )) || targets=(.)
+        local has_image=0 t
+        for t in $targets; do
+          if [[ -d $t ]]; then
+            # Quoted and array-based rather than a `$(print -rl ...)`
+            # subshell: unquoted `$t/*` would misparse a literal `[`/`]` in
+            # a directory name as a glob character class.
+            local -a matches=("$t"/*.(${imageExts})(N))
+            if (( $#matches )); then
+              has_image=1
+              break
+            fi
+          elif [[ ''${t:l} == *.(${imageExts}) ]]; then
+            has_image=1
+            break
+          fi
+        done
+        if (( has_image )) && (( ''${+commands[vidir-img]} )); then
+          vidir-img "$@"
+          return
+        fi
+        EDITOR=$CMD_EDITOR VISUAL=$CMD_EDITOR ${lib.getExe' pkgs.moreutils "vidir"} --verbose "$@"
+      }
+    '';
 in
 {
   nixosModule = {
-    programs.zsh = { inherit (settings) shellAliases; };
+    programs.zsh = {
+      inherit (settings) shellAliases;
+      interactiveShellInit = vidirInit;
+    };
   };
   homeManagerModule = {
-    programs.zsh = { inherit (settings) shellAliases; };
+    programs.zsh = {
+      inherit (settings) shellAliases;
+      initContent = vidirInit;
+    };
   };
 }

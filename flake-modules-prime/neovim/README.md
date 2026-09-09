@@ -48,6 +48,10 @@ This flake module provides:
 - [Telescope](./config/standard/telescope.nix) for finding files
 - [Todo-comments](./config/standard/todo-comments.nix) for highlighting TODO/FIXME/WARN
 - [Scratch plugin](./config/standard/vim-scratch-plugin.nix) for quick one off scratch buffers
+- [Image viewing](./config/standard/image.nix): inline images via `image.nvim`,
+  mainly for Markdown image links
+- [`vidir-img`](./config/standard/vidir-img.nix): `vidir` with a thumbnail
+  preview of the file under the cursor
 - [JSON support](./config/standard/z-lang-json.nix)
     - Formatting
     - Schemas
