@@ -110,15 +110,15 @@ in
           formatting = {
             command = { "${lib.getExe pkgs.nixfmt}" },
           },
-          flake = {
-            autoEvalInputs = true,
-            autoArchive = true,
+          -- Explicitly disable auto-archival, nixd takes care of that
+          nix = {
+            flake = { autoEvalInputs = false, autoArchive = false },
           },
         },
       },
       -- nixd owns diagnostics and code actions (see module doc comment for
       -- why); nil stays attached only for semantic-token highlighting and
-      -- nixfmt-backed formatting.
+      -- nixfmt-backed formatting
       handlers = {
         ["textDocument/publishDiagnostics"] = function() end,
       },
