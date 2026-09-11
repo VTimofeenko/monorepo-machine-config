@@ -1,0 +1,204 @@
+// Basic port of my tmux config's shape. Skips the tmux copy-mode scripting
+// macros (prompt-line jumping, incremental search) - no equivalent primitive
+// in zellij's keybinding model, would need a WASM plugin to reproduce.
+
+// Global stuff, mirrors tmux's `history-limit`
+scroll_buffer_size 50000
+show_startup_tips false
+
+theme "control-room"
+
+// tmux's "y"/Enter-to-copy in copy-mode-vi
+copy_command "wl-copy"
+copy_on_select true
+
+keybinds {
+    // Rebind the prefix trigger from the default Ctrl-b to Ctrl-f, same
+    // reasoning as tmux: press with one hand.
+    shared_except "locked" {
+        unbind "Ctrl b"
+        bind "Ctrl f" { SwitchToMode "Tmux"; }
+    }
+
+    // zellij ships a "tmux" mode that already emulates a tmux prefix+key
+    // flow (hjkl pane nav, detach, etc.) - just adjust it to match my splits
+    // and add window-number jumping.
+    tmux {
+        // '\' and '-' instead of '"'/'%', same mnemonic as tmux config:
+        // they look like the split they create.
+        bind "\\" { NewPane "Right"; SwitchToMode "Normal"; }
+        bind "-" { NewPane "Down"; SwitchToMode "Normal"; }
+
+        // Prefix-prefix (tmux's `bind C-f last-window`): tap the prefix
+        // trigger again to jump back to the previously active tab.
+        bind "Ctrl f" { ToggleTab; SwitchToMode "Normal"; }
+
+        bind "1" { GoToTab 1; SwitchToMode "Normal"; }
+        bind "2" { GoToTab 2; SwitchToMode "Normal"; }
+        bind "3" { GoToTab 3; SwitchToMode "Normal"; }
+        bind "4" { GoToTab 4; SwitchToMode "Normal"; }
+        bind "5" { GoToTab 5; SwitchToMode "Normal"; }
+        bind "6" { GoToTab 6; SwitchToMode "Normal"; }
+        bind "7" { GoToTab 7; SwitchToMode "Normal"; }
+        bind "8" { GoToTab 8; SwitchToMode "Normal"; }
+        bind "9" { GoToTab 9; SwitchToMode "Normal"; }
+    }
+
+    // tmux's M-H/M-J/M-K/M-L pane resizing, no mode-switch needed - direct,
+    // like tmux's root-table binding.
+    shared_except "locked" {
+        bind "Alt Shift h" { Resize "Increase Left"; }
+        bind "Alt Shift j" { Resize "Increase Down"; }
+        bind "Alt Shift k" { Resize "Increase Up"; }
+        bind "Alt Shift l" { Resize "Increase Right"; }
+    }
+}
+
+// Colors lifted from Faber Birren's industrial-plants safety chart
+// (https://bethmathews.substack.com/p/why-so-many-control-rooms-were-seafoam):
+// deliberately restrict the palette to the muted Gray column for everything
+// structural, and reserve the bold safety-code column for the handful of
+// things that actually need to grab the eye:
+//   - focused pane / active tab -> Caution Blue (where am I)
+//   - command failed / pane wants attention -> Fire Red (something's wrong)
+//   - command succeeded -> Safety Green (all clear)
+// Everything else (tab bar chrome, tables, lists) stays grayscale on purpose.
+// TODO: make this the new theme?
+themes {
+    control-room {
+        text_unselected {
+            base "#B9C4BC"
+            background "#33443B"
+            emphasis_0 "#3688C2"
+            emphasis_1 "#E7ECE8"
+            emphasis_2 "#E7ECE8"
+            emphasis_3 "#E7ECE8"
+        }
+        text_selected {
+            base "#E7ECE8"
+            background "#55695D"
+            emphasis_0 "#3688C2"
+            emphasis_1 "#E7ECE8"
+            emphasis_2 "#E7ECE8"
+            emphasis_3 "#E7ECE8"
+        }
+
+        ribbon_unselected {
+            base "#B9C4BC"
+            background "#55695D"
+            emphasis_0 "#93A79C"
+            emphasis_1 "#E7ECE8"
+            emphasis_2 "#93A79C"
+            emphasis_3 "#E7ECE8"
+        }
+        ribbon_selected {
+            base "#33443B"
+            background "#3688C2"
+            emphasis_0 "#33443B"
+            emphasis_1 "#33443B"
+            emphasis_2 "#33443B"
+            emphasis_3 "#33443B"
+        }
+
+        table_title {
+            base "#E7ECE8"
+            background "#33443B"
+            emphasis_0 "#93A79C"
+            emphasis_1 "#93A79C"
+            emphasis_2 "#93A79C"
+            emphasis_3 "#93A79C"
+        }
+        table_cell_unselected {
+            base "#B9C4BC"
+            background "#33443B"
+            emphasis_0 "#93A79C"
+            emphasis_1 "#93A79C"
+            emphasis_2 "#93A79C"
+            emphasis_3 "#93A79C"
+        }
+        table_cell_selected {
+            base "#E7ECE8"
+            background "#55695D"
+            emphasis_0 "#93A79C"
+            emphasis_1 "#93A79C"
+            emphasis_2 "#93A79C"
+            emphasis_3 "#93A79C"
+        }
+
+        list_unselected {
+            base "#B9C4BC"
+            background "#33443B"
+            emphasis_0 "#93A79C"
+            emphasis_1 "#93A79C"
+            emphasis_2 "#93A79C"
+            emphasis_3 "#93A79C"
+        }
+        list_selected {
+            base "#E7ECE8"
+            background "#55695D"
+            emphasis_0 "#93A79C"
+            emphasis_1 "#93A79C"
+            emphasis_2 "#93A79C"
+            emphasis_3 "#93A79C"
+        }
+
+        // Inactive borders stay quiet; the active border is the one thing
+        // in this palette that should always catch your eye.
+        frame_unselected {
+            base "#55695D"
+            background "#33443B"
+            emphasis_0 "#55695D"
+            emphasis_1 "#55695D"
+            emphasis_2 "#55695D"
+            emphasis_3 "#55695D"
+        }
+        frame_selected {
+            base "#3688C2"
+            background "#33443B"
+            emphasis_0 "#3688C2"
+            emphasis_1 "#3688C2"
+            emphasis_2 "#3688C2"
+            emphasis_3 "#3688C2"
+        }
+        // A pane with unseen output (bell) - same idea as the tmux bell style.
+        frame_highlight {
+            base "#B23A3A"
+            background "#33443B"
+            emphasis_0 "#B23A3A"
+            emphasis_1 "#B23A3A"
+            emphasis_2 "#B23A3A"
+            emphasis_3 "#B23A3A"
+        }
+
+        exit_code_success {
+            base "#2FAE5D"
+            background "#33443B"
+            emphasis_0 "#2FAE5D"
+            emphasis_1 "#2FAE5D"
+            emphasis_2 "#2FAE5D"
+            emphasis_3 "#2FAE5D"
+        }
+        exit_code_error {
+            base "#B23A3A"
+            background "#33443B"
+            emphasis_0 "#B23A3A"
+            emphasis_1 "#B23A3A"
+            emphasis_2 "#B23A3A"
+            emphasis_3 "#B23A3A"
+        }
+
+        // Single-user setup - these are unused in practice, kept neutral.
+        multiplayer_user_colors {
+            player_1 "#3688C2"
+            player_2 "#93A79C"
+            player_3 "#93A79C"
+            player_4 "#93A79C"
+            player_5 "#93A79C"
+            player_6 "#93A79C"
+            player_7 "#93A79C"
+            player_8 "#93A79C"
+            player_9 "#93A79C"
+            player_10 "#93A79C"
+        }
+    }
+}
