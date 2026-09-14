@@ -4,6 +4,13 @@
   systemd.user.services.niri = {
     enableDefaultPath = false; # From NixOS wiki
 
+    # A package/version bump to `niri` changes this unit's closure, so a plain
+    # `deploy-$node` would otherwise restart the *running* `niri.service` mid-
+    # session, killing the compositor.
+    # Leave the running instance alone; the new build is still activated and
+    # takes effect on the next manual restart/re-login.
+    restartIfChanged = false;
+
     # niri's own teardown (forcing graphical-session.target to stop via
     # niri-shutdown.target) normally happens in the `niri-session` wrapper
     # script, *after* `niri.service` exits -- but that script skips its
