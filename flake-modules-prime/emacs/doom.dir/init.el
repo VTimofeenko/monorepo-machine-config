@@ -190,6 +190,7 @@
 
        :local
        org-excalidraw
+       excalidash
 
        :config
        ;;literate

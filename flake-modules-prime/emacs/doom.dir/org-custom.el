@@ -399,6 +399,13 @@
  :hook (org-mode . org-excalidraw-initialize)
  :config (setq org-excalidraw-directory "~/org/org-excalidraw"))
 
+;; excalidash configuration
+(use-package!
+ excalidash
+ :commands (excalidash-insert-preview
+            excalidash-refresh-preview-at-point
+            excalidash-refresh-all-previews))
+
 (defun zz/org-download-paste-clipboard (&optional use-default-filename)
   (interactive "P")
   (require 'org-download)
