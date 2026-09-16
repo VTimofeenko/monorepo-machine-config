@@ -21,8 +21,16 @@ in
         SESSION_LIFE_TIME = 30 * 24 * 60 * 60; # 30 days
       };
 
-      # Allows users to create repos by simply pushing it
-      repository.ENABLE_PUSH_CREATE_USER = true;
+      repository = {
+        # Allows users to create repos by simply pushing it
+        ENABLE_PUSH_CREATE_USER = true;
+      };
+      # "repository.pull-request" is gitea's own dotted [section] name, not
+      # nesting - it must be a sibling key of "repository", not inside it.
+      "repository.pull-request" = {
+        # My default merge style, works well with bots
+        DEFAULT_MERGE_STYLE = "rebase";
+      };
 
       security.ALLOWED_HOST_LIST = "*.${lib.homelab.getSettings.publicDomainName}";
       service = {
