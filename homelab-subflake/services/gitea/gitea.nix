@@ -15,7 +15,11 @@ in
         DOMAIN = srvFqdn;
         START_SSH_SERVER = true;
       };
-      session.COOKIE_SECURE = true;
+      session = {
+        COOKIE_SECURE = true;
+        # Match gitea session life time to keycloak one
+        SESSION_LIFE_TIME = 30 * 24 * 60 * 60; # 30 days
+      };
 
       # Allows users to create repos by simply pushing it
       repository.ENABLE_PUSH_CREATE_USER = true;
