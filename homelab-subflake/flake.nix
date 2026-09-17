@@ -147,6 +147,17 @@
               // {
                 # Test VMs with custom data
                 dns-test-vm = import ./tests/dns-test-vm.nix { inherit inputs self lib; };
+
+                # NixOS installer ISO -- not a managed/deployed host
+                neutronium-x86_64 = lib.nixosSystem {
+                  system = "x86_64-linux";
+                  lib = self.lib.mkExtendedLib "neutronium";
+                  modules = [
+                    "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+                    ./hosts/neutronium/configuration
+                    { networking.hostName = "neutronium"; }
+                  ];
+                };
               };
 
             deploy.nodes = lib.genAttrs realHosts (
