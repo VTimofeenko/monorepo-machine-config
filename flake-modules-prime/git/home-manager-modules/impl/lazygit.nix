@@ -71,6 +71,23 @@ in
             }
           ];
         }
+        {
+          # Overrides the default "execute shell command" binding on `:` so
+          # that vim muscle-memory (`:q`, `:q!`, `:wq`, `:x`) quits lazygit
+          # instead of erroring out as an unknown shell command.
+          command = "sh -c '{{ if or (eq .Form.Command \"q\") (eq .Form.Command \"q!\") (eq .Form.Command \"wq\") (eq .Form.Command \"x\") }}kill -INT $PPID{{ else }}{{.Form.Command}}{{ end }}'";
+          context = "global";
+          description = "Execute shell command (:q quits lazygit)";
+          key = ":";
+          loadingText = "Running...";
+          prompts = [
+            {
+              key = "Command";
+              title = "command:";
+              type = "input";
+            }
+          ];
+        }
       ];
     };
   };
