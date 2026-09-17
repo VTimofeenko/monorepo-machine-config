@@ -34,6 +34,18 @@ but (matching every other service on this shared `db` host) its password is
 ALTER ROLE excalidash PASSWORD '<contents of the decrypted excalidash-db-password secret>';
 ```
 
+## Seeding a shared library (`authMode = "disabled"`)
+
+With auth disabled, the frontend never persists a library imported through
+the UI (see the `postPatch` comment in
+`../../flake-modules-prime/excalidash/packages/excalidash-frontend.nix`) —
+`contrib/seed-library.sh` writes a `.excalidrawlib` file straight to the
+backend's `/api/library` instead, so it shows up in every drawing:
+
+```console
+./contrib/seed-library.sh https://excalidash.example.com ~/shapes.excalidrawlib
+```
+
 ## Documentation
 
 - [Upstream README](https://github.com/ZimengXiong/ExcaliDash)
