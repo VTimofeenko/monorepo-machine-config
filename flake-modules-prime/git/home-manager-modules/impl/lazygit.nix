@@ -57,22 +57,6 @@ in
               type = "input";
               suggestions.command = "${conventional-commit-helper} scope --json | ${getExe pkgs.jq} -r '.[] | .name '";
             }
-            # Breaking changes are rare -- I'd rather use reword for them
-            # {
-            #   key = "Breaking";
-            #   options = [
-            #     {
-            #       name = "no";
-            #       value = "";
-            #     }
-            #     {
-            #       name = "yes";
-            #       value = "!";
-            #     }
-            #   ];
-            #   title = "Breaking change";
-            #   type = "menu";
-            # }
             {
               initialValue = "";
               key = "Message";
