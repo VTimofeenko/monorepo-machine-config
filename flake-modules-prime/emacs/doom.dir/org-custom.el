@@ -390,8 +390,7 @@
        (org-super-agenda-groups
         '((:tag "home_maintenance" :name "")
           (:discard (:not (:tag ("home_maintenance")))))))))
-    nil ("~/code/infra/services/dashy/home_maint.html")))
- (font-lock-add-keywords 'org-mode '(("@@comment:[^@]*@@" 0 'font-lock-comment-face t))))
+    nil ("~/code/infra/services/dashy/home_maint.html"))))
 
 ;; org-excalidraw configuration
 (use-package!

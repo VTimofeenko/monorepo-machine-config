@@ -191,6 +191,7 @@
        :local
        org-excalidraw
        excalidash
+       org-inline-comment
 
        :config
        ;;literate
