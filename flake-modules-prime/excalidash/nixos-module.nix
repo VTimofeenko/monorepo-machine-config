@@ -340,6 +340,26 @@ in
       enable = true;
       recommendedProxySettings = true;
 
+      # `recommendedProxySettings` always sets `X-Forwarded-Proto: $scheme` -
+      # fine for a single nginx hop, but this nginx (on `backbone-inner`,
+      # plain HTTP) sits *behind* the actual TLS-terminating `ssl-proxy`, so
+      # `$scheme` here is always `http`, clobbering the `https` the outer
+      # proxy already set. The backend's own HTTPS-enforcement middleware
+      # then sees `X-Forwarded-Proto: http` and 302s every `/api/*` request
+      # back to itself - and since that redirect is built from
+      # `req.originalUrl` (already stripped of nginx's `/api/` prefix by the
+      # time it reaches Express), it lands on a bare, unproxied path that
+      # nginx's SPA fallback (`try_files $uri /index.html`) swallows instead.
+      # This `map` preserves whatever `X-Forwarded-Proto` the outer proxy
+      # already set, falling back to this hop's own `$scheme` only when
+      # there isn't one (e.g. hitting this nginx directly for debugging).
+      appendHttpConfig = ''
+        map $http_x_forwarded_proto $excalidash_forwarded_proto {
+          default $http_x_forwarded_proto;
+          ""      $scheme;
+        }
+      '';
+
       virtualHosts."excalidash" = {
         listen = [
           {
@@ -354,13 +374,34 @@ in
           tryFiles = "$uri /index.html";
         };
 
+        # `recommendedProxySettings = false` here: its `X-Forwarded-Proto` is
+        # replaced by the corrected `$excalidash_forwarded_proto` above (see
+        # `appendHttpConfig`); the rest of the recommended headers are kept.
         locations."/api/" = {
           proxyPass = "http://127.0.0.1:${toString cfg.backendPort}/";
+          recommendedProxySettings = false;
+          extraConfig = ''
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $excalidash_forwarded_proto;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Server $hostname;
+          '';
         };
 
         locations."/socket.io/" = {
           proxyPass = "http://127.0.0.1:${toString cfg.backendPort}/socket.io/";
           proxyWebsockets = true;
+          recommendedProxySettings = false;
+          extraConfig = ''
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $excalidash_forwarded_proto;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Server $hostname;
+          '';
         };
       };
     };
