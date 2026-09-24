@@ -8,9 +8,9 @@
   about how the app itself is packaged/served (backend package, local nginx
   serving the SPA + proxying `/api` + `/socket.io`) lives in that module.
 
-  OIDC and S3 file storage are supported both upstream and by the generic
-  module (via `environment`/`secretFiles`) but not wired here; this is the
-  minimal local-auth + Postgres-backed setup.
+  OIDC (Keycloak, via `non-functional/sso.nix`) is wired here. S3 file
+  storage is supported both upstream and by the generic module (via
+  `environment`/`secretFiles`) but not wired here.
 */
 { config, lib, ... }:
 {
@@ -32,4 +32,8 @@
     csrfSecretFile = config.age.secrets.excalidash-csrf-secret.path;
     backendPort = 8001;
   };
+
+  imports = [
+    ./non-functional/sso.nix
+  ];
 }
