@@ -30,5 +30,6 @@
 
     jwtSecretFile = config.age.secrets.excalidash-jwt-secret.path;
     csrfSecretFile = config.age.secrets.excalidash-csrf-secret.path;
+    backendPort = 8001;
   };
 }
