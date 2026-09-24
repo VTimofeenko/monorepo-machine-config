@@ -12,4 +12,8 @@ in
       UPGRADE_CHECK_ENABLED = false;
     };
   };
+
+  imports = [
+    ./non-functional/sso.nix
+  ];
 }
