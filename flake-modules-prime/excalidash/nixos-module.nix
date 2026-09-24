@@ -211,6 +211,13 @@ in
         (e.g. `OIDC_CLIENT_SECRET`, S3 credentials).
       '';
     };
+
+    backendPort = mkOption {
+      type = types.port;
+      default = 8080;
+      example = 8001;
+      description = "The network port the backend service should listen on.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -286,7 +293,7 @@ in
           FRONTEND_URL = cfg.frontendUrl;
         } // {
           NODE_ENV = "production";
-          PORT = "8000";
+          PORT = toString cfg.backendPort;
           AUTH_MODE = cfg.authMode;
           TRUST_PROXY = lib.boolToString cfg.trustProxy;
           DATABASE_PROVIDER = if cfg.database ? sqlite then "sqlite" else "postgresql";
@@ -348,11 +355,11 @@ in
         };
 
         locations."/api/" = {
-          proxyPass = "http://127.0.0.1:8000/";
+          proxyPass = "http://127.0.0.1:${toString cfg.backendPort}/";
         };
 
         locations."/socket.io/" = {
-          proxyPass = "http://127.0.0.1:8000/socket.io/";
+          proxyPass = "http://127.0.0.1:${toString cfg.backendPort}/socket.io/";
           proxyWebsockets = true;
         };
       };
