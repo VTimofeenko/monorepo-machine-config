@@ -31,6 +31,10 @@
     jwtSecretFile = config.age.secrets.excalidash-jwt-secret.path;
     csrfSecretFile = config.age.secrets.excalidash-csrf-secret.path;
     backendPort = 8001;
+
+    # No dedicated option for this one (unlike jwt/csrf) - it's just passed
+    # through via `secretFiles` like OIDC_CLIENT_SECRET is.
+    secretFiles.API_KEY_HASH_PEPPER = config.age.secrets.excalidash-api-key-hash-pepper.path;
   };
 
   imports = [
