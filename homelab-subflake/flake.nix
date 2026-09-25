@@ -1,6 +1,9 @@
 {
   description = "A very basic flake";
 
+  # Config
+  # `grep`'s are bad
+
   inputs = {
     base.url = "..";
     nixpkgs.follows = "base/nixpkgs";
