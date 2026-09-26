@@ -12,3 +12,4 @@ flake-modules/vim/packages/lua/lua/.luarc.json
 # instantiated
 templates/*/flake.lock
 **/*.qcow2
+__pycache__/

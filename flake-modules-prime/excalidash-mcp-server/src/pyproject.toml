@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "excalidash-mcp"
+version = "0.1.0"
+description = "MCP server exposing an ExcaliDash instance's drawings/collections API"
+requires-python = ">=3.11"
+dependencies = ["mcp", "httpx"]
+
+[project.scripts]
+excalidash-mcp-server = "excalidash_mcp.server:main"
+
+[tool.setuptools.packages.find]
+include = ["excalidash_mcp*"]

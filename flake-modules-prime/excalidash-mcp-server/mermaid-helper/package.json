@@ -1,0 +1,13 @@
+{
+  "name": "excalidash-mermaid-helper",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "excalidash-mermaid-helper": "./convert.mjs"
+  },
+  "dependencies": {
+    "@excalidraw/mermaid-to-excalidraw": "^1.1.2",
+    "jsdom": "^25.0.1"
+  }
+}
