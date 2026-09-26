@@ -107,6 +107,23 @@ buildNpmPackage (finalAttrs: {
   # or where it lives (friendlier to e.g. a template unit / a different
   # `StateDirectory`, and doesn't need rebuilding if that ever changes).
   postPatch = ''
+    # Upstream's API-key scope check (`getApiKeyRouteResource`) never
+    # recognizes `/files/*` as a resource at all, so an API key request to
+    # it always 403s/404s regardless of scopes — even though the exact same
+    # request with a session cookie works fine. That blocks both fetching
+    # an embedded image (GET /files/:drawingId/:fileId) and uploading one
+    # (PUT /drawings/:drawingId/files/:fileId) via API key. Maps both onto
+    # the existing `drawings:read`/`drawings:write` scopes rather than
+    # inventing a new scope category the account-settings UI doesn't know
+    # about. See ./patches/api-key-files-scope.patch (same diff, kept
+    # standalone so it's easy to open as an upstream PR) and
+    # flake-modules-prime/excalidash-mcp-server/src/excalidash_mcp/client.py
+    # for where this was found (get_file couldn't fetch anything).
+    # -p2: the patch's paths are `a/backend/...`/`b/backend/...` (rooted at
+    # the full upstream repo, so it applies as-is against a checkout for an
+    # upstream PR), but this derivation's source root is already `backend/`.
+    patch -p2 < ${./patches/api-key-files-scope.patch}
+
     substituteInPlace src/index.ts \
       --replace-fail \
         'path.resolve(__dirname, "../uploads")' \

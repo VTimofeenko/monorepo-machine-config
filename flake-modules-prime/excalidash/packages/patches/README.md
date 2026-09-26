@@ -1,3 +1,15 @@
+> `api-key-files-scope.patch` (below) is unrelated to the manifest override
+> this README documents — it's a real source patch, applied via `patch -p2`
+> in `../excalidash-backend.nix`'s `postPatch`. It fixes API keys getting
+> 403/404'd on `/files/*` (both fetching and uploading an embedded image)
+> because `getApiKeyRouteResource` in `middleware/auth.ts` never recognized
+> that resource. Its paths are `a|b/backend/...`, rooted at the full repo,
+> so it also applies as-is (`patch -p1` from the repo root, or as a diff) to
+> a plain checkout — meant to be filed as an upstream PR, not just a
+> Nix-local workaround. Regenerate the same way as the manifests below if
+> `middleware/auth.ts` changes upstream: re-derive the diff against the new
+> version's file and confirm `patch -p2` still applies cleanly.
+
 # `package.json` / `package-lock.json` overrides
 
 These two files replace the ones from the upstream ExcaliDash release inside
