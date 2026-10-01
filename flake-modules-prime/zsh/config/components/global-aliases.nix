@@ -16,6 +16,7 @@ let
     C = "| ccopy";
     # `V` to view in vim
     V = "| vim -R";
+    J = "jq";
   };
   init =
     settings.globalAliases
