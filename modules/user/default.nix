@@ -43,6 +43,7 @@
           selfHMModules.zsh
           selfHMModules.git
           selfHMModules.emacs
+          selfHMModules.zellij
           selfHMModules.my-theme
           data-flake.homeManagerModules.default
         ];
