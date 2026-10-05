@@ -5,6 +5,7 @@
 // Global stuff, mirrors tmux's `history-limit`
 scroll_buffer_size 50000
 show_startup_tips false
+show_release_notes false
 
 theme "control-room"
 
