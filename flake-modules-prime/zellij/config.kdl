@@ -13,6 +13,9 @@ theme "control-room"
 copy_command "wl-copy"
 copy_on_select true
 
+// Leave the mouse to the terminal (native selection/scroll)
+mouse_mode false
+
 keybinds {
     // Rebind the prefix trigger from the default Ctrl-b to Ctrl-f, same
     // reasoning as tmux: press with one hand.
