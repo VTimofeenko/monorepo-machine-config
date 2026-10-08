@@ -1,10 +1,12 @@
 { pkgs, ... }:
 let
+  openscadPkg = pkgs.openscad-unstable;
+
   scad-render = pkgs.writeShellApplication {
     name = "scad-render";
     runtimeInputs = [
       pkgs.xvfb-run
-      pkgs.openscad
+      openscadPkg
     ];
     text = ''
       has_scheme=0
@@ -30,7 +32,7 @@ let
 in
 {
   environment.systemPackages = [
-    pkgs.openscad
+    openscadPkg
     pkgs.prusa-slicer
     pkgs.xvfb-run
     scad-render
