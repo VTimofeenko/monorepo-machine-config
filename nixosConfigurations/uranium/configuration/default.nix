@@ -8,7 +8,7 @@
     ./network-selector.nix
     ./user-stuff
     ./rtl.nix
-    ./3d-print.nix
+    ./3d-print
     ./gamemode.nix
     ./wifi-tdls-disable.nix
   ];

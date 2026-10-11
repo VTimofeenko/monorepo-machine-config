@@ -2,33 +2,8 @@
 let
   openscadPkg = pkgs.openscad-unstable;
 
-  scad-render = pkgs.writeShellApplication {
-    name = "scad-render";
-    runtimeInputs = [
-      pkgs.xvfb-run
-      openscadPkg
-    ];
-    text = ''
-      has_scheme=0
-      has_size=0
-      for arg in "$@"; do
-        case "$arg" in
-          --colorscheme*|-c*) has_scheme=1 ;;
-          --imgsize*) has_size=1 ;;
-        esac
-      done
-
-      extra_args=()
-      if [ "$has_scheme" -eq 0 ]; then
-        extra_args+=("--colorscheme=Tomorrow")
-      fi
-      if [ "$has_size" -eq 0 ]; then
-        extra_args+=("--imgsize=1024,1024")
-      fi
-
-      exec xvfb-run -a openscad "''${extra_args[@]}" "$@"
-    '';
-  };
+  scad-render = pkgs.callPackage ./scad-render { openscad = openscadPkg; };
+  bgcode = pkgs.callPackage ./bgcode-renderer { };
 in
 {
   environment.systemPackages = [
@@ -36,6 +11,7 @@ in
     pkgs.prusa-slicer
     pkgs.xvfb-run
     scad-render
+    bgcode
   ];
   fonts = {
     packages =
