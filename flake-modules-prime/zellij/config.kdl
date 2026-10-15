@@ -13,8 +13,8 @@ theme "control-room"
 copy_command "wl-copy"
 copy_on_select true
 
-// Leave the mouse to the terminal (native selection/scroll)
-mouse_mode false
+// I will need to remember to shift-drag to select, but scrolling up is too darn useful
+mouse_mode true
 
 keybinds {
     // Rebind the prefix trigger from the default Ctrl-b to Ctrl-f, same
