@@ -1,0 +1,9 @@
+auths:
+  satellite-switch:
+    version: 3
+    username: prometheus
+    security_level: authPriv
+    password: ${SATELLITE_SWITCH_PASSWORD}
+    priv_password: ${SATELLITE_SWITCH_PRIV_PASSWORD}
+    auth_protocol: SHA
+    priv_protocol: AES

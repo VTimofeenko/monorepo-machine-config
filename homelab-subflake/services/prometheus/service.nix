@@ -13,7 +13,7 @@
   };
 
   imports = [
-    ./synology
+    ./snmp
     ./service-scraping
   ]
   ++ lib.localLib.mkImportsFromDir ./functional;
