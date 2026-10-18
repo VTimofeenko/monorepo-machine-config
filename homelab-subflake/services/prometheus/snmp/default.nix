@@ -1,6 +1,7 @@
 # Configures snmp exporter on prometheus node to scrape SNMP devices
 # - Each device has its own auth (and modules, if not upstream) in `<device>.yml`
 # - `common.yml` holds shared modules (if_mib)
+# - Each device has its own alerts in `<device>-alerts.nix`
 {
   config,
   lib,
@@ -22,6 +23,7 @@ let
         "synology"
       ];
       configFiles = [ ./synology.yml ];
+      alerts = ./synology-alerts.nix;
     }
     {
       name = "satellite-switch";
@@ -33,6 +35,7 @@ let
         ./satellite-switch.yml
         upstreamMikrotik
       ];
+      alerts = ./satellite-switch-alerts.nix;
     }
   ];
 
@@ -40,7 +43,15 @@ let
   mkScrapeConfig = device: {
     job_name = device.name;
     scrape_interval = "30s";
-    static_configs = [ { targets = [ (lib.homelab.getHostInNetwork device.name "lan").fqdn ]; } ];
+    static_configs = [
+      {
+        targets = [ (lib.homelab.getHostInNetwork device.name "lan").fqdn ];
+        labels = {
+          host = device.name;
+          resource = "host:${device.name}";
+        };
+      }
+    ];
     metrics_path = "/snmp";
     params = {
       auth = [ device.name ];
@@ -61,6 +72,12 @@ let
       }
     ];
   };
+
+  mkAlertRules =
+    device:
+    import device.alerts { selector = ''resource="host:${device.name}"''; }
+    |> lib.mapAttrsToList (level: map ((lib.homelab.getSrvLib "prometheus").mkRule device.name level))
+    |> lib.flatten;
 in
 {
   services.prometheus.exporters.snmp = {
@@ -76,6 +93,18 @@ in
   # Strictly speaking, LoadCredential would be better but then prometheus-snmp-exporter would need to be wrapped to read from CREDENTIALS_DIRECTORY in an overlay and that's a bit overkill for me.
   systemd.services.prometheus-snmp-exporter.serviceConfig.EnvironmentFile = [
     config.age.secrets."prometheus-env-secrets".path
+  ];
+
+  services.prometheus.ruleFiles = [
+    (pkgs.writeText "snmp-devices.rules.json" (
+      {
+        groups = devices |> map (d: {
+          name = "snmp-${d.name}";
+          rules = mkAlertRules d;
+        });
+      }
+      |> builtins.toJSON
+    ))
   ];
 
   services.prometheus.scrapeConfigs = (map mkScrapeConfig devices) ++ [
