@@ -1,19 +1,18 @@
 { lib, config, ... }:
 let
-  inherit (lib.localLib) mkCryptTab mkLuksMount;
-  luks = {
-    device_name = "luks_nextcloud";
-    UUID = "0523d6c9-9ea5-4296-85a2-5655189fd0b5";
-  };
+  inherit (config.services.nextcloud) home;
 in
 {
-  systemd.services.nextcloud-setup.unitConfig.RequiresMountsFor = [ config.services.nextcloud.home ];
+  # Keep services off the root disk if the drive is missing (`nofail`)
+  systemd.services = lib.genAttrs [ "nextcloud-setup" "phpfpm-nextcloud" "nextcloud-cron" ] (_: {
+    unitConfig.RequiresMountsFor = [ home ];
+  });
 
-  environment.etc."crypttab".text = mkCryptTab { inherit (luks) device_name UUID; };
-  systemd.mounts = [
-    (mkLuksMount {
-      inherit (luks) device_name;
-      target = config.services.nextcloud.home;
-    })
-  ];
+  # Temporary home on the former docspell partition while boron is dead
+  # - Previously LUKS volume UUID `0523d6c9-9ea5-4296-85a2-5655189fd0b5` (`luks_nextcloud`)
+  fileSystems.${home} = {
+    device = "/dev/disk/by-label/nextcloud-tmp";
+    fsType = "ext4";
+    options = [ "nofail" ];
+  };
 }
