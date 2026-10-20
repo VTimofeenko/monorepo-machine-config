@@ -68,6 +68,16 @@ keybinds {
         // Keep colors in the dump; scrollback_editor (config.nix) renders them
         bind "e" { EditScrollback ansi=true; SwitchToMode "Normal"; }
     }
+
+    // Case-insensitive by default. There's no option for it, and the flag is
+    // reset on every typed character (each keystroke re-creates the search
+    // state), so it can only be flipped once typing is done. Side effect: the
+    // incremental jump-while-typing is still case-sensitive; n/p after Enter
+    // are not. "c" in search mode toggles back as usual.
+    entersearch {
+        bind "Enter" { SwitchToMode "Search"; SearchToggleOption "CaseSensitivity"; }
+    }
+
     // tmux's M-H/M-J/M-K/M-L pane resizing, no mode-switch needed - direct,
     // like tmux's root-table binding.
     shared_except "locked" {
