@@ -337,6 +337,13 @@ in
       description = "Path to service documentation (README.md)";
     };
 
+    roamNodes = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      description = "org-roam node IDs with notes about this service (resolved via emacs-org-roam MCP get_node)";
+      # Lists concatenate across public/private manifests
+    };
+
     multiInstance = mkOption {
       type = types.bool;
       default = false;

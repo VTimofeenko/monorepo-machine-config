@@ -126,6 +126,13 @@ serviceName: {
   # Used by mdbook pipeline to generate service documentation
   documentation? : Path
 
+  # org-roam notes (optional)
+  # org-roam node IDs (the :ID: property) with notes about this service.
+  # Resolved by agents via the emacs-org-roam MCP server (get_node).
+  # Pure metadata: not part of `default`. Lists concatenate across
+  # public/private manifests, so private notes can stay in the private flake.
+  roamNodes? : [String]
+
   # Service-specific utilities that may be called by other services (optional)
   srvLib? : Any
 }
