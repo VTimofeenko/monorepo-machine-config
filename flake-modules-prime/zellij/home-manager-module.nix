@@ -4,7 +4,7 @@
   programs.zellij = {
     enable = true;
     # `extraConfig` is raw KDL text - a straight passthrough of the same
-    # config.kdl used by the flake app.
-    extraConfig = builtins.readFile ./config.kdl;
+    # config used by the flake app.
+    extraConfig = import ./config.nix;
   };
 }

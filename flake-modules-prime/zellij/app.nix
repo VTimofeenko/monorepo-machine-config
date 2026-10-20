@@ -1,7 +1,7 @@
 # Runs zellij, my TTY window manager (evaluating as a tmux replacement).
 { pkgs, lib }:
 let
-  configFile = pkgs.writeText "zellij-config.kdl" (builtins.readFile ./config.kdl);
+  configFile = pkgs.writeText "zellij-config.kdl" (import ./config.nix);
 in
 {
   type = "app";

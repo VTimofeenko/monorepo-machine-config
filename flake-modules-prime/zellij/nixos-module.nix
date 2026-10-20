@@ -5,5 +5,5 @@
 { pkgs, ... }:
 {
   environment.systemPackages = [ pkgs.zellij ];
-  environment.etc."zellij/config.kdl".source = ./config.kdl;
+  environment.etc."zellij/config.kdl".text = import ./config.nix;
 }
