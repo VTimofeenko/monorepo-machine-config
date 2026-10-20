@@ -22,6 +22,17 @@ keybinds {
     shared_except "locked" {
         unbind "Ctrl b"
         bind "Ctrl f" { SwitchToMode "Tmux"; }
+        // Default lock key; free it so Ctrl-g reaches programs
+        unbind "Ctrl g"
+    }
+
+    // Lock behind the prefix instead (Ctrl-f g). Zellij can't bind key
+    // sequences in locked mode, so unlocking is Ctrl-f alone: it drops into
+    // the prefix mode, from where Esc returns to Normal or any prefix action
+    // just runs.
+    locked {
+        unbind "Ctrl g"
+        bind "Ctrl f" { SwitchToMode "Tmux"; }
     }
 
     // zellij ships a "tmux" mode that already emulates a tmux prefix+key
@@ -36,6 +47,8 @@ keybinds {
         // Prefix-prefix (tmux's `bind C-f last-window`): tap the prefix
         // trigger again to jump back to the previously active tab.
         bind "Ctrl f" { ToggleTab; SwitchToMode "Normal"; }
+
+        bind "g" { SwitchToMode "Locked"; }
 
         bind "1" { GoToTab 1; SwitchToMode "Normal"; }
         bind "2" { GoToTab 2; SwitchToMode "Normal"; }
