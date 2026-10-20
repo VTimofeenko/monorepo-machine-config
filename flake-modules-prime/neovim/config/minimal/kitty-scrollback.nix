@@ -37,6 +37,7 @@ _: {
           vim.opt.clipboard:append('unnamedplus')
           local term_buf = vim.api.nvim_create_buf(true, false)
           local term_io = vim.api.nvim_open_term(term_buf, {})
+          vim.b[term_buf].chomp_yank = true -- see init-lua.nix
           -- Map 'q' to first yank the visual selection (if any), which makes the copy selection work, and then quit.
           vim.api.nvim_buf_set_keymap(term_buf, 'v', 'q', 'y<Cmd>qa!<CR>', { })
           -- Regular quit mapping for normal mode

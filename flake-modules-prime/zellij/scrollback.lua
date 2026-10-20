@@ -11,6 +11,7 @@ local buf = vim.api.nvim_create_buf(false, true)
 vim.api.nvim_win_set_buf(0, buf)
 vim.bo[buf].scrollback = 100000 -- nvim's max; zellij keeps 50000
 local chan = vim.api.nvim_open_term(buf, {})
+vim.b[buf].chomp_yank = true -- yanks drop trailing whitespace, see neovim's init-lua.nix
 vim.api.nvim_chan_send(chan, data)
 vim.cmd("silent! bwipeout " .. vim.fn.fnameescape(dump))
 

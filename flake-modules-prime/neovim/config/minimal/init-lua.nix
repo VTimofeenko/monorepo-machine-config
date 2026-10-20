@@ -42,6 +42,35 @@ _: {
         pattern = "*",
       })
 
+      -- Scrollback viewers (kitty-scrollback.nix, zellij's scrollback.lua) set
+      -- b:chomp_yank: their terminal buffers keep each row's trailing padding,
+      -- strip it from yanks.
+      vim.api.nvim_create_autocmd("TextYankPost", {
+        group = vim.api.nvim_create_augroup("ChompYank", { clear = true }),
+        callback = function(ev)
+          local e = vim.v.event
+          if not vim.b[ev.buf].chomp_yank or e.operator ~= "y" then
+            return
+          end
+          local lines = vim.tbl_map(function(l)
+            return (l:gsub("%s+$", ""))
+          end, e.regcontents)
+          if e.regname ~= "" then
+            vim.fn.setreg(e.regname, lines, e.regtype)
+            return
+          end
+          -- Unnamed yank: fix up "0 and, with clipboard=unnamed[plus], the
+          -- clipboard. '"' last, otherwise it keeps the unchomped copy.
+          vim.fn.setreg("0", lines, e.regtype)
+          local cb = vim.o.clipboard
+          local clip = cb:find("unnamedplus") and "+" or cb:find("unnamed") and "*"
+          if clip then
+            vim.fn.setreg(clip, lines, e.regtype)
+          end
+          vim.fn.setreg('"', lines, e.regtype)
+        end,
+      })
+
       -- Automatically resize splits when window size changes
       vim.api.nvim_create_autocmd("VimResized", {
         pattern = "*",
