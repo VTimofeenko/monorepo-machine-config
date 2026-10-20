@@ -61,6 +61,13 @@ keybinds {
         bind "9" { GoToTab 9; SwitchToMode "Normal"; }
     }
 
+    // vim/less-style search entry, alongside zellij's "s". Also from search
+    // mode, to start a new search without bouncing through scroll mode.
+    shared_among "scroll" "search" {
+        bind "s" "/" "?" { SwitchToMode "EnterSearch"; SearchInput 0; }
+        // Keep colors in the dump; scrollback_editor (config.nix) renders them
+        bind "e" { EditScrollback ansi=true; SwitchToMode "Normal"; }
+    }
     // tmux's M-H/M-J/M-K/M-L pane resizing, no mode-switch needed - direct,
     // like tmux's root-table binding.
     shared_except "locked" {
