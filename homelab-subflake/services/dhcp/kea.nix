@@ -6,6 +6,21 @@ let
 
   inherit (hostConfig) netInterfaces;
   inherit (netInterfaces) lan-bridge;
+
+  iot = lib.homelab.getNetwork "iot";
+  iotGateway = iot.hostsInNetwork.hydrogen.ipAddress;
+
+  # Static DHCP assignments
+  mkReservations =
+    net:
+    net.hostsInNetwork
+    |> lib.mapAttrsToList (
+      _: hostData: {
+        hw-address = hostData.macAddr;
+        ip-address = hostData.ipAddress;
+        hostname = hostData.fqdn;
+      }
+    );
 in
 {
   services.kea.dhcp4 = {
@@ -15,6 +30,7 @@ in
         interfaces = [
           # Where to listen on
           lan-bridge.name
+          "iot"
         ];
       };
 
@@ -44,16 +60,39 @@ in
               data = lan.hostsInNetwork.hydrogen.ipAddress;
             }
           ];
-          # Static DHCP assignments
-          reservations =
-            lan.hostsInNetwork
-            |> lib.mapAttrsToList (
-              _: hostData: {
-                hw-address = hostData.macAddr;
-                ip-address = hostData.ipAddress;
-                hostname = hostData.fqdn;
-              }
-            );
+          reservations = mkReservations lan;
+        }
+        {
+          id = 2;
+          interface = "iot";
+          subnet = iot.prefix;
+          # No pools: only reserved hosts get an address. Unknown clients are
+          # logged as ALLOC_ENGINE_V4_ALLOC_FAIL_* with their MAC and alerted on.
+          pools = [ ];
+          match-client-id = false;
+          option-data = [
+            {
+              name = "routers";
+              data = iotGateway;
+            }
+            {
+              name = "domain-name-servers";
+              data = iotGateway;
+            }
+            {
+              name = "ntp-servers";
+              data = iotGateway;
+            }
+            {
+              name = "domain-name";
+              data = iot.domain;
+            }
+            {
+              name = "domain-search";
+              data = "${iot.domain}, ${lan.domain}";
+            }
+          ];
+          reservations = mkReservations iot;
         }
       ];
       option-data = [
