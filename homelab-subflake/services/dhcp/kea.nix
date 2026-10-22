@@ -32,6 +32,9 @@ in
           lan-bridge.name
           "iot"
         ];
+        # Fail loudly instead of silently skipping an interface it could not
+        # bind to. Ordering is done in `systemd.services.kea-dhcp4-server`.
+        service-sockets-require-all = true;
       };
 
       # Certain IoT clients (cameras) send a minimal DHCP request with an empty client
@@ -111,6 +114,20 @@ in
       ];
     };
   };
+
+  # network-online is reached with any interface up; wait until the listening
+  # interfaces have their addresses, otherwise kea cannot bind to them
+  systemd.services.kea-dhcp4-server =
+    let
+      waitFor = [
+        "systemd-networkd-wait-online@${lan-bridge.name}.service"
+        "systemd-networkd-wait-online@iot.service"
+      ];
+    in
+    {
+      wants = waitFor;
+      after = waitFor;
+    };
 
   # Construct imports from `./functional` directory by auto-including all files
   imports = ./functional |> lib.fileset.fileFilter (file: file.hasExt "nix") |> lib.fileset.toList;
