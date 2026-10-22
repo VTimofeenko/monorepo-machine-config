@@ -13,7 +13,7 @@
       tab_bar_style = "separator";
       tab_bar_min_tabs = 2;
       tab_bar_edge = "bottom";
-      tab_title_template = "{fmt.fg.white} {title.split()[0]} ";
+      tab_title_template = "{fmt.fg.white} {title} ";
       active_tab_title_template = "{fmt.noitalic}{fmt.bg.black}{fmt.fg.white} {title.split()[0]} ";
       # Make vim the scrollback pager to copy back and forth
       # Also see https://github.com/mikesmithgh/kitty-scrollback.nvim
