@@ -10,6 +10,7 @@ in
   services.nsd.zones =
     [
       "lan"
+      "iot"
       "db"
       "mgmt"
       "backbone"
