@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, pkgs-unstable, ... }:
 let
   openscadPkg = pkgs.openscad-unstable;
 
@@ -10,6 +10,7 @@ in
     openscadPkg
     pkgs.prusa-slicer
     pkgs.xvfb-run
+    pkgs-unstable.orca-slicer
     scad-render
     bgcode
   ];
