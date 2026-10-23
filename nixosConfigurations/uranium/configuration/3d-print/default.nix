@@ -9,7 +9,6 @@ in
   environment.systemPackages = [
     openscadPkg
     pkgs.prusa-slicer
-    pkgs.xvfb-run
     pkgs-unstable.orca-slicer
     scad-render
     bgcode
