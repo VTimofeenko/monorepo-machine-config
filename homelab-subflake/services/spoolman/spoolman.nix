@@ -7,4 +7,6 @@
       SPOOLMAN_AUTOMATIC_BACKUP = "FALSE";
     };
   };
+
+  imports = [ ./fix-starlette-file-response.nix ];
 }
