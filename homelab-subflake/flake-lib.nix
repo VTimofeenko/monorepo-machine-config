@@ -145,6 +145,7 @@ rec {
         inputs.base.nixosModules.fava
         inputs.base.nixosModules.prusa-exporter
         inputs.base.nixosModules.excalidash
+        inputs.base.nixosModules.filabridge
         { programs.myNeovim.enable = true; }
       ];
 
