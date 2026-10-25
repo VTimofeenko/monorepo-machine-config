@@ -1,0 +1,113 @@
+diff --git a/main.go b/main.go
+index 56dc96a..4fcab82 100644
+--- a/main.go
++++ b/main.go
+@@ -65,6 +65,10 @@ func main() {
+ 	}
+ 	defer bridge.Close()
+ 
++	if err := applyProvisioning(bridge); err != nil {
++		log.Fatalf("Failed to apply provisioning: %v", err)
++	}
++
+ 	// Load configuration from database
+ 	config, err := LoadConfig(bridge)
+ 	if err != nil {
+diff --git a/provision.go b/provision.go
+new file mode 100644
+index 0000000..1cde84a
+--- /dev/null
++++ b/provision.go
+@@ -0,0 +1,92 @@
++package main
++
++import (
++	"bytes"
++	"encoding/json"
++	"fmt"
++	"log"
++	"os"
++	"strings"
++)
++
++// Declarative provisioning, applied on every start after migrations.
++//
++// FILABRIDGE_PROVISION_FILE points at a JSON file:
++//
++//	{
++//	  "config": { "spoolman_url": "http://..." },
++//	  "printers": {
++//	    "<printer_id>": {
++//	      "name": "...", "ip_address": "...", "toolheads": 1,
++//	      "api_key_file": "/run/credentials/..."
++//	    }
++//	  }
++//	}
++//
++// Listed config keys and printers are upserted, overwriting edits made in the
++// UI. Printers that are not listed are left alone. Toolhead mappings are
++// runtime state and are not provisioned.
++
++type provisionPrinter struct {
++	Name       string `json:"name"`
++	IPAddress  string `json:"ip_address"`
++	Toolheads  int    `json:"toolheads"`
++	APIKeyFile string `json:"api_key_file"`
++}
++
++type provisionFile struct {
++	Config   map[string]string           `json:"config"`
++	Printers map[string]provisionPrinter `json:"printers"`
++}
++
++func applyProvisioning(b *FilamentBridge) error {
++	path := os.Getenv("FILABRIDGE_PROVISION_FILE")
++	if path == "" {
++		return nil
++	}
++
++	raw, err := os.ReadFile(path)
++	if err != nil {
++		return fmt.Errorf("failed to read provisioning file: %w", err)
++	}
++
++	dec := json.NewDecoder(bytes.NewReader(raw))
++	dec.DisallowUnknownFields()
++	var p provisionFile
++	if err := dec.Decode(&p); err != nil {
++		return fmt.Errorf("failed to parse provisioning file %s: %w", path, err)
++	}
++
++	for key, value := range p.Config {
++		if err := b.SetConfigValue(key, value); err != nil {
++			return err
++		}
++	}
++
++	for id, pr := range p.Printers {
++		apiKey := ""
++		if pr.APIKeyFile != "" {
++			keyRaw, err := os.ReadFile(pr.APIKeyFile)
++			if err != nil {
++				return fmt.Errorf("failed to read API key for printer %s: %w", id, err)
++			}
++			apiKey = strings.TrimSpace(string(keyRaw))
++		}
++		toolheads := pr.Toolheads
++		if toolheads < 1 {
++			toolheads = 1
++		}
++		if err := b.SavePrinterConfig(id, PrinterConfig{
++			Name:      pr.Name,
++			IPAddress: pr.IPAddress,
++			APIKey:    apiKey,
++			Toolheads: toolheads,
++			Type:      PrinterTypePrusaLink,
++		}); err != nil {
++			return err
++		}
++	}
++
++	log.Printf("Applied provisioning from %s: %d config keys, %d printers", path, len(p.Config), len(p.Printers))
++	return nil
++}
