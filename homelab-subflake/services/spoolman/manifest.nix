@@ -12,7 +12,10 @@
   # Spoolman has no auth of its own
   sslProxyConfig = import ./non-functional/ssl.nix { inherit serviceName; };
 
-  observability.metrics.main.impl = ./non-functional/observability/metrics/impl.nix;
+  observability = {
+    metrics.main.impl = ./non-functional/observability/metrics/impl.nix;
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
+  };
 
   database = {
     create = true;
