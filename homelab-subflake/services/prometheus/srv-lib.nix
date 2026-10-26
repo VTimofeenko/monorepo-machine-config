@@ -1,5 +1,11 @@
 { lib, ... }:
 rec {
+  /**
+    Where the shared blackbox exporter listens on the Prometheus host. Probe
+    scrape jobs point `__address__` here.
+  */
+  blackboxAddress = "127.0.0.1:9115";
+
   forDefaults = {
     Emergency = "0m";
     Alert = "2m";
