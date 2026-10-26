@@ -12,6 +12,15 @@
   # FilaBridge has no auth of its own
   sslProxyConfig = import ./non-functional/ssl.nix { inherit serviceName; };
 
+  observability = {
+    probes = {
+      enable = true;
+      impl = ./non-functional/probes;
+      prometheusImpl = ./non-functional/probes/prometheus.nix;
+    };
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
+  };
+
   backups = {
     paths = [ "/var/lib/private/filabridge" ];
   };
