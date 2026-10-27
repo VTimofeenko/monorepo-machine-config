@@ -341,7 +341,6 @@
        (org-agenda-start-on-weekday 1)
        (org-agenda-time-grid nil)
        (org-agenda-start-day "+0d") ;; Without this line the custom view seems to be stuck on the previous week
-       (org-agenda-repeating-timestamp-show-all t)
        (org-agenda-prefix-format "%-12c:   ")
        (org-agenda-hide-tags-regexp "home_maintenance") ;; [2]
        (org-agenda-sorting-strategy
