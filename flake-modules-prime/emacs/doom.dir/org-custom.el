@@ -279,26 +279,21 @@
      (org-fold-show-entry)
      (outline-show-children)))
 
- (after!
-  org
-  (map!
-   :leader
-   (:prefix-map
-    ("l" . "link")
-    :desc
-    "Show only the current heading, fold all others"
-    "c"
-    'my-org-show-current-heading-tidily)))
+ (map!
+  :leader
+  (:prefix-map
+   ("l" . "link")
+   :desc
+   "Show only the current heading, fold all others"
+   "c"
+   'my-org-show-current-heading-tidily))
 
  ;; Neatly shows the headline when jumping there from agenda
- (after!
-  org (advice-add 'org-agenda-goto :after #'my-org-show-current-heading-tidily))
+ (advice-add 'org-agenda-goto :after #'my-org-show-current-heading-tidily)
 
- (after!
-  org
-  (setq org-export-with-superscripts '{})
-  (setq org-use-sub-scripts '{})
-  (setq org-export-with-section-numbers 'nil))
+ (setq org-export-with-superscripts '{})
+ (setq org-use-sub-superscripts '{})
+ (setq org-export-with-section-numbers 'nil)
  ;; Changes the TODO state based on statistics cookie
  (defun org-todo-if-needed (state)
    "Change header state to STATE unless the current item is in STATE already."
