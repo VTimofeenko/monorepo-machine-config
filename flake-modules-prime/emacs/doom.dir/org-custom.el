@@ -35,12 +35,15 @@
  (setq org-capture-templates
        `(("t" "Task" entry (file "inbox.org")
           ,(string-join
-            '("* TODO %?" ":PROPERTIES:" ":CREATED: %U" ":END:") "\n"))
-         ("n"
-          "Note"
-          entry
-          (file "inbox.org")
-          ,(string-join '("* %?" ":PROPERTIES:" ":CREATED: %U" ":END:") "\n"))
+            '("* TODO %?"
+              ":PROPERTIES:"
+              ":CREATED: %U"
+              ":END:"
+              "/Context:/ %a")
+            "\n"))
+         ("n" "Note" entry (file "inbox.org")
+          ,(string-join
+            '("* %?" ":PROPERTIES:" ":CREATED: %U" ":END:" "/Context:/ %a") "\n"))
          ("m" "Meeting" entry (file "inbox.org")
           ,(string-join
             '("* %? :meeting:"
@@ -54,6 +57,13 @@
               ":PROPERTIES:"
               ":CREATED: %U"
               ":END:")
+            "\n"))
+         ;; https://www.reddit.com/r/orgmode/comments/gc76l3/org_capture_inside_notmuch/
+         ("e" "Email" entry (file "inbox.org")
+          ,(string-join
+            '("* TODO %:subject" ":PROPERTIES:" ":CREATED: %U" ":END:" "File: %a"
+              "#+BEGIN_QUOTE" ;; TODO: this <=> %i is not empty
+              "%i" "#+END_QUOTE" "%?")
             "\n"))))
  (setq org-todo-keywords
        '((sequence "TODO(t)" "STRT(s)" "HOLD(h)" "|" "DONE(d)" "CNCL(c)")))
@@ -61,41 +71,6 @@
        '(("STRT" . +org-todo-active)
          ("HOLD" . +org-todo-onhold)
          ("CNCL" . +org-todo-cancel)))
- (setq
-  org-agenda-custom-commands
-  '(("g" "Get Things Done (GTD)"
-     ;; Only show entries with the tag "inbox" -- just in case some entry outside inbox.org still has that file
-     ((tags
-       "inbox"
-       ((org-agenda-prefix-format "  %?-12t% s")
-        ;; The list of items is already filtered by this tag, no point in showing that it exists
-        (org-agenda-hide-tags-regexp "inbox")
-        ;; The header of this section should be "Inbox: clarify and organize"
-        (org-agenda-overriding-header "\nInbox: clarify and organize\n")))))))
- (add-to-list
-  'org-capture-templates
-  `("t" "Task" entry (file "inbox.org")
-    ,(string-join
-      '("* TODO %?"
-        ":PROPERTIES:"
-        ":CREATED: %U"
-        ":END:"
-        "/Context:/ %a")
-      "\n")))
- (add-to-list
-  'org-capture-templates
-  `("n" "Note" entry (file "inbox.org")
-    ,(string-join
-      '("* %?" ":PROPERTIES:" ":CREATED: %U" ":END:" "/Context:/ %a") "\n")))
- ;; https://www.reddit.com/r/orgmode/comments/gc76l3/org_capture_inside_notmuch/
- (add-to-list
-  'org-capture-templates
-  `("e" "Email" entry (file "inbox.org")
-    ,(string-join
-      '("* TODO %:subject" ":PROPERTIES:" ":CREATED: %U" ":END:" "File: %a"
-        "#+BEGIN_QUOTE" ;; TODO: this <=> %i is not empty
-        "%i" "#+END_QUOTE" "%?")
-      "\n")))
  (setq
   org-refile-contexts
   '((((("inbox.org") . (:regexp . "Projects"))) ;; example
