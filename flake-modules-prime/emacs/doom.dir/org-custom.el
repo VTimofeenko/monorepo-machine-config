@@ -385,8 +385,6 @@
        (org-agenda-todo-keyword-format "") ;; [3]
        ; (org-agenda-tag-filter-preset '("-foo")) ;; [1]
        (org-super-agenda-groups
-        '((:discard (:not (:tag ("home_maintenance"))))))
-       (org-super-agenda-groups
         '((:tag "home_maintenance" :name "")
           (:discard (:not (:tag ("home_maintenance")))))))))
     nil ("~/code/infra/services/dashy/home_maint.html"))))
