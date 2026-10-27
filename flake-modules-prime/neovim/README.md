@@ -70,6 +70,8 @@ This flake module provides:
 - [Trouble](./config/max/trouble-nvim.nix) for diagnostic search
 - Languages (with language servers):
     - [Bash](./config/max/z-lang-bash.nix)
+    - [Beancount](./config/max/z-lang-beancount.nix) with code actions to
+      toggle the review flag and insert balance assertions
     - [Markdown](./config/max/z-lang-markdown.nix)
     - [Nickel](./config/max/z-lang-nickel.nix)
     - [Nix](./config/max/z-lang-nix.nix) with `nixd` and `nil`
