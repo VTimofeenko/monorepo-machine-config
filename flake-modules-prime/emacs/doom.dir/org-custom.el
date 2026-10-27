@@ -104,40 +104,29 @@
     (((("inbox.org") . (:regexp . "Notes")))
      ;;((lambda () (string= (org-element-property :my_type (org-element-at-point)) "NOTE")))
      ((lambda () ('regexp ":my_type:"))))))
+ ;; Directories are re-scanned on every agenda build, so new roam notes show up
+ ;; without a refresh. Only top-level files are picked up, so subdirs are listed explicitly.
  (setq org-agenda-files
-       (append
-        (list
-         "inbox.org"
+       '("inbox.org"
          "agenda.org"
          "notes.org"
          "projects.org"
          "~/.local/state/ical-org-export.org"
-         "~/org/roam/daily/")
-        (split-string
-         (shell-command-to-string
-          "rg --glob=\"*.org\" -l -S \"filetags:.*proj\" ~/org/roam")
-         "\n"
-         t ; omit-nulls
-         )))
+         "~/org/roam/"
+         "~/org/roam/homelab/"))
 
- (defun vt/agenda-files-update ()
-   "Add agenda files by specific filetag"
-   (interactive)
-   (setq org-agenda-files
-         (append
-          (list
-           "inbox.org"
-           "agenda.org"
-           "notes.org"
-           "projects.org"
-           "~/.local/state/ical-org-export.org"
-           "~/org/roam/daily/")
-          (split-string
-           (shell-command-to-string
-            "rg --glob=\"*.org\" -l -S \"filetags:.*proj\" ~/org/roam")
-           "\n"
-           t ; omit-nulls. Without this entries would be duplicated in agenda
-           ))))
+ ;; Roam files are named <timestamp>-<slug>.org; use the note title as the
+ ;; agenda category instead. A :CATEGORY: in the file-level property drawer
+ ;; still wins (as does #+CATEGORY, hence the check below).
+ (defun vt/org-roam-title-as-category-h ()
+   (when-let* ((file (buffer-file-name))
+               ((file-in-directory-p file (expand-file-name "roam/" org-directory)))
+               (kw (org-collect-keywords '("TITLE" "CATEGORY")))
+               ((not (assoc "CATEGORY" kw)))
+               (title (cadr (assoc "TITLE" kw))))
+     (setq-local org-category title)))
+ (add-hook 'org-mode-hook #'vt/org-roam-title-as-category-h)
+
 
  (setq
   org-agenda-custom-commands
