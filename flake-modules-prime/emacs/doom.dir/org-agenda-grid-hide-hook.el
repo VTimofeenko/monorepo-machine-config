@@ -60,52 +60,60 @@
 ;;   ; group org?  Look at evil-org-agenda-mode
 ;;   :lighter " hiding occupied grid lines on org agenda")
 
+(defvar org-agenda-grid-hide-hook--base-grid nil
+  "The configured `org-agenda-time-grid', captured on first run.
+Occupied hours are subtracted from this rather than from the current
+value, otherwise hours hidden once would stay hidden for the session.")
+
 (defun org-agenda-grid-hide-hook-f ()
-  (let*
-      ((occupied-timestamps
-        (-->
-         (org-ql-select
-          'org-agenda-files ; Searches through all agenda files
-          '(ts :on today) ; Query headlines with scheduled dates
-          :action
-          (lambda ()
-            (->>
-             (let* ((scheduled-time (org-entry-get (point) "SCHEDULED"))
-                    (timestamp (org-entry-get (point) "TIMESTAMP"))
-                    (determined-timestamp (or scheduled-time timestamp))
-                    (parsed-timestamp
-                     (when
-                      determined-timestamp
-                      (org-timestamp-from-string determined-timestamp)))
-                    (hour-start
-                     (plist-get (-second-item parsed-timestamp) :hour-start))
-                    (hour-end
-                     (plist-get (-second-item parsed-timestamp) :hour-end))
-                    ; TODO: Maybe move subtraction logic here
-                    ; Logic:
-                    ; If hour-start == hour-end -- do nothing
-                    ; Otherwise if minute-end > 0 -- do nothing
-                    ;   Otherwise set the hour-end--
-                    )
-               (list hour-start hour-end)) ;; end of let*
-             (--filter (not (equal it nil))) ;; removes nils
-             )))
-         (-distinct it) (remove nil it)
-         (mapcan
-          (lambda (y) ; Produces continuous list of hour stamps
-            (-->
-             y (apply #'number-sequence it)
-             (-drop-last 1 it) ; The generated list will exclude the last hour. This is done so that there could be a grid _after_ an event
-             (mapcar (lambda (x) (* x 100)) it) ; Turn into hours
-             ))
-          it)
-         ;(message it)
-         )))
-    (setq org-agenda-time-grid
-          (-update-at
-           1
-           (lambda (x) (-difference x occupied-timestamps))
-           org-agenda-time-grid))))
+  (when org-agenda-time-grid ; views that let-bind the grid to nil
+    (unless org-agenda-grid-hide-hook--base-grid
+      (setq org-agenda-grid-hide-hook--base-grid org-agenda-time-grid))
+    (let*
+        ((occupied-timestamps
+          (-->
+           (org-ql-select
+            'org-agenda-files ; Searches through all agenda files
+            '(ts :on today) ; Query headlines with scheduled dates
+            :action
+            (lambda ()
+              (->>
+               (let* ((scheduled-time (org-entry-get (point) "SCHEDULED"))
+                      (timestamp (org-entry-get (point) "TIMESTAMP"))
+                      (determined-timestamp (or scheduled-time timestamp))
+                      (parsed-timestamp
+                       (when
+                           determined-timestamp
+                         (org-timestamp-from-string determined-timestamp)))
+                      (hour-start
+                       (plist-get (-second-item parsed-timestamp) :hour-start))
+                      (hour-end
+                       (plist-get (-second-item parsed-timestamp) :hour-end))
+                                        ; TODO: Maybe move subtraction logic here
+                                        ; Logic:
+                                        ; If hour-start == hour-end -- do nothing
+                                        ; Otherwise if minute-end > 0 -- do nothing
+                                        ;   Otherwise set the hour-end--
+                      )
+                 (list hour-start hour-end)) ;; end of let*
+               (--filter (not (equal it nil))) ;; removes nils
+               )))
+           (-distinct it) (remove nil it)
+           (mapcan
+            (lambda (y) ; Produces continuous list of hour stamps
+              (-->
+               y (apply #'number-sequence it)
+               (-drop-last 1 it) ; The generated list will exclude the last hour. This is done so that there could be a grid _after_ an event
+               (mapcar (lambda (x) (* x 100)) it) ; Turn into hours
+               ))
+            it)
+                                        ;(message it)
+           )))
+      (setq org-agenda-time-grid
+            (-update-at
+             1
+             (lambda (x) (-difference x occupied-timestamps))
+             org-agenda-grid-hide-hook--base-grid)))))
 
 ;;;###autoload
 (add-hook 'org-agenda-mode-hook 'org-agenda-grid-hide-hook-f)
