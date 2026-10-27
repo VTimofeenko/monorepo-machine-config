@@ -6,7 +6,6 @@
 (load! "basic")
 (load! "navigation")
 (load! "org-custom")
-(load! "semantic-commits")
 (load! "org-agenda-grid-hide-hook")
 
 
