@@ -1,0 +1,43 @@
+# Bumps packages from flake-modules-prime with nix-update and opens PRs.
+# See flake-modules-prime/package-bump/package.nix for the details; the
+# scheduled run bumps everything in ./bump-package.targets.nix.
+#
+# Manual test (no CI runner needed):
+#
+#   GITEA_TOKEN=<token> GITEA_API_URL=<gitea-url>/api/v1/repos/<owner>/<repo> \
+#     TARGETS=.gitea/workflows/bump-package.targets.nix \
+#     nix run .#package-bump -- ha-floorplan
+#
+# This pushes bump/ha-floorplan to origin and opens a real PR.
+name: Bump packages
+
+on:
+  schedule:
+    - cron: "0 2 * * 6" # Friday night
+  workflow_dispatch:
+    inputs:
+      package:
+        description: "flake package attribute to bump, e.g. ha-floorplan; empty = all targets"
+        required: false
+        type: string
+
+jobs:
+  bump:
+    runs-on: native
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PACKAGE_BUMP_BOT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Bump, build, open PRs
+        env:
+          GITEA_TOKEN: ${{ secrets.PACKAGE_BUMP_BOT_TOKEN }}
+          GITEA_API_URL: ${{ github.server_url }}/api/v1/repos/${{ github.repository }}
+          BASE_BRANCH: master
+          TARGETS: .gitea/workflows/bump-package.targets.nix
+          PACKAGE: ${{ inputs.package }}
+        run: |
+          git config user.name "package-bump-bot"
+          git config user.email "gitea.bot.package.bump@vtimofeenko.com"
+          nix run .#package-bump -- ${PACKAGE:+"$PACKAGE"}
