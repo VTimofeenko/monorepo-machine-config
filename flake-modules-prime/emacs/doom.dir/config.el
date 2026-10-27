@@ -7,7 +7,6 @@
 (load! "navigation")
 (load! "org-custom")
 (load! "semantic-commits")
-(load! "ejc-custom")
 (load! "org-agenda-grid-hide-hook")
 
 
