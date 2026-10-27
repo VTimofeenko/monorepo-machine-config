@@ -267,8 +267,7 @@
    (if (save-excursion
          (end-of-line)
          (outline-invisible-p))
-       ;; (progn (org-fold-show-entry) (outline-show-children)) ;; TODO: see if org-fold.el is needed
-       (progn (org-show-entry) (outline-show-children))
+       (progn (org-fold-show-entry) (outline-show-children))
      (outline-back-to-heading)
      (unless
       (and (bolp) (org-at-heading-p))
@@ -277,8 +276,7 @@
       (error "Boundary reached"))
      (org-overview)
      (org-reveal t)
-     ;; (org-fold-show-entry) ;; TODO: see if org-fold.el is needed
-     (org-show-entry)
+     (org-fold-show-entry)
      (outline-show-children)))
 
  (after!
