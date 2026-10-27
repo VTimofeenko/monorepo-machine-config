@@ -189,7 +189,6 @@
        ;;twitter           ; twitter client https://twitter.com/vnought
 
        :local
-       org-excalidraw
        excalidash
        org-inline-comment
 

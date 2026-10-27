@@ -391,12 +391,6 @@
           (:discard (:not (:tag ("home_maintenance")))))))))
     nil ("~/code/infra/services/dashy/home_maint.html"))))
 
-;; org-excalidraw configuration
-(use-package!
- org-excalidraw
- :hook (org-mode . org-excalidraw-initialize)
- :config (setq org-excalidraw-directory "~/org/org-excalidraw"))
-
 ;; excalidash configuration
 (use-package!
  excalidash

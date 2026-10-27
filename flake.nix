@@ -112,7 +112,6 @@
     };
     # Empty flake
     stub-flake.url = "github:VTimofeenko/stub-flake"; # A completely empty flake
-    # Source for org-excalidraw converter for emacs
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs-unstable";

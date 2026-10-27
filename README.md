@@ -47,8 +47,6 @@ A set of helpers for hyprland:
 
 Contains my doom-emacs configuration. It is managed using doom emacs' own locking mechanism instead of `nix-community/nix-doom-emacs` to prevent double-building.
 
-Also includes `kroki-cli` for rendering `org-excalidraw` diagrams.
-
 ## Theme
 
 Contains aforementioned base16 + some semantic colors to help in styling various programs.
