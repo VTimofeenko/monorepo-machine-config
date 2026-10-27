@@ -127,6 +127,16 @@
      (setq-local org-category title)))
  (add-hook 'org-mode-hook #'vt/org-roam-title-as-category-h)
 
+ ;; Evil's block cursor sits *on* a character while point is before it, so
+ ;; inserting commands land one char to the left. Insert after it, like `a'.
+ (defun vt/evil-insert-after-cursor-a (&rest _)
+   (when (and (bound-and-true-p evil-local-mode)
+              (evil-normal-state-p)
+              (not (eolp))
+              (not (org-at-timestamp-p 'lax))) ; let org-time-stamp edit existing ones
+     (forward-char)))
+ (advice-add 'org-time-stamp :before #'vt/evil-insert-after-cursor-a)
+ (advice-add 'org-footnote-new :before #'vt/evil-insert-after-cursor-a)
 
  (setq
   org-agenda-custom-commands
