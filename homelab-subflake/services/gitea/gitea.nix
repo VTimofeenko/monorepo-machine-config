@@ -14,6 +14,8 @@ in
         ROOT_URL = "https://${srvFqdn}";
         DOMAIN = srvFqdn;
         START_SSH_SERVER = true;
+        # "/" isn't covered by REQUIRE_SIGNIN_VIEW; send anonymous visitors to login (-> Keycloak)
+        LANDING_PAGE = "login";
       };
       session = {
         COOKIE_SECURE = true;
@@ -33,9 +35,16 @@ in
       };
 
       security.ALLOWED_HOST_LIST = "*.${lib.homelab.getSettings.publicDomainName}";
+      # Single active OAuth2 source (Keycloak) + everything below disabled =>
+      # gitea's login page redirects straight to Keycloak.
       service = {
         REGISTER_MANUAL_CONFIRM = true;
+        # Anonymous visitors get sent to the login page (and so on to Keycloak)
+        REQUIRE_SIGNIN_VIEW = true;
+        ENABLE_PASSWORD_SIGNIN_FORM = false;
+        ENABLE_PASSKEY_AUTHENTICATION = false;
       };
+      openid.ENABLE_OPENID_SIGNIN = false;
     };
   };
 
