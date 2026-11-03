@@ -12,6 +12,10 @@
   observability = {
     metrics.main.path = "/metrics";
     alerts.prometheusImpl = ./non-functional/alerts.nix;
+    logging.units = [
+    "prometheus.service"
+    "prometheus-snmp-exporter.service"
+  ];
   };
 
   storage.impl = ./non-functional/storage.nix;

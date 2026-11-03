@@ -10,24 +10,23 @@
     };
   };
 
-  observability.metrics = {
-    main = {
-      endpoint = "main-metrics";
-      path = "/metrics/prusalink";
+  observability = {
+    metrics = {
+      main = {
+        endpoint = "main-metrics";
+        path = "/metrics/prusalink";
+      };
+      udp = {
+        endpoint = "main-metrics";
+        path = "/metrics/udp";
+      };
     };
-    udp = {
-      endpoint = "main-metrics";
-      path = "/metrics/udp";
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
+    logging.units = [ "prometheus-prusa-exporter.service" ];
+    dashboards = {
+      enable = true;
+      mod = ./dashboard.nix;
     };
   };
-
   # No backups – stateless exporter
-
-  # Grafana dashboard (HTTP/PrusaLink metrics only – no UDP exporter required)
-  observability.dashboards = {
-    enable = true;
-    mod = ./dashboard.nix;
-  };
-
-  observability.alerts.prometheusImpl = ./non-functional/alerts.nix;
 }

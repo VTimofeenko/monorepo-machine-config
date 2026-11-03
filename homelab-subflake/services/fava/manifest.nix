@@ -21,9 +21,15 @@
 
   sslProxyConfig = import ./non-functional/ssl.nix { inherit serviceName; };
 
-  observability.metrics.main = {
-    impl = ./non-functional/observability/metrics/impl.nix;
-    endpoint = "metrics";
+  observability = {
+    metrics.main = {
+      impl = ./non-functional/observability/metrics/impl.nix;
+      endpoint = "metrics";
+    };
+    logging.units = [
+      "fava.service"
+      "fava-helper.service"
+    ];
   };
 
   storage.impl = ./non-functional/storage.nix;
@@ -42,4 +48,5 @@
   };
 
   documentation = ./README.md;
+
 }

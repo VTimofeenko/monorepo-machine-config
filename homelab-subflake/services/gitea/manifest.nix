@@ -25,6 +25,10 @@
     observability = {
       metrics.main.impl = ./non-functional/observability/metrics/impl.nix;
       alerts.prometheusImpl = ./non-functional/observability/alerts.nix;
+      logging.units = [
+        "gitea.service"
+        "gitea-dump.service"
+      ];
     };
 
     storage.impl = ./non-functional/storage.nix;

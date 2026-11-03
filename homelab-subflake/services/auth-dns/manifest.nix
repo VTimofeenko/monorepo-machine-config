@@ -31,6 +31,7 @@
       endpoint = "metrics";
     };
     alerts.prometheusImpl = ./non-functional/alerts.nix;
+    logging.units = [ "nsd.service" ];
   };
 
   documentation = ./README.md;

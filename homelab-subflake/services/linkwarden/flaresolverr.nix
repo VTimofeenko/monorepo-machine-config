@@ -1,3 +1,4 @@
+# TODO: separate into own service (its logs are untagged until then)
 { pkgs-unstable, pkgs, ... }:
 {
   services.flaresolverr = {

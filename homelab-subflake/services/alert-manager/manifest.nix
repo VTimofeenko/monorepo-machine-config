@@ -23,4 +23,9 @@
       }
     ];
   };
+
+  observability.logging.units = [
+    "alertmanager.service"
+    "alertmanager-ntfy.service"
+  ];
 }

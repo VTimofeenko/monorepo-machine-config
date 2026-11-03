@@ -19,6 +19,10 @@
       path = "/api/prometheus";
     };
     alerts.prometheusImpl = ./non-functional/alerts.nix;
+    logging.units = [
+      "home-assistant.service"
+      "zwave-js.service"
+    ];
   };
 
   dashboard = {

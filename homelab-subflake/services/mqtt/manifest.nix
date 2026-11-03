@@ -10,6 +10,9 @@
   firewall = ./non-functional/firewall.nix;
 
   observability = {
-    logging.impl = ./non-functional/logging.nix;
+    logging = {
+      impl = ./non-functional/logging.nix;
+      units = [ "mosquitto.service" ];
+    };
   };
 }

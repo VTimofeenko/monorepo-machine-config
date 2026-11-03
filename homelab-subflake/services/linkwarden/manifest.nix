@@ -28,4 +28,9 @@
   };
 
   documentation = ./README.md;
+
+  observability.logging.units = [
+    "linkwarden.service"
+    "linkwarden-worker.service"
+  ];
 }

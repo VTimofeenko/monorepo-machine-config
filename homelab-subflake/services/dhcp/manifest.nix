@@ -19,13 +19,12 @@
 
   # Observability configuration
   observability = {
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
+    logging.units = [ "kea-dhcp4-server.service" ];
     metrics.main = {
       impl = ./non-functional/metrics.nix;
       path = "/";
+      units = [ "prometheus-kea-exporter.service" ];
     };
-    alerts.prometheusImpl = ./non-functional/alerts.nix;
   };
-
-  # Storage and backups omitted - this is a stateless service
-  # The DHCP leases are ephemeral and don't need backup
 }

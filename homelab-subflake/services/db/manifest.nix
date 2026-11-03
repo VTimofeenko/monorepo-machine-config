@@ -22,6 +22,7 @@
       impl = ./non-functional/metrics.nix;
       endpoint = "metrics";
     };
+    logging.units = [ "postgresql.service" ];
   };
 
   storage.impl = ./non-functional/storage.nix;

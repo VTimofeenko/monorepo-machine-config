@@ -14,6 +14,7 @@
   observability = {
     metrics.main.impl = ./non-functional/metrics.nix;
     alerts.prometheusImpl = ./non-functional/alerts.nix;
+    logging.units = [ "restic-rest-server.service" ];
   };
 
   storage.impl = ./non-functional/storage.nix;

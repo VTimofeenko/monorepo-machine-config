@@ -23,5 +23,6 @@
       endpoint = "metrics";
     };
     alerts.prometheusImpl = ./non-functional/alerts.nix;
+    logging.units = [ "ntpd-rs.service" ];
   };
 }

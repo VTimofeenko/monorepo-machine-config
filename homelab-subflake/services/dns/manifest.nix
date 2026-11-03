@@ -24,6 +24,7 @@
     # Unbound exporter metrics
     metrics.main = {
       impl = ./non-functional/metrics.nix;
+      units = [ "prometheus-unbound-exporter.service" ];
     };
 
     alerts.prometheusImpl = ./non-functional/alerts.nix;

@@ -27,6 +27,7 @@
       prometheusImpl = ./non-functional/probes/prometheus.nix;
     };
     alerts.prometheusImpl = ./non-functional/alerts.nix;
+    logging.units = [ "nginx.service" ];
   };
 
   srvLib = import ./srv-lib.nix { inherit lib; };

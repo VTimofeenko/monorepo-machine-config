@@ -24,6 +24,13 @@
       endpoint = "metrics";
     };
     alerts.prometheusImpl = ./non-functional/alerts.nix;
+    logging.units = [
+      "phpfpm-nextcloud.service"
+      "nextcloud-cron.service"
+      "redis-nextcloud.service"
+      "nextcloud-setup.service"
+      "nextcloud-update-db.service"
+    ];
   };
 
   backups = {
@@ -42,4 +49,5 @@
   };
 
   storage.impl = ./non-functional/storage.nix;
+
 }
