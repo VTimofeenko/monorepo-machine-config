@@ -9,7 +9,8 @@
   Warning = [
     {
       title = "SSL proxy upstream errors";
-      expr = ''rate(ssl_proxy_nginx_http_requests_total{resource="srv:${serviceName}",result!="2xx_3xx_success"}[5m]) > 0.01'';
+      expr = ''rate(ssl_proxy_nginx_http_requests_total{resource="srv:${serviceName}",result!="2xx_3xx_success",domain!~".+[.]metrics[.].+"}[5m]) > 0.01'';
+      # Metrics vhosts are excluded: failed scrapes already show up as `up == 0`
       description = "More than 1% of proxied requests are failing";
     }
   ];
