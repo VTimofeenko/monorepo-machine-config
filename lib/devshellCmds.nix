@@ -71,13 +71,13 @@
       '';
 
   }
-  {
-    help = "Bump nixpkgs (and home-manager) in both flakes, one commit (--release YY.MM to move release)";
-    name = "bump-nixpkgs";
-    category = "maintenance";
-    command = pkgs.lib.getExe (
+]
+# `flake management`, next to my-flake-modules' `flake-bump-<input>`
+++ (
+  let
+    flakeBump = pkgs.lib.getExe (
       pkgs.writeShellApplication {
-        name = "bump-nixpkgs";
+        name = "flake-bump";
         runtimeInputs = builtins.attrValues {
           inherit (pkgs)
             git
@@ -86,8 +86,25 @@
             gnugrep
             ;
         };
-        text = builtins.readFile ../devshell/bump-nixpkgs.sh;
+        text = builtins.readFile ../devshell/flake-bump.sh;
       }
     );
-  }
-]
+  in
+  map (c: c // { category = "flake management"; }) [
+    {
+      name = "flake-bump-nixpkgs";
+      help = "Bump nixpkgs and home-manager in both flakes, one commit (--release YY.MM moves release)";
+      command = "${flakeBump} nixpkgs \"$@\"";
+    }
+    {
+      name = "flake-bump-nixpkgs-unstable";
+      help = "Bump nixpkgs-unstable in both flakes, one commit";
+      command = "${flakeBump} nixpkgs-unstable";
+    }
+    {
+      name = "flake-bump-all-inputs";
+      help = "Bump every input in both flakes, one commit";
+      command = "${flakeBump} all";
+    }
+  ]
+)

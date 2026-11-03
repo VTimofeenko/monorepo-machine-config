@@ -232,13 +232,12 @@
                 };
               };
             bumpInputs = {
+              # nixpkgs, nixpkgs-unstable and all inputs: `flake-bump-*` in
+              # lib/devshellCmds.nix, across both flakes
               changingInputs = [
                 "my-flake-modules"
                 "data-flake"
-                "nixpkgs"
-                "nixpkgs-unstable"
               ];
-              bumpAllInputs = true;
             };
             # My modules config
             format-module = {

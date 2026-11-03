@@ -15,7 +15,7 @@
     }
     {
       name = "bump-inputs";
-      category = "maintenance";
+      category = "flake management";
       help = "Bump flake inputs with trailers (--all for all, --fixup to squash with matching previous)";
       command = builtins.readFile ./bump-inputs.sh;
     }
