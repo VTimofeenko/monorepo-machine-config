@@ -1,4 +1,9 @@
-{ lib, pkgs, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   srvName = "snapmaker";
   printer = lib.homelab.getHostInNetwork "snapmaker-u1" "iot";
@@ -39,6 +44,10 @@ in
       curl
       jq
       diffutils
+      ((lib.homelab.getSrvLib "mqtt").mkDeploymentEvent { inherit lib pkgs; } {
+        target = "srv:${srvName}";
+        inherit (config.system.nixos) label;
+      })
     ];
     text = ''
       base="https://${lib.homelab.getServiceFqdn srvName}"
@@ -48,6 +57,9 @@ in
       case "$state" in
         printing | paused) echo "Printer is $state, not pushing"; exit 1 ;;
       esac
+
+      deployment-event started
+      trap 'if [ $? = 0 ]; then deployment-event finished; else deployment-event failed; fi' EXIT
 
       # `--reboot` forces a reboot, e.g. when a previous push uploaded but failed to apply
       need_reboot=0
