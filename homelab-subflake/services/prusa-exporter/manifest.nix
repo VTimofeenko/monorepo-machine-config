@@ -25,7 +25,7 @@
     logging.units = [ "prometheus-prusa-exporter.service" ];
     dashboards = {
       enable = true;
-      mod = ./dashboard.nix;
+      mod = ./non-functional/dashboard.nix;
     };
   };
   # No backups – stateless exporter
