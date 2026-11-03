@@ -16,6 +16,8 @@ in
       scrape_interval_secs = 15;
       scrape_timeout_secs = 10;
       decoding.codec = "json"; # The array becomes one event per alert
+      # Vector's default `text/plain` gets a 406
+      headers.Accept = [ "application/json" ];
     };
 
     transforms.alerts-remap = {
