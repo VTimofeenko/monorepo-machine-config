@@ -1,5 +1,8 @@
-/** Configures nix-the-package manager. */
+/**
+  Configures nix-the-package manager.
+*/
 {
+  config,
   inputs,
   self,
   lib,
@@ -29,7 +32,10 @@ in
       nu.flake = nixpkgs-unstable;
     };
   };
-  system.nixos.label = toString (
-    self.shortRev or self.dirtyShortRev or self.lastModified or "unknown"
-  );
+  # `<rev>[-dirty]-<nixpkgs date>.<nixpkgs rev>`: lands in the switch's
+  # journald line (`…-nixos-system-<host>-<label>`), so deployments carry nixpkgs
+  system.nixos.label =
+    toString (self.shortRev or self.dirtyShortRev or self.lastModified or "unknown")
+    + "-"
+    + lib.removePrefix "." config.system.nixos.versionSuffix;
 }
