@@ -31,4 +31,5 @@
     "--version-regex"
     "^(\\d+\\.\\d+\\.\\d+)$"
   ];
+  youtube-rss-server = { };
 }
