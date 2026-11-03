@@ -870,11 +870,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793226013,
-        "narHash": "sha256-s/7c8YCn6BTYWnZrSx9zLFLoEIXtWZkNFWmoo9hKc9I=",
+        "lastModified": 1793247185,
+        "narHash": "sha256-hPEYvKcwcL8LnOPgWZ0tZ2gGyOGH3nazkFGDG9ejzV4=",
         "ref": "refs/heads/master",
-        "rev": "6334ec551949290344ec1a25e08a7c1fd4a7a32f",
-        "revCount": 1,
+        "rev": "95daafeef8d635537a3368463cb919528d0957d2",
+        "revCount": 2,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/homelab-analytics.git"
       },
@@ -1437,11 +1437,11 @@
         "nixpkgs": "nixpkgs_13"
       },
       "locked": {
-        "lastModified": 1793246604,
-        "narHash": "sha256-stkzFgxAe+2asqDTlXKmO67x24mNLNrUQeM8WO+kkpw=",
+        "lastModified": 1793252831,
+        "narHash": "sha256-+UdfLIWJEuDf/BLQ5Nwm9CRbHRgr2lXzQ/Hb9pF3zxs=",
         "ref": "refs/heads/master",
-        "rev": "befffd84a5e365a26b0a55f88da6e724780171a0",
-        "revCount": 341,
+        "rev": "f6bd67e644286bfd6fe66953e3402d7dbf06286c",
+        "revCount": 349,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-modules.git"
       },
