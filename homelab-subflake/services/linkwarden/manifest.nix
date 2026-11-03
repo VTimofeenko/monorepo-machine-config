@@ -27,7 +27,7 @@
     ];
   };
 
-  documentation = ./README.md;
+  roamNodes = [ "d4a36e8b-91e2-45f0-b30d-7b33273c3a70" ];
 
   observability.logging.units = [
     "linkwarden.service"
