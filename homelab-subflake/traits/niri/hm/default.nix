@@ -53,6 +53,7 @@ in
   # https://github.com/YaLTeR/niri/wiki/Xwayland#using-xwayland-satellite
   home.packages = with pkgs; [
     swaybg
+    wl-clipboard
     xwayland-satellite
   ];
 }

@@ -1,13 +1,12 @@
-# [[file:../../../../new_project.org::*Frame.work specific][Frame.work specific:1]]
 {
   pkgs,
   lib,
-  nixos-hardware,
+  inputs,
   ...
 }:
 {
   imports = [
-    nixos-hardware.nixosModules.framework-13-7040-amd
+    inputs.nixos-hardware.nixosModules.framework-13-7040-amd
   ];
   hardware = {
     enableRedistributableFirmware = true; # NOTE: required for wifi to work
@@ -25,6 +24,9 @@
     sensor.iio.enable = lib.mkDefault true;
 
     amdgpu.initrd.enable = true;
+
+    # https://github.com/NixOS/nixos-hardware/issues/1330
+    framework.enableKmod = false;
   };
 
   boot = {
@@ -33,10 +35,4 @@
       "amdgpu.sg_display=0"
     ];
   };
-
-  services.xserver = {
-    enable = true;
-    videoDrivers = [ "amdgpu" ];
-  };
 }
-# Frame.work specific:1 ends here

@@ -303,7 +303,7 @@
                   inherit hostData specialArgs;
                   inherit (inputs) data-flake nur;
                 }
-              ) inputs.data-flake.data.hosts.managed)
+              ) (builtins.removeAttrs inputs.data-flake.data.hosts.managed [ "uranium" ])) # uranium lives in homelab-subflake
 
               // (
                 # Create -seed configs for hosts provisioning

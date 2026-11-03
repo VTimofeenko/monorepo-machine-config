@@ -81,10 +81,6 @@
           ]
           # Per-host overrides
           # TODO: make more generic
-          ++ (lib.optionals (hostData.hostName == "uranium") [
-            nur.modules.nixos.default
-            ../modules
-          ])
           ++ (lib.optionals (hostData.hostName == "neon") [ self.inputs.microvm.nixosModules.host ])
           ++ (map (
             module: ../nixosModules/services + "/${module}"

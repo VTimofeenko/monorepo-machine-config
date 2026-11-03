@@ -1,7 +1,5 @@
-# [[file:../../../../new_project.org::*Uranium specific hardware][Uranium specific hardware:1]]
 { pkgs, lib, ... }:
 {
-  imports = [ ./frame.work.nix ];
   boot = {
     loader = {
       # Use the systemd-boot EFI boot loader.
@@ -35,10 +33,7 @@
     };
   };
 
-  networking = {
-    hostName = "uranium";
-    useDHCP = false;
-  };
+  networking.useDHCP = false;
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-uuid/cbaf293c-c8dc-4586-ba65-73cff3f24468";
@@ -101,15 +96,9 @@
       DisableCapsuleUpdateOnDisk=true
     '';
   };
-  systemd.network.links."10-wifi-lan" = {
-    matchConfig.PermanentMACAddress = "14:ac:60:29:76:dd";
-    linkConfig.Name = "wifi-lan";
-  };
-
   # Power button handling
   services.logind.settings.Login = {
     HandlePowerKey = "suspend";
     HandlePowerKeyLongPress = "poweroff";
   };
 }
-# Uranium specific hardware:1 ends here
