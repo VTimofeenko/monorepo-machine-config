@@ -37,5 +37,18 @@
             resource = "host:${nodeName}";
           };
         });
+      # A metric about something else than the scraped node (e.g. a textfile
+      # with per-client counters) names it in `resource`; `host` stays the node
+      metric_relabel_configs = [
+        {
+          source_labels = [ "exported_resource" ];
+          regex = "(.+)";
+          target_label = "resource";
+        }
+        {
+          regex = "exported_resource";
+          action = "labeldrop";
+        }
+      ];
     });
 }
