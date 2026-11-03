@@ -38,6 +38,6 @@ jobs:
           TARGETS: .gitea/workflows/bump-package.targets.nix
           PACKAGE: ${{ inputs.package }}
         run: |
-          git config user.name "package-bump-bot"
-          git config user.email "gitea.bot.package.bump@vtimofeenko.com"
+          git config user.name "package-bumper-bot"
+          git config user.email "gitea.bot.package.bumper@vtimofeenko.com"
           nix run .#package-bump -- ${PACKAGE:+"$PACKAGE"}
