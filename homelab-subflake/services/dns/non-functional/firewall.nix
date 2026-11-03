@@ -16,7 +16,11 @@ in
     dnsService.networkAccess
     |> map (network: ownHost.networks.${network}.adapter or network) # Resolve proper interface name
     |> map (interface: {
-      "${interface}".allowedUDPPorts = [ 53 ];
+      # TCP: truncated answers retry over it
+      "${interface}" = {
+        allowedUDPPorts = [ 53 ];
+        allowedTCPPorts = [ 53 ];
+      };
     })
     |> lib.mergeAttrsList;
 }
