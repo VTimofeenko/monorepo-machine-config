@@ -653,6 +653,24 @@
         "nixpkgs-lib": "nixpkgs-lib_3"
       },
       "locked": {
+        "lastModified": 1790898470,
+        "narHash": "sha256-zTwuwezD0w3hpga6a6P8emidzAZFyWqlNeRBlpWOOl8=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "024633cd702b10285db5cb19b40ad48d2399ba60",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "flake-parts_4": {
+      "inputs": {
+        "nixpkgs-lib": "nixpkgs-lib_4"
+      },
+      "locked": {
         "lastModified": 1772408722,
         "narHash": "sha256-rHuJtdcOjK7rAHpHphUb1iCvgkU3GpfvicLMwwnfMT0=",
         "owner": "hercules-ci",
@@ -860,6 +878,25 @@
         "type": "github"
       }
     },
+    "homelab-analytics": {
+      "inputs": {
+        "flake-parts": "flake-parts_3",
+        "nixpkgs": "nixpkgs_10"
+      },
+      "locked": {
+        "lastModified": 1793226013,
+        "narHash": "sha256-s/7c8YCn6BTYWnZrSx9zLFLoEIXtWZkNFWmoo9hKc9I=",
+        "ref": "refs/heads/master",
+        "rev": "6334ec551949290344ec1a25e08a7c1fd4a7a32f",
+        "revCount": 1,
+        "type": "git",
+        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/homelab-analytics.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/homelab-analytics.git"
+      }
+    },
     "impermanence": {
       "inputs": {
         "home-manager": "home-manager_2",
@@ -882,7 +919,7 @@
     "impermanence_2": {
       "inputs": {
         "home-manager": "home-manager_4",
-        "nixpkgs": "nixpkgs_10"
+        "nixpkgs": "nixpkgs_11"
       },
       "locked": {
         "lastModified": 1769548169,
@@ -1036,7 +1073,7 @@
     },
     "nixos-hardware_2": {
       "inputs": {
-        "nixpkgs": "nixpkgs_11"
+        "nixpkgs": "nixpkgs_12"
       },
       "locked": {
         "lastModified": 1788335262,
@@ -1104,6 +1141,21 @@
     },
     "nixpkgs-lib_3": {
       "locked": {
+        "lastModified": 1790477367,
+        "narHash": "sha256-oujbxmVKDhci2E4EM3KyAbRUgp5/IsCoiA/LfEF7OOk=",
+        "owner": "nix-community",
+        "repo": "nixpkgs.lib",
+        "rev": "f7cd230690d9fc982d06129f9189b101fddcfa3b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nixpkgs.lib",
+        "type": "github"
+      }
+    },
+    "nixpkgs-lib_4": {
+      "locked": {
         "lastModified": 1772328832,
         "narHash": "sha256-e+/T/pmEkLP6BHhYjx6GmwP5ivonQQn0bJdH9YrRB+Q=",
         "owner": "nix-community",
@@ -1133,6 +1185,22 @@
     },
     "nixpkgs_10": {
       "locked": {
+        "lastModified": 1793110635,
+        "narHash": "sha256-dhoW6VgFWlaodSY5jrBn+CF2FLmaUvDVgM7+C7T2+NM=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "31ecbaca1bdefa45dffc409f0250bd8039ea0010",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_11": {
+      "locked": {
         "lastModified": 1768564909,
         "narHash": "sha256-Kell/SpJYVkHWMvnhqJz/8DqQg2b6PguxVWOuadbHCc=",
         "owner": "nixos",
@@ -1147,7 +1215,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_11": {
+    "nixpkgs_12": {
       "locked": {
         "lastModified": 1767892417,
         "narHash": "sha256-8bW3q88CEg2u4hSP66Vf4lpbLonHz7hqDNBMcCY7E9U=",
@@ -1160,7 +1228,7 @@
         "url": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz"
       }
     },
-    "nixpkgs_12": {
+    "nixpkgs_13": {
       "locked": {
         "lastModified": 1788752844,
         "narHash": "sha256-VaWGJ6+cIYN2erfSecbRV+4ljI185Ty2wUrXyvQbgOw=",
@@ -1176,7 +1244,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_13": {
+    "nixpkgs_14": {
       "locked": {
         "lastModified": 1772624091,
         "narHash": "sha256-QKyJ0QGWBn6r0invrMAK8dmJoBYWoOWy7lN+UHzW1jc=",
@@ -1340,7 +1408,7 @@
         "flake-parts": [
           "flake-parts"
         ],
-        "nixpkgs": "nixpkgs_12"
+        "nixpkgs": "nixpkgs_13"
       },
       "locked": {
         "lastModified": 1788812074,
@@ -1410,15 +1478,15 @@
           "data-flake"
         ],
         "devshell": "devshell_2",
-        "flake-parts": "flake-parts_3",
-        "nixpkgs": "nixpkgs_13"
+        "flake-parts": "flake-parts_4",
+        "nixpkgs": "nixpkgs_14"
       },
       "locked": {
-        "lastModified": 1793213579,
-        "narHash": "sha256-9lEluStXnx3+6pU3izCur4YFgQE/oAcDHXEQRcjvddM=",
+        "lastModified": 1793246604,
+        "narHash": "sha256-stkzFgxAe+2asqDTlXKmO67x24mNLNrUQeM8WO+kkpw=",
         "ref": "refs/heads/master",
-        "rev": "0aea41c509ae6b73b39a8c34c12bffb7f37d7405",
-        "revCount": 339,
+        "rev": "befffd84a5e365a26b0a55f88da6e724780171a0",
+        "revCount": 341,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-modules.git"
       },
@@ -1446,6 +1514,7 @@
           "flake-parts"
         ],
         "home-manager": "home-manager_3",
+        "homelab-analytics": "homelab-analytics",
         "impermanence": "impermanence_2",
         "microvm": "microvm_2",
         "miniflux-yt-helper": "miniflux-yt-helper",
