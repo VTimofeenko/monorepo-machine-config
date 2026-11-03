@@ -99,9 +99,13 @@ in
       "notifier print_attention" = {
         url = appriseUrl "ntfy-fyi-high";
         attach = snapshot;
-        events = "error, paused";
+        # Firmware exceptions (e.g. "No trigger on y after full movement") end
+        # the job as `cancelled`, not `error`. Manual cancels notify too.
+        events = "error, paused, cancelled";
         title = "Snapmaker U1 needs attention";
-        body = "{event_args[1].filename}: {event_name} {event_args[1].message} ${fluiddUrl}";
+        # `exception` is Snapmaker's addition to print_stats, e.g.
+        # {id: 528, message: "No trigger on y after full movement", ...}
+        body = "{event_args[1].filename}: {event_name} {event_args[1].message} {event_args[1].exception.message|default('')} ${fluiddUrl}";
       };
     };
   };
