@@ -9,6 +9,8 @@
 
   endpointsConfig = import ./non-functional/endpoints-config.nix;
 
+  firewall = ./non-functional/firewall.nix;
+
   # TODO: ACL to only allow humans & `srv:grafana`
 
   # TODO: implement "watch the watcher". Periodic pings into `srv:healthchecks`?
