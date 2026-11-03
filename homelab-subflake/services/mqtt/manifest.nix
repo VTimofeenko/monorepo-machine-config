@@ -1,6 +1,8 @@
-{ ... }:
+{ lib, ... }:
 {
   module = ./mqtt.nix;
+
+  srvLib = import ./srv-lib.nix { inherit lib; };
 
   endpoints.mqtt = {
     port = 8883;
