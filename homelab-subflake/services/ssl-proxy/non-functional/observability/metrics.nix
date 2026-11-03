@@ -5,6 +5,9 @@
 let
   vectorListenerPort = 9000; # TODO: grab it from `srv:log-concentrator` manifest
   port = 9598; # TODO: grab from own manifest
+  # `.metrics.<domain>`, see `functional/metrics-vhosts.nix`
+  metricsSuffix =
+    lib.homelab.services.getServiceMetricsFqdn "prometheus" |> lib.removePrefix "prometheus";
 in
 {
   # Set up the log format for the access log
@@ -52,9 +55,11 @@ in
           ''
             . = parse_json!(.message)
 
-            # Discard log entries caused by prometheus querying the metrics endpoints
-            # Tied to prometheus having only one IP and talking to the SSL proxy over LAN
-            if .client_ip == "${lib.homelab.services.getLANIP "prometheus"}" && .request_path == "/metrics" && .status == 200 {
+            # Discard successful scrapes and probes by prometheus: on the service
+            # vhost it comes over LAN, on `<instance>.metrics.<domain>` over inner
+            service_scrape = .client_ip == "${lib.homelab.services.getLANIP "prometheus"}" && .request_path == "/metrics"
+            metrics_vhost = .client_ip == "${lib.homelab.getServiceInnerIP "prometheus"}" && ends_with(string(.domain) ?? "", "${metricsSuffix}")
+            if .status == 200 && (service_scrape || metrics_vhost) {
                 abort
             }
           '';
