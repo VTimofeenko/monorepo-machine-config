@@ -71,4 +71,23 @@
       '';
 
   }
+  {
+    help = "Bump nixpkgs (and home-manager) in both flakes, one commit (--release YY.MM to move release)";
+    name = "bump-nixpkgs";
+    category = "maintenance";
+    command = pkgs.lib.getExe (
+      pkgs.writeShellApplication {
+        name = "bump-nixpkgs";
+        runtimeInputs = builtins.attrValues {
+          inherit (pkgs)
+            git
+            jq
+            gnused
+            gnugrep
+            ;
+        };
+        text = builtins.readFile ../devshell/bump-nixpkgs.sh;
+      }
+    );
+  }
 ]
