@@ -28,7 +28,6 @@
 */
 {
   lib,
-  runCommand,
   buildNpmPackage,
   fetchFromGitHub,
   nodejs_22,
@@ -46,15 +45,6 @@ assert lib.assertOneOf "databaseProvider" databaseProvider [
 let
   version = "0.6.0";
 
-  # `rev = "v${version}"` (rather than a bare commit hash) is what lets
-  # `nix-update excalidash-backend` bump this on its own.
-  excalidashSrc = fetchFromGitHub {
-    owner = "ZimengXiong";
-    repo = "ExcaliDash";
-    rev = "v${version}";
-    hash = "sha256-oTLrSJiuhD/FQOayXevbNFlBmgaTvsQqlcZByt/PafM=";
-  };
-
   # Upstream pins `prisma`/`@prisma/client` to ^5.22.0; nixpkgs only ships
   # engines for major 6/7, and the two aren't wire-compatible (prisma_6's
   # generator expects a @prisma/client runtime file 5.22 doesn't ship —
@@ -66,18 +56,20 @@ let
     ./patches/package.json
     ./patches/package-lock.json
   ];
-
-  src = runCommand "excalidash-backend-src" { } ''
-    cp -r ${excalidashSrc}/backend $out
-    chmod -R u+w $out
-    ${lib.concatMapStringsSep "\n" (f: "cp ${f} $out/${builtins.baseNameOf f}") patchedManifests}
-  '';
 in
 buildNpmPackage (finalAttrs: {
   pname = "excalidash-backend" + lib.optionalString (databaseProvider == "sqlite") "-sqlite";
   inherit version;
 
-  inherit src;
+  # Plain fetcher as `src` (no wrapper derivation) with `rev = "v${version}"`
+  # is what lets `nix-update excalidash-backend` bump this on its own.
+  src = fetchFromGitHub {
+    owner = "ZimengXiong";
+    repo = "ExcaliDash";
+    rev = "v${version}";
+    hash = "sha256-oTLrSJiuhD/FQOayXevbNFlBmgaTvsQqlcZByt/PafM=";
+  };
+  sourceRoot = "${finalAttrs.src.name}/backend";
 
   nodejs = nodejs_22;
 
@@ -106,7 +98,11 @@ buildNpmPackage (finalAttrs: {
   # package makes no assumption about what that directory is actually named
   # or where it lives (friendlier to e.g. a template unit / a different
   # `StateDirectory`, and doesn't need rebuilding if that ever changes).
+  # buildNpmPackage also runs postPatch for fetchNpmDeps, so the patched
+  # lockfile is what npmDepsHash covers.
   postPatch = ''
+    ${lib.concatMapStringsSep "\n" (f: "cp ${f} ${builtins.baseNameOf f}") patchedManifests}
+
     # Upstream's API-key scope check (`getApiKeyRouteResource`) never
     # recognizes `/files/*` as a resource at all, so an API key request to
     # it always 403s/404s regardless of scopes — even though the exact same
