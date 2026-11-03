@@ -37,8 +37,8 @@ if [ "$BUMP_ALL" = true ]; then
 else
   TRAILER_VALUE="private"
   COMMIT_SUMMARY="ci: bump private flake inputs"
-  echo "Bumping private flake inputs (data-flake, private-modules)..."
-  UPDATE_ARGS="data-flake private-modules"
+  echo "Bumping private flake inputs (data-flake, private-modules, homelab-analytics)..."
+  UPDATE_ARGS="data-flake private-modules homelab-analytics"
 fi
 
 echo "================================================="
