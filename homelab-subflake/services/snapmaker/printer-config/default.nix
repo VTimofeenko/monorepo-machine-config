@@ -91,7 +91,6 @@ in
     "${managedPrefix}notifier.cfg" = toCfg {
       "notifier print_complete" = {
         url = appriseUrl "ntfy-fyi-default";
-        attach = snapshot;
         events = "complete";
         title = "Snapmaker U1";
         body = "Finished {event_args[1].filename} ${fluiddUrl}";
