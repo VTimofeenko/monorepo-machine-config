@@ -262,7 +262,10 @@
               {
                 env = [ ];
                 commands = devShellCmds;
-                packages = [ pkgs.nixos-anywhere pkgs.nix-melt ];
+                packages = [
+                  pkgs.nixos-anywhere
+                  pkgs.nix-melt
+                ];
               };
 
             checks = import ./checks { inherit self pkgs lib; };
@@ -280,12 +283,11 @@
           {
             # flake-modules are passed through to the output of this flake
             inherit (inputs.my-flake-modules) flake-modules;
-            nixosModules =
-              {
+            nixosModules = {
 
-                # Maybe later I will add dynamic imports here
-                wireguard-refresh-fix = import ./modules/nixOS/wireguard-refresh-fix.nix;
-              };
+              # Maybe later I will add dynamic imports here
+              wireguard-refresh-fix = import ./modules/nixOS/wireguard-refresh-fix.nix;
+            };
             nixosConfigurations =
               let
                 specialArgs = inputs // {
