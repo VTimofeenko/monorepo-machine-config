@@ -138,7 +138,7 @@ serviceName: {
   # public/private manifests, so private notes can stay in the private flake.
   roamNodes? : [String]
 
-  # homelab-analytics modules owned by this service (optional)
+  # Analytics modules owned by this service (optional)
   # Tables it writes, models over them, reference data, … Lists concatenate
   # across public/private manifests.
   analytics? : [Module]

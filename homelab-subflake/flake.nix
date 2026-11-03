@@ -32,13 +32,6 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
-    homelab-analytics = {
-      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/homelab-analytics.git"; # REMOTE_SRC
-      # url = "path:///home/spacecadet/Projects/homelab-analytics"; # LOCAL_SRC
-      inputs.flake-parts.follows = "flake-parts";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     private-modules = {
       url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-modules.git"; # REMOTE_SRC
       # url = "path:///home/spacecadet/code/private-modules"; # LOCAL_SRC

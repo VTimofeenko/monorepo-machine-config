@@ -355,7 +355,7 @@ in
     analytics = mkOption {
       type = types.listOf types.deferredModule;
       default = [ ];
-      description = "homelab-analytics modules (tables, models, …) owned by this service";
+      description = "Analytics modules (tables, models, …) owned by this service";
       # Lists concatenate across public/private manifests
     };
 

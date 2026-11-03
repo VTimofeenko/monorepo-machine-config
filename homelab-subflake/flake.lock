@@ -860,29 +860,6 @@
         "type": "github"
       }
     },
-    "homelab-analytics": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1793675480,
-        "narHash": "sha256-vtAphn73wDRJkzYKn8ITM7fi/dxODZkTq+oZ+AOFESI=",
-        "ref": "refs/heads/master",
-        "rev": "f51641e65c1580bae87da8c560cc84524ef83a07",
-        "revCount": 6,
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/homelab-analytics.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/homelab-analytics.git"
-      }
-    },
     "impermanence": {
       "inputs": {
         "home-manager": "home-manager_2",
@@ -1469,7 +1446,6 @@
           "flake-parts"
         ],
         "home-manager": "home-manager_3",
-        "homelab-analytics": "homelab-analytics",
         "impermanence": "impermanence_2",
         "microvm": "microvm_2",
         "miniflux-yt-helper": "miniflux-yt-helper",
