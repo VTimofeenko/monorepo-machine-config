@@ -80,7 +80,9 @@ serviceName: {
     }
 
     logging? :: {
-      impl : Path               # Logging configuration module
+      impl? : Path              # Logging configuration module
+      units? : [String]         # systemd units whose journald lines belong to
+                                # this service; the log concentrator tags them
     }
 
     probes? :: {
@@ -132,6 +134,11 @@ serviceName: {
   # Pure metadata: not part of `default`. Lists concatenate across
   # public/private manifests, so private notes can stay in the private flake.
   roamNodes? : [String]
+
+  # homelab-analytics modules owned by this service (optional)
+  # Tables it writes, models over them, reference data, … Lists concatenate
+  # across public/private manifests.
+  analytics? : [Module]
 
   # Service-specific utilities that may be called by other services (optional)
   srvLib? : Any
@@ -582,8 +589,6 @@ The corresponding extract from `data-flake`:
 ## Deprecated fields/concepts
 
 - `acl`: to be merged into firewall/functional impl. Future rework
-- `logging.systemdUnit`: unused in practice. May return when automated analytics
-  is added.
 - `default.nix` file inside the service directory. The `mkHost`-adjacent
   machinery will create this module instead of going back to the service
   directory and read `default.nix` as a shim

@@ -3,7 +3,38 @@
     https://opentelemetry.io/docs/specs/otel/logs/data-model/
 
     https://opentelemetry.io/docs/specs/otel/logs/data-model-appendix/#appendix-b-severitynumber-example-mappings
+
+    Output is flat: `ServiceName`/`HostName` at the top, the rest in the
+    `ResourceAttributes`/`LogAttributes` maps.
+
+    `ServiceName` is the homelab service owning the unit on that host, from
+    data-flake placement + manifests' `observability.logging.units`. Unknown
+    units get an empty `ServiceName` and still carry `systemd.unit`.
 */
+{ lib, ... }:
+let
+  # "<host>/<unit>" -> { service, instance }; multi-instance services share the service name
+  unitTags =
+    lib.homelab.services.getAll
+    |> lib.filterAttrs (
+      _: s: !(s.sideEffectOnly or false) && (s.onHost or null) != null && (s.moduleName or null) != null
+    )
+    |> lib.mapAttrsToList (
+      instance: s:
+      let
+        logging = (lib.homelab.getManifests.${s.moduleName} or { }).observability.logging or null;
+      in
+      map (unit: {
+        name = "${s.onHost}/${unit}";
+        value = {
+          service = s.moduleName;
+          inherit instance;
+        };
+      }) (if logging == null then [ ] else logging.units)
+    )
+    |> lib.flatten
+    |> lib.listToAttrs;
+in
 {
   services.vector.settings.transforms.journald-to-otel-log = {
     type = "remap";
@@ -11,9 +42,6 @@
     source =
       # vrl
       ''
-        # Construct the otel format logs
-        # https://opentelemetry.io/docs/specs/otel/logs/data-model/
-
         # https://opentelemetry.io/docs/specs/otel/logs/data-model-appendix/#appendix-b-severitynumber-example-mappings
         priority_to_severity_number = {
             "0": 21, # Emergency
@@ -39,37 +67,34 @@
             "21": "FATAL",
         }
 
-        severityNumber = get(priority_to_severity_number, [.PRIORITY]) ?? null
+        unit_tags = ${builtins.toJSON unitTags}
+
+        severityNumber = get(priority_to_severity_number, [.PRIORITY]) ?? 0
+        host = to_string(.host) ?? ""
+        unit = to_string(._SYSTEMD_USER_UNIT || ._SYSTEMD_UNIT) ?? ""
+        tag = get(unit_tags, [host + "/" + unit]) ?? {}
 
         . = {
-            "Timestamp": to_unix_timestamp(.timestamp) ?? null,
-            "ObservedTimestamp": to_unix_timestamp(now()),
-            # These don't really map to journald
-            "TraceID": null,
-            "SpanId": null,
+            "Timestamp": format_timestamp!(timestamp(.timestamp) ?? now(), "%+"),
+            "ObservedTimestamp": format_timestamp!(now(), "%+"),
 
-            # Simple mapper of severities
             # Journald relies on RFC5424 priorities
-            "SeverityText": get(severity_number_to_severity_text, [to_string(severityNumber) ?? null]) ?? null,
+            "SeverityText": get(severity_number_to_severity_text, [to_string(severityNumber) ?? ""]) ?? "",
             "SeverityNumber": severityNumber,
 
+            # `get` returns null (not an error) for unknown units; to_string(null) is ""
+            "ServiceName": to_string(get(tag, ["service"]) ?? "") ?? "",
+            "HostName": host,
             "Body": strip_ansi_escape_codes(.message) ?? .message,
-            "Resource": {
-                "host": {
-                    "name": .host,
-                },
-                "service": {
-                    "name": ._SYSTEMD_USER_UNIT || ._SYSTEMD_UNIT,
-                },
-            },
-            "Attributes": {
-                "syslog": {
-                    "facility": .SYSLOG_IDENTIFIER || null,
-                    "procid": .PROCID || null,
-                },
-            },
+            "ResourceAttributes": compact({
+                "systemd.unit": unit,
+                "homelab.instance": get(tag, ["instance"]) ?? null,
+            }),
+            "LogAttributes": compact({
+                "syslog.identifier": .SYSLOG_IDENTIFIER || null,
+                "syslog.procid": .PROCID || null,
+            }),
         }
-
       '';
   };
 

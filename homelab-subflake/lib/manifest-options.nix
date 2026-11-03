@@ -142,6 +142,15 @@ let
                 type = types.nullOr types.path;
                 default = null;
               };
+              units = mkOption {
+                type = types.listOf types.str;
+                default = [ ];
+                description = ''
+                  systemd units whose journald output belongs to this service.
+                  The log concentrator tags those lines with the service name.
+                '';
+                example = [ "unbound.service" ];
+              };
             };
           }
         );
@@ -335,6 +344,13 @@ in
       type = types.nullOr types.path;
       default = null;
       description = "Path to service documentation (README.md)";
+    };
+
+    analytics = mkOption {
+      type = types.listOf types.deferredModule;
+      default = [ ];
+      description = "homelab-analytics modules (tables, models, …) owned by this service";
+      # Lists concatenate across public/private manifests
     };
 
     roamNodes = mkOption {

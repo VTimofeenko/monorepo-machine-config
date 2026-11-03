@@ -32,47 +32,40 @@
         source =
           # vrl
           ''
-            severity_text_to_severity_number = {
-                "TRACE": "1",
-                "DEBUG": "5",
-                "INFO": "9",
-                "INFO2": "10",
-                "WARN": "13",
-                "ERROR": "17",
-                "ERROR2": "18",
-                "ERROR3": "19",
-                "FATAL": "21",
+            # vector's syslog source emits RFC5424 keywords
+            syslog_severity_to_severity_number = {
+                "emerg": 21,
+                "alert": 19,
+                "crit": 18,
+                "err": 17,
+                "warning": 13,
+                "notice": 10,
+                "info": 9,
+                "debug": 5,
             }
             hostname = if (.host == "ZD-APMgr" || ."source_ip" == "${lib.homelab.hosts.getLANIP "ruckus-office"}") { "ruckus-office" } else {.host}
 
 
             . = {
-                "Timestamp": to_unix_timestamp(.timestamp) ?? null,
-                "ObservedTimestamp": to_unix_timestamp(now()),
+                "Timestamp": format_timestamp!(timestamp(.timestamp) ?? now(), "%+"),
+                "ObservedTimestamp": format_timestamp!(now(), "%+"),
 
-                # These don't really map to journald
-                "TraceID": null,
-                "SpanId": null,
+                "SeverityText": upcase(to_string(.severity) ?? ""),
+                "SeverityNumber": get(syslog_severity_to_severity_number, [to_string(.severity) ?? ""]) ?? 0,
 
-                "SeverityText": .severity,
-                "SeverityNumber": get(severity_text_to_severity_number, [to_string(.severity) ?? null]) ?? null,
-
+                # Non-NixOS devices: no homelab service
+                "ServiceName": "",
+                "HostName": hostname,
                 "Body": strip_ansi_escape_codes(.message) ?? .message,
-                "Resource": {
-                    "host": {
-                        "name": hostname,
-                    },
-                    "service": {
-                        "name": ."app-name" || null,
-                    },
-                },
-                "Attributes": {
-                    "syslog": {
-                        "facility": .facility || null,
-                        "version": .version || null,
-                        "procid": .procid || null,
-                    },
-                },
+                "ResourceAttributes": compact({
+                    "syslog.appname": ."app-name" || null,
+                    "source.ip": .source_ip || null,
+                }),
+                "LogAttributes": compact({
+                    "syslog.facility": .facility || null,
+                    "syslog.version": to_string(.version) ?? null,
+                    "syslog.procid": to_string(.procid) ?? null,
+                }),
             }
           '';
       };

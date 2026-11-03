@@ -36,5 +36,6 @@
       endpoint = "metrics";
     };
     alerts.grafanaImpl = import ./non-functional/alerts.nix { inherit serviceName; };
+    logging.units = [ "vector.service" ];
   };
 }

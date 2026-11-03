@@ -27,7 +27,10 @@
     };
 
     alerts.prometheusImpl = ./non-functional/alerts.nix;
-    logging.impl = ./non-functional/logging.nix;
+    logging = {
+      impl = ./non-functional/logging.nix;
+      units = [ "unbound.service" ];
+    };
   };
 
   multiInstance = true;

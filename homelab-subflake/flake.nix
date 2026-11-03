@@ -32,6 +32,10 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
+    # Own nixpkgs: its dbt packaging is pinned to what works there
+    homelab-analytics.url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/homelab-analytics.git"; # REMOTE_SRC
+    # homelab-analytics.url = "path:///home/spacecadet/Projects/homelab-analytics"; # LOCAL_SRC
+
     private-modules = {
       url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-modules.git"; # REMOTE_SRC
       # url = "path:///home/spacecadet/code/private-modules"; # LOCAL_SRC
