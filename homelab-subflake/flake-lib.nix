@@ -151,6 +151,7 @@ rec {
         inputs.base.nixosModules.prusa-exporter
         inputs.base.nixosModules.excalidash
         inputs.base.nixosModules.filabridge
+        inputs.base.nixosModules.youtube-rss-server
         { programs.myNeovim.enable = true; }
       ];
 
