@@ -19,6 +19,10 @@
       port = 9001;
       protocol = "tcp";
     };
+    firewall-logs = {
+      port = 9515;
+      protocol = "tcp";
+    };
     metrics = {
       port = 8087;
       protocol = "tcp";
