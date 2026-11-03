@@ -7,33 +7,14 @@
     Output is flat: `ServiceName`/`HostName` at the top, the rest in the
     `ResourceAttributes`/`LogAttributes` maps.
 
-    `ServiceName` is the homelab service owning the unit on that host, from
-    data-flake placement + manifests' `observability.logging.units`. Unknown
-    units get an empty `ServiceName` and still carry `systemd.unit`.
+    `ServiceName` is the homelab service owning the unit on that host and
+    `homelab.component` says which part of it (main/metrics/backup), see
+    `getLogUnitTags`. Unknown units get an empty `ServiceName` and still carry
+    `systemd.unit`.
 */
 { lib, ... }:
 let
-  # "<host>/<unit>" -> { service, instance }; multi-instance services share the service name
-  unitTags =
-    lib.homelab.services.getAll
-    |> lib.filterAttrs (
-      _: s: !(s.sideEffectOnly or false) && (s.onHost or null) != null && (s.moduleName or null) != null
-    )
-    |> lib.mapAttrsToList (
-      instance: s:
-      let
-        logging = (lib.homelab.getManifests.${s.moduleName} or { }).observability.logging or null;
-      in
-      map (unit: {
-        name = "${s.onHost}/${unit}";
-        value = {
-          service = s.moduleName;
-          inherit instance;
-        };
-      }) (if logging == null then [ ] else logging.units)
-    )
-    |> lib.flatten
-    |> lib.listToAttrs;
+  unitTags = lib.homelab.getLogUnitTags;
 in
 {
   services.vector.settings.transforms.journald-to-otel-log = {
@@ -89,6 +70,7 @@ in
             "ResourceAttributes": compact({
                 "systemd.unit": unit,
                 "homelab.instance": get(tag, ["instance"]) ?? null,
+                "homelab.component": get(tag, ["component"]) ?? null,
             }),
             "LogAttributes": compact({
                 "syslog.identifier": .SYSLOG_IDENTIFIER || null,

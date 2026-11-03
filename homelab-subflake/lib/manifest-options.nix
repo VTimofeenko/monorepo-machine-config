@@ -85,6 +85,11 @@ let
         default = "/metrics";
         description = "Metrics path on the endpoint";
       };
+      units = mkOption {
+        type = types.listOf types.str;
+        default = [ ];
+        description = "systemd units of the exporter; their logs go to the service's metrics logs";
+      };
     };
   };
 
@@ -146,8 +151,9 @@ let
                 type = types.listOf types.str;
                 default = [ ];
                 description = ''
-                  systemd units whose journald output belongs to this service.
-                  The log concentrator tags those lines with the service name.
+                  systemd units whose journald output belongs to this service;
+                  empty means `<service>.service`. The log concentrator tags
+                  those lines with the service name (see `getLogUnitTags`).
                 '';
                 example = [ "unbound.service" ];
               };

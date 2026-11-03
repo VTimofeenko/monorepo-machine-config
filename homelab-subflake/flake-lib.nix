@@ -24,7 +24,12 @@ rec {
             builtins.removeAttrs data-flake.lib.homelab [ "_mkOwnFuncs" ]
             // data-flake.lib.homelab._mkOwnFuncs hostName
             // {
-              inherit getManifest getManifests getSrvLib;
+              inherit
+                getManifest
+                getManifests
+                getSrvLib
+                getLogUnitTags
+                ;
             };
         })
         /**
@@ -306,6 +311,66 @@ rec {
     Returns all manifests. Easier to pass around as `lib` extension instead of `self`.
   */
   getManifests = self.serviceModules;
+
+  /**
+    Which service each systemd unit's logs belong to:
+    `"<host>/<unit>" -> { service, instance, component }`.
+
+    `component` is one of:
+    - `main`: `observability.logging.units`, `<service>.service` if unset
+    - `metrics`: `observability.metrics.<exporter>.units`
+    - `backup`: the restic jobs and healthchecks pings `backups` generates (see `lib/mk-bkp.nix`)
+  */
+  getLogUnitTags =
+    let
+      unitsOf =
+        service: m:
+        let
+          logging = m.observability.logging or null;
+          main = if logging == null || logging.units == [ ] then [ "${service}.service" ] else logging.units;
+          metrics = m.observability.metrics or { } |> builtins.attrValues |> lib.concatMap (e: e.units);
+          backup =
+            if (m.backups or null) == null then
+              [ ]
+            else
+              let
+                n = if m.backups.serviceName != null then m.backups.serviceName else service;
+                job =
+                  repo: pingName:
+                  [
+                    "restic-backups-${n}-${repo}.service"
+                  ]
+                  ++ map (event: "ping-healthchecks@${n}-${pingName}:${event}.service") [
+                    "start"
+                    "success"
+                    "failure"
+                  ];
+              in
+              job "localbackup" "local-backup"
+              ++ lib.optionals (!m.backups.localOnly) (job "rsync-net-backup" "rsync-net-backup");
+          tag = component: units: map (unit: { inherit unit component; }) units;
+        in
+        tag "main" main ++ tag "metrics" metrics ++ tag "backup" backup;
+    in
+    data-flake.lib.homelab.services.getAll
+    |> lib.filterAttrs (
+      _: s:
+      !(s.sideEffectOnly or false) && (s.onHost or null) != null && getManifests ? ${s.moduleName or ""}
+    )
+    |> lib.mapAttrsToList (
+      instance: s:
+      unitsOf s.moduleName getManifests.${s.moduleName}
+      |> map (u: {
+        name = "${s.onHost}/${u.unit}";
+        value = {
+          service = s.moduleName;
+          inherit instance;
+          inherit (u) component;
+        };
+      })
+    )
+    |> lib.flatten
+    |> lib.listToAttrs;
 
   /**
     Shortcut to get a service's `srvLib`

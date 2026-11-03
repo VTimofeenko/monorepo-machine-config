@@ -71,6 +71,7 @@ serviceName: {
         impl : Path             # Metrics module (presence = metrics enabled)
         endpoint? : String      # Which endpoint? Inferred if omitted
         path? : String          # Metrics path, default: "/metrics"
+        units? : [String]       # Exporter's systemd units; logs tagged as metrics
       }
     }
 
@@ -82,7 +83,9 @@ serviceName: {
     logging? :: {
       impl? : Path              # Logging configuration module
       units? : [String]         # systemd units whose journald lines belong to
-                                # this service; the log concentrator tags them
+                                # this service, default ["<service>.service"].
+                                # Backup units are derived from `backups`.
+                                # See `getLogUnitTags` in flake-lib.nix
     }
 
     probes? :: {
