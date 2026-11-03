@@ -16,11 +16,7 @@
     deploy-rs.url = "github:serokell/deploy-rs";
     agenix = {
       url = "github:ryantm/agenix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs-unstable";
-        darwin.follows = "stub-flake";
-        home-manager.follows = "home-manager";
-      };
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     # Theming and stuff
