@@ -41,6 +41,8 @@
       temperature = mkProbe [ "temperature" ];
     };
 
+  observability.alerts.prometheusImpl = ./non-functional/alerts.nix;
+
   dashboard = {
     category = "Home";
     links = [
