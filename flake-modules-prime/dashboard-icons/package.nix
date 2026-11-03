@@ -3,7 +3,8 @@
   stdenv,
 }:
 stdenv.mkDerivation {
-  name = "Dashboard-icons";
+  pname = "dashboard-icons";
+  version = "0-unstable-2025-11-28";
 
   src = fetchFromGitHub {
     owner = "homarr-labs";
