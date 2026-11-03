@@ -16,8 +16,9 @@
   Usage: package-bump [<flake attr> [extra nix-update args...]]
   Env: GITEA_TOKEN, GITEA_API_URL (<gitea>/api/v1/repos/<owner>/<repo>),
        BASE_BRANCH (default: master),
-       TARGETS: nix file with { <attr> = [ <extra nix-update args> ]; },
-                required without arguments.
+       TARGETS: nix file with { <attr> = { args ? [ ]; skipPatch ? false; }; },
+                required without arguments. `args` go to nix-update;
+                `skipPatch` ignores bumps that keep major.minor.
   ```
   Git identity must be configured.
 */
@@ -68,7 +69,8 @@ writeShellApplication {
 
     PKG="$1"
     shift
-    mapfile -t TARGET_ARGS < <(jq -r --arg p "$PKG" '.[$p] // [] | .[]' <<< "$TARGETS_JSON")
+    mapfile -t TARGET_ARGS < <(jq -r --arg p "$PKG" '.[$p].args // [] | .[]' <<< "$TARGETS_JSON")
+    SKIP_PATCH=$(jq -r --arg p "$PKG" '.[$p].skipPatch // false' <<< "$TARGETS_JSON")
     BRANCH="bump/$PKG"
     BOT_EMAIL=$(git config user.email)
     WORK=$(mktemp -d)
@@ -121,6 +123,13 @@ writeShellApplication {
       exit 1
     fi
 
+    NEW_VERSION=$(nix eval --raw ".#$PKG.version")
+    if [ "$SKIP_PATCH" = true ] && [ "$(cut -d. -f1-2 <<< "$OLD_VERSION")" = "$(cut -d. -f1-2 <<< "$NEW_VERSION")" ]; then
+      echo "$PKG: ignoring patch release $NEW_VERSION"
+      git checkout -q -f .
+      exit 0
+    fi
+
     # Same tree as the pushed branch => same inputs, same build result. Only
     # skip if that result was a success; a WIP may have been a flaky fetch.
     git add -A
@@ -132,7 +141,6 @@ writeShellApplication {
       fi
     fi
 
-    NEW_VERSION=$(nix eval --raw ".#$PKG.version")
     NEW_REF=$(src_ref)
 
     BUILD_OK=false
