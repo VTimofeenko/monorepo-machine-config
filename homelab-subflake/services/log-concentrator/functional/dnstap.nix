@@ -39,11 +39,14 @@ in
           .flag_rd = .responseData.header.rd
           .flag_ra = .responseData.header.ra
 
-          # Extract Question (Take the first one)
-          q = .responseData.question[0]
-          .question_name = q.domainName
-          .question_type = q.questionType
-          .question_class = q.class
+          # Questions (Parallel Arrays): practically always one, but dnstap allows more
+          questions = []
+          if is_array(.responseData.question) {
+              questions = array!(.responseData.question)
+          }
+          .question_names = map_values(questions) -> |v| { v.domainName || "" }
+          .question_types = map_values(questions) -> |v| { v.questionType || "" }
+          .question_classes = map_values(questions) -> |v| { v.class || "" }
 
           # Extract Answers (Parallel Arrays)
           # Map the array of objects into arrays of primitives
