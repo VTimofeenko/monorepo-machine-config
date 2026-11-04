@@ -13,10 +13,8 @@
     menu = [
       {
         key = "n";
-        desc = "Restore last notification";
-        # mako only supports restoring the most recently dismissed
-        # notification, not browsing/picking from history.
-        cmd = "makoctl restore";
+        desc = "Toggle notification panel";
+        cmd = "swaync-client --toggle-panel --skip-wait";
       }
     ];
   };

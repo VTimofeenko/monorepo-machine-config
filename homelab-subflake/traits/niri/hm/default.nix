@@ -46,10 +46,7 @@ in
   services.swayosd.enable = true;
 
   programs.kitty.enable = true;
-  services.mako = {
-    enable = true;
-    settings.default-timeout = 5000; # ms; notifications may still set their own
-  };
+  services.swaync.enable = true;
   services.polkit-gnome.enable = true;
   # Niri auto-spawns xwayland-satellite on-demand as soon as an X11 client
   # connects (needs no config, just the binary on PATH) -- gets Steam,
