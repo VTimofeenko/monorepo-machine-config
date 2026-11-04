@@ -19,14 +19,24 @@
     })
   ];
 
-  # Add heatmap proxy token
-  services.nginx.virtualHosts.${lib.homelab.getServiceFqdn serviceName}.locations."/api/v1/users/spacecadet/heatmap" =
-    {
-      proxyPass = "http://localhost:${toString config.services.gitea.settings.server.HTTP_PORT}/api/v1/users/spacecadet/heatmap";
+  services.nginx.virtualHosts.${lib.homelab.getServiceFqdn serviceName}.locations = {
+    # Add heatmap proxy token
+    "/api/v1/users/spacecadet/heatmap" = {
+      proxyPass = "$srv_upstream";
       extraConfig = ''
         proxy_set_header Authorization "${(lib.homelab.getServiceConfig serviceName).heatmapToken}";
       '';
     };
+
+    # Anonymous source archive downloads (fetchFromGitea) despite REQUIRE_SIGNIN_VIEW
+    # - token belongs to a bot user that only sees public repos
+    "~ ^/[^/]+/[^/]+/archive/" = {
+      proxyPass = "$srv_upstream";
+      extraConfig = ''
+        proxy_set_header Authorization "${(lib.homelab.getServiceConfig serviceName).archiveToken}";
+      '';
+    };
+  };
 
   # Proxy ssh
   services.nginx.streamConfig = ''
