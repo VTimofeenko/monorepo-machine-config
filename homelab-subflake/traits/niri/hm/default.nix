@@ -24,6 +24,7 @@ in
   imports = [
     ./cursor.nix
     ./kanshi.nix
+    ./layout-osd.nix
     ./lock.nix
     ./wlr-which-key
   ];
