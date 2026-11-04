@@ -15,8 +15,11 @@ in
   nix = {
     extraOptions = "experimental-features = nix-command flakes pipe-operators";
 
-    # Higher download buffer size
-    settings.download-buffer-size = 1048576000; # 1GB
+    settings = {
+      connect-timeout = 5;
+      download-buffer-size = 1048576000; # 1GB
+      warn-dirty = false;
+    };
 
     gc = {
       automatic = true;
