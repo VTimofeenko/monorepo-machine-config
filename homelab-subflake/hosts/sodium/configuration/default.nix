@@ -34,6 +34,9 @@
   };
   boot.kernel.sysctl."vm.mmap_rnd_bits" = lib.mkForce 18;
 
+  # nix-config trait's 1GB buffer is the entire RAM here
+  nix.settings.download-buffer-size = lib.mkForce 67108864; # 64MB
+
   # Misc
   system.stateVersion = "25.05";
 
