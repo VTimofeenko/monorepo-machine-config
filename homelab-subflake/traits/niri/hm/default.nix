@@ -24,7 +24,7 @@ in
   imports = [
     ./cursor.nix
     ./kanshi.nix
-    ./layout-osd.nix
+    ./osd.nix
     ./lock.nix
     ./wlr-which-key
   ];
@@ -35,7 +35,7 @@ in
       centerpiece = lib.getExe pkgs.centerpiece;
       fuzzel = lib.getExe pkgs.fuzzel;
       grimblast = lib.getExe pkgs.grimblast;
-      swayosdClient = lib.getExe' pkgs.swayosd "swayosd-client";
+      swayosdClient = lib.getExe (pkgs.callPackage ./swayosd-focused.nix { });
       playerctl = lib.getExe pkgs.playerctl;
       wlrWhichKey = lib.getExe pkgs.wlr-which-key;
       niriFocusApp = lib.getExe niriFocusApp;
