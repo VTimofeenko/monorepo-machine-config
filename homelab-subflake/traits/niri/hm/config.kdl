@@ -155,8 +155,8 @@ binds {
     Mod+Ctrl+Home { move-column-to-first; }
     Mod+Ctrl+End  { move-column-to-last; }
 
-    Mod+Tab       { focus-monitor-right; }
-    Mod+Shift+Tab { focus-monitor-left; }
+    Mod+Tab       { focus-monitor-next; }
+    Mod+Shift+Tab { move-window-to-monitor-next; }
     Mod+Shift+Left  { focus-monitor-left; }
     Mod+Shift+Down  { focus-monitor-down; }
     Mod+Shift+Up    { focus-monitor-up; }
