@@ -128,12 +128,12 @@ binds {
     Mod+O repeat=false { toggle-overview; }
 
     Mod+Left  { focus-column-or-monitor-left; }
-    Mod+Down  { focus-window-or-monitor-down; }
-    Mod+Up    { focus-window-or-monitor-up; }
+    Mod+Down  { focus-window-or-workspace-down; }
+    Mod+Up    { focus-window-or-workspace-up; }
     Mod+Right { focus-column-or-monitor-right; }
     Mod+H     { focus-column-or-monitor-left; }
-    Mod+J     { focus-window-or-monitor-down; }
-    Mod+K     { focus-window-or-monitor-up; }
+    Mod+J     { focus-window-or-workspace-down; }
+    Mod+K     { focus-window-or-workspace-up; }
     Mod+L     { focus-column-or-monitor-right; }
 
     Mod+Shift+H { move-column-left-or-to-monitor-left; }
