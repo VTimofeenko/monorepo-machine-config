@@ -29,7 +29,8 @@ let
         set -euo pipefail
 
         if [[ $(grep -s ^NAME= /etc/os-release | sed 's/^.*=//') == "NixOS" ]]; then
-          sudo nixos-rebuild switch --flake ''${DOTFILES_REPO_LOCATION}
+          # Evaluate as the user (SSH agent for private inputs), sudo only to activate
+          nixos-rebuild switch --sudo --flake ''${DOTFILES_REPO_LOCATION}
         else # Not a NixOS machine
           home-manager switch --flake ''${DOTFILES_REPO_LOCATION}
         fi
