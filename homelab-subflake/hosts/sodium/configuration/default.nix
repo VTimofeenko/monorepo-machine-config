@@ -37,6 +37,15 @@
   # nix-config trait's 1GB buffer is the entire RAM here
   nix.settings.download-buffer-size = lib.mkForce 67108864; # 64MB
 
+  # Hard-linking the store over an SD card stalls the node; the store is small anyway
+  nix.optimise.automatic = lib.mkForce false;
+
+  # Run GC only when nothing else wants the disk
+  systemd.services.nix-gc.serviceConfig = {
+    IOSchedulingClass = "idle";
+    CPUSchedulingPolicy = "idle";
+  };
+
   # Misc
   system.stateVersion = "25.05";
 
