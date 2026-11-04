@@ -27,6 +27,6 @@ in
   };
   imports = [
     ./non-functional/dumps.nix
-    ./functional/mailer.nix
-  ];
+  ]
+  ++ lib.localLib.mkImportsFromDir ./functional;
 }
