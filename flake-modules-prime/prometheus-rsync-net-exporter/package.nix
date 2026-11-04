@@ -12,7 +12,7 @@ rustPlatform.buildRustPackage rec {
   name = "prometheus-rsync-net-exporter";
   src = fetchFromGitea {
     domain = "gitea.srv.vtimofeenko.com";
-    owner = "spacecadet";
+    owner = "homelab";
     repo = "prometheus-rsync-net-exporter-rs";
     tag = "v${version}";
     hash = "sha256-1jESS10dQWnIFob3xNzXALoJlET0tcVguKsLQD2YbBQ=";

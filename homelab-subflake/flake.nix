@@ -10,7 +10,7 @@
     nixpkgs-unstable.follows = "base/nixpkgs-unstable";
     flake-parts.follows = "base/flake-parts";
 
-    data-flake.url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-data-flake.git"; # REMOTE_SRC
+    data-flake.url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/homelab/private-data-flake.git"; # REMOTE_SRC
     # data-flake.url = "path:///home/spacecadet/code/private-data-flake"; # LOCAL_SRC
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -33,7 +33,7 @@
     };
 
     private-modules = {
-      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/private-modules.git"; # REMOTE_SRC
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/homelab/private-modules.git"; # REMOTE_SRC
       # url = "path:///home/spacecadet/code/private-modules"; # LOCAL_SRC
       inputs.data-flake.follows = "data-flake";
     };
@@ -44,7 +44,7 @@
     };
 
     miniflux-yt-helper = {
-      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/miniflux-yt-helper.git";
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/homelab/miniflux-yt-helper.git";
       inputs = {
         flake-parts.follows = "flake-parts";
         nixpkgs.follows = "nixpkgs-unstable";
@@ -52,7 +52,7 @@
     };
 
     fava-helper = {
-      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/fava-helper.git";
+      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/homelab/fava-helper.git";
       inputs = {
         flake-parts.follows = "flake-parts";
         nixpkgs.follows = "nixpkgs-unstable";
