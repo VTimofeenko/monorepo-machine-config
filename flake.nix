@@ -245,13 +245,6 @@
               ];
               addFormattersToDevshell = true;
             };
-            devshellCmds.deployment = {
-              enable = true;
-              localDeployment = true;
-              useDeployRs = true;
-              desktopNotifications = true;
-            };
-
             devshells.default =
               let
                 devShellCmds = import ./lib/devshellCmds.nix {

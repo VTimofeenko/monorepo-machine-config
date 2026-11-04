@@ -101,7 +101,7 @@
             devshellCmds.deployment = {
               enable = true;
               useDeployRs = true;
-              localDeployment = true;
+              localDeployment = false; # `deploy-local` comes from the zsh module
               desktopNotifications = true;
             };
 
