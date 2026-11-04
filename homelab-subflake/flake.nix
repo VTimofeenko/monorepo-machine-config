@@ -163,13 +163,23 @@
                 };
               };
 
-            deploy.nodes = lib.genAttrs realHosts (
-              nodeName:
-              self.lib.mkDeployRsNode {
-                inherit nodeName;
-                system = inputs.data-flake.data.hosts.all.${nodeName}.system;
-              }
-            );
+            deploy.nodes =
+              realHosts
+              |> (
+                it:
+                lib.genAttrs it (
+                  nodeName:
+                  self.lib.mkDeployRsNode {
+                    inherit nodeName;
+                    system = inputs.data-flake.data.hosts.all.${nodeName}.system;
+                  }
+                )
+              )
+              |> lib.flip lib.recursiveUpdate {
+                # Push paths from the deployer instead of substituting on the
+                # pi itself, which is slow
+                sodium.fastConnection = true;
+              };
 
             # Export merged, evaluated manifests
             serviceModules = mergedServices;
