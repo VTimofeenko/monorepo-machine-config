@@ -1,21 +1,8 @@
 # Taken from https://github.com/linkwarden/linkwarden/pull/1251/changes
-diff --git a/.env.sample b/.env.sample
-index d607f6171..a434cc871 100644
---- a/.env.sample
-+++ b/.env.sample
-@@ -96,6 +96,8 @@ PROXY_USERNAME=
- PROXY_PASSWORD=
- PROXY_BYPASS=
-
-+FLARESOLVERR_URL=
-+
- # PDF archive settings
- PDF_MARGIN_TOP=
- PDF_MARGIN_BOTTOM=
 diff --git a/apps/worker/lib/archiveHandler.ts b/apps/worker/lib/archiveHandler.ts
 --- a/apps/worker/lib/archiveHandler.ts
 +++ b/apps/worker/lib/archiveHandler.ts
-@@ -14,7 +14,7 @@
+@@ -13,7 +13,7 @@ import pdfHandler from "./preservationScheme/pdfHandler";
  import { LinkWithCollectionOwnerAndTags } from "@linkwarden/types/global";
  import { isArchivalTag } from "@linkwarden/lib/isArchivalTag";
  import { ArchivalSettings } from "@linkwarden/types/global";
@@ -24,10 +11,10 @@ diff --git a/apps/worker/lib/archiveHandler.ts b/apps/worker/lib/archiveHandler.
  import {
    assertUrlIsSafeForServerSideFetch,
    UnsafeUrlError,
-@@ -23,6 +23,17 @@
-
+@@ -22,6 +22,17 @@ import protectPageRequests from "./protectPageRequests";
+ 
  const BROWSER_TIMEOUT = Number(process.env.BROWSER_TIMEOUT) || 5;
-
+ 
 +function isCloudflareTitle(title?: string | null) {
 +  if (!title) return false;
 +  const t = title.toLowerCase();
@@ -42,10 +29,10 @@ diff --git a/apps/worker/lib/archiveHandler.ts b/apps/worker/lib/archiveHandler.
  export default async function archiveHandler(
    link: LinkWithCollectionOwnerAndTags,
    browser: Browser
-@@ -88,10 +99,10 @@
+@@ -77,10 +88,10 @@ export default async function archiveHandler(
      }, BROWSER_TIMEOUT * 60000);
    });
-
+ 
 -  const contextOptions = getDefaultContextOptions();
 -  const context = await browser.newContext(contextOptions);
 +  const baseContextOptions = getDefaultContextOptions();
@@ -53,13 +40,13 @@ diff --git a/apps/worker/lib/archiveHandler.ts b/apps/worker/lib/archiveHandler.
    await protectPageRequests(context);
 -  const page = await context.newPage();
 +  let page = await context.newPage();
-
+ 
    createFolder({ filePath: `archives/preview/${link.collectionId}` });
    createFolder({ filePath: `archives/${link.collectionId}` });
-@@ -142,12 +153,67 @@
+@@ -131,12 +142,67 @@ export default async function archiveHandler(
          } else if (link.url) {
            await page.goto(link.url, { waitUntil: "domcontentloaded" });
-
+ 
 +          const initialTitle = await page.title().catch(() => "");
 +
 +          if (isCloudflareTitle(initialTitle) && link.url) {
@@ -119,16 +106,16 @@ diff --git a/apps/worker/lib/archiveHandler.ts b/apps/worker/lib/archiveHandler.
            if (link.monolith?.endsWith(".html")) {
              // Use Monolith content instead of page
              const file = await readFile(link.monolith);
-
+ 
 -            if (file.contentType == "text/html") {
 +            if (file.contentType === "text/html") {
                const fileContent = file.file;
-
+ 
                if (typeof fileContent === "string") {
-@@ -162,6 +228,18 @@
+@@ -151,6 +217,18 @@ export default async function archiveHandler(
              }
            }
-
+ 
 +          if (isCloudflareTitle(link.name)) {
 +            const title = await page.title().catch(() => undefined);
 +            if (title && !isCloudflareTitle(title)) {
@@ -145,20 +132,19 @@ diff --git a/apps/worker/lib/archiveHandler.ts b/apps/worker/lib/archiveHandler.
              const description = document.querySelector(
                'meta[name="description"]'
 diff --git a/apps/worker/lib/browser.ts b/apps/worker/lib/browser.ts
-index 203b67f94..0b566312e 100644
 --- a/apps/worker/lib/browser.ts
 +++ b/apps/worker/lib/browser.ts
 @@ -6,6 +6,8 @@ import {
    type BrowserContextOptions,
  } from "playwright";
-
+ 
 +import axios from "axios";
 +
  export function getBrowserOptions(): LaunchOptions {
    let browserOptions: LaunchOptions = {
      // headless: false,
-@@ -57,3 +59,63 @@ export async function launchBrowser(): Promise<Browser> {
-
+@@ -59,3 +61,63 @@ export async function launchBrowser(): Promise<Browser> {
+ 
    return chromium.launch(browserOptions);
  }
 +
@@ -224,14 +210,23 @@ index 203b67f94..0b566312e 100644
 diff --git a/apps/worker/lib/preservationScheme/handleArchivePreview.ts b/apps/worker/lib/preservationScheme/handleArchivePreview.ts
 --- a/apps/worker/lib/preservationScheme/handleArchivePreview.ts
 +++ b/apps/worker/lib/preservationScheme/handleArchivePreview.ts
-@@ -1,5 +1,6 @@
+@@ -1,10 +1,13 @@
  import { Collection, Link, User } from "@linkwarden/prisma/client";
  import { Page } from "playwright";
 +import { URL } from "node:url";
  import { generatePreview } from "@linkwarden/lib/generatePreview";
  import { createFile } from "@linkwarden/filesystem";
  import { prisma } from "@linkwarden/prisma";
-@@ -18,45 +19,91 @@
+-import { safeFetch } from "@linkwarden/lib/safeFetch";
+-import { UnsafeUrlError } from "@linkwarden/lib/ssrf";
++import {
++  assertUrlIsSafeForServerSideFetch,
++  UnsafeUrlError,
++} from "@linkwarden/lib/ssrf";
+ 
+ type LinksAndCollectionAndOwner = Link & {
+   collection: Collection & {
+@@ -16,42 +18,91 @@ const handleArchivePreview = async (
    link: LinksAndCollectionAndOwner,
    page: Page
  ) => {
@@ -267,10 +262,10 @@ diff --git a/apps/worker/lib/preservationScheme/handleArchivePreview.ts b/apps/w
 +
 +    return null;
    });
-
+ 
    let previewGenerated = false;
-
-   if (ogImageUrl) {
+ 
+-  if (ogImageUrl && !link.preview?.startsWith("archive")) {
 -    if (
 -      !ogImageUrl.startsWith("http://") &&
 -      !ogImageUrl.startsWith("https://")
@@ -280,13 +275,14 @@ diff --git a/apps/worker/lib/preservationScheme/handleArchivePreview.ts b/apps/w
 -        origin + (ogImageUrl.startsWith("/") ? ogImageUrl : "/" + ogImageUrl);
 -    }
 -
++  if (ogImageUrl) {
      try {
--      await assertUrlIsSafeForServerSideFetch(ogImageUrl);
--      const imageResponse = await page.goto(ogImageUrl);
+-      const imageResponse = await safeFetch(ogImageUrl);
 +      const resolvedOgImageUrl = new URL(ogImageUrl, page.url()).toString();
 +      await assertUrlIsSafeForServerSideFetch(resolvedOgImageUrl);
-
--      if (imageResponse && !link.preview?.startsWith("archive")) {
+ 
+-      if (imageResponse.ok) {
+-        const buffer = await imageResponse.buffer();
 +      const userAgent = await page
 +        .evaluate(
 +          () =>
@@ -314,19 +310,17 @@ diff --git a/apps/worker/lib/preservationScheme/handleArchivePreview.ts b/apps/w
 +        contentType?.startsWith("image") &&
 +        !link.preview?.startsWith("archive")
 +      ) {
-         const buffer = await imageResponse.body();
++        const buffer = await imageResponse.body();
          previewGenerated = await generatePreview(
            buffer,
            link.collectionId,
            link.id
          );
--      }
-
--      await page.goBack();
++
 +        if (previewGenerated) {
 +          console.log("Successfully generated preview from og:image");
 +        }
-+      }
+       }
      } catch (error) {
        if (!(error instanceof UnsafeUrlError)) {
 -        throw error;
@@ -335,14 +329,13 @@ diff --git a/apps/worker/lib/preservationScheme/handleArchivePreview.ts b/apps/w
 +      previewGenerated = false;
      }
    }
-
+ 
    if (!previewGenerated && !link.preview?.startsWith("archive")) {
 +    console.log("Falling back to screenshot preview");
      await page
        .screenshot({ type: "jpeg", quality: 20 })
        .then(async (screenshot) => {
 diff --git a/apps/worker/tsconfig.json b/apps/worker/tsconfig.json
-index 5f11a5130..9198f9e17 100644
 --- a/apps/worker/tsconfig.json
 +++ b/apps/worker/tsconfig.json
 @@ -10,7 +10,8 @@
@@ -355,31 +348,4 @@ index 5f11a5130..9198f9e17 100644
      "moduleResolution": "NodeNext"
    }
  }
-diff --git a/docker-compose.yml b/docker-compose.yml
-index 6523d8404..8c06b2548 100644
---- a/docker-compose.yml
-+++ b/docker-compose.yml
-@@ -11,7 +11,7 @@ services:
-       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
-     restart: always
-     # build: . # uncomment to build from source
--    image: ghcr.io/linkwarden/linkwarden:latest # comment to build from source
-+    image: ghcr.io/yurisasc/linkwarden:latest # comment to build from source
-     ports:
-       - 3000:3000
-     volumes:
-@@ -19,6 +19,7 @@ services:
-     depends_on:
-       - postgres
-       - meilisearch
-+      - flaresolverr
-   meilisearch:
-     image: getmeili/meilisearch:v1.12.8
-     restart: always
-@@ -26,3 +27,6 @@ services:
-       - .env
-     volumes:
-       - ./meili_data:/meili_data
-+  flaresolverr:
-+    image: ghcr.io/flaresolverr/flaresolverr:latest
-+    restart: always
+
