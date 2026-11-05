@@ -12,6 +12,12 @@
   # No auth of its own: a design's URL is its only key
   sslProxyConfig = import ./non-functional/ssl.nix { inherit serviceName; };
 
+  observability.probes = {
+    enable = true;
+    impl = ./non-functional/probes;
+    prometheusImpl = ./non-functional/probes/prometheus.nix;
+  };
+
   # Designs, revisions and uploaded STLs all live in Postgres
   database = {
     create = true;
