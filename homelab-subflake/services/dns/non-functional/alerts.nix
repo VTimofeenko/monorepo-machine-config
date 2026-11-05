@@ -13,8 +13,17 @@ in
   Alert = [
     {
       title = "High SERVFAIL rate";
-      expr = ''rate(unbound_answer_rcodes_total{rcode="SERVFAIL",resource="srv:${serviceName}"}[5m]) / rate(unbound_answer_rcodes_total{resource="srv:${serviceName}"}[5m]) > 0.05'';
-      description = "More than 5% of responses are SERVFAIL. Upstreams may be unreachable.";
+      # sum by instance: without it the ratio matches SERVFAIL against itself (always 1).
+      # The count floor keeps one client retrying one dead name from tripping a quiet resolver.
+      expr = ''
+        (
+          sum by (instance) (rate(unbound_answer_rcodes_total{rcode="SERVFAIL",resource="srv:${serviceName}"}[5m]))
+            / sum by (instance) (rate(unbound_answer_rcodes_total{resource="srv:${serviceName}"}[5m]))
+          > 0.05
+        )
+        and sum by (instance) (increase(unbound_answer_rcodes_total{rcode="SERVFAIL",resource="srv:${serviceName}"}[5m])) > 20
+      '';
+      description = "More than 5% (and over 20) of responses in 5m are SERVFAIL. Check srv_dns.upstream_responses to tell a failing upstream from a dead domain.";
     }
   ];
   Error = [
