@@ -1419,11 +1419,11 @@
         "nixpkgs": "nixpkgs_14"
       },
       "locked": {
-        "lastModified": 1793908436,
-        "narHash": "sha256-Rs3sNxIe5Ryg1U8JVrUbiWj80tk1VXP/efx3B1z+Hak=",
+        "lastModified": 1793917995,
+        "narHash": "sha256-cDY6tPl+P/hTiK78iAXcdCB9VKe9bsilPryOjZ2AMIg=",
         "ref": "refs/heads/master",
-        "rev": "650d01fc945741343cbf2dba4a23a056f3e14d18",
-        "revCount": 451,
+        "rev": "4ffa904dac89aabf88abe1852388d1a6ebc79f8a",
+        "revCount": 452,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/homelab/private-modules.git"
       },
