@@ -32,4 +32,5 @@
     "^(\\d+\\.\\d+\\.\\d+)$"
   ];
   youtube-rss-server = { };
+  reopenscad = { };
 }
