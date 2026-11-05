@@ -6,7 +6,7 @@
 
   Also sets up a mapping between hostnames and IPs that vector does on the fly.
 */
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 let
 
   loggingConfig = lib.homelab.getServiceLogging "dns";
@@ -25,6 +25,9 @@ in
         dnstap-enable = true;
         dnstap-ip = "127.0.0.1@9000";
         dnstap-tls = false;
+        # Upstream replies come from a wildcard socket: the identity is what tells the resolvers apart
+        dnstap-send-identity = true;
+        dnstap-identity = config.networking.hostName;
         # dnstap-socket-path = config.systemd.sockets.vector.socketConfig.ListenFIFO;
 
         # Log all messages for now
@@ -43,8 +46,8 @@ in
         # Enable to log forwarder query messages.
         dnstap-log-forwarder-query-messages = false;
 
-        # Enable to log forwarder response messages.
-        dnstap-log-forwarder-response-messages = false;
+        # Enable to log forwarder response messages. Per-upstream rcode and latency.
+        dnstap-log-forwarder-response-messages = true;
       };
     };
 

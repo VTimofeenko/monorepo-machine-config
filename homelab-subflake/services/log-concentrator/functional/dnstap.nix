@@ -19,6 +19,14 @@ in
       source = # vrl
         ''
           .timestamp = from_unix_timestamp!(.time, unit: "nanoseconds")
+          # Responses carry the query's time too: latency = timestamp - query_timestamp
+          .query_timestamp = null
+          if is_integer(.requestData.time) {
+              .query_timestamp = from_unix_timestamp!(.requestData.time, unit: "nanoseconds")
+          }
+
+          # Resolver hostname (dnstap identity)
+          .server_identity = .serverId || ""
 
           # Network details
           .client_ip = .sourceAddress
@@ -61,6 +69,8 @@ in
 
           # Remove original nested JSON to keep payload clean
           del(.responseData)
+          del(.requestData)
+          del(.serverId)
           del(.dataType)
           del(.dataTypeId)
           del(.messageTypeId)
