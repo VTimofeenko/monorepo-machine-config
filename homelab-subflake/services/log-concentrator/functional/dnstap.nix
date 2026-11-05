@@ -48,9 +48,12 @@ in
           .flag_ra = .responseData.header.ra
 
           # Questions (Parallel Arrays): practically always one, but dnstap allows more
+          # Queries (e.g. to upstreams) only have a request message
           questions = []
           if is_array(.responseData.question) {
               questions = array!(.responseData.question)
+          } else if is_array(.requestData.question) {
+              questions = array!(.requestData.question)
           }
           .question_names = map_values(questions) -> |v| { v.domainName || "" }
           .question_types = map_values(questions) -> |v| { v.questionType || "" }

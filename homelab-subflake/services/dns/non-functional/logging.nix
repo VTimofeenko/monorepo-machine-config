@@ -43,8 +43,8 @@ in
         # Enable to log client response messages. These are responses from Unbound to clients.
         dnstap-log-client-response-messages = true;
 
-        # Enable to log forwarder query messages.
-        dnstap-log-forwarder-query-messages = false;
+        # Enable to log forwarder query messages. Sent minus answered = upstream timeouts.
+        dnstap-log-forwarder-query-messages = true;
 
         # Enable to log forwarder response messages. Per-upstream rcode and latency.
         dnstap-log-forwarder-response-messages = true;
