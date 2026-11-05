@@ -10,8 +10,17 @@
   Error = [
     {
       title = "High SERVFAIL rate";
-      expr = ''rate(nsd_queries_by_rcode_total{rcode="SERVFAIL",resource="srv:${serviceName}"}[5m]) / rate(nsd_queries_total{resource="srv:${serviceName}"}[5m]) > 0.05'';
-      description = "More than 5% of responses are SERVFAIL. NSD may be misconfigured or zones may be broken.";
+      # sum by instance: only the numerator has `rcode`, so a plain division matches nothing.
+      # Own zones only, so a low floor; it keeps one retrying client off the quiet instance.
+      expr = ''
+        (
+          sum by (instance) (rate(nsd_queries_by_rcode_total{rcode="SERVFAIL",resource="srv:${serviceName}"}[5m]))
+            / sum by (instance) (rate(nsd_queries_total{resource="srv:${serviceName}"}[5m]))
+          > 0.05
+        )
+        and sum by (instance) (increase(nsd_queries_by_rcode_total{rcode="SERVFAIL",resource="srv:${serviceName}"}[5m])) > 5
+      '';
+      description = "More than 5% (and over 5) of responses in 5m are SERVFAIL. NSD may be misconfigured or zones may be broken.";
     }
     {
       title = "Answer TX failures";
