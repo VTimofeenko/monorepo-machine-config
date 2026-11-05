@@ -152,6 +152,7 @@ rec {
         inputs.base.nixosModules.excalidash
         inputs.base.nixosModules.filabridge
         inputs.base.nixosModules.youtube-rss-server
+        inputs.base.nixosModules.reopenscad
         { programs.myNeovim.enable = true; }
       ];
 
