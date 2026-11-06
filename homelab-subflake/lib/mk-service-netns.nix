@@ -150,9 +150,22 @@ in
     after = [ "netns-${nsName}.service" ];
     serviceConfig = {
       NetworkNamespacePath = "/run/netns/${nsName}";
+      # `/etc/resolv.conf` is a symlink into /run/systemd/resolve, so this
+      # lands on the stub file there: hide only resolved's sockets, not the dir
       BindReadOnlyPaths = [ "${resolvConf}:/etc/resolv.conf" ];
+      # glibc would otherwise resolve through the host's nscd/resolved sockets,
+      # i.e. as the host. Without them it falls back to `dns` from resolv.conf
+      InaccessiblePaths = [
+        "-/run/nscd"
+        "-/run/systemd/resolve/io.systemd.Resolve"
+        "-/run/systemd/resolve/io.systemd.Resolve.Monitor"
+      ];
     };
   });
+
+  # Same view for `ip netns exec` (it binds /etc/netns/<ns>/*). Debugging from
+  # there still goes through nscd though; use `nsenter` into the unit instead
+  environment.etc."netns/${nsName}/resolv.conf".source = resolvConf;
 
   # Handshakes for the service arrive at the host
   networking.firewall.interfaces.backbone.allowedUDPPorts = [ own.port ];
