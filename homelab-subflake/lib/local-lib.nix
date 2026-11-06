@@ -109,6 +109,8 @@ in
 
   mkIscsi = lib.modules.importApply ./mk-iscsi.nix;
 
+  mkServiceNetns = lib.modules.importApply ./mk-service-netns.nix;
+
   # Construct imports from specified directory directory by auto-including all files
   mkImportsFromDir =
     path:
