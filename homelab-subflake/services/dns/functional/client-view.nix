@@ -27,7 +27,14 @@ in
 {
   services.unbound.settings.server.access-control-view = [
     "${client.settings.clientSubNet}.1/24 ${clientNetViewName}"
-  ];
+  ]
+  # Services with their own backbone-inner identity (see `mkServiceNetns`) are
+  # in the same spot: the LAN answer would send them through the gateway,
+  # which only forwards them to WAN
+  ++ (
+    (lib.homelab.getNetwork "backbone-inner").servicesInNetwork
+    |> lib.mapAttrsToList (_: it: "${it.ipAddress}/32 ${clientNetViewName}")
+  );
 
   services.unbound.settings.view = [
     {
