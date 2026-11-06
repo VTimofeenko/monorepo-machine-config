@@ -3,6 +3,10 @@
 
   If the `localDB` variable is true, restic will perform a local database dump
   and back it up too.
+
+  `dynamicPaths` is a function `pkgs: [ "<shell command>" ]`; each command prints
+  extra paths to back up, one per line. Paths are taken literally: restic treats
+  `--files-from` lines as globs, so glob metacharacters are escaped here.
 */
 {
   paths,
@@ -11,6 +15,7 @@
   localDB ? false, # If set to true, adds `pg_dumpall` script to backup the result of the DB dump
   localOnly ? false, # If set to true, do not store backups remotely
   backupName ? null,
+  dynamicPaths ? null,
   serviceName,
 }:
 {
@@ -42,6 +47,23 @@ let
       null;
 
   dumpFile = if localDB then "pg_dumpall.sql.gz" else null;
+
+  dynamicFilesFrom =
+    let
+      listCmds =
+        lib.optional localDB "ls $RUNTIME_DIRECTORY/${dumpFile}"
+        ++ lib.optionals (dynamicPaths != null) (dynamicPaths pkgs);
+    in
+    if listCmds == [ ] then
+      null
+    else
+      ''
+        #!${pkgs.runtimeShell}
+        set -eo pipefail
+        {
+        ${lib.concatStringsSep "\n" listCmds}
+        } | ${lib.getExe pkgs.gnused} 's/[][*?\]/\\&/g'
+      '';
 in
 {
   imports = [
@@ -58,8 +80,7 @@ in
         "${serviceName}-localbackup" = {
           inherit exclude paths pruneOpts;
           timerConfig.OnCalendar = schedule;
-          # If `localDB` is set, `dynamicFilesFrom` will list the dump
-          dynamicFilesFrom = if localDB then "ls $RUNTIME_DIRECTORY/${dumpFile}" else null;
+          inherit dynamicFilesFrom;
 
           backupPrepareCommand = dumpScript;
 
@@ -101,8 +122,7 @@ in
       services.restic.backups."${serviceName}-rsync-net-backup" = {
         inherit exclude paths pruneOpts;
 
-        # If `localDB` is set, `dynamicFilesFrom` will list the dump
-        dynamicFilesFrom = if localDB then "ls $RUNTIME_DIRECTORY/${dumpFile}" else null;
+        inherit dynamicFilesFrom;
 
         repository = "sftp:${(lib.homelab.getService "rsync-net").settings.sftpConnectString}:${actualBackupName}";
         timerConfig.OnCalendar = schedule;
@@ -140,4 +160,3 @@ in
     })
   ];
 }
-

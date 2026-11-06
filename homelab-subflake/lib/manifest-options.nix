@@ -283,6 +283,16 @@ in
               default = "daily";
               description = "Backup schedule (OnCalendar value)";
             };
+            dynamicPaths = mkOption {
+              type = types.nullOr (types.functionTo (types.listOf types.str));
+              default = null;
+              example = lib.literalExpression ''pkgs: [ "''${lib.getExe pkgs.fd} --absolute-path --extension nfo --base-directory /var/lib/foo" ]'';
+              description = ''
+                Function `pkgs: [ "<shell command>" ]`. Each command prints extra
+                paths to back up, one per line; they are taken literally (glob
+                metacharacters are escaped before being passed to restic).
+              '';
+            };
             localDB = mkOption {
               type = types.bool;
               default = false;
@@ -309,7 +319,7 @@ in
               description = ''
                 Path to a NixOS module for additional backup customizations.
                 Called via importApply with { serviceName } as static arg.
-                Use this to override fields like dynamicFilesFrom or repository.
+                Use this to override fields like repository.
               '';
             };
           };
@@ -373,20 +383,22 @@ in
     };
 
     database = mkOption {
-      type = types.nullOr (types.submodule {
-        options = {
-          create = mkOption {
-            type = types.bool;
-            default = false;
-            description = "Signal to the db service to create a PostgreSQL user and database for this service";
+      type = types.nullOr (
+        types.submodule {
+          options = {
+            create = mkOption {
+              type = types.bool;
+              default = false;
+              description = "Signal to the db service to create a PostgreSQL user and database for this service";
+            };
+            impl = mkOption {
+              type = types.nullOr types.path;
+              default = null;
+              description = "NixOS module configuring the service's database client connection";
+            };
           };
-          impl = mkOption {
-            type = types.nullOr types.path;
-            default = null;
-            description = "NixOS module configuring the service's database client connection";
-          };
-        };
-      });
+        }
+      );
       default = null;
       description = "Database configuration";
     };

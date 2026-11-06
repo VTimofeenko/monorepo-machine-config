@@ -157,6 +157,7 @@ let
                     localDB
                     localOnly
                     backupName
+                    dynamicPaths
                     ;
                   serviceName = bkpServiceName;
                 })

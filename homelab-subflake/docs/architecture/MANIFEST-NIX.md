@@ -101,6 +101,7 @@ serviceName: {
     | { paths : [String]
         exclude? : [String]
         schedule? : String
+        dynamicPaths? : Pkgs -> [String]  # Shell commands printing extra paths (taken literally)
         localDB? : Bool         # Include database dump
         localOnly? : Bool       # Skip remote backup
       }
