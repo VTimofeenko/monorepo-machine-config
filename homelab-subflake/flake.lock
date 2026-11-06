@@ -944,11 +944,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793737762,
-        "narHash": "sha256-H1LXdQo8aqoC3Nd4hnMZuVgZ46W2rFx2zSUFujjycf8=",
+        "lastModified": 1793982943,
+        "narHash": "sha256-+sJhx7JKQB9Hip93OTXST4pQWYJnpHoiacLT3Y8NmH4=",
         "ref": "refs/heads/master",
-        "rev": "e4e56a7d9fd27abca64b871fe10cc07c83922948",
-        "revCount": 11,
+        "rev": "86f489a8b6ad70d3f9c1dcc425c81dbdc60d1d08",
+        "revCount": 15,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/homelab/miniflux-yt-helper.git"
       },
