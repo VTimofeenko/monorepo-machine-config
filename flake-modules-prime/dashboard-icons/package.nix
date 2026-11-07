@@ -4,13 +4,13 @@
 }:
 stdenv.mkDerivation {
   pname = "dashboard-icons";
-  version = "0-unstable-2025-11-28";
+  version = "0-unstable-2026-11-06";
 
   src = fetchFromGitHub {
     owner = "homarr-labs";
     repo = "dashboard-icons";
-    rev = "f29af6c5d79a03faab6818a8bc53c2b2064d5956";
-    hash = "sha256-SY2s1vhS44YztAywsdZ4wxLdl8Yi86SDd00U6ARqe94=";
+    rev = "59f1e9a4108f4f510f41e9588f078631de1e1405";
+    hash = "sha256-4AOGNLbZbUbt+AY5GilnsTt8H3EUubPPNATSNz5dT1c=";
   };
 
   dontBuild = true;
