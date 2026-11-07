@@ -10,8 +10,8 @@
   Identity comes from data-flake: `<service>.network.backbone-inner`. Other
   hosts learn the peer through the `backbone-inner-net` trait.
 
-  #TODO: ACL: `clearnet` means unrestricted egress, as opposed to whitelisted
-  #domain list. I need to come back to this.
+  With `egressRules` the hub enforces an allowlist, filled as the service
+  resolves through it; the namespace then resolves through the hub only.
 
   [1]: https://www.wireguard.com/netns/
 */
@@ -86,7 +86,6 @@ let
     |> lib.filterAttrs (_: it: it ? port && it.protocol != "udp")
     |> lib.mapAttrsToList (_: it: toString it.port);
 
-  # TODO: ACLs here
   firewallRules = pkgs.writeText "${nsName}-netns.nft" ''
     table inet filter {
       chain input {
@@ -101,8 +100,11 @@ let
     }
   '';
 
+  # Other DNS servers' answers would not open the hub's allowlist
+  dnsServers =
+    if own ? egressRules then [ net.hostsInNetwork.${hubName}.ipAddress ] else net.dnsServers;
   resolvConf = pkgs.writeText "${nsName}-resolv.conf" (
-    net.dnsServers |> map (it: "nameserver ${it}") |> lib.concatLines
+    dnsServers |> map (it: "nameserver ${it}") |> lib.concatLines
   );
 in
 {
