@@ -54,12 +54,6 @@ let
       ];
     }
     |> (pkgs.formats.yaml { }).generate "efm-config.yaml";
-
-  # Words that Harper's spellchecker shouldn't flag
-  # 's' triggers from phrases like "`foo`'s are often baz."
-  harperUserDict = pkgs.writeText "harper-user-dict.txt" ''
-    s
-  '';
 in
 {
   plugins = [
@@ -78,7 +72,6 @@ in
         cmd = { "${lib.getExe pkgs-unstable.harper}", "--stdio" },
         settings = {
           ["harper-ls"] = {
-            userDictPath = "${harperUserDict}",
             linters = {
               ToDoHyphen = false,
               ExpandMemoryShorthands = false,
