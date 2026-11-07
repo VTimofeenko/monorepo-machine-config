@@ -133,13 +133,13 @@ in
 
 python3Packages.buildPythonApplication rec {
   pname = "prometheus-mcp-server";
-  version = "1.6.0";
+  version = "1.6.2";
 
   src = fetchFromGitHub {
     owner = "pab1it0";
     repo = "prometheus-mcp-server";
     tag = "v${version}";
-    hash = "sha256-8MusCGOLHp0wXEgBeXLRIOUjptaVqTK21Ns+okYB4Bo=";
+    hash = "sha256-fdV4vZuRrBX0U2a8kAVFft+za6qaS+1fU1CalNbsSTE=";
   };
 
   pyproject = true;
