@@ -89,13 +89,13 @@ in
 
 python3Packages.buildPythonApplication rec {
   pname = "homebox-mcp";
-  version = "1.1.0";
+  version = "1.4.0";
 
   src = fetchFromGitHub {
     owner = "dgahagan";
     repo = "homebox-mcp";
     tag = "v${version}";
-    hash = "sha256-VzUefJwTbrlwm52f1aw1q6xlbTIBVJrxDNI05QjCN0I=";
+    hash = "sha256-QjNVfcodwHEstMXEu0WBZrRwpYVT6cqJ/xIs6o8/lvE=";
   };
 
   pyproject = true;
