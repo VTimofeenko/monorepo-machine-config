@@ -15,7 +15,15 @@
     paths = [ "/var/lib/homebox/data" ];
   };
 
-  observability = { }; # TODO: implement probe and metrics https://homebox.software/en/advanced/opentelemetry/
+  # Homebox only pushes OTLP (no scrape endpoint), so it is covered by a probe
+  observability = {
+    probes = {
+      enable = true;
+      impl = ./non-functional/probes;
+      prometheusImpl = ./non-functional/probes/prometheus.nix;
+    };
+    alerts.prometheusImpl = ./non-functional/alerts.nix;
+  };
 
   dashboard = {
     category = "Home";
