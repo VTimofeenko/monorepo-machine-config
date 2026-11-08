@@ -33,4 +33,5 @@
   ];
   youtube-rss-server = { };
   reopenscad = { };
+  rethink = { };
 }
