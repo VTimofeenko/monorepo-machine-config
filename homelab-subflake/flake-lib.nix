@@ -153,6 +153,7 @@ rec {
         inputs.base.nixosModules.filabridge
         inputs.base.nixosModules.youtube-rss-server
         inputs.base.nixosModules.reopenscad
+        inputs.base.nixosModules.rethink
         { programs.myNeovim.enable = true; }
       ];
 
