@@ -14,13 +14,13 @@
 
 buildNpmPackage (finalAttrs: {
   pname = "rethink";
-  version = "0.1.4";
+  version = "0.1.4-unstable-2026-11-08";
 
   src = fetchFromGitHub {
     owner = "anszom";
     repo = "rethink";
-    rev = "v${finalAttrs.version}";
-    hash = "sha256-j/hHVfAiyRWl9A34ueryCeeC3GBADOjHCyMIpnITZ3g=";
+    rev = "e99f4947e45182b6d3e0286449a2a5f466050d3d";
+    hash = "sha256-wUjQDJEvG2xbLpDg5gR9YAI4ZaJ0zXG8XHYtYCJMOIM=";
   };
 
   npmDepsHash = "sha256-eP4OVLIvCsjA4hGqwzEjpp84FdRNW80yMpR5P8YANmY=";
@@ -31,7 +31,13 @@ buildNpmPackage (finalAttrs: {
   npmFlags = [ "--ignore-scripts" ];
 
   # No .git in the source; write-version.sh takes the revision from here
-  env.GIT_REVISION = "v${finalAttrs.version}";
+  env.GIT_REVISION = finalAttrs.src.rev;
+
+  postPatch = ''
+    substituteInPlace cloud/ha_bridge.ts \
+      --replace-fail "// aliases:" "// aliases:
+        RV13D4ASJW_D_US: RV13D5JSD_D_US, // LG DLEX4000B electric dryer"
+  '';
 
   installPhase = ''
     runHook preInstall
