@@ -15,5 +15,6 @@ in
 
   imports = [
     ./non-functional/sso.nix
+    (lib.localLib.mkServiceNetns { serviceName = "pgadmin"; })
   ];
 }
