@@ -27,6 +27,7 @@ in
       "zha"
       "wiz"
       "ntfy"
+      "mcp_server" # TODO(26.11): deploy proper MCP
     ]
     ++ srvConfig.components;
 
