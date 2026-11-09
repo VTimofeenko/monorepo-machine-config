@@ -4,5 +4,9 @@ _: {
     view sends `*.lgthinq.com` here and the firewall lets them reach :443
     and :8883.
   */
-  appliances = [ "oven" "washer" "dryer" ];
+  appliances = [
+    "oven"
+    "washer"
+    "dryer"
+  ];
 }
