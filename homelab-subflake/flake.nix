@@ -15,7 +15,7 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     impermanence.url = "github:nix-community/impermanence";
-    deploy-rs.follows = "base/deploy-rs";
+    deploy-rs.url = "github:serokell/deploy-rs";
     devshell.follows = "base/devshell";
 
     nur = {
@@ -64,7 +64,6 @@
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
-        crane.follows = "base/crane";
       };
     };
     home-manager = {

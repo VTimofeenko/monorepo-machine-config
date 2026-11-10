@@ -1,5 +1,5 @@
 # Devshell commands to check various things
-{ pkgs, data-flake, ... }:
+{ pkgs, ... }:
 [
   {
     help = "Check the DNS replies";
@@ -29,47 +29,6 @@
         };
       in
       pkgs.lib.getExe checkScript;
-  }
-  {
-    help = "Deploy dashboard";
-    name = "deploy-dashboard";
-    command =
-      let
-        inherit (data-flake) data;
-        filedumpHost = "${data.services.all.filedump.onHost}.${data.networks.mgmt.domain}";
-      in
-      ''
-        ${pkgs.emacs}/bin/emacsclient -eval '(org-batch-store-agenda-views)' &&
-        ${pkgs.openssh}/bin/scp ~/code/infra/services/dashy/home_maint.html \
-                                ${filedumpHost}:/var/lib/filedump'';
-  }
-
-  {
-    help = "Switch data-flake to local source";
-    name = "switch-data-flake-source";
-    command =
-      # bash
-      ''
-        DATA_FLAKE_SOURCE=$(nix flake metadata $PRJ_ROOT --json | jq --raw-output '.locks.nodes."data-flake".original.type')
-
-        if [ "$DATA_FLAKE_SOURCE" == "git" ]; then
-          # disable remote_src
-          perl -p -i -e 's/^(\s+)(url.* # REMOTE_SRC$)/\1# \2/' $PRJ_ROOT/flake.nix
-          # enable local_src
-          perl -p -i -e 's/^(\s+)# (url.* # LOCAL_SRC$)/\1\2/' $PRJ_ROOT/flake.nix
-          echo "✅Switched data flake to local"
-        else
-          # disable local_src
-          perl -p -i -e 's/^(\s+)(url.* # LOCAL_SRC$)/\1# \2/' $PRJ_ROOT/flake.nix
-          # enable remote_src
-          perl -p -i -e 's/^(\s+)# (url.* # REMOTE_SRC$)/\1\2/' $PRJ_ROOT/flake.nix
-          echo "✅Switched data flake to remote"
-          # At this point, I will often bump the data-flake input by hand anyway
-          git restore flake.lock
-        fi
-
-      '';
-
   }
 ]
 # `flake management`, next to my-flake-modules' `flake-bump-<input>`

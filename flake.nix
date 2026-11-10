@@ -2,40 +2,9 @@
   description = "NixOS and Home Manager configurations for my machines";
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-26.05";
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    home-manager.url = "github:rycee/home-manager/release-26.05";
     nixpkgs-lib.url = "github:NixOS/nixpkgs/nixos-unstable?dir=lib";
 
-    nur = {
-      url = "github:nix-community/NUR";
-      inputs.flake-parts.follows = "flake-parts";
-    };
-
     nixpkgs-stable.follows = "nixpkgs";
-
-    deploy-rs.url = "github:serokell/deploy-rs";
-    agenix = {
-      url = "github:ryantm/agenix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
-    # Theming and stuff
-    base16 = {
-      url = "github:SenchoPens/base16.nix";
-    };
-
-    color_scheme = {
-      url = "github:ajlende/base16-atlas-scheme";
-      flake = false;
-    };
-
-    # Service that remaps arbitrary keyboard combinations
-    xremap-flake = {
-      url = "github:xremap/nix-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
-      inputs.crane.follows = "crane";
-    };
 
     devshell.url = "github:numtide/devshell";
     devshell.inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -72,9 +41,6 @@
         treefmt-nix.follows = "treefmt-nix";
       };
     };
-    # Rust
-    crane.url = "github:ipetkov/crane";
-
     # Unused at the moment. TODO: use this with the local packages
     # fenix = {
     #   url = "github:nix-community/fenix";
@@ -86,67 +52,14 @@
     #   url = "github:rustsec/advisory-db";
     #   flake = false;
     # };
-
-    data-flake = {
-      url = "git+ssh://gitea@gitea.srv.vtimofeenko.com/spacecadet/data-flake.git"; # REMOTE_SRC
-      # url = "path:///home/spacecadet/code/data-flake"; # LOCAL_SRC
-      inputs = {
-        devshell.follows = "devshell";
-        nixpkgs-lib.follows = "nixpkgs-lib";
-        nixpkgs-stable.follows = "nixpkgs-stable";
-        nixpkgs-unstable.follows = "nixpkgs-unstable";
-        pre-commit-hooks-nix.follows = "pre-commit-hooks-nix";
-        flake-parts.follows = "flake-parts";
-        nixpkgs.follows = "nixpkgs-unstable";
-        agenix.follows = "agenix";
-        my-flake-modules.follows = "my-flake-modules";
-        treefmt-nix.follows = "treefmt-nix";
-        stub-flake.follows = "stub-flake";
-        terranix.follows = "stub-flake";
-        nixpkgs-terraform-providers-bin.follows = "stub-flake";
-      };
-    };
-    # Empty flake
-    stub-flake.url = "github:VTimofeenko/stub-flake"; # A completely empty flake
-    disko = {
-      url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
-    docspell-flake = {
-      # url = "github:eikek/docspell?ref=v0.42.0";
-      url = "path:///home/spacecadet/code/forks/docspell/";
-      inputs.nixpkgs.follows = "nixpkgs-stable";
-    };
-
-    catppuccin.url = "git+https://github.com/VTimofeenko/catppucin-nix?ref=keep-gtk";
-
-    microvm = {
-      url = "github:astro/microvm.nix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
-    impermanence.url = "github:nix-community/impermanence";
   };
   outputs =
     inputs@{ flake-parts, self, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } (
-      { withSystem, flake-parts-lib, ... }:
+      { withSystem, ... }:
       let
         flakeModuleLoader = import ./lib/flake-module-loader.nix;
         inherit (inputs.nixpkgs-lib) lib; # A faster way to propagate lib to certain modules
-        inherit (flake-parts-lib) importApply;
-        /*
-          Import the public flake modules.
-
-          The attribute names don't matter
-        */
-        publicFlakeModules = {
-          hyprlandHelpersModule = importApply ./flake-modules/hyprland-helpers {
-            inherit withSystem lib self;
-          };
-          desktopEnvironment = importApply ./flake-modules/desktopEnvironment { inherit withSystem self; };
-        };
       in
       {
         imports = builtins.concatLists [
@@ -156,13 +69,7 @@
             inputs.pre-commit-hooks-nix.flakeModule
             inputs.treefmt-nix.flakeModule
           ]
-          # Construct imports from this flake's flake modules
-          (lib.lists.flatten (
-            map builtins.attrValues [
-              inputs.my-flake-modules.flake-modules
-              publicFlakeModules
-            ]
-          ))
+          (builtins.attrValues inputs.my-flake-modules.flake-modules)
           (flakeModuleLoader {
             dir = ./flake-modules-prime;
             inherit self withSystem lib;
@@ -176,63 +83,16 @@
         ];
         perSystem =
           {
-            config,
             inputs',
             pkgs,
             ...
           }:
           {
-            # WARN: There seems to be an odd interaction between crane and flake-parts.
-            # This interaction effectively causes crane to emit packages in weird systems (i686-linux, wasm32-wasi, etc.)
-            # This causes:
-            # 1. Probably slower eval
-            # 2. Noise in the logs (constant 'trace: using non-memoized system ...')
-            # 3. If overlayAttrs is set to {inherit (config) packages } then
-            #    the evaluation may look for legalegacyPackages.`wasm32-wasi`
-            #    which does not exist.
-            # I am setting it to a single package for now; I need to revisit it later
-            overlayAttrs = {
-              inherit (config.packages) hyprland-switch-lang-on-xremap;
-            };
-            legacyPackages.homeConfigurations =
-              let
-                /*
-                  Create the default homeManagerConfiguration with inherited pkgs.
-
-                  The provided attrset will be merged into the homeManagerConfiguration.
-
-                   Type: mkHmc :: attrset -> home-manger.lib.homeManagerConfiguration
-                */
-                mkHmc =
-                  attrset:
-                  inputs.home-manager.lib.homeManagerConfiguration (
-                    {
-                      inherit pkgs;
-                      extraSpecialArgs = {
-                        inherit inputs' inputs;
-                        selfModules = self.nixosModule;
-                        selfPkgs = self.packages;
-                      };
-                    }
-                    // attrset
-                  );
-              in
-              {
-                deck = mkHmc {
-                  modules = [
-                    ./modules/home-manager
-                    ./modules/home-manager/_perUser/deck.nix
-                    inputs.xremap-flake.homeManagerModules.default
-                    ./modules/de/xremap/shortcuts.nix
-                  ];
-                };
-              };
             bumpInputs = {
               # nixpkgs, nixpkgs-unstable and all inputs: `flake-bump-*` in
               # lib/devshellCmds.nix, across both flakes
               changingInputs = [
                 "my-flake-modules"
-                "data-flake"
               ];
             };
             # My modules config
@@ -247,10 +107,7 @@
             };
             devshells.default =
               let
-                devShellCmds = import ./lib/devshellCmds.nix {
-                  inherit pkgs;
-                  inherit (inputs) data-flake;
-                };
+                devShellCmds = import ./lib/devshellCmds.nix { inherit pkgs; };
               in
               {
                 env = [ ];
@@ -265,146 +122,41 @@
 
             pre-commit = import ./.dev/pre-commit.nix { inherit inputs' lib pkgs; };
           };
-        flake =
-          let
-            homelab = import ./lib/homelab.nix {
-              # NOTE: Overlays from inputs are passed here
-              inherit (inputs) nixpkgs self deploy-rs;
-              inherit (inputs.nixpkgs) lib;
+        flake = {
+          # flake-modules are passed through to the output of this flake
+          inherit (inputs.my-flake-modules) flake-modules;
+          nixosModules = {
+
+            # Maybe later I will add dynamic imports here
+            wireguard-refresh-fix = import ./modules/nixOS/wireguard-refresh-fix.nix;
+          };
+          templates = {
+            default = {
+              path = ./templates/base;
+              description = "Base template for my projects";
             };
-          in
-          {
-            # flake-modules are passed through to the output of this flake
-            inherit (inputs.my-flake-modules) flake-modules;
-            nixosModules = {
-
-              # Maybe later I will add dynamic imports here
-              wireguard-refresh-fix = import ./modules/nixOS/wireguard-refresh-fix.nix;
+            sample-check = {
+              path = ./templates/sample-check;
+              description = "Template for a sample check with home-manager.";
             };
-            nixosConfigurations =
-              let
-                specialArgs = inputs // {
-                  selfModules = self.nixosModules;
-                  selfPkgs = self.packages;
-                  selfHMModules = self.homeManagerModules;
-                };
-              in
-              # Iterates over the attrset of managed nodes, creating the nixosConfigurations per machine
-              (builtins.mapAttrs (
-                _: hostData:
-                homelab.mkSystem {
-                  inherit hostData specialArgs;
-                  inherit (inputs) data-flake nur;
-                }
-              ) (builtins.removeAttrs inputs.data-flake.data.hosts.managed [ "uranium" ])) # uranium lives in homelab-subflake
-
-              // (
-                # Create -seed configs for hosts provisioning
-                # Provisioning happens by
-                # nix run github:nix-community/nixos-anywhere -- --flake .#<hostName>-seed root@<IP>
-                lib.pipe
-                  [
-                    "nitrogen"
-                    "fluorine"
-                    "helium"
-                    "lanthanum"
-                    "neon"
-                    "sodium"
-                  ]
-                  [
-                    (map (hostName: {
-                      name = "${hostName}-seed";
-                      value = inputs.nixpkgs.lib.nixosSystem {
-                        inherit (inputs.data-flake.data.hosts.managed.${hostName}) system;
-                        modules = [
-                          inputs.data-flake.nixosModules.data
-                          inputs.disko.nixosModules.disko
-                          ./nixosConfigurations/${hostName}/seed
-                        ];
-                      };
-                    }))
-                    builtins.listToAttrs
-                  ]
-              )
-              // {
-                neutronium-x86_64 = inputs.nixpkgs.lib.nixosSystem {
-                  system = "x86_64-linux";
-                  modules = [
-                    "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-                    inputs.data-flake.nixosModules.data
-                    ./nixosConfigurations/neutronium
-                  ];
-                };
-                # FIXME: not implemented
-
-                # neptunium = inputs.nixpkgs.lib.nixosSystem {
-                #   system = "x86_64-linux";
-                #   modules = [
-                #     inputs.nur.nixosModules.nur
-                #     ./modules
-                #     ./modules/nixosSystems/neptunium
-                #   ];
-                #   inherit specialArgs;
-                # };
-              };
-            overlays.homelab =
-              _: prev:
-              withSystem prev.stdenv.hostPlatform.system (
-                { config, ... }:
-                {
-                  inherit (config.packages)
-                    hostsBlockList
-                    dashboard-icons
-                    ;
-                }
-              );
-
-            templates = {
-              default = {
-                path = ./templates/base;
-                description = "Base template for my projects";
-              };
-              sample-check = {
-                path = ./templates/sample-check;
-                description = "Template for a sample check with home-manager.";
-              };
-              rust-general-proj = {
-                path = ./templates/rust-general-proj;
-                description = "Rust project template";
-              };
-              python-general-proj = {
-                path = ./templates/python-general-proj;
-                description = "Python project template";
-              };
-              nix-run-uv = {
-                path = ./templates/nix-run-sample;
-                description = "A sample `nix run` with uv";
-              };
+            rust-general-proj = {
+              path = ./templates/rust-general-proj;
+              description = "Rust project template";
             };
-
-            serviceModules =
-              # find all directories with 'manifest.nix'
-              lib.fileset.fileFilter (file: file.name == "manifest.nix") ./.
-              |> lib.fileset.toList
-              # Turn the directories into strings
-              |> map toString
-              # Remove manifest.nix
-              |> map (lib.removeSuffix "/manifest.nix")
-              # Get the directory
-              |> map (builtins.match "^.*/services/(.*)")
-              # Every directory can have one and only one manifest.nix file, so this is fine
-              |> map lib.head
-              # Turn the directories into imports
-              |> map (it: {
-                "${it}" = import (./nixosModules/services + "/${it}/manifest.nix");
-              })
-              # Assemble the attrset of modules
-              |> lib.mergeAttrsList;
-
-            lib = {
-              inherit flakeModuleLoader;
+            python-general-proj = {
+              path = ./templates/python-general-proj;
+              description = "Python project template";
+            };
+            nix-run-uv = {
+              path = ./templates/nix-run-sample;
+              description = "A sample `nix run` with uv";
             };
           };
+
+          lib = {
+            inherit flakeModuleLoader;
+          };
+        };
       }
     );
 }

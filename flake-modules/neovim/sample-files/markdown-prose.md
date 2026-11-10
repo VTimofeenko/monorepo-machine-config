@@ -1,1 +1,0 @@
-The object was created.

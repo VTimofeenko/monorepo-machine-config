@@ -31,7 +31,7 @@ done
 # Inputs to update per flake; empty = all of them
 case $mode in
   nixpkgs)
-    top=(nixpkgs home-manager)
+    top=(nixpkgs)
     homelab=(base home-manager)
     ;;
   nixpkgs-unstable)
@@ -87,7 +87,6 @@ if [ -n "$release" ]; then
   fi
   sed -i -E \
     -e "s|^(\s*nixpkgs\.url = \"nixpkgs/nixos-)$current\"|\1$release\"|" \
-    -e "s|^(\s*home-manager\.url = \"github:rycee/home-manager/release-)$current\"|\1$release\"|" \
     flake.nix
   sed -i -E "s|(\"github:nix-community/home-manager/release-)$current\"|\1$release\"|" \
     homelab-subflake/flake.nix
