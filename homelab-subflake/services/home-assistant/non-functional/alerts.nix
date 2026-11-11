@@ -1,6 +1,10 @@
-{ serviceName, ... }:
+{ serviceName, lib, ... }:
 let
   grafanaDashboardId = "8b2bb3e2-0b78-48c0-9928-47de6cf7e138";
+  # Entities to skip (e.g. phones), defined privately
+  excludedBatteryEntities =
+    (lib.homelab.getSrvLib serviceName).constants.batteryAlertExcludedEntities or [ ];
+  batterySelector = ''resource="srv:${serviceName}", entity!~"${lib.concatStringsSep "|" excludedBatteryEntities}"'';
 in
 {
   Emergency = [
@@ -18,7 +22,7 @@ in
     }
     {
       title = "Low battery sensor";
-      expr = ''homeassistant_sensor_battery_percent{resource="srv:${serviceName}"} < 10 and homeassistant_sensor_battery_percent{resource="srv:${serviceName}"} >= 0'';
+      expr = "homeassistant_sensor_battery_percent{${batterySelector}} < 10 and homeassistant_sensor_battery_percent{${batterySelector}} >= 0";
       description = "A tracked device's battery is below 10%.";
     }
   ];
