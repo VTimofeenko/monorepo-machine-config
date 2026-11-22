@@ -133,6 +133,10 @@ in
         APPRISE_ATTACH_DIR = "${cfg.stateDir}/attach";
         APPRISE_PLUGIN_PATHS = concatStringsSep "," ([ "${cfg.stateDir}/plugin" ] ++ cfg.plugins);
         PYTHONPATH = "${appDir}:${pythonPath}";
+        # Each gunicorn worker keeps its own counters; without this /metrics
+        # answers from a random worker and counters jump between workers,
+        # which Prometheus reads as resets. Emptied on restart (RuntimeDirectory)
+        PROMETHEUS_MULTIPROC_DIR = "/run/apprise-api";
       }
       // (if cfg.aliases != { } then { APPRISE_STATEFUL_MODE = "simple"; } else { })
       // cfg.settings;
@@ -155,6 +159,7 @@ in
         Group = mkIf (!cfg.dynamicUser) cfg.group;
         DynamicUser = cfg.dynamicUser;
         StateDirectory = mkIf cfg.dynamicUser "apprise-api";
+        RuntimeDirectory = "apprise-api";
         WorkingDirectory = appDir;
         ExecStart = ''
           ${pkgs.python3Packages.gunicorn}/bin/gunicorn \
