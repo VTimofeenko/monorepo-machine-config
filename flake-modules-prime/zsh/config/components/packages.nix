@@ -1,5 +1,7 @@
 { pkgs, lib, ... }:
 let
+  # Hosts where `confirm` (poweroff/reboot aliases) requires typing the hostname
+  criticalHosts = [ "hydrogen" ];
   settings.packages =
     (builtins.attrValues {
       inherit (pkgs)
@@ -35,16 +37,27 @@ let
           home-manager switch --flake ''${DOTFILES_REPO_LOCATION}
         fi
       '')
-      # `confirm` is a simple wrapper for confirming that I really want to execute a command
+      # `confirm` is a simple wrapper for confirming that I really want to execute a command.
+      # On critical hosts the hostname has to be typed out instead of "y".
       (
         ''
-          echo "Confirm executing $1 command on '$(hostname)' machine?"
-
           CMD=$1
+          HOST=$(hostname)
+
+          case "$HOST" in
+            ${lib.concatStringsSep "|" criticalHosts})
+              echo "'$HOST' is a CRITICAL machine. Type its hostname to run $CMD:"
+              expected=$HOST
+              ;;
+            *)
+              echo "Confirm executing $CMD command on '$HOST' machine? [y/N]"
+              expected=y
+              ;;
+          esac
 
           read -r reply
 
-          if [[ "''${reply,,}" == "y" ]]; then
+          if [[ "''${reply,,}" == "$expected" ]]; then
             "$@"
           else
             echo "Not running $CMD"
