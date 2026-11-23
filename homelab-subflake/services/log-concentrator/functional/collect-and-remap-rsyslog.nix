@@ -13,6 +13,7 @@
     homelab.services.log-concentrator.rsyslogClients = [
       "nas"
       "ruckus-office"
+      "ruckus-garage"
     ];
 
     services.vector.settings = {
@@ -43,7 +44,13 @@
                 "info": 9,
                 "debug": 5,
             }
-            hostname = if (.host == "ZD-APMgr" || ."source_ip" == "${lib.homelab.hosts.getLANIP "ruckus-office"}") { "ruckus-office" } else {.host}
+            # Unleashed mesh: office is the master and may report as "ZD-APMgr";
+            # match the member by source IP first so it isn't folded into office
+            hostname = if ."source_ip" == "${lib.homelab.hosts.getLANIP "ruckus-garage"}" {
+              "ruckus-garage"
+            } else if (.host == "ZD-APMgr" || ."source_ip" == "${lib.homelab.hosts.getLANIP "ruckus-office"}") {
+              "ruckus-office"
+            } else { .host }
 
 
             . = {
