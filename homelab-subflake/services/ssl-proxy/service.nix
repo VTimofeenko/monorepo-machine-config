@@ -25,8 +25,7 @@
 
   imports =
     # TODO: `lib.locallib.mkImportsFromDir` ?
-    (lib.fileset.fileFilter (file: file.hasExt "nix") ./functional |> lib.fileset.toList)
-    ++ [
+    (lib.fileset.fileFilter (file: file.hasExt "nix") ./functional |> lib.fileset.toList) ++ [
       ./listen-address.nix
       ./utils.nix
       ./oauth2-proxy-config
