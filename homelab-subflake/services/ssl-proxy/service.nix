@@ -18,6 +18,11 @@
     serverNamesHashBucketSize = 128; # Necessary for having many domains
   };
 
+  # Pick up a renewed cert on deploy.
+  systemd.services.nginx.reloadTriggers = [
+    (builtins.hashFile "sha256" config.age.secrets.ssl-cert.rekeyFile)
+  ];
+
   imports =
     # TODO: `lib.locallib.mkImportsFromDir` ?
     (lib.fileset.fileFilter (file: file.hasExt "nix") ./functional |> lib.fileset.toList)

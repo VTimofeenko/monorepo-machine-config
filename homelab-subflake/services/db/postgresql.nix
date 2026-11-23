@@ -25,6 +25,11 @@ in
     group = config.systemd.services.postgresql.serviceConfig.Group;
   };
 
+  # Pick up a renewed cert on deploy (postgres re-reads SSL files on SIGHUP).
+  systemd.services.postgresql.reloadTriggers = [
+    (builtins.hashFile "sha256" config.age.secrets.ssl-cert.rekeyFile)
+  ];
+
   # Service configuration
   services.postgresql = {
     enable = true;

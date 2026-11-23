@@ -26,4 +26,9 @@ in
     # TODO: 443 for websocket?
     # TODO: 14567 for QUIC (if needed)?
   };
+
+  # Pick up a renewed cert on deploy.
+  systemd.services.nginx.reloadTriggers = [
+    (builtins.hashFile "sha256" config.age.secrets.ssl-cert.rekeyFile)
+  ];
 }
