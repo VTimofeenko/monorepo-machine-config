@@ -34,6 +34,21 @@ in
   ++ (
     (lib.homelab.getNetwork "backbone-inner").servicesInNetwork
     |> lib.mapAttrsToList (_: it: "${it.ipAddress}/32 ${clientNetViewName}")
+  )
+  # Roaming nodes are not in the client network, but they leave LAN the same
+  # way. They query over `backbone` or `backbone-inner`.
+  ++ (
+    (lib.homelab.getNetwork "backbone").settings.roamingNodes
+    |> lib.attrNames
+    |> lib.concatMap (
+      hostName:
+      [
+        "backbone"
+        "backbone-inner"
+      ]
+      |> builtins.filter (lib.homelab.isInNetwork hostName)
+      |> map (net: "${lib.homelab.getHostIpInNetwork hostName net}/32 ${clientNetViewName}")
+    )
   );
 
   services.unbound.settings.view = [
