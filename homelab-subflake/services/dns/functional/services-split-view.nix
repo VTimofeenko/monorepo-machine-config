@@ -42,10 +42,7 @@ in
         # A records for split-view services pointing directly to their host's backbone-inner IP
         splitViewServices
         |> map lib.homelab.getService
-        |> map (
-          svc:
-          srvLib.mkARecord svc.fqdn (lib.homelab.hosts.getInnerIP svc.onHost)
-        )
+        |> map (svc: srvLib.mkARecord svc.fqdn (lib.homelab.hosts.getInnerIP svc.onHost))
         |> lib.flatten
         |> map (it: "\"${it}\""); # Escape the data, necessary
       view-first = "yes";
