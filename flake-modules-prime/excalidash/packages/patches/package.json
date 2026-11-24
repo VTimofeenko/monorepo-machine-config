@@ -1,11 +1,15 @@
 {
   "name": "backend",
-  "version": "0.6.0",
+  "private": true,
   "description": "",
+  "engines": {
+    "node": ">=24.22.1"
+  },
+  "packageManager": "npm@10.9.2",
   "scripts": {
     "build": "prisma generate && tsc",
     "predev": "node scripts/predev-migrate.cjs",
-    "dev": "nodemon src/index.ts",
+    "dev": "node --watch --require ts-node/register src/index.ts",
     "start": "node dist/index.js",
     "admin:recover": "node scripts/admin-recover.cjs",
     "dev:simulate-auth-onboarding:fresh": "node scripts/simulate-auth-onboarding.cjs --scenario fresh",
@@ -15,7 +19,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "check:max-lines": "node ../scripts/check-source-line-count.cjs",
+    "lint": "eslint src scripts --config ../eslint.config.js --max-warnings 0",
     "check:env-boundary": "node ../scripts/check-env-boundary.cjs",
     "gen:env": "ts-node src/config/generateEnvReference.ts"
   },
@@ -27,11 +31,11 @@
     "@aws-sdk/client-s3": "^3.1026.0",
     "@aws-sdk/s3-request-presigner": "^3.1026.0",
     "@prisma/client": "6.19.3",
-    "archiver": "^7.0.1",
+    "archiver": "^8.0.0",
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.11.1",
     "cors": "^2.8.5",
-    "dompurify": "^3.3.0",
+    "dompurify": "^3.4.17",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "express-rate-limit": "^8.2.1",
@@ -41,14 +45,16 @@
     "jszip": "^3.10.1",
     "ms": "^2.1.3",
     "multer": "^2.0.2",
+    "nodemailer": "^10.0.13",
     "openid-client": "^5.7.1",
     "prisma": "6.19.3",
+    "resend": "^6.22.0",
     "socket.io": "^4.8.1",
     "uuid": "^14.0.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@types/archiver": "^7.0.0",
+    "@types/archiver": "^8.0.0",
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
@@ -58,10 +64,9 @@
     "@types/multer": "^2.0.0",
     "@types/node": "^24.10.1",
     "@types/supertest": "^6.0.3",
-    "nodemon": "^3.1.11",
     "supertest": "^7.1.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.12"
   }
 }

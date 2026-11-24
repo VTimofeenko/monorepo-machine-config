@@ -12,11 +12,11 @@
   runCommand,
   buildNpmPackage,
   fetchFromGitHub,
-  nodejs_22,
+  nodejs_24,
 }:
 
 let
-  version = "0.6.0";
+  version = "0.7.0";
 
   # Same pin as ./excalidash-backend.nix — kept per-file (rather than
   # shared) since each package here is independently `callPackage`-able;
@@ -27,7 +27,7 @@ let
     owner = "ZimengXiong";
     repo = "ExcaliDash";
     rev = "v${version}";
-    hash = "sha256-oTLrSJiuhD/FQOayXevbNFlBmgaTvsQqlcZByt/PafM=";
+    hash = "sha256-AQZhzsd1aZ8Z0NCfgoCeY4Nwb7IDK8bql++is0g0MVA=";
   };
 in
 buildNpmPackage (finalAttrs: {
@@ -46,21 +46,22 @@ buildNpmPackage (finalAttrs: {
 
   sourceRoot = "${finalAttrs.src.name}/frontend";
 
-  nodejs = nodejs_22;
+  nodejs = nodejs_24;
 
-  npmDepsHash = "sha256-Q0NrOfakCI5IrogB9pEP5iZqP4xCAHufrQxo7ra/hFc=";
+  npmDepsHash = "sha256-6gkzqyHL54DTvbbAaXy4CH5LXeujeRL2NJ+5WCQ0OyE=";
 
   # Allows having a global library if auth mode is "disabled".
   # Upstream's own AUTH_MODE=disabled path (backend/src/middleware/auth.ts's
   # `requireAuth`) resolves every request to a fixed bootstrap identity, so
-  # `GET/PUT /library` already works with no login — but these three
-  # frontend call sites gate library persistence on `user` (from
-  # `AuthContext`) being truthy, and `AuthContext.tsx` deliberately sets
-  # `user = null` whenever auth is disabled. Net effect: with auth disabled,
-  # any library you add only lives in that one editor tab's in-memory
-  # Excalidraw state — never saved, never loaded into the next drawing.
-  # Threading `authEnabled` (also from `AuthContext`, already exposed) down
-  # to these same three spots and OR-ing it into each `user` check turns
+  # `GET/PUT /library` already works with no login — but the frontend gates
+  # library persistence on `user` (from `AuthContext`) being truthy, and
+  # `AuthContext.tsx` deliberately sets `user = null` whenever auth is
+  # disabled. Net effect: with auth disabled, any library you add only lives
+  # in that one editor tab's in-memory Excalidraw state — never saved, never
+  # loaded into the next drawing. Threading `authEnabled` (also from
+  # `AuthContext`, already exposed) down to the three gates (load in
+  # useEditorSceneLoader, save in useEditorPersistence, #addLibrary= import
+  # in useLibraryImportFromUrl) and OR-ing it into each `user` check turns
   # "persist iff logged in" into "persist iff logged in, or auth is off
   # entirely" — matching what the backend already allows.
   postPatch = ''
@@ -75,8 +76,8 @@ buildNpmPackage (finalAttrs: {
         $'useEditorSceneLoader({\n    id,\n    user,' \
         $'useEditorSceneLoader({\n    id,\n    user,\n    authEnabled,' \
       --replace-fail \
-        $'  } = useEditorCommands({\n    autoHideEnabled,\n    canEdit,' \
-        $'  } = useEditorCommands({\n    authEnabled,\n    autoHideEnabled,\n    canEdit,'
+        $'    refs: persistenceRefs,\n    user,' \
+        $'    refs: persistenceRefs,\n    user,\n    authEnabled,'
 
     substituteInPlace src/pages/editor/useLibraryImportFromUrl.ts \
       --replace-fail \
@@ -100,25 +101,22 @@ buildNpmPackage (finalAttrs: {
         $'export const useEditorSceneLoader = ({\n  id,\n  user,' \
         $'export const useEditorSceneLoader = ({\n  id,\n  user,\n  authEnabled,' \
       --replace-fail \
-        'const libraryItemsPromise = userIdKey' \
-        'const libraryItemsPromise = userIdKey || authEnabled === false' \
+        'if (!id || !userIdKey) return;' \
+        'if (!id || (!userIdKey && authEnabled !== false)) return;' \
       --replace-fail \
-        $'  }, [\n    id,' \
-        $'  }, [\n    authEnabled,\n    id,'
+        '}, [id, userIdKey, location.hash,' \
+        '}, [authEnabled, id, userIdKey, location.hash,'
 
-    substituteInPlace src/pages/editor/useEditorCommands.ts \
+    substituteInPlace src/pages/editor/useEditorPersistence.ts \
       --replace-fail \
-        $'  setNewName: (name: string) => void;\n  user: unknown;\n};' \
-        $'  setNewName: (name: string) => void;\n  user: unknown;\n  authEnabled: boolean | null;\n};' \
+        $'  refs: PersistenceRefs;\n  user: unknown;' \
+        $'  refs: PersistenceRefs;\n  user: unknown;\n  authEnabled: boolean | null;' \
       --replace-fail \
-        $'  setNewName,\n  user,\n}: UseEditorCommandsParams) => {' \
-        $'  setNewName,\n  user,\n  authEnabled,\n}: UseEditorCommandsParams) => {' \
+        $'  refs,\n  user,\n  normalizeImageElementStatus,' \
+        $'  refs,\n  user,\n  authEnabled,\n  normalizeImageElementStatus,' \
       --replace-fail \
-        'if (!canEdit || !user) return;' \
-        'if (!canEdit || (!user && authEnabled !== false)) return;' \
-      --replace-fail \
-        '[canEdit, debouncedSaveLibrary, user],' \
-        '[authEnabled, canEdit, debouncedSaveLibrary, user],'
+        'if (!user || sessionGeneration !== getAuthSessionGeneration()) return;' \
+        'if ((!user && authEnabled !== false) || sessionGeneration !== getAuthSessionGeneration()) return;'
   '';
 
   # `npm run build` is `tsc -b && vite build && copy-excalidraw-assets.mjs --dist`

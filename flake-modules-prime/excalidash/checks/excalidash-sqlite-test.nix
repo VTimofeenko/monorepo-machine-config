@@ -23,23 +23,25 @@ pkgs.testers.runNixOSTest {
       };
     };
 
-  testScript = ''
-    machine.start()
-    machine.wait_for_unit("excalidash-backend.service")
-    machine.wait_for_unit("nginx.service")
-    machine.wait_for_open_port(6767)
-    machine.wait_for_open_port(8000)
+  testScript =
+    { nodes, ... }:
+    ''
+      machine.start()
+      machine.wait_for_unit("excalidash-backend.service")
+      machine.wait_for_unit("nginx.service")
+      machine.wait_for_open_port(6767)
+      machine.wait_for_open_port(${toString nodes.machine.services.excalidash.backendPort})
 
-    # The migration actually created the sqlite file where `database.sqlite.path`
-    # says it should be — not just that the unit reports "active".
-    machine.succeed("test -s /var/lib/excalidash/excalidash.db")
+      # The migration actually created the sqlite file where `database.sqlite.path`
+      # says it should be — not just that the unit reports "active".
+      machine.succeed("test -s /var/lib/excalidash/excalidash.db")
 
-    machine.succeed("curl -sf http://127.0.0.1:6767/ | grep -q ExcaliDash")
+      machine.succeed("curl -sf http://127.0.0.1:6767/ | grep -q ExcaliDash")
 
-    # (see ../checks/excalidash-test.nix for why no `-f` here)
-    machine.succeed(
-        "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:6767/api/drawings"
-        " | grep -qE '^(200|401|409)$'"
-    )
-  '';
+      # (see ../checks/excalidash-test.nix for why no `-f` here)
+      machine.succeed(
+          "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:6767/api/drawings"
+          " | grep -qE '^(200|401|409)$'"
+      )
+    '';
 }

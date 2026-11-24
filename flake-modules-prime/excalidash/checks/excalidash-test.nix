@@ -48,29 +48,31 @@ pkgs.testers.runNixOSTest {
       };
     };
 
-  testScript = ''
-    machine.start()
-    machine.wait_for_unit("postgresql.service")
-    machine.wait_for_unit("excalidash-backend.service")
-    machine.wait_for_unit("nginx.service")
-    machine.wait_for_open_port(6767)
-    # `wait_for_unit` only waits for systemd's "active" state, which fires as
-    # soon as ExecStart launches node — not once it's actually bound the
-    # port. Without this, the /api/ check below races the backend and can
-    # hit nginx before it's listening (502, not the app itself).
-    machine.wait_for_open_port(8000)
+  testScript =
+    { nodes, ... }:
+    ''
+      machine.start()
+      machine.wait_for_unit("postgresql.service")
+      machine.wait_for_unit("excalidash-backend.service")
+      machine.wait_for_unit("nginx.service")
+      machine.wait_for_open_port(6767)
+      # `wait_for_unit` only waits for systemd's "active" state, which fires as
+      # soon as ExecStart launches node — not once it's actually bound the
+      # port. Without this, the /api/ check below races the backend and can
+      # hit nginx before it's listening (502, not the app itself).
+      machine.wait_for_open_port(${toString nodes.machine.services.excalidash.backendPort})
 
-    # The SPA shell, served by nginx.
-    machine.succeed("curl -sf http://127.0.0.1:6767/ | grep -q ExcaliDash")
+      # The SPA shell, served by nginx.
+      machine.succeed("curl -sf http://127.0.0.1:6767/ | grep -q ExcaliDash")
 
-    # `/api/` reaching the live backend through the proxy (a real app-level
-    # response, not a connection error/502 — confirms Postgres + migrations
-    # + the backend process are all actually wired up correctly).
-    # (no `-f`: a 4xx here is a legitimate app response — auth/onboarding
-    # state — not a curl failure; only a connection error/502 should fail.)
-    machine.succeed(
-        "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:6767/api/drawings"
-        " | grep -qE '^(200|401|409)$'"
-    )
-  '';
+      # `/api/` reaching the live backend through the proxy (a real app-level
+      # response, not a connection error/502 — confirms Postgres + migrations
+      # + the backend process are all actually wired up correctly).
+      # (no `-f`: a 4xx here is a legitimate app response — auth/onboarding
+      # state — not a curl failure; only a connection error/502 should fail.)
+      machine.succeed(
+          "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:6767/api/drawings"
+          " | grep -qE '^(200|401|409)$'"
+      )
+    '';
 }

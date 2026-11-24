@@ -30,7 +30,7 @@
   lib,
   buildNpmPackage,
   fetchFromGitHub,
-  nodejs_22,
+  nodejs_24,
   python3,
   prisma_6,
   prisma-engines_6,
@@ -43,7 +43,7 @@ assert lib.assertOneOf "databaseProvider" databaseProvider [
   "sqlite"
 ];
 let
-  version = "0.6.0";
+  version = "0.7.0";
 
   # Upstream pins `prisma`/`@prisma/client` to ^5.22.0; nixpkgs only ships
   # engines for major 6/7, and the two aren't wire-compatible (prisma_6's
@@ -67,11 +67,11 @@ buildNpmPackage (finalAttrs: {
     owner = "ZimengXiong";
     repo = "ExcaliDash";
     rev = "v${version}";
-    hash = "sha256-oTLrSJiuhD/FQOayXevbNFlBmgaTvsQqlcZByt/PafM=";
+    hash = "sha256-AQZhzsd1aZ8Z0NCfgoCeY4Nwb7IDK8bql++is0g0MVA=";
   };
   sourceRoot = "${finalAttrs.src.name}/backend";
 
-  nodejs = nodejs_22;
+  nodejs = nodejs_24;
 
   # `better-sqlite3` is an unconditional `dependencies` entry regardless of
   # `databaseProvider` — it's unrelated to Prisma's own sqlite/postgresql
@@ -85,7 +85,7 @@ buildNpmPackage (finalAttrs: {
     prisma_6
   ];
 
-  npmDepsHash = "sha256-krcbe+AbCAYpc1VNE3ftE2BsODR7EscF7kHl2Rx2tYY=";
+  npmDepsHash = "sha256-9QWzVmXDWVceb5EPATavUR2K5g7dVj/OC9WHLtWE4D8=";
 
   # `uploads/` is only used as multer's temp-staging dir for file uploads and
   # sqlite-import staging (actual drawing data lives in Postgres, or S3 when
@@ -135,7 +135,7 @@ buildNpmPackage (finalAttrs: {
     # limits, so it isn't a meaningful cost. No behavior change otherwise —
     # this is a type-checker-only mismatch, not a runtime one.
     substituteInPlace src/fileProcessing.ts \
-      --replace-fail 'data: decoded.buffer,' 'data: Uint8Array.from(decoded.buffer),'
+      --replace-fail 'data: buffer,' 'data: Uint8Array.from(buffer),'
     substituteInPlace src/routes/files.ts \
       --replace-fail 'data: body,' 'data: Uint8Array.from(body),'
   '';
@@ -186,7 +186,7 @@ buildNpmPackage (finalAttrs: {
     cp -r prisma/migrations/${databaseProvider} $out/share/excalidash/prisma/migrations
     cp prisma/schema.prisma $out/share/excalidash/prisma/schema.prisma
 
-    makeWrapper ${nodejs_22}/bin/node $out/bin/excalidash-server \
+    makeWrapper ${nodejs_24}/bin/node $out/bin/excalidash-server \
       --add-flags "$out/share/excalidash/dist/index.js" \
       --set-default PRISMA_CLIENT_ENGINE_TYPE "binary" \
       --set-default PRISMA_QUERY_ENGINE_LIBRARY "${prisma-engines_6}/lib/libquery_engine.node" \
@@ -207,7 +207,7 @@ buildNpmPackage (finalAttrs: {
   meta = {
     description = "ExcaliDash backend API (Express + Prisma, ${databaseProvider})";
     mainProgram = "excalidash-server";
-    # No real restriction: nodejs_22, prisma_6 and prisma-engines_6 (the
+    # No real restriction: nodejs_24, prisma_6 and prisma-engines_6 (the
     # only platform-sensitive deps here) all cover more than x86_64-linux —
     # confirmed by a real `nix build .#packages.aarch64-linux.excalidash-backend`.
     platforms = lib.platforms.linux;
