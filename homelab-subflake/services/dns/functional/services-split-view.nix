@@ -9,9 +9,15 @@ let
   clientNetViewName = "mixed-managed-infra-services-vw";
 
   # Get all managed hosts (those in backbone-inner network)
+  # Roaming nodes get the client view instead (see `client-view.nix`): its
+  # fallback here would be LAN answers
   managedHosts =
     lib.homelab.hosts.getAll
-    |> lib.filterAttrs (hostName: _: lib.homelab.isInNetwork hostName "backbone-inner")
+    |> lib.filterAttrs (
+      hostName: _:
+      lib.homelab.isInNetwork hostName "backbone-inner"
+      && !((lib.homelab.getNetwork "backbone").settings.roamingNodes ? ${hostName}) # TODO: lib function?
+    )
     |> lib.attrNames;
 
   # Services that need split view (available in LAN for unmanaged, backbone-inner for managed)
