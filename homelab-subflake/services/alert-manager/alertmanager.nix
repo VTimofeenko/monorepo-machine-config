@@ -1,6 +1,9 @@
 { lib, ... }:
 let
   defaultReceiver = "telegram";
+  # When the gateway is down nothing can be delivered anyway (no internet), and every other
+  # alert is a consequence. Inhibiting them keeps the queue from flushing a storm on recovery.
+  gatewayResource = "host:${lib.homelab.getServiceHost "gateway"}";
   receiverConfigs = {
     ntfy = import ./alertmanager-config/ntfy.nix {
       rcvName = "ntfy";
@@ -29,6 +32,15 @@ in
           repeat_interval = "4h";
           receiver = defaultReceiver;
         };
+        inhibit_rules = [
+          {
+            source_matchers = [
+              ''alertname="HostDown"''
+              ''resource="${gatewayResource}"''
+            ];
+            target_matchers = [ ''resource!="${gatewayResource}"'' ];
+          }
+        ];
       }
     ]
     ++ (receiverConfigs |> builtins.attrValues)
