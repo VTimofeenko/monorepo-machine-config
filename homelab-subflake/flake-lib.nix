@@ -260,7 +260,7 @@ rec {
         if data.networks.backbone-inner.hostsInNetwork ? ${nodeName} then "backbone-inner" else "mgmt";
     in
     {
-      hostname = "${nodeName}.${inputs.data-flake.data.networks.mgmt.domain}";
+      hostname = data.networks.${deployNet}.hostsInNetwork.${nodeName}.ipAddress; # TODO: direct `data` usage
       sshUser = "root";
       profiles.system = {
         user = "root";
