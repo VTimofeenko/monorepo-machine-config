@@ -262,6 +262,10 @@ rec {
     {
       hostname = data.networks.${deployNet}.hostsInNetwork.${nodeName}.ipAddress; # TODO: direct `data` usage
       sshUser = "root";
+      sshOpts = [
+        "-p"
+        (toString data.hosts.all.${nodeName}.settings.sshPort) # TODO: direct `data` usage
+      ];
       profiles.system = {
         user = "root";
         path = deployPkgs.deploy-rs.lib.activate.nixos self.nixosConfigurations.${nodeName};
