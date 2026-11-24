@@ -254,6 +254,11 @@ rec {
         ];
       };
     in
+    let
+      inherit (inputs.data-flake) data;
+      deployNet =
+        if data.networks.backbone-inner.hostsInNetwork ? ${nodeName} then "backbone-inner" else "mgmt";
+    in
     {
       hostname = "${nodeName}.${inputs.data-flake.data.networks.mgmt.domain}";
       sshUser = "root";
