@@ -893,11 +893,11 @@
         "nixpkgs": "nixpkgs_8"
       },
       "locked": {
-        "lastModified": 1795719312,
-        "narHash": "sha256-kJVMVU3dAPZOqFi93Mw0RiQOFjaRtrpbqsblBlt8zcY=",
+        "lastModified": 1795723759,
+        "narHash": "sha256-AvwPDe6X5z1GU9xxJMDr0ArVXfFMsZaV7zDdrg5dhJ8=",
         "ref": "refs/heads/master",
-        "rev": "a25dc0b16f5b6587ecce0ec293ec9b1c32ff6477",
-        "revCount": 514,
+        "rev": "54b7e4db5d0f161e2023f87bc2864c009dd31f70",
+        "revCount": 515,
         "type": "git",
         "url": "ssh://gitea@gitea.srv.vtimofeenko.com/homelab/private-modules.git"
       },
