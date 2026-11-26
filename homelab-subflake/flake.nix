@@ -88,7 +88,6 @@
         ++ (flakeModuleLoader {
           dir = ./flake-modules;
           inherit self withSystem lib;
-          debug = true;
         });
         systems = [
           "x86_64-linux"
@@ -143,7 +142,6 @@
                 hostName:
                 self.lib.mkHost {
                   inherit hostName;
-                  debug = true;
                 }
               )
               // {
