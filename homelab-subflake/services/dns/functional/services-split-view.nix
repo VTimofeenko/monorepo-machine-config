@@ -14,9 +14,7 @@ let
   managedHosts =
     lib.homelab.hosts.getAll
     |> lib.filterAttrs (
-      hostName: _:
-      lib.homelab.isInNetwork hostName "backbone-inner"
-      && !((lib.homelab.getNetwork "backbone").settings.roamingNodes ? ${hostName}) # TODO: lib function?
+      hostName: _: lib.homelab.isInNetwork hostName "backbone-inner" && !lib.homelab.isRoaming hostName
     )
     |> lib.attrNames;
 
