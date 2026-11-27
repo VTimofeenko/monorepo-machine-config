@@ -58,7 +58,9 @@ in
       local-data =
         # New logic:
         # Grab all SSL proxied services + services that opt into being available over client network
+        # + split view services: roaming nodes are in this view, not the split one
         (lib.homelab.getManifest "ssl-proxy").srvLib.getProxiedServices
+        ++ (lib.homelab.getManifest "dns").srvLib.splitViewServices
         ++ (
           lib.homelab.services.getAll
           |> lib.filterAttrs (

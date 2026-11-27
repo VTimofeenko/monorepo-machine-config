@@ -38,4 +38,6 @@
 
   # No backups - stateless service
   # No storage - stateless service
+
+  srvLib = import ./srv-lib.nix;
 }

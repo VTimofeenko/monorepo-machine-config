@@ -18,12 +18,7 @@ let
     )
     |> lib.attrNames;
 
-  # Services that need split view (available in LAN for unmanaged, backbone-inner for managed)
-  # If this list grows, might need some setting in data
-  splitViewServices = [
-    "mqtt"
-    "log-concentrator"
-  ];
+  inherit ((lib.homelab.getManifest "dns").srvLib) splitViewServices;
 in
 {
   services.unbound.settings.server.access-control-view =
