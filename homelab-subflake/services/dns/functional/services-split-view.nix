@@ -5,20 +5,22 @@
 */
 { lib, ... }:
 let
-  inherit (lib.homelab.getManifest "auth-dns") srvLib;
+  inherit ((lib.homelab.getManifest "dns").srvLib) splitViewServices mkInnerRecords;
   clientNetViewName = "mixed-managed-infra-services-vw";
 
-  # Get all managed hosts (those in backbone-inner network)
-  # Roaming nodes get the client view instead (see `client-view.nix`): its
-  # fallback here would be LAN answers
+  # Get all managed hosts (those in backbone-inner network) in LAN.
+  # Its fallback here would be LAN answers: roaming and off-LAN ones get
+  # their own view (`./off-lan-mesh-view.nix`)
   managedHosts =
     lib.homelab.hosts.getAll
     |> lib.filterAttrs (
-      hostName: _: lib.homelab.isInNetwork hostName "backbone-inner" && !lib.homelab.isRoaming hostName
+      hostName: _:
+      lib.homelab.isInNetwork hostName "backbone-inner"
+      && lib.homelab.isInNetwork hostName "lan"
+      && !lib.homelab.isRoaming hostName
     )
     |> lib.attrNames;
 
-  inherit ((lib.homelab.getManifest "dns").srvLib) splitViewServices;
 in
 {
   services.unbound.settings.server.access-control-view =
@@ -31,13 +33,8 @@ in
       name = clientNetViewName;
       # Use transparent to allow fallback to stub-zone for records not defined here
       local-zone = [ ''"${lib.homelab.getSettings.publicDomainName}." transparent'' ];
-      local-data =
-        # A records for split-view services pointing directly to their host's backbone-inner IP
-        splitViewServices
-        |> map lib.homelab.getService
-        |> map (svc: srvLib.mkARecord svc.fqdn (lib.homelab.hosts.getInnerIP svc.onHost))
-        |> lib.flatten
-        |> map (it: "\"${it}\""); # Escape the data, necessary
+      # A records for split-view services pointing directly to their host's backbone-inner IP
+      local-data = mkInnerRecords splitViewServices;
       view-first = "yes";
     }
   ];

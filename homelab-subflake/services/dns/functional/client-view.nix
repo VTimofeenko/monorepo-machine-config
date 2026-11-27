@@ -20,7 +20,7 @@
 */
 { lib, ... }:
 let
-  inherit (lib.homelab.getManifest "auth-dns") srvLib;
+  dnsSrvLib = (lib.homelab.getManifest "dns").srvLib;
   clientNetViewName = "client-vpn-vw";
   client = lib.homelab.getNetwork "client";
 in
@@ -34,33 +34,17 @@ in
   ++ (
     (lib.homelab.getNetwork "backbone-inner").servicesInNetwork
     |> lib.mapAttrsToList (_: it: "${it.ipAddress}/32 ${clientNetViewName}")
-  )
-  # Roaming nodes are not in the client network, but they leave LAN the same
-  # way. They query over `backbone` or `backbone-inner`.
-  ++ (
-    (lib.homelab.getNetwork "backbone").settings.roamingNodes
-    |> lib.attrNames
-    |> lib.concatMap (
-      hostName:
-      [
-        "backbone"
-        "backbone-inner"
-      ]
-      |> builtins.filter (lib.homelab.isInNetwork hostName)
-      |> map (net: "${lib.homelab.getHostIpInNetwork hostName net}/32 ${clientNetViewName}")
-    )
   );
+  # Roaming nodes: `./off-lan-mesh-view.nix`
 
   services.unbound.settings.view = [
     {
       name = clientNetViewName;
       local-zone = [ ''"${lib.homelab.getSettings.publicDomainName}." static'' ];
       local-data =
-        # New logic:
-        # Grab all SSL proxied services + services that opt into being available over client network
-        # + split view services: roaming nodes are in this view, not the split one
+        # SSL proxied services + services that opt into being available over
+        # client network
         (lib.homelab.getManifest "ssl-proxy").srvLib.getProxiedServices
-        ++ (lib.homelab.getManifest "dns").srvLib.splitViewServices
         ++ (
           lib.homelab.services.getAll
           |> lib.filterAttrs (
@@ -69,26 +53,7 @@ in
           )
           |> lib.attrNames
         )
-        |> lib.unique
-        |> map lib.homelab.getService
-        |> map (it: {
-          inherit (it) fqdn;
-          # If central SSL – point at `ssl-proxy`, otherwise point at the service itself
-          targets =
-            if it.centralSSL then
-              lib.homelab.hosts.getWithService "ssl-proxy" |> map lib.homelab.hosts.getInnerIP
-            else
-              it.serviceName |> lib.homelab.services.getInnerIP |> lib.singleton;
-        })
-        |> map (
-          it:
-          lib.mapCartesianProduct ({ fqdn, target }: srvLib.mkARecord fqdn target) {
-            fqdn = it.fqdn |> lib.singleton;
-            target = it.targets;
-          }
-        )
-        |> lib.flatten
-        |> map (it: "\"${it}\""); # Escape the data, necessary
+        |> dnsSrvLib.mkInnerRecords;
       view-first = "yes"; # Forces view to be served first. Necessary, the view data is the source of truth. Upstream should not be engaged.
     }
   ];
