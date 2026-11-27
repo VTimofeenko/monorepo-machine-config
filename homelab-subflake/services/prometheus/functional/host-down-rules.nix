@@ -3,6 +3,8 @@
 
   Severity is derived from the highest alert level of services running on each
   host. Hosts with no alerting services default to Warning.
+
+  Roaming nodes (`lib.homelab.isRoaming`) get none: they go offline routinely.
 */
 { lib, pkgs, ... }:
 let
@@ -67,7 +69,11 @@ in
           {
             name = "host-down";
             rules =
-              lib.homelab.traits.get "monitoring-source" |> builtins.getAttr "onHosts" |> map mkHostDownRule;
+              lib.homelab.traits.get "monitoring-source"
+              |> builtins.getAttr "onHosts"
+              # Laptops: being offline is normal
+              |> builtins.filter (host: !lib.homelab.isRoaming host)
+              |> map mkHostDownRule;
           }
         ];
       }
