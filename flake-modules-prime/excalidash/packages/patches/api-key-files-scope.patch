@@ -1,11 +1,18 @@
 diff --git a/backend/src/middleware/auth.ts b/backend/src/middleware/auth.ts
-index 00c1ba8..7a01f95 100644
 --- a/backend/src/middleware/auth.ts
 +++ b/backend/src/middleware/auth.ts
-@@ -124,8 +124,20 @@ const getApiKeyRouteResource = (
+@@ -124,8 +124,28 @@
      ) {
        return "drawings";
      }
++    // GET /drawings/:id/preview (SVG thumbnail).
++    if (
++      segments.length === 3 &&
++      segments[2] === "preview" &&
++      ["GET", "HEAD"].includes(method)
++    ) {
++      return "drawings";
++    }
 +    // PUT /drawings/:drawingId/files/:fileId (embedded image upload).
 +    if (segments.length === 4 && segments[2] === "files" && method === "PUT") {
 +      return "drawings";

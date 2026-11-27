@@ -2,8 +2,9 @@
 > this README documents — it's a real source patch, applied via `patch -p2`
 > in `../excalidash-backend.nix`'s `postPatch`. It fixes API keys getting
 > 403/404'd on `/files/*` (both fetching and uploading an embedded image)
-> because `getApiKeyRouteResource` in `middleware/auth.ts` never recognized
-> that resource. Its paths are `a|b/backend/...`, rooted at the full repo,
+> and 401'd on `GET /drawings/:id/preview` (breaks the Emacs preview
+> integration) because `getApiKeyRouteResource` in `middleware/auth.ts`
+> never recognized those routes. Its paths are `a|b/backend/...`, rooted at the full repo,
 > so it also applies as-is (`patch -p1` from the repo root, or as a diff) to
 > a plain checkout — meant to be filed as an upstream PR, not just a
 > Nix-local workaround. Regenerate the same way as the manifests below if

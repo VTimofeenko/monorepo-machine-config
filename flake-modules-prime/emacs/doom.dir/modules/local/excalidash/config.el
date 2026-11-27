@@ -9,22 +9,59 @@
 (defvar excalidash-api-key nil
   "Optional API key. Leave nil when the instance has auth disabled (dev/local).")
 
-(defun excalidash--get (path)
-  "Fetch PATH under `excalidash-base-url' and return the parsed JSON body."
+(defun excalidash--request (path)
+  "GET PATH under `excalidash-base-url'; return (CONTENT-TYPE . BODY).
+BODY is a unibyte string of the raw response bytes.  Signals an error on
+any non-2xx status, so auth failures don't masquerade as empty results."
   (let* ((url (concat excalidash-base-url path))
          (url-request-extra-headers
           (when excalidash-api-key
-            `(("Authorization" . ,(concat "Bearer " excalidash-api-key))))))
-    (with-current-buffer (url-retrieve-synchronously url t t 10)
-      (goto-char (point-min))
-      (unless (re-search-forward "\n\n" nil t)
-        (error "excalidash: malformed HTTP response from %s" url))
-      (prog1
-          (let ((json-object-type 'plist)
-                (json-key-type 'keyword))
-            (json-read-from-string
-             (buffer-substring-no-properties (point) (point-max))))
-        (kill-buffer)))))
+            `(("Authorization" . ,(concat "Bearer " excalidash-api-key)))))
+         (buf (url-retrieve-synchronously url t t 10)))
+    (unless buf (error "excalidash: no response from %s" url))
+    (with-current-buffer buf
+      (unwind-protect
+          (let ((status (bound-and-true-p url-http-response-status))
+                (ctype (bound-and-true-p url-http-content-type)))
+            (set-buffer-multibyte nil)
+            (goto-char (point-min))
+            (unless (re-search-forward "\r?\n\r?\n" nil t)
+              (error "excalidash: malformed HTTP response from %s" url))
+            (let ((body (buffer-substring-no-properties (point) (point-max))))
+              (unless (and (integerp status) (<= 200 status 299))
+                (error "excalidash: HTTP %s from %s: %s" status url
+                       (truncate-string-to-width
+                        (decode-coding-string body 'utf-8) 200)))
+              (cons ctype body)))
+        (kill-buffer buf)))))
+
+(defun excalidash--get (path)
+  "Fetch PATH under `excalidash-base-url' and return the parsed JSON body."
+  (let ((json-object-type 'plist)
+        (json-key-type 'keyword))
+    (json-read-from-string
+     (decode-coding-string (cdr (excalidash--request path)) 'utf-8))))
+
+(defun excalidash--inline-file-refs (svg)
+  "Replace server-relative /api/files/... image refs in SVG with data URLs.
+Since ExcaliDash 0.7.0 the backend interns embedded images and rewrites the
+preview to point at /api/files/<drawing>/<file>, which a local SVG file
+can't resolve."
+  (replace-regexp-in-string
+   "/api\\(/files/[^\"' )]+\\)"
+   (lambda (match)
+     ;; replace-regexp-in-string reuses the match data after we return.
+     (let ((file-path (match-string 1 match)))
+       (save-match-data
+         (condition-case err
+             (let* ((resp (excalidash--request file-path))
+                    (ctype (or (car resp) "application/octet-stream")))
+               (concat "data:" ctype ";base64,"
+                       (base64-encode-string (cdr resp) t)))
+           (error (message "excalidash: could not inline %s: %s"
+                           match (error-message-string err))
+                  match)))))
+   svg t t))
 
 (defun excalidash-list-drawings ()
   "Return the list of drawings as plists (id/name/updatedAt/...)."
@@ -43,8 +80,9 @@ Returns nil if the drawing has no preview yet (never opened/saved in the web UI)
   (let* ((data (excalidash--get (format "/drawings/%s/preview" drawing-id)))
          (svg (plist-get data :preview)))
     (when (and svg (not (eq svg :null)) (> (length svg) 0))
-      (let ((path (excalidash--preview-path drawing-id)))
-        (with-temp-file path (insert svg))
+      (let ((path (excalidash--preview-path drawing-id))
+            (coding-system-for-write 'utf-8))
+        (with-temp-file path (insert (excalidash--inline-file-refs svg)))
         path))))
 
 ;;;###autoload
